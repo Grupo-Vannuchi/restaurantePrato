@@ -60,9 +60,11 @@ export async function Footer() {
           >
             {siteConfig.contact.email}
           </a>
-          <span className="text-sm text-muted-foreground">
-            {siteConfig.contact.phone}
-          </span>
+          {siteConfig.contact.phone ? (
+            <span className="text-sm text-muted-foreground">
+              {siteConfig.contact.phone}
+            </span>
+          ) : null}
           <a
             href={mapsLink}
             target="_blank"

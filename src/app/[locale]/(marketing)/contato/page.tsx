@@ -43,7 +43,17 @@ export default async function ContactPage({
     href?: string;
   }[] = [
     { icon: Mail, label: t("labels.email"), value: contact.email, href: `mailto:${contact.email}` },
-    { icon: Phone, label: t("labels.phone"), value: contact.phone, href: phoneLink() },
+    // Só listado quando existe telefone — mesmo contrato do WhatsApp abaixo.
+    ...(contact.phone
+      ? [
+          {
+            icon: Phone,
+            label: t("labels.phone"),
+            value: contact.phone,
+            href: phoneLink() ?? undefined,
+          },
+        ]
+      : []),
     // Only listed once a number exists — see `hasWhatsapp()` in the site config.
     ...(whatsapp
       ? [

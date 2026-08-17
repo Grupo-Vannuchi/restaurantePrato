@@ -74,8 +74,11 @@ export type SiteConfig = {
 
   contact: {
     email: string;
-    /** Phone in human-readable form. */
-    phone: string;
+    /**
+     * Telefone em forma legível. Opcional: o restaurante pode não ter linha
+     * fixa, e nesse caso cada CTA de ligar some em vez de gerar um `tel:` vazio.
+     */
+    phone?: string;
     whatsapp: {
       /** Digits only, with country code, for wa.me links. */
       number: string;
@@ -244,9 +247,15 @@ export function whatsappLink(message?: string): string | null {
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
 }
 
-/** A `tel:` href built from the human-readable phone. */
-export function phoneLink(): string {
-  return `tel:${siteConfig.contact.phone.replace(/[^\d+]/g, "")}`;
+/**
+ * Um href `tel:` a partir do telefone legível, ou `null` quando não há telefone
+ * configurado. Os chamadores precisam tratar o null — mesmo contrato de
+ * `whatsappLink()`.
+ */
+export function phoneLink(): string | null {
+  const { phone } = siteConfig.contact;
+  if (!phone) return null;
+  return `tel:${phone.replace(/[^\d+]/g, "")}`;
 }
 
 /** The restaurant's address as a single comma-separated line. */

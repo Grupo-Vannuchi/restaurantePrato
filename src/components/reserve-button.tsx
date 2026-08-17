@@ -10,9 +10,9 @@ type Size = "sm" | "md" | "lg";
  * The reservation CTA. Reservations happen straight in WhatsApp — there is no
  * booking backend — so this opens a wa.me deep link with a pre-filled message.
  *
- * While no WhatsApp number is configured it degrades to a `tel:` link on the
- * restaurant's landline instead of rendering a dead `wa.me/` URL. The label
- * changes with it, so the button never promises something it can't do.
+ * Enquanto não houver número de WhatsApp configurado ele degrada para um link
+ * `tel:`; se também não houver telefone, não renderiza nada — em vez de exibir
+ * um botão que não leva a lugar nenhum.
  */
 export async function ReserveButton({
   variant = "primary",
@@ -31,12 +31,17 @@ export async function ReserveButton({
 }) {
   const t = await getTranslations("common");
   const href = whatsappLink(message);
+  const tel = phoneLink();
+  const { phone } = siteConfig.contact;
 
   if (!href) {
+    // Sem WhatsApp e sem telefone não há canal nenhum para abrir — melhor não
+    // renderizar botão do que renderizar um link morto.
+    if (!tel || !phone) return null;
     return (
-      <a href={phoneLink()} className={buttonVariants({ variant, size, className })}>
+      <a href={tel} className={buttonVariants({ variant, size, className })}>
         <Phone className="size-5" />
-        {t("callUs", { phone: siteConfig.contact.phone })}
+        {t("callUs", { phone })}
       </a>
     );
   }

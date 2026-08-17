@@ -56,7 +56,7 @@ export function OrganizationJsonLd() {
     ...(legalName && { legalName }),
     url,
     email: contact.email,
-    telephone: contact.phone,
+    ...(contact.phone && { telephone: contact.phone }),
     foundingDate: String(foundedYear),
     servesCuisine,
     acceptsReservations: true,

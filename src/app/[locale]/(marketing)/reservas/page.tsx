@@ -116,9 +116,11 @@ export default async function ReservasPage({
           <Fact icon={MapPin} label={t("addressLabel")} value={fullAddress()} />
           <Fact icon={Landmark} label={t("accessLabel")} value={t("access")} />
         </div>
-        <p className="sr-only">
-          {`${openingHours.opens}–${openingHours.closes} · ${contact.phone}`}
-        </p>
+        {contact.phone ? (
+          <p className="sr-only">
+            {`${openingHours.opens}–${openingHours.closes} · ${contact.phone}`}
+          </p>
+        ) : null}
       </Section>
     </>
   );
