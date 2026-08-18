@@ -70,4 +70,16 @@ describe("nenhum vestígio do cliente anterior", () => {
       ]),
     ).toEqual([]);
   });
+
+  it("no catálogo de mensagens e nas rotas de texto", () => {
+    expect(
+      offenders([
+        "src/messages",
+        "src/app/llms.txt",
+        "src/app/llms-full.txt",
+        "src/app/manifest.ts",
+        "src/lib",
+      ]),
+    ).toEqual([]);
+  });
 });

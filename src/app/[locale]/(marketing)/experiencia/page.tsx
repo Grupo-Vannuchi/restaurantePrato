@@ -56,8 +56,6 @@ export default async function AboutPage({
   const t = await getTranslations("experiencia");
   const tc = await getTranslations("common");
 
-  const practiceItems = t.raw("practice.items") as string[];
-  const salaoItems = t.raw("salao.items") as string[];
   // A bullet mentions how long the house has been open; `fillYears` resolves it
   // from `foundedYear` so it can't drift out of sync with the rest of the site.
   // Wrapped rather than passed by reference: `.map` would feed the index in as
@@ -65,7 +63,6 @@ export default async function AboutPage({
   const audienceItems = (t.raw("audience.items") as string[]).map((item) =>
     fillYears(item),
   );
-  const timingItems = t.raw("timing.items") as string[];
   const contactParagraphs = t.raw("contactCta.paragraphs") as string[];
 
   return (
@@ -79,63 +76,15 @@ export default async function AboutPage({
         <p className="max-w-3xl text-pretty text-xl leading-relaxed">
           {t.rich("lead", richTags)}
         </p>
-
-        <div className="mt-16 grid gap-12 lg:grid-cols-2">
-          <div>
-            <h2 className="text-2xl font-bold">{t("practice.title")}</h2>
-            <p className="mt-4 max-w-xl text-pretty leading-relaxed text-muted-foreground">
-              {t.rich("practice.intro", richTags)}
-            </p>
-            <CheckList items={practiceItems} />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold">{t("salao.title")}</h2>
-            <p className="mt-4 max-w-xl text-pretty leading-relaxed text-muted-foreground">
-              {t.rich("salao.intro", richTags)}
-            </p>
-            <CheckList items={salaoItems} />
-          </div>
-        </div>
       </Section>
 
       <Section className="border-y border-border bg-muted/30">
-        <div className="grid gap-12 lg:grid-cols-2">
-          <div>
-            <h2 className="text-2xl font-bold">{t("audience.title")}</h2>
-            <p className="mt-4 max-w-xl text-pretty leading-relaxed text-muted-foreground">
-              {t.rich("audience.intro", richTags)}
-            </p>
-            <CheckList items={audienceItems} />
-            <p className="mt-6 max-w-xl text-pretty leading-relaxed text-muted-foreground">
-              {t.rich("audience.note", richTags)}
-            </p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold">{t("timing.title")}</h2>
-            <p className="mt-4 max-w-xl text-pretty leading-relaxed text-muted-foreground">
-              {t.rich("timing.intro", richTags)}
-            </p>
-            <CheckList items={timingItems} />
-            <p className="mt-6 max-w-xl text-pretty leading-relaxed text-muted-foreground">
-              {t.rich("timing.note", richTags)}
-            </p>
-          </div>
-        </div>
-      </Section>
-
-      <Section>
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-2xl font-bold sm:text-3xl">
-            {t("whyFullService.title")}
-          </h2>
-          <div className="mt-6 flex flex-col gap-4">
-            <p className="text-pretty text-lg leading-relaxed text-muted-foreground">
-              {t.rich("whyFullService.p1", richTags)}
-            </p>
-            <p className="text-pretty text-lg leading-relaxed text-muted-foreground">
-              {t.rich("whyFullService.p2", richTags)}
-            </p>
-          </div>
+        <div className="max-w-xl">
+          <h2 className="text-2xl font-bold">{t("audience.title")}</h2>
+          <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+            {t.rich("audience.intro", richTags)}
+          </p>
+          <CheckList items={audienceItems} />
         </div>
       </Section>
 
@@ -157,9 +106,6 @@ export default async function AboutPage({
                   </p>
                 ))}
               </div>
-              <p className="mt-6 text-lg font-semibold">
-                {t("contactCta.tagline")}
-              </p>
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                 <Link
                   href="/contato"

@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "defaultTitle": "{brand} | Restaurante por Quilo no Centro de Santos",
+    "defaultTitle": "{brand} | Restaurante e Cafeteria no Centro de Santos",
     "titleTemplate": "%s · {brand}",
-    "description": "Restaurante no Centro Histórico de Santos. Churrasco na brasa, peixes nobres e ilha de massas preparada na hora, em um salão de 180 lugares. Segunda a sexta, das 11h às 15h.",
-    "keywords": "restaurante por quilo centro de santos, almoço executivo santos, churrasco centro de santos, feijoada santos, restaurante para eventos santos, restaurante perto da bolsa do café"
+    "description": "Restaurante e cafeteria no Centro de Santos, na R. Augusto Severo, 25. Desde 1998.",
+    "keywords": "restaurante centro de santos, cafeteria centro de santos, onde almoçar no centro de santos, restaurante santos sp"
   },
   "nav": {
     "inicio": "Início",
@@ -38,121 +38,68 @@
       "goToSlide": "Ir para o slide {n}",
       "slides": [
         {
-          "title": "A sua melhor experiência do dia.",
-          "subtitle": "Há {years} anos, transformamos o seu almoço em um momento irresistível e inesquecível. Um ambiente acolhedor e premium, onde a suculência das carnes nobres e o nosso atendimento impecável esperam por você."
-        },
-        {
-          "title": "Picanha no ponto, direto da brasa.",
-          "subtitle": "Cortes selecionados fatiados na hora, peixes nobres e a ilha de massas preparada na sua frente. O churrasco que fez a fama da casa."
-        },
-        {
-          "title": "O almoço à altura do seu dia.",
-          "subtitle": "Salão amplo, climatizado e silencioso o bastante para a conversa que importa — no coração do Centro Histórico."
+          "title": "Restaurante e cafeteria no Centro de Santos.",
+          "subtitle": "Há {years} anos na R. Augusto Severo, no coração do Centro."
         }
       ]
     },
     "gastronomia": {
       "eyebrow": "A experiência",
       "title": "Tudo o que espera por você",
-      "subtitle": "churrasco na brasa, peixes nobres, massas na hora e um buffet que não existe igual no Centro."
+      "subtitle": "o cardápio da casa."
     },
     "galeria": {
       "eyebrow": "Galeria",
       "title": "O salão e a mesa",
-      "subtitle": "O ambiente renovado e os pratos que saem todos os dias."
+      "subtitle": "O ambiente e os pratos da casa."
     },
     "testimonials": {
-      "eyebrow": "Avaliações do Google · 4,5 ★",
+      "eyebrow": "Avaliações do Google",
       "title": "O que dizem por aqui",
-      "subtitle": "Mais de 1.200 avaliações de quem volta sempre."
+      "subtitle": "A palavra de quem já veio."
     },
     "cta": {
-      "title": "O buffet abre às 11h. Recém-servido, fumegante, completo.",
-      "subtitle": "Chegue cedo e almoce com calma — ou venha depois das 13h30 e aproveite o salão tranquilo, com reposição garantida.",
+      "title": "Venha nos visitar no Centro de Santos.",
+      "subtitle": "Fale com a gente pelo WhatsApp para reservar a sua mesa.",
       "button": "Horários & Reservas"
     }
   },
   "experiencia": {
-    "title": "Mais que um almoço. Um ritual do Centro de Santos.",
-    "metaDescription": "O Fogão de Ouro foi inteiramente redesenhado para ser o seu refúgio no Centro Histórico de Santos: salão amplo, elegante e discreto, com churrasco na brasa, peixes nobres e massas preparadas na hora.",
-    "subtitle": "No Centro Histórico de Santos desde {foundedYear}.",
-    "lead": "O Fogão de Ouro foi inteiramente redesenhado para ser o seu verdadeiro refúgio no Centro Histórico. Muito mais do que uma refeição, entregamos uma <b>experiência de conforto absoluto</b>: um salão amplo, elegante e discreto, pensado em cada detalhe para acolher desde uma pausa merecida até grandes almoços de negócios. Aqui, a tradição da nossa família encontra o rigor que o seu paladar exige.",
-    "practice": {
-      "title": "O que faz o almoço aqui ser diferente",
-      "intro": "O ponto de encontro de quem exige excelência no Centro Histórico. Transformamos o seu almoço com um salão acolhedor e <b>100% renovado</b>, acompanhado de uma fartura irresistível:",
-      "items": [
-        "Churrasco de verdade — picanha, cupim, maminha e cortes selecionados, fatiados na hora, direto da brasa",
-        "Peixes e frutos do mar escolhidos a dedo, toda semana, pelo próprio dono da casa",
-        "Ilha de massas preparada na hora, na sua frente — você escolhe a massa, os ingredientes e o molho",
-        "Buffet completo com saladas frescas, pratos quentes e variedade que não existe em outro lugar do Centro",
-        "Sobremesas e um dos cafés mais elogiados de Santos para fechar",
-        "Salão amplo, climatizado e silencioso o bastante para a conversa que importa"
-      ]
-    },
-    "salao": {
-      "title": "Um salão pensado para o seu dia",
-      "intro": "São 180 lugares no coração do Centro Histórico, a poucos passos da Bolsa do Café e do Museu do Café. O espaço foi desenhado para atender bem em qualquer cenário:",
-      "items": [
-        "A pausa de quem trabalha no Centro e tem uma hora de almoço para aproveitar",
-        "Almoços de diretoria e reuniões que precisam de silêncio e discrição",
-        "Confraternizações de equipe e eventos corporativos",
-        "Quem vem sozinho e quer comer bem, sem pressa",
-        "Famílias e grupos que procuram variedade em uma mesa só"
-      ]
-    },
+    "title": "A Experiência",
+    "metaDescription": "Restaurante e cafeteria no Centro de Santos, em funcionamento desde 1998.",
+    "subtitle": "No Centro de Santos desde {foundedYear}.",
+    "lead": "Restaurante e cafeteria na R. Augusto Severo, 25, no Centro de Santos, em funcionamento desde {foundedYear}.",
     "audience": {
       "title": "Tradição, conforto e sabor incomparável",
-      "intro": "Somos o endereço de quem <b>exige excelência</b> no Centro Histórico. O que nos trouxe até aqui:",
+      "intro": "O que nos trouxe até aqui:",
       "items": [
-        "{years} anos servindo o Centro de Santos",
-        "4,5 ★ em mais de 1.200 avaliações no Google",
-        "Salão de 180 lugares, amplo e climatizado",
-        "Buffet reposto ao longo de todo o serviço",
-        "Atendimento que trata o seu tempo com respeito"
-      ],
-      "note": "Se você procura um <b>restaurante por quilo no Centro de Santos</b> que leve a comida a sério, o Fogão de Ouro foi feito exatamente para esse cenário."
-    },
-    "timing": {
-      "title": "O melhor momento para você",
-      "intro": "Servimos de segunda a sexta, das 11h às 15h. Cada horário tem o seu clima:",
-      "items": [
-        "11h — buffet recém-montado, tudo fumegante",
-        "11h30 às 13h30 — o pico do Centro, salão cheio e movimentado",
-        "Após 13h30 — salão tranquilo, com reposição garantida"
-      ],
-      "note": "Chegue cedo e almoce com calma, ou venha no fim do serviço e aproveite o salão mais silencioso — a comida é a mesma do primeiro ao último minuto."
-    },
-    "whyFullService": {
-      "title": "A brasa, o mar e a massa. Todos os dias.",
-      "p1": "O churrasco é o que fez a fama da casa: <b>picanha, cupim, maminha, alcatra e cortes selecionados</b>, fatiados na hora, direto da brasa. Ao lado dele, salmão, bacalhau, camarão e a seleção da semana — escolhida pessoalmente, toda semana, pelo dono da casa.",
-      "p2": "Na ilha de massas você escolhe a massa, os ingredientes e o molho, e a gente prepara na hora, na sua frente. Completam a mesa as saladas frescas, os pratos quentes e as sobremesas: torta holandesa, pudim, petit gâteau — e o café que fecha a sua hora de almoço."
+        "{years} anos servindo o Centro de Santos"
+      ]
     },
     "contactCta": {
       "title": "Reserve a sua mesa",
       "paragraphs": [
-        "Confraternizações de equipe, almoços de diretoria e eventos corporativos, no coração do Centro Histórico. O salão de 180 lugares comporta o seu grupo com conforto.",
-        "Fale com a gente para acertar dia, horário e número de pessoas — e deixe o resto por nossa conta."
-      ],
-      "tagline": "Tudo isso espera por você a partir das 11h."
+        "Fale com a gente para acertar dia, horário e número de pessoas."
+      ]
     },
-    "disclaimer": "Fogão de Ouro Restaurante — Rua Frei Gaspar, 46, Centro Histórico de Santos/SP. Segunda a sexta, das 11h às 15h. Cartões, VR e VA."
+    "disclaimer": "Restaurante Prato — R. Augusto Severo, 25, Centro, Santos/SP."
   },
   "galeria": {
     "title": "Galeria",
-    "subtitle": "O salão renovado, a brasa e a mesa posta.",
+    "subtitle": "O ambiente e os pratos da casa.",
     "empty": "Em breve, novas fotos por aqui.",
-    "photoAlt": "Foto do Fogão de Ouro",
+    "photoAlt": "Foto do restaurante",
     "ctaTitle": "Quer ver de perto?",
     "ctaButton": "Fazer minha reserva"
   },
   "gastronomia": {
     "title": "Nossa Gastronomia",
-    "subtitle": "Churrasco na brasa, peixes nobres, ilha de massas e o buffet completo — todos os dias.",
+    "subtitle": "O cardápio da casa.",
     "empty": "Em breve, novidades por aqui.",
-    "ctaTitle": "Tudo isso espera por você a partir das 11h.",
+    "ctaTitle": "Reserve a sua mesa.",
     "ctaButton": "Fazer minha reserva",
     "viewAll": "Ver toda a gastronomia",
-    "weekOfTitle": "A Semana no Fogão",
+    "weekOfTitle": "Pratos da semana",
     "weekday1": "Segunda",
     "weekday2": "Terça",
     "weekday3": "Quarta",
@@ -161,7 +108,7 @@
   },
   "novidades": {
     "title": "Novidades",
-    "subtitle": "Novidades e informações do Fogão de Ouro.",
+    "subtitle": "Novidades e informações do restaurante.",
     "empty": "Em breve, novidades por aqui.",
     "viewAll": "Ver todas as novidades",
     "listTitle": "Todas as novidades",
@@ -178,38 +125,17 @@
   },
   "reservas": {
     "title": "Horários & Reservas",
-    "metaDescription": "Segunda a sexta, das 11h às 15h, no Centro Histórico de Santos. Salão de 180 lugares para confraternizações, almoços de diretoria e eventos corporativos.",
-    "subtitle": "Segunda a sexta, das 11h às 15h.",
-    "hoursTitle": "Segunda a sexta, das 11h às 15h",
-    "bestTimeTitle": "O melhor momento para você",
-    "bestTime": [
-      {
-        "when": "11h",
-        "what": "buffet recém-montado, tudo fumegante"
-      },
-      {
-        "when": "11h30 às 13h30",
-        "what": "o pico do Centro"
-      },
-      {
-        "when": "Após 13h30",
-        "what": "salão tranquilo, reposição garantida"
-      }
-    ],
-    "groupsTitle": "Seu evento no salão de 180 lugares",
-    "groupsCopy": "Confraternizações de equipe, almoços de diretoria e eventos corporativos, no coração do Centro Histórico.",
-    "groupsMessage": "Olá! Gostaria de informações sobre reserva para grupos e eventos no Fogão de Ouro.",
+    "metaDescription": "Reservas no Restaurante Prato, no Centro de Santos.",
+    "subtitle": "Fale com a gente pelo WhatsApp.",
+    "groupsTitle": "Reservas para grupos e eventos",
+    "groupsCopy": "Fale com a gente para acertar dia, horário e número de pessoas.",
+    "groupsMessage": "Olá! Gostaria de informações sobre reserva para grupos e eventos.",
     "practicalTitle": "Informações práticas",
-    "paymentsLabel": "Pagamentos",
-    "payments": "Cartões de crédito e débito, VR e VA",
-    "accessLabel": "Acesso",
-    "access": "A poucos passos da Bolsa do Café e do Museu do Café",
-    "addressLabel": "Endereço",
-    "hoursLabel": "Horário"
+    "addressLabel": "Endereço"
   },
   "contact": {
-    "title": "Estamos no coração do Centro Histórico",
-    "subtitle": "Rua Frei Gaspar, 46 — a poucos passos da Bolsa do Café. Segunda a sexta, das 11h às 15h.",
+    "title": "Estamos no Centro de Santos",
+    "subtitle": "R. Augusto Severo, 25 — Centro, Santos/SP.",
     "infoTitle": "Como falar com a gente",
     "route": "Traçar rota",
     "labels": {
@@ -238,15 +164,13 @@
     "required": "Campo obrigatório."
   },
   "footer": {
-    "tagline": "Fogão de Ouro Restaurante — no Centro Histórico de Santos.",
+    "tagline": "Restaurante e cafeteria no Centro de Santos.",
     "navTitle": "Navegação",
     "contactTitle": "Contato",
     "socialTitle": "Redes",
     "rights": "Todos os direitos reservados.",
     "registration": "CNPJ {value}",
     "mapTitle": "Nossa localização no mapa",
-    "hours": "Segunda a sexta, das 11h às 15h",
-    "payments": "Cartões, VR e VA",
     "terms": "Termos de Uso",
     "privacy": "Política de Privacidade"
   },

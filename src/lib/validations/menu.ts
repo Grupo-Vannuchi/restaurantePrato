@@ -4,8 +4,11 @@ import { locales, defaultLocale, type Locale } from "@/i18n/routing";
 /**
  * Validação do editor de cardápio. Categoria e item.
  *
- * ⚠️ Não existe campo de preço, de propósito: a diretriz do cliente proíbe
- * publicar valores e o buffet é por quilo. Não adicione um.
+ * ⚠️ Não existe campo de preço. Isso foi direção de produto do cliente anterior,
+ * herdada no fork — não é uma regra deste código. Se o Restaurante Prato quiser
+ * exibir preço, é mudança de schema, admin e validação: ver a pergunta aberta
+ * §4.1 em
+ * `docs/superpowers/specs/2026-08-17-whitelabel-restaurante-prato-design.md`.
  *
  * O formulário do cliente coleta valores planos e os mapeia para estas formas
  * antes de enviar; a server action revalida com o mesmo schema, como boundary.

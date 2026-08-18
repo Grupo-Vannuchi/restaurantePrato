@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Clock, CreditCard, MapPin, Landmark } from "lucide-react";
+import { Clock, MapPin } from "lucide-react";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
 import { Section, SectionHeader } from "@/components/ui/section";
-import { Reveal } from "@/components/ui/reveal";
 import { ReserveButton } from "@/components/reserve-button";
 import { fullAddress, siteConfig } from "@/config/site";
 
@@ -22,8 +21,6 @@ export async function generateMetadata({
     ...localeMetadata(locale, "/reservas"),
   };
 }
-
-type BestTime = { when: string; what: string };
 
 /** One line of the "practical information" list. */
 function Fact({
@@ -57,39 +54,14 @@ export default async function ReservasPage({
   setRequestLocale(locale);
   const t = await getTranslations("reservas");
 
-  const bestTime = t.raw("bestTime") as BestTime[];
   const { openingHours } = siteConfig;
-  const hours = `${t("hoursTitle")}`;
 
   return (
     <>
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
-      {/* 5.1 — Horários + "melhor momento para você" */}
       <Section>
-        <SectionHeader
-          title={t("hoursTitle")}
-          subtitle={t("bestTimeTitle")}
-          align="left"
-        />
-        <ol className="mt-10 grid gap-6 sm:grid-cols-3">
-          {bestTime.map((slot, i) => (
-            <Reveal
-              as="li"
-              key={slot.when}
-              delay={i * 90}
-              className="flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-6"
-            >
-              <span className="text-xl font-bold text-brand">{slot.when}</span>
-              <span className="text-pretty leading-relaxed text-muted-foreground">
-                {slot.what}
-              </span>
-            </Reveal>
-          ))}
-        </ol>
-        <div className="mt-10">
-          <ReserveButton size="lg" />
-        </div>
+        <ReserveButton size="lg" />
       </Section>
 
       {/* 5.2 — Reservas para grupos e eventos */}
@@ -111,12 +83,7 @@ export default async function ReservasPage({
       <Section>
         <SectionHeader title={t("practicalTitle")} align="left" />
         <div className="mt-10 grid gap-8 sm:grid-cols-2">
-          {openingHours ? (
-            <Fact icon={Clock} label={t("hoursLabel")} value={hours} />
-          ) : null}
-          <Fact icon={CreditCard} label={t("paymentsLabel")} value={t("payments")} />
           <Fact icon={MapPin} label={t("addressLabel")} value={fullAddress()} />
-          <Fact icon={Landmark} label={t("accessLabel")} value={t("access")} />
         </div>
         {openingHours ? (
           <p className="sr-only">

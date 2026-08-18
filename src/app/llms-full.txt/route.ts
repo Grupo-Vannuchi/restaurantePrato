@@ -77,7 +77,7 @@ export async function GET(): Promise<Response> {
   const sections: string[] = [
     `# ${name} — conteúdo completo`,
     "",
-    `> Restaurante no Centro Histórico de Santos — ${fullAddress()}.`,
+    `> Restaurante e cafeteria no Centro de Santos — ${fullAddress()}.`,
     "",
     "Versão expandida de /llms.txt: o texto completo da gastronomia e das novidades, para citação por LLMs.",
   ];

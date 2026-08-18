@@ -21,23 +21,11 @@ export async function GET(): Promise<Response> {
   const { name } = siteConfig;
 
   const core = [
-    line(
-      "A Experiência",
-      "/experiencia",
-      "O salão, a história da casa e o que esperar de um almoço aqui",
-    ),
-    line(
-      "Nossa Gastronomia",
-      "/gastronomia",
-      "Churrasco na brasa, peixes, ilha de massas e o buffet completo",
-    ),
-    line("Galeria", "/galeria", "Fotos do salão e dos pratos"),
-    line(
-      "Horários & Reservas",
-      "/reservas",
-      "Quando abrimos, o melhor horário para ir e reservas para grupos",
-    ),
-    line("Contato", "/contato", "Endereço, telefone e como chegar"),
+    line("A Experiência", "/experiencia", "A casa e o que esperar de uma visita"),
+    line("Nossa Gastronomia", "/gastronomia", "O cardápio da casa"),
+    line("Galeria", "/galeria", "Fotos do ambiente e dos pratos"),
+    line("Horários & Reservas", "/reservas", "Reservas e informações práticas"),
+    line("Contato", "/contato", "Endereço e como chegar"),
   ];
 
   let menu: string[] = [];
