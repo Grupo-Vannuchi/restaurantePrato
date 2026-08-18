@@ -58,7 +58,7 @@ export function OrganizationJsonLd() {
     email: contact.email,
     ...(contact.phone && { telephone: contact.phone }),
     foundingDate: String(foundedYear),
-    servesCuisine,
+    ...(servesCuisine?.length ? { servesCuisine } : {}),
     acceptsReservations: true,
     menu: `${url}/gastronomia`,
     address: {

@@ -122,11 +122,14 @@ export type SiteConfig = {
   openingHours?: OpeningHours;
 
   /**
-   * Cuisine types for schema.org `Restaurant.servesCuisine`.
-   * Note: no `priceRange` — the client's visual direction forbids publishing
-   * prices, and emitting one in structured data would surface it in search.
+   * Tipos de cozinha para `Restaurant.servesCuisine`. Opcional enquanto o
+   * cardápio do cliente não chega.
+   *
+   * Nota: não existe `priceRange` porque a direção visual do cliente **anterior**
+   * proibia publicar preço. Ver a pergunta aberta §4.1 do spec do rebrand: se o
+   * Prato quiser exibir preço, isso volta à mesa.
    */
-  servesCuisine: string[];
+  servesCuisine?: string[];
 
   theme: {
     light: ThemePalette;
