@@ -78,45 +78,6 @@
   --border: #474544;
 }
 
-/*
- * Brand lockup, light/dark cut. The client's mark sets "Restaurante Grill e
- * Café" in graphite `#474544`, which is 1.97:1 on the dark ground — unreadable —
- * so the dark cut recolours that line to the cream `#EFE9C2`. Everything else is
- * identical.
- *
- * Same dark-first cascade as the neutrals above, and deliberately NOT Tailwind's
- * `dark:` variant: that follows `prefers-color-scheme` only, so the site's
- * explicit `data-theme` toggle would leave the wrong cut showing.
- */
-.brand-lockup-light {
-  display: none;
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .brand-lockup-light {
-    display: block;
-  }
-
-  :root:not([data-theme="dark"]) .brand-lockup-dark {
-    display: none;
-  }
-}
-
-:root[data-theme="light"] .brand-lockup-light {
-  display: block;
-}
-
-:root[data-theme="light"] .brand-lockup-dark {
-  display: none;
-}
-
-:root[data-theme="dark"] .brand-lockup-light {
-  display: none;
-}
-
-:root[data-theme="dark"] .brand-lockup-dark {
-  display: block;
-}
 
 @layer base {
   * {

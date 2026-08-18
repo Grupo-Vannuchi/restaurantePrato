@@ -1,28 +1,18 @@
 import { ImageResponse } from "next/og";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { siteConfig } from "@/config/site";
 
 /**
- * App icon (favicon / browser tab / PWA), generated at build time.
+ * Ícone do app (favicon / aba / PWA), gerado no build.
  *
- * The mark is the stove pulled out of the client's lockup — the wordmark is far
- * too wide to survive 32×32. Full-bleed graphite field so Android's maskable
- * crop never bites into transparency.
- *
- * Embedded as a PNG rather than the source SVG because satori cannot resolve
- * the `url(#gradient)` fills the logo is built from. `npm run brand:rasters`
- * regenerates it.
+ * ⚠️ INTERINO: sem a logo do cliente, o ícone é a inicial do nome sobre o fundo
+ * escuro da marca. Campo cheio de cor para que o recorte maskable do Android
+ * nunca morda transparência. Volta a ser o símbolo da logo no PR 2.
  */
 export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
-export default async function Icon() {
-  const { background } = siteConfig.theme.dark;
-  const symbol = await readFile(
-    join(process.cwd(), "public", "brand", "symbol.png"),
-    "base64",
-  );
+export default function Icon() {
+  const { background, brand } = siteConfig.theme.dark;
 
   return new ImageResponse(
     (
@@ -34,10 +24,12 @@ export default async function Icon() {
           alignItems: "center",
           justifyContent: "center",
           background,
+          color: brand,
+          fontSize: 300,
+          fontWeight: 700,
         }}
       >
-        {/* Inset so the maskable crop keeps the whole stove inside the safe area. */}
-        <img src={`data:image/png;base64,${symbol}`} height={324} />
+        {siteConfig.name.replace(/^Restaurante\s+/i, "").charAt(0)}
       </div>
     ),
     { ...size },

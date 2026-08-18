@@ -1,62 +1,22 @@
-# Marca — Fogão de Ouro
+# Marca — Restaurante Prato
 
-Todos os arquivos aqui derivam de **um único original** entregue pelo cliente:
+⚠️ **Vazio de propósito.** A logo do Restaurante Prato ainda não foi entregue.
 
-```
-docs/Logos-fogao_de_Ouro/SVG/Logo principal Fogão de Ouro sem fundo.svg
-```
+Até ela chegar, a marca é **tipográfica**: `src/components/layout/logo.tsx`
+desenha `siteConfig.name` na Playfair Display, que o site já carrega via
+`next/font` para os títulos. As rotas de imagem (`src/app/icon.tsx`,
+`apple-icon.tsx`, `[locale]/opengraph-image.tsx`) compõem com texto sobre o fundo
+escuro da marca.
 
-O original é um lockup empilhado num `viewBox` de 768×768 com bastante ar em
-volta: wordmark em cima, o fogão no meio e "Restaurante Grill e Café" curvado
-embaixo. Os 54 elementos de desenho se dividem em três blocos contíguos:
+Os arquivos do cliente anterior foram removidos junto com o script
+`brand:rasters` que os rasterizava — publicar a marca de outra empresa no site
+deste cliente não é opção, nem em ambiente fechado.
 
-| elementos | bloco | cores |
-|---|---|---|
-| 0–17 | fogão | âmbar/ouro (`#e4ac10` e gradientes) |
-| 18–41 | tagline curvada | grafite `#474544` (todos `cls-5`) |
-| 42–53 | wordmark "Fogão de Ouro" | gradientes brasa→âmbar |
+## Quando a logo chegar (PR 2)
 
-## Os arquivos
-
-| arquivo | o que é | onde é usado |
-|---|---|---|
-| `wordmark.svg` | elementos 42–53, `viewBox` justo (4.40:1) | header, login do admin |
-| `logo.svg` | lockup completo, cores originais | rodapé — **tema claro** |
-| `logo-dark.svg` | idem, tagline recolorida para o creme `#EFE9C2` | rodapé — **tema escuro** |
-| `symbol.svg` | elementos 1–17, só o fogão | origem dos ícones |
-| `symbol.png` | raster 512px de `symbol.svg` | `src/app/icon.tsx`, `apple-icon.tsx` |
-| `lockup.png` | raster 1000px de `logo-dark.svg` | `src/app/[locale]/opengraph-image.tsx` |
-
-Os PNG saem de `npm run brand:rasters`. Os SVG foram recortados uma única vez —
-se o cliente entregar uma logo nova, o recorte precisa ser refeito à mão.
-
-## Por que cada corte existe
-
-**Wordmark separado.** O lockup é quase quadrado. No header, que tem 64px de
-altura, a marca inteira caberia com ~28px e a tagline curvada viraria mancha.
-
-**Cut escuro do lockup.** A tagline é grafite `#474544`; sobre o fundo escuro
-`#171615` isso dá **1,97:1** — ilegível. O cut escuro troca só o preenchimento
-dessa linha pelo creme `#EFE9C2` (14,72:1). Nenhum outro elemento muda. A troca
-entre os dois é feita por CSS em `globals.css` (classes `.brand-lockup-*`), e
-**não** pela variante `dark:` do Tailwind, que só enxerga `prefers-color-scheme`
-e ignoraria o botão de tema do site.
-
-**Símbolo sem a haste.** O fogão se conecta ao "O" de *Ouro* por uma haste curta.
-Ela está dentro do primeiro subpath do contorno, então não dá para removê-la como
-forma — mas termina exatamente onde o corpo do fogão começa (`y≈370`), e o
-`viewBox` do `symbol.svg` começa em `370.5` justamente para cortá-la fora. O
-elemento 0, que era só o preenchimento da haste, foi descartado.
-
-**Gradientes e satori.** As rotas de imagem (`icon`, `apple-icon`,
-`opengraph-image`) embutem PNG, não SVG: o satori, que gera essas imagens, não
-resolve referências `url(#gradiente)` — e cada peça desta logo é um gradiente.
-
-## O wordmark sobre o creme
-
-O âmbar puro `#E68A08` dá 2,14:1 sobre o creme do tema claro. É baixo, mas é
-**exatamente o uso oficial da marca**: o arquivo `Logo principal Fogão de Ouro.svg`
-do cliente põe esse mesmo wordmark sobre esse mesmo creme. Logotipos são
-explicitamente dispensados do critério de contraste da WCAG (1.4.3), então o
-original foi mantido sem alteração. A concessão vale para a logo e só para ela —
-texto de interface continua seguindo a paleta corrigida (`#8A5206` no tema claro).
+1. Colocar os SVG aqui e documentar cada corte nesta tabela.
+2. `satori` — que gera `icon`, `apple-icon` e `opengraph-image` — **não resolve
+   `url(#gradiente)`**. Se a logo tiver gradiente, essas rotas precisam embutir
+   PNG, e o script de raster volta.
+3. Um lockup com texto escuro some no fundo escuro: conferir contraste e, se
+   preciso, gerar um corte por tema (foi o que o cliente anterior exigiu).

@@ -57,4 +57,17 @@ describe("nenhum vestígio do cliente anterior", () => {
   it("na configuração de marca e nos documentos legais", () => {
     expect(offenders(["src/config", "src/content", "src/i18n"])).toEqual([]);
   });
+
+  it("nos componentes e rotas que desenham a marca", () => {
+    expect(
+      offenders([
+        "src/components/layout/logo.tsx",
+        "src/app/icon.tsx",
+        "src/app/apple-icon.tsx",
+        "src/app/[locale]/opengraph-image.tsx",
+        "src/app/globals.css",
+        "public",
+      ]),
+    ).toEqual([]);
+  });
 });

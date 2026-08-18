@@ -1,20 +1,14 @@
 import { ImageResponse } from "next/og";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { siteConfig } from "@/config/site";
 
-// Apple touch icon (iOS home screen). 180×180 is Apple's recommended size; iOS
-// applies its own rounded mask, so the full-bleed graphite field works well.
-// Same stove mark and same PNG-embedding reason as `src/app/icon.tsx`.
+// Ícone de toque do iOS (tela de início). 180×180 é o tamanho recomendado pela
+// Apple; o iOS aplica a própria máscara arredondada, então o campo cheio
+// funciona bem. Mesma marca interina e mesmo motivo de `src/app/icon.tsx`.
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-export default async function AppleIcon() {
-  const { background } = siteConfig.theme.dark;
-  const symbol = await readFile(
-    join(process.cwd(), "public", "brand", "symbol.png"),
-    "base64",
-  );
+export default function AppleIcon() {
+  const { background, brand } = siteConfig.theme.dark;
 
   return new ImageResponse(
     (
@@ -26,9 +20,12 @@ export default async function AppleIcon() {
           alignItems: "center",
           justifyContent: "center",
           background,
+          color: brand,
+          fontSize: 106,
+          fontWeight: 700,
         }}
       >
-        <img src={`data:image/png;base64,${symbol}`} height={114} />
+        {siteConfig.name.replace(/^Restaurante\s+/i, "").charAt(0)}
       </div>
     ),
     { ...size },
