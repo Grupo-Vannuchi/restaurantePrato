@@ -58,7 +58,7 @@ export default async function ReservasPage({
   const t = await getTranslations("reservas");
 
   const bestTime = t.raw("bestTime") as BestTime[];
-  const { openingHours, contact } = siteConfig;
+  const { openingHours } = siteConfig;
   const hours = `${t("hoursTitle")}`;
 
   return (
@@ -111,14 +111,16 @@ export default async function ReservasPage({
       <Section>
         <SectionHeader title={t("practicalTitle")} align="left" />
         <div className="mt-10 grid gap-8 sm:grid-cols-2">
-          <Fact icon={Clock} label={t("hoursLabel")} value={hours} />
+          {openingHours ? (
+            <Fact icon={Clock} label={t("hoursLabel")} value={hours} />
+          ) : null}
           <Fact icon={CreditCard} label={t("paymentsLabel")} value={t("payments")} />
           <Fact icon={MapPin} label={t("addressLabel")} value={fullAddress()} />
           <Fact icon={Landmark} label={t("accessLabel")} value={t("access")} />
         </div>
-        {contact.phone ? (
+        {openingHours ? (
           <p className="sr-only">
-            {`${openingHours.opens}–${openingHours.closes} · ${contact.phone}`}
+            {`${openingHours.opens}–${openingHours.closes}`}
           </p>
         ) : null}
       </Section>

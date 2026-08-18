@@ -51,10 +51,13 @@ export async function GET(): Promise<Response> {
   }
 
   const { openingHours } = siteConfig;
+  const hours = openingHours
+    ? ` Aberto das ${openingHours.opens.replace(":00", "h")} às ${openingHours.closes.replace(":00", "h")}.`
+    : "";
   const sections = [
     `# ${name}`,
     "",
-    `> Restaurante no Centro Histórico de Santos — ${fullAddress()}. Buffet com churrasco na brasa, peixes e ilha de massas, de segunda a sexta das ${openingHours.opens.replace(":00", "h")} às ${openingHours.closes.replace(":00", "h")}.`,
+    `> Restaurante e cafeteria no Centro de Santos — ${fullAddress()}.${hours}`,
     "",
     "## Páginas principais",
     ...core,

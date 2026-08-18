@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { phoneLink, siteConfig } from "@/config/site";
+import { phoneLink, siteConfig, type SiteConfig } from "@/config/site";
 
 describe("phoneLink", () => {
   it("devolve null quando não há telefone configurado", () => {
@@ -12,5 +12,14 @@ describe("phoneLink", () => {
     } else {
       expect(phoneLink()).toBeNull();
     }
+  });
+});
+
+describe("horário de funcionamento", () => {
+  it("o tipo aceita um restaurante sem horário conhecido", () => {
+    // Enquanto o horário do Prato não chega, a config precisa poder omiti-lo —
+    // exibir o horário herdado mandaria o visitante para a porta fechada.
+    const semHorario: SiteConfig = { ...siteConfig, openingHours: undefined };
+    expect(semHorario.openingHours).toBeUndefined();
   });
 });

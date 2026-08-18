@@ -71,14 +71,16 @@ export function OrganizationJsonLd() {
         postalCode: contact.address.postalCode,
       }),
     },
-    openingHoursSpecification: [
-      {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: openingHours.days,
-        opens: openingHours.opens,
-        closes: openingHours.closes,
-      },
-    ],
+    ...(openingHours && {
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: openingHours.days,
+          opens: openingHours.opens,
+          closes: openingHours.closes,
+        },
+      ],
+    }),
     // Filter out unset social links so `sameAs` never contains undefined.
     sameAs: Object.values(social).filter(Boolean),
   };

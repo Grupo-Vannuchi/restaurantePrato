@@ -114,8 +114,12 @@ export type SiteConfig = {
   /** Primary navigation shown in the header and footer. */
   nav: NavItem[];
 
-  /** When the restaurant serves. Drives both the copy and the local SEO schema. */
-  openingHours: OpeningHours;
+  /**
+   * Quando o restaurante serve. Alimenta a copy e o SEO local. Opcional: sem o
+   * horário real, o site omite — exibir horário errado manda o visitante para a
+   * porta fechada e leva o erro para dentro do resultado de busca.
+   */
+  openingHours?: OpeningHours;
 
   /**
    * Cuisine types for schema.org `Restaurant.servesCuisine`.
