@@ -23,7 +23,13 @@ apenas) · Prisma 6 + Supabase · Tailwind v4 · Vitest + Playwright.
 
 - **Branch:** `Development`. Não commitar em `main`; o `git push` é manual, feito
   pelo dono do projeto.
-- **Validar antes de declarar pronto:** `npm run typecheck && npm run lint && npm run test && npm run build`.
+- **Validar antes de declarar pronto:** `npm run typecheck && npm run lint && npm run test`.
+  ⚠️ `npm run build` **não roda neste checkout**: não existe `.env` (só `.env.example`),
+  e o build falha na validação de ambiente por falta de `DATABASE_URL`/Supabase —
+  nada a ver com o código. A validação de build acontece no CI e no deploy.
+- ⚠️ **O Vitest não checa tipos.** Ele transpila com esbuild, então um teste que só
+  quebraria no tipo passa verde. Onde o RED de uma task é uma mudança de tipo, o
+  comando que produz o vermelho é `npm run typecheck`, não `npx vitest run`.
 - **Português apenas.** Toda string de UI vive em `src/messages/pt.json`. Não existe
   `en.json` e não se cria um.
 - **Nunca inventar dado do cliente.** Substituir só quando existe fato confirmado;
@@ -65,7 +71,7 @@ Segue o padrão que o projeto já usa em `whatsappLink()`: sem valor, a interfac
 - Produces: `phoneLink(): string | null` e `siteConfig.contact.phone?: string`.
   As Tasks 2 e 4 dependem dessa assinatura.
 
-- [ ] **Step 1: Criar a branch de trabalho**
+- [x] **Step 1: Criar a branch de trabalho**
 
 ```bash
 git checkout -b Development
@@ -74,7 +80,7 @@ git status
 
 Esperado: `On branch Development`, com o spec e este plano como untracked.
 
-- [ ] **Step 2: Escrever o teste que falha**
+- [x] **Step 2: Escrever o teste que falha**
 
 Criar `test/site-config.test.ts`:
 
@@ -97,13 +103,13 @@ describe("phoneLink", () => {
 });
 ```
 
-- [ ] **Step 3: Rodar e ver falhar**
+- [x] **Step 3: Rodar e ver falhar**
 
 Run: `npx vitest run test/site-config.test.ts`
 Esperado: FAIL — `phoneLink()` tem retorno `string`, então o `toBeNull()` não
 typecheca e o Vitest acusa erro de tipo/asserção.
 
-- [ ] **Step 4: Tornar o campo opcional em `src/config/site.ts`**
+- [x] **Step 4: Tornar o campo opcional em `src/config/site.ts`**
 
 No tipo `SiteConfig`, trocar a linha do telefone:
 
@@ -132,7 +138,7 @@ export function phoneLink(): string | null {
 }
 ```
 
-- [ ] **Step 5: Ajustar `contato/page.tsx`**
+- [x] **Step 5: Ajustar `contato/page.tsx`**
 
 O canal "Telefone" passa a ser condicional, do mesmo jeito que o de WhatsApp já é.
 Substituir a linha 46:
@@ -152,7 +158,7 @@ Substituir a linha 46:
       : []),
 ```
 
-- [ ] **Step 6: Ajustar `reservas/page.tsx`**
+- [x] **Step 6: Ajustar `reservas/page.tsx`**
 
 O parágrafo `sr-only` juntava horário e telefone. Substituir o bloco das linhas
 118–121:
@@ -167,7 +173,7 @@ O parágrafo `sr-only` juntava horário e telefone. Substituir o bloco das linha
 
 *(A Task 2 volta aqui para tratar o `openingHours`.)*
 
-- [ ] **Step 7: Ajustar `footer.tsx`**
+- [x] **Step 7: Ajustar `footer.tsx`**
 
 Substituir o `<span>` das linhas 63–65:
 
@@ -179,7 +185,7 @@ Substituir o `<span>` das linhas 63–65:
           ) : null}
 ```
 
-- [ ] **Step 8: Ajustar `reserve-button.tsx`**
+- [x] **Step 8: Ajustar `reserve-button.tsx`**
 
 O fallback para `tel:` só faz sentido se existir telefone. Substituir o bloco das
 linhas 35–42:
@@ -212,7 +218,7 @@ E atualizar o comentário do topo do componente (linhas 13–15):
  * um botão que não leva a lugar nenhum.
 ```
 
-- [ ] **Step 9: Ajustar `json-ld.tsx`**
+- [x] **Step 9: Ajustar `json-ld.tsx`**
 
 `telephone` só entra no grafo quando existe. Substituir a linha 59:
 
@@ -220,12 +226,12 @@ E atualizar o comentário do topo do componente (linhas 13–15):
     ...(contact.phone && { telephone: contact.phone }),
 ```
 
-- [ ] **Step 10: Rodar tudo**
+- [x] **Step 10: Rodar tudo**
 
 Run: `npm run typecheck && npx vitest run test/site-config.test.ts && npm run lint`
 Esperado: typecheck sem erros; 1 teste passando; lint limpo.
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 Os caminhos de rota têm `[locale]` e `(marketing)`, que o shell expande como glob e
 subshell — usar `git add src test` em vez de citar arquivo por arquivo.
@@ -260,7 +266,7 @@ levaria o erro para dentro da busca do Google.
 - Produces: `siteConfig.openingHours?: OpeningHours`. A Task 4 depende disso para
   poder omitir o campo em vez de herdar o valor do cliente anterior.
 
-- [ ] **Step 1: Escrever o teste que falha**
+- [x] **Step 1: Escrever o teste que falha**
 
 Acrescentar a `test/site-config.test.ts` (e ao import do topo, `type SiteConfig`):
 
@@ -275,13 +281,19 @@ describe("horário de funcionamento", () => {
 });
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
-Run: `npx vitest run test/site-config.test.ts`
-Esperado: FAIL — o TypeScript recusa `openingHours: undefined` porque o campo é
-obrigatório (`Type 'undefined' is not assignable to type 'OpeningHours'`).
+⚠️ **O RED aqui é o `typecheck`, não o Vitest.** O Vitest transpila com esbuild e
+**não** checa tipos, então um teste que só quebra no tipo passa verde. Isto foi
+descoberto na Task 1, onde o RED previsto não reproduzia.
 
-- [ ] **Step 3: Tornar opcional em `src/config/site.ts`**
+Run: `npm run typecheck`
+Esperado: FAIL — `Type 'undefined' is not assignable to type 'OpeningHours'` em
+`test/site-config.test.ts`, mais os erros nos consumidores de `openingHours`
+(`json-ld.tsx`, `llms.txt/route.ts`, `reservas/page.tsx`) assim que o campo virar
+opcional no Step 3. O GREEN é o mesmo comando limpo, depois dos Steps 3–6.
+
+- [x] **Step 3: Tornar opcional em `src/config/site.ts`**
 
 ```ts
   /**
@@ -292,7 +304,7 @@ obrigatório (`Type 'undefined' is not assignable to type 'OpeningHours'`).
   openingHours?: OpeningHours;
 ```
 
-- [ ] **Step 4: Ajustar `json-ld.tsx`**
+- [x] **Step 4: Ajustar `json-ld.tsx`**
 
 Substituir o bloco `openingHoursSpecification` (linhas 74–81):
 
@@ -309,7 +321,7 @@ Substituir o bloco `openingHoursSpecification` (linhas 74–81):
     }),
 ```
 
-- [ ] **Step 5: Ajustar `llms.txt/route.ts`**
+- [x] **Step 5: Ajustar `llms.txt/route.ts`**
 
 Substituir as linhas 53–57:
 
@@ -324,7 +336,7 @@ Substituir as linhas 53–57:
     `> Restaurante e cafeteria no Centro de Santos — ${fullAddress()}.${hours}`,
 ```
 
-- [ ] **Step 6: Ajustar `reservas/page.tsx`**
+- [x] **Step 6: Ajustar `reservas/page.tsx`**
 
 O `sr-only` (já condicional ao telefone pela Task 1) passa a depender também do
 horário. Substituir o bloco:
@@ -345,12 +357,12 @@ E o `Fact` de horário (linha ~117) passa a ser condicional:
           ) : null}
 ```
 
-- [ ] **Step 7: Rodar e ver passar**
+- [x] **Step 7: Rodar e ver passar**
 
 Run: `npm run typecheck && npx vitest run test/site-config.test.ts`
 Esperado: typecheck limpo; 2 testes passando.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src test
@@ -376,7 +388,7 @@ O tipo de cozinha do Prato não veio. Um array vazio no `Restaurant` é ruído n
 - Consumes: nada.
 - Produces: `siteConfig.servesCuisine?: string[]`.
 
-- [ ] **Step 1: Tornar opcional em `src/config/site.ts`**
+- [x] **Step 1: Tornar opcional em `src/config/site.ts`**
 
 ```ts
   /**
@@ -390,7 +402,7 @@ O tipo de cozinha do Prato não veio. Um array vazio no `Restaurant` é ruído n
   servesCuisine?: string[];
 ```
 
-- [ ] **Step 2: Ajustar `json-ld.tsx`**
+- [x] **Step 2: Ajustar `json-ld.tsx`**
 
 Substituir a linha 61 (`servesCuisine,`):
 
@@ -402,12 +414,12 @@ Ternário, e não `&&` como nas outras linhas do arquivo: o valor falso aqui é 
 número `0`, e espalhar um número em literal de objeto é erro de tipo. Onde o valor
 falso é `undefined` (como em `legalName`), o `&&` da casa continua válido.
 
-- [ ] **Step 3: Rodar**
+- [x] **Step 3: Rodar**
 
 Run: `npm run typecheck && npm run lint`
 Esperado: ambos limpos.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/config/site.ts src/components/json-ld.tsx
@@ -439,7 +451,7 @@ nas tasks seguintes.
   acrescentam blocos `it()` dentro desse mesmo `describe` e reutilizam `offenders`
   — a função não é exportada.
 
-- [ ] **Step 1: Escrever a guarda que falha**
+- [x] **Step 1: Escrever a guarda que falha**
 
 Criar `test/brand-hygiene.test.ts`:
 
@@ -506,13 +518,13 @@ describe("nenhum vestígio do cliente anterior", () => {
 });
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 Run: `npx vitest run test/brand-hygiene.test.ts`
 Esperado: FAIL, listando os vestígios — `src/config/site.ts: Fogão de Ouro`,
 `src/config/site.ts: Frei Gaspar`, `src/content/legal.ts: 04.160.109`, entre outros.
 
-- [ ] **Step 3: Trocar o objeto `siteConfig`**
+- [x] **Step 3: Trocar o objeto `siteConfig`**
 
 Em `src/config/site.ts`, substituir o bloco `export const siteConfig` inteiro
 (linhas 130–207) por:
@@ -592,7 +604,7 @@ Também atualizar o cabeçalho do arquivo (linhas 1–12), trocando
 `RESTAURANTE PRATO — BRAND CONFIGURATION`, e o comentário do tipo `OpeningHours`
 (linha 44) que cita `"Aberto · fecha às 15h"` por `"Aberto · fecha às 18h"`.
 
-- [ ] **Step 4: Trocar `legalEntity` em `src/content/legal.ts`**
+- [x] **Step 4: Trocar `legalEntity` em `src/content/legal.ts`**
 
 Substituir o bloco de comentário do topo (linhas 13–22) e o `legalEntity`
 (linhas 27–40):
@@ -629,7 +641,7 @@ export const legalEntity = {
 } as const;
 ```
 
-- [ ] **Step 5: Remover as referências a telefone dos documentos legais**
+- [x] **Step 5: Remover as referências a telefone dos documentos legais**
 
 `legalEntity.phones` deixou de existir. Em `src/content/legal.ts`:
 
@@ -653,7 +665,7 @@ export const legalEntity = {
 
 O foro (Comarca de Santos/SP, §16) continua correto — o Prato também é em Santos.
 
-- [ ] **Step 6: Atualizar o comentário em `src/i18n/routing.ts`**
+- [x] **Step 6: Atualizar o comentário em `src/i18n/routing.ts`**
 
 Substituir as linhas 9–11:
 
@@ -663,12 +675,12 @@ Substituir as linhas 9–11:
  * tradução em cada conteúdo gerenciado pelo admin.
 ```
 
-- [ ] **Step 7: Rodar e ver passar**
+- [x] **Step 7: Rodar e ver passar**
 
 Run: `npx vitest run test/brand-hygiene.test.ts && npm run typecheck && npm run lint`
 Esperado: guarda verde (1 teste); typecheck e lint limpos.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/config/site.ts src/content/legal.ts src/i18n/routing.ts test/brand-hygiene.test.ts
@@ -709,7 +721,7 @@ e em toda prévia de compartilhamento.
 - Produces: `<Logo variant="wordmark" | "lockup" />` com a mesma assinatura de hoje —
   o rodapé (`variant="lockup"`) e o header (padrão) não mudam de chamada.
 
-- [ ] **Step 1: Escrever a guarda que falha**
+- [x] **Step 1: Escrever a guarda que falha**
 
 Acrescentar a `test/brand-hygiene.test.ts`, dentro do mesmo `describe`:
 
@@ -728,18 +740,18 @@ Acrescentar a `test/brand-hygiene.test.ts`, dentro do mesmo `describe`:
   });
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 Run: `npx vitest run test/brand-hygiene.test.ts`
 Esperado: FAIL — `logo.tsx: Fogão de Ouro` e `public/brand/README.md: Fogão de Ouro`.
 
-- [ ] **Step 3: Remover os arquivos de marca do cliente anterior**
+- [x] **Step 3: Remover os arquivos de marca do cliente anterior**
 
 ```bash
 git rm public/brand/logo.svg public/brand/logo-dark.svg public/brand/wordmark.svg public/brand/symbol.svg public/brand/symbol.png public/brand/lockup.png scripts/build-brand-rasters.mjs
 ```
 
-- [ ] **Step 4: Reescrever `src/components/layout/logo.tsx`**
+- [x] **Step 4: Reescrever `src/components/layout/logo.tsx`**
 
 ```tsx
 import { Link } from "@/i18n/navigation";
@@ -785,7 +797,7 @@ export function Logo({
 }
 ```
 
-- [ ] **Step 5: Reescrever `src/app/icon.tsx`**
+- [x] **Step 5: Reescrever `src/app/icon.tsx`**
 
 ```tsx
 import { ImageResponse } from "next/og";
@@ -827,7 +839,7 @@ export default function Icon() {
 }
 ```
 
-- [ ] **Step 6: Reescrever `src/app/apple-icon.tsx`**
+- [x] **Step 6: Reescrever `src/app/apple-icon.tsx`**
 
 ```tsx
 import { ImageResponse } from "next/og";
@@ -865,7 +877,7 @@ export default function AppleIcon() {
 }
 ```
 
-- [ ] **Step 7: Reescrever `src/app/[locale]/opengraph-image.tsx`**
+- [x] **Step 7: Reescrever `src/app/[locale]/opengraph-image.tsx`**
 
 Além de tirar o lockup, esta é a hora de corrigir o horário chumbado no código
 (linha 59), que ignorava a config.
@@ -927,13 +939,13 @@ export default function OpengraphImage() {
 }
 ```
 
-- [ ] **Step 8: Remover as regras `.brand-lockup-*` do `globals.css`**
+- [x] **Step 8: Remover as regras `.brand-lockup-*` do `globals.css`**
 
 Elas existiam só para alternar os dois cortes do lockup do cliente anterior.
 Apagar as linhas 91–119 (de `.brand-lockup-light {` até o fechamento do bloco
 `:root[data-theme="dark"] .brand-lockup-dark { display: block; }`).
 
-- [ ] **Step 9: Remover o script de raster do `package.json`**
+- [x] **Step 9: Remover o script de raster do `package.json`**
 
 Apagar a linha:
 
@@ -943,7 +955,7 @@ Apagar a linha:
 
 E a vírgula da linha anterior (`db:studio`), para o JSON continuar válido.
 
-- [ ] **Step 10: Reescrever `public/brand/README.md`**
+- [x] **Step 10: Reescrever `public/brand/README.md`**
 
 ```markdown
 # Marca — Restaurante Prato
@@ -970,13 +982,13 @@ site deste cliente não é opção, nem em ambiente fechado.
    preciso, gerar um corte por tema (foi o que o cliente anterior exigiu).
 ```
 
-- [ ] **Step 11: Rodar e ver passar**
+- [x] **Step 11: Rodar e ver passar**
 
 Run: `npx vitest run test/brand-hygiene.test.ts && npm run typecheck && npm run lint && npm run build`
 Esperado: guarda verde (2 testes); build gerando as rotas de imagem sem erro de
 arquivo ausente.
 
-- [ ] **Step 12: Commit**
+- [x] **Step 12: Commit**
 
 ```bash
 git add -A public src test package.json scripts
@@ -1012,7 +1024,7 @@ remover quando não existe.** Nunca aproximar.
   `src/app/[locale]/layout.tsx:51`.
 - Produces: nada consumido por tasks posteriores.
 
-- [ ] **Step 1: Escrever a guarda que falha**
+- [x] **Step 1: Escrever a guarda que falha**
 
 Acrescentar a `test/brand-hygiene.test.ts`:
 
@@ -1030,13 +1042,13 @@ Acrescentar a `test/brand-hygiene.test.ts`:
   });
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 Run: `npx vitest run test/brand-hygiene.test.ts`
 Esperado: FAIL com ~15 vestígios em `src/messages/pt.json` e
 `src/app/llms.txt/route.ts`.
 
-- [ ] **Step 3: Substituir as chaves do `pt.json` que têm fato confirmado**
+- [x] **Step 3: Substituir as chaves do `pt.json` que têm fato confirmado**
 
 | Chave | Novo valor |
 |---|---|
@@ -1079,7 +1091,7 @@ e `{years}` no hero, resolvido por `fillYears()`. Em qualquer chave nova, escrev
 nome literal — introduzir `{brand}` onde a página não passa o parâmetro quebra a
 página em produção.
 
-- [ ] **Step 4: Reduzir o hero a um slide**
+- [x] **Step 4: Reduzir o hero a um slide**
 
 `home.hero.slides` tem três slides que descrevem a comida do cliente anterior, e as
 três fotos ainda não chegaram (`slideImages` está vazio em
@@ -1096,7 +1108,7 @@ seguro. Substituir o array por:
       ]
 ```
 
-- [ ] **Step 5: Remover do `pt.json` as chaves sem fato confirmado**
+- [x] **Step 5: Remover do `pt.json` as chaves sem fato confirmado**
 
 Apagar estes blocos inteiros — não há nada verdadeiro sobre o Prato para pôr no
 lugar, e texto vazio é pior do que seção ausente:
@@ -1118,7 +1130,7 @@ lugar, e texto vazio é pior do que seção ausente:
   Confirmar antes de apagar com
   `grep -rn "footer.hours\|footer.payments\|t(\"hours\")\|t(\"payments\")" src/`
 
-- [ ] **Step 6: Remover as seções órfãs de `experiencia/page.tsx`**
+- [x] **Step 6: Remover as seções órfãs de `experiencia/page.tsx`**
 
 Apagar os blocos JSX que liam as chaves removidas: `practice`, `salao`, `timing`,
 `whyFullService`, e o `t("audience.note")` e `t("contactCta.tagline")`. A página
@@ -1127,14 +1139,14 @@ fica com `PageHeader` + `lead` + `audience` + `contactCta` + `disclaimer`.
 Rodar `npm run typecheck` depois — `pt.json` é um catálogo tipado e o typecheck
 aponta sozinho toda chave que sumiu e ainda é lida.
 
-- [ ] **Step 7: Remover as seções órfãs de `reservas/page.tsx`**
+- [x] **Step 7: Remover as seções órfãs de `reservas/page.tsx`**
 
 Apagar: o bloco `bestTime` (a `<ol>` inteira com o `SectionHeader`), e os `Fact` de
 horário, pagamentos e acesso. Sobram o `PageHeader`, o `ReserveButton`, a seção de
 grupos e o `Fact` de endereço. O `SectionHeader` da primeira seção passa a usar
 `t("practicalTitle")`.
 
-- [ ] **Step 8: Ajustar `llms.txt/route.ts`**
+- [x] **Step 8: Ajustar `llms.txt/route.ts`**
 
 Substituir as descrições das linhas 24–40:
 
@@ -1148,19 +1160,19 @@ Substituir as descrições das linhas 24–40:
   ];
 ```
 
-- [ ] **Step 9: Ajustar `llms-full.txt/route.ts:80`**
+- [x] **Step 9: Ajustar `llms-full.txt/route.ts:80`**
 
 ```ts
     `> Restaurante e cafeteria no Centro de Santos — ${fullAddress()}.`,
 ```
 
-- [ ] **Step 10: Ajustar `manifest.ts:8`**
+- [x] **Step 10: Ajustar `manifest.ts:8`**
 
 ```ts
     description: `Restaurante e cafeteria no Centro de ${siteConfig.contact.address.city}`,
 ```
 
-- [ ] **Step 11: Ajustar o comentário em `validations/menu.ts:7-8`**
+- [x] **Step 11: Ajustar o comentário em `validations/menu.ts:7-8`**
 
 A ausência de preço era direção do cliente **anterior**, não regra deste código.
 Substituir as linhas 7–8 por:
@@ -1176,13 +1188,16 @@ Substituir as linhas 7–8 por:
 Sem citar a marca antiga: a guarda varre `src/lib`, e um comentário com o nome do
 cliente anterior a deixaria vermelha.
 
-- [ ] **Step 12: Rodar e ver passar**
+- [x] **Step 12: Rodar e ver passar**
 
 Run: `npx vitest run && npm run typecheck && npm run lint && npm run build`
 Esperado: guarda verde (3 testes); typecheck limpo (nenhuma chave de `pt.json`
 órfã); build gerando as 31 páginas.
 
-- [ ] **Step 13: Conferir as páginas no navegador**
+- [ ] **Step 13: Conferir as páginas no navegador** ⚠️ **não executado neste
+checkout:** sem `.env`, `npm run dev` falha na validação de ambiente
+(`DATABASE_URL`), do mesmo modo que o `npm run build`. Fica para quem rodar com
+ambiente configurado.
 
 ```bash
 npm run dev
@@ -1192,7 +1207,7 @@ Abrir `/`, `/experiencia`, `/gastronomia`, `/galeria`, `/reservas`, `/contato`.
 Esperado: hero com um slide, sem setas nem indicadores; nenhuma seção vazia;
 nenhum "Telefone" no rodapé nem em `/contato`; nenhuma menção a horário.
 
-- [ ] **Step 14: Commit**
+- [x] **Step 14: Commit**
 
 ```bash
 git add -A src test
@@ -1229,7 +1244,7 @@ de agente neste repositório começa com o contexto errado.
 - Consumes: tudo das Tasks 1–6 (os documentos descrevem o estado final).
 - Produces: nada.
 
-- [ ] **Step 1: Escrever a guarda final que falha**
+- [x] **Step 1: Escrever a guarda final que falha**
 
 Acrescentar dois blocos **dentro** do `describe` que já existe em
 `test/brand-hygiene.test.ts` (o `});` de fechamento continua sendo o do arquivo —
@@ -1247,12 +1262,12 @@ não acrescentar outro):
   });
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 Run: `npx vitest run test/brand-hygiene.test.ts`
 Esperado: FAIL — `AGENTS.md`, `CLAUDE.md`, `README.md` e `SECURITY.md` com vestígios.
 
-- [ ] **Step 3: Remover os ativos do cliente anterior**
+- [x] **Step 3: Remover os ativos do cliente anterior**
 
 ```bash
 git rm -r "docs/Logos-fogao_de_Ouro"
@@ -1261,7 +1276,7 @@ git rm docs/WHITELABEL-FOGAO-DE-OURO.pdf.md
 git rm docs/WHITELABEL-FOGAO-DE-OURO.md
 ```
 
-- [ ] **Step 4: Criar `docs/WHITELABEL-RESTAURANTE-PRATO.md`**
+- [x] **Step 4: Criar `docs/WHITELABEL-RESTAURANTE-PRATO.md`**
 
 Documento equivalente ao anterior, mas descrevendo este cliente. Deve cobrir, no
 mínimo: os dados confirmados (§ Global Constraints deste plano), a lista de
@@ -1269,14 +1284,14 @@ pendências com o que cada uma trava, a sequência de PRs do spec, e a regra de 
 inventar dado do cliente. Referenciar o spec
 `docs/superpowers/specs/2026-08-17-whitelabel-restaurante-prato-design.md`.
 
-- [ ] **Step 5: Trocar o import do `CLAUDE.md`**
+- [x] **Step 5: Trocar o import do `CLAUDE.md`**
 
 ```markdown
 @AGENTS.md
 @docs/WHITELABEL-RESTAURANTE-PRATO.md
 ```
 
-- [ ] **Step 6: Reescrever o `AGENTS.md`**
+- [x] **Step 6: Reescrever o `AGENTS.md`**
 
 Trocar toda descrição do Fogão de Ouro pela do Restaurante Prato. Pontos que
 **mudam de conteúdo**, não só de nome:
@@ -1292,7 +1307,7 @@ Trocar toda descrição do Fogão de Ouro pela do Restaurante Prato. Pontos que
   server/client boundary, rate limit, `SITE_INDEXABLE`, `pre-push`, `upstream`
   travado, convenção de nomes PT/EN, reviews fora do structured data.
 
-- [ ] **Step 7: Reescrever `README.md` e `SECURITY.md`**
+- [x] **Step 7: Reescrever `README.md` e `SECURITY.md`**
 
 - `README.md`: título, descrição, e o badge de CI apontando para
   `Victor227br/restaurantePrato`. O exemplo de `site.ts` (linha ~186) passa a
@@ -1300,7 +1315,7 @@ Trocar toda descrição do Fogão de Ouro pela do Restaurante Prato. Pontos que
   estado interino tipográfico.
 - `SECURITY.md`: e-mail de contato vira `pratocoffee@gmail.com`.
 
-- [ ] **Step 8: Ajustar `docs/RUNBOOK.md` e `docs/seo/ACTION-PLAN.md`**
+- [x] **Step 8: Ajustar `docs/RUNBOOK.md` e `docs/seo/ACTION-PLAN.md`**
 
 - `RUNBOOK.md` linhas ~229–232: a seção do fork passa a descrever
   `Victor227br/restaurantePrato` com `upstream` = `Grupo-Vannuchi/FogaoDeOuro`, e a
@@ -1312,7 +1327,7 @@ Trocar toda descrição do Fogão de Ouro pela do Restaurante Prato. Pontos que
   Prato, marcando que a estratégia definitiva depende do posicionamento que vier
   com a copy.
 
-- [ ] **Step 9: Criar `docs/superpowers/README.md`**
+- [x] **Step 9: Criar `docs/superpowers/README.md`**
 
 ```markdown
 # Specs e planos
@@ -1331,12 +1346,12 @@ O rebrand para o **Restaurante Prato** começa em
 [`specs/2026-08-17-whitelabel-restaurante-prato-design.md`](specs/2026-08-17-whitelabel-restaurante-prato-design.md).
 ```
 
-- [ ] **Step 10: Rodar a validação completa**
+- [x] **Step 10: Rodar a validação completa**
 
 Run: `npm run typecheck && npm run lint && npm run test && npm run build`
 Esperado: tudo verde, incluindo os 5 blocos da guarda de higiene.
 
-- [ ] **Step 11: Conferir que nada do cliente anterior sobrou**
+- [x] **Step 11: Conferir que nada do cliente anterior sobrou**
 
 ```bash
 grep -ril -e "fogao" -e "fogão" -e "frei gaspar" -e "bolsa do caf" src/ public/ prisma/ *.md | grep -v node_modules
@@ -1345,7 +1360,7 @@ grep -ril -e "fogao" -e "fogão" -e "frei gaspar" -e "bolsa do caf" src/ public/
 Esperado: nenhuma saída. *(`docs/` fica de fora de propósito — ver
 `docs/superpowers/README.md`.)*
 
-- [ ] **Step 12: Commit**
+- [x] **Step 12: Commit**
 
 ```bash
 git add -A

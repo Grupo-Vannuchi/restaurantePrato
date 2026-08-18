@@ -32,7 +32,12 @@ Adicionar o handle do X/Twitter da agência (se houver) ao bloco `twitter` via `
 Único header de segurança faltando (85 → 100). Dívida consciente documentada em [`docs/adr/0004-defer-csp.md`](../adr/0004-defer-csp.md) — exige nonce-middleware por causa do JSON-LD inline. Entregar como mudança própria, com teste.
 
 ### 4. Cadência editorial — maior alavanca orgânica
-A estrutura está pronta (Article schema completo, sitemap, autor-pessoa). O ganho de tráfego agora vem de **publicar com regularidade** em `/novidades`, mirando cauda longa local: "restaurante por quilo centro de Santos", "almoço executivo Santos", "onde almoçar perto da Bolsa do Café".
+A estrutura está pronta (Article schema completo, sitemap, autor-pessoa). O ganho de tráfego agora vem de **publicar com regularidade** em `/novidades`, mirando cauda longa local: "restaurante no centro de Santos", "cafeteria no centro de Santos", "onde almoçar no centro de Santos".
+
+> ⚠️ Palavras-chave **provisórias**: valem enquanto a única coisa confirmada
+> sobre o Restaurante Prato é que ele é restaurante e cafeteria no Centro de
+> Santos. A estratégia definitiva depende do posicionamento que vier junto com a
+> copy do cliente (PR 3).
 
 > ⚠️ Este documento é anterior ao rebrand: foi escrito para a agência. Os 150 artigos que ainda estão no banco são conteúdo de SEO da n8x e saem no PR 7, junto com o reset. A cadência editorial só começa quando houver conteúdo do restaurante.
 

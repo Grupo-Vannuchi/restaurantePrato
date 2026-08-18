@@ -312,7 +312,7 @@
       "itemTags": "Etiquetas",
       "itemTagsHint": "Separe por vírgula: vegetariano, picante",
       "itemWeekday": "Dia da semana",
-      "itemWeekdayHint": "Só para os pratos fixos de \"A Semana no Fogão\". Deixe em branco se o prato é permanente.",
+      "itemWeekdayHint": "Só para os pratos fixos de \"Pratos da semana\". Deixe em branco se o prato é permanente.",
       "weekdayNone": "Permanente",
       "weekday1": "Segunda",
       "weekday2": "Terça",

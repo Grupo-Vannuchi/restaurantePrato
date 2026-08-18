@@ -6,13 +6,23 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Working in this repo (agents & humans)
 
-**This is the site of the Fogão de Ouro**, a restaurant in the Centro Histórico of
-Santos/SP. The repo is a **fork of the N8X Marketing site** (an agency) that was
-re-skinned for the restaurant — so anything that still smells like an agency
-(portfolio, services-as-offerings, careers) is either already renamed or
-on its way out. The rebrand decisions and their rationale live in
-[`docs/superpowers/specs/`](docs/superpowers/specs/); read that before undoing
-something that looks odd.
+**This is the site of the Restaurante Prato**, a restaurant and coffee shop at
+R. Augusto Severo, 25, in the Centro of Santos/SP. The repo is a **fork of
+another restaurant's finished site** (which was itself a fork of an agency
+site), re-skinned for this client — so the restaurant structure (routes, menu,
+gallery, WhatsApp reservations, `Restaurant` schema, PT-only) is exactly what we
+want to keep, while every piece of *client data* had to be swapped or removed.
+
+Start at [`docs/WHITELABEL-RESTAURANTE-PRATO.md`](docs/WHITELABEL-RESTAURANTE-PRATO.md)
+— confirmed data, open pendings and the PR sequence. The decisions and their
+rationale live in [`docs/superpowers/`](docs/superpowers/README.md); read that
+before undoing something that looks odd.
+
+**Never invent client data.** Replace only where there is a confirmed fact;
+remove where there is none. `test/brand-hygiene.test.ts` is a regression guard
+that sweeps `src/`, `public/`, `prisma/` and the root instruction files for any
+trace of the previous client — including facts it asserted without naming the
+brand.
 
 Project conventions distilled from real lessons in this codebase and from the
 team's coding skills (`prisma-patterns`, `react-patterns`, `react-performance`,
@@ -80,6 +90,14 @@ their English model names forever, even though they back `/novidades`,
 respectively — renaming the models would cost a table migration, a mass
 cache invalidation and Storage folders pointing nowhere, for zero
 user-visible change. Don't "finish the job" later.
+
+**Phone, opening hours and cuisine are optional on purpose.** The Prato has no
+landline, and its hours and cuisine types have not been confirmed, so
+`contact.phone`, `openingHours` and `servesCuisine` are optional in `SiteConfig`
+and currently omitted. Every consumer degrades: the call CTAs disappear, and
+`openingHoursSpecification`/`servesCuisine` drop out of the `Restaurant` schema
+instead of publishing a wrong value. Don't make them required again, and don't
+fill them with the previous client's values.
 
 **Reservations go straight to WhatsApp.** There is no booking backend.
 `whatsappLink()` returns `null` while no number is configured, and every caller
@@ -155,16 +173,24 @@ null by hardcoding a number.
 - **Dark-first.** The dark palette sits on bare `:root` in `theme-style.tsx`;
   light is the variant. `globals.css` mirrors that inversion for the neutral
   tokens — keep the two files agreeing about which theme is the default.
-- The four client colours are amber `#E68A08` (brand — the "Ouro"), ember
-  `#E04F26` (accent), graphite `#474544` and cream `#EFE9C2`. The **light theme
-  darkens the amber to `#8A5206`** because the pure tone over cream is 2.14:1.
-  Verify any palette change with
+- ⚠️ **The palette in `site.ts` is inherited from the project this repo was
+  forked from** and is there only so the site keeps rendering. The Restaurante
+  Prato colours have not arrived yet — swapping them is PR 2. The light theme
+  ships a darker brand hex than the dark theme on purpose: the pure tone over
+  the cream ground was 2.14:1. Verify any palette change with
   `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`.
+- ⚠️ **The logo has not arrived either.** The mark is typographic
+  (`components/layout/logo.tsx`, `app/icon.tsx`, `apple-icon.tsx`,
+  `[locale]/opengraph-image.tsx`); the previous client's files were removed. See
+  [`public/brand/README.md`](public/brand/README.md).
 - Headings are a display serif (Playfair), body is the sans. Set in
   `globals.css` under `@layer base`, scoped to `h1`–`h3`.
-- **No prices anywhere** — the client's direction forbids it, on the page *and*
-  in structured data (`priceRange` is deliberately absent from the `Restaurant`
-  schema, since it would surface in search results).
+- **No prices anywhere — inherited, not settled.** There is no price field in
+  the menu schema and no `priceRange` in the JSON-LD. That was the *previous*
+  client's product direction, carried over by the fork; whether the Restaurante
+  Prato wants prices is an open question (§4.1 of the rebrand spec). Adding them
+  means schema, admin and validation changes — don't do it on a hunch, and don't
+  "clean up" the absence either.
 - **Reviews never enter structured data — permanent rule.** Testimonials render
   on the page (`components/sections/testimonials.tsx`), each one linking to its
   real source via `source`/`sourceUrl`. They must never feed the `Restaurant`

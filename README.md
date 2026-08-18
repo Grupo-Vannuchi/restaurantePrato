@@ -1,16 +1,18 @@
-# Fogão de Ouro Restaurante
+# Restaurante Prato
 
-[![CI](https://github.com/Grupo-Vannuchi/FogaoDeOuro/actions/workflows/ci.yml/badge.svg)](https://github.com/Grupo-Vannuchi/FogaoDeOuro/actions/workflows/ci.yml)
+[![CI](https://github.com/Victor227br/restaurantePrato/actions/workflows/ci.yml/badge.svg)](https://github.com/Victor227br/restaurantePrato/actions/workflows/ci.yml)
 
-Site institucional do **Fogão de Ouro**, restaurante no Centro Histórico de
+Site institucional do **Restaurante Prato**, restaurante e cafeteria no Centro de
 Santos/SP, construído com Next.js 16 (App Router), TypeScript, Tailwind CSS v4,
 Prisma e PostgreSQL: hero, a experiência da casa, a gastronomia, galeria,
 horários & reservas, contato, avaliações — mais um admin autenticado.
 
-O projeto é um **fork do site da N8X Marketing** (uma agência), re-skinado para o
-restaurante. A marca inteira sai de um único arquivo de configuração, o site é
-**só em português** via next-intl, e todo o conteúdo dinâmico vive no Postgres e
-é editável pelo admin.
+O projeto é um **fork do site pronto de outro restaurante**, re-skinado para o
+Prato — o contexto do rebrand, com os dados confirmados e as pendências, está em
+[`docs/WHITELABEL-RESTAURANTE-PRATO.md`](docs/WHITELABEL-RESTAURANTE-PRATO.md). A
+marca inteira sai de um único arquivo de configuração, o site é **só em
+português** via next-intl, e todo o conteúdo dinâmico vive no Postgres e é
+editável pelo admin.
 
 > **Reservas acontecem no WhatsApp**, sem backend de agendamento: os CTAs abrem
 > um deep link `wa.me` com mensagem pré-preenchida. Sem número configurado, eles
@@ -162,15 +164,19 @@ is the variant.
 ```ts
 theme: {
   dark: {                        // o padrão
-    brand: "#E68A08",            // âmbar — o "Ouro" da marca
+    brand: "#E68A08",
     brandForeground: "#171615",  // texto sobre o brand
-    accent: "#E04F26",           // brasa
-    background: "#171615",       // grafite
-    foreground: "#EFE9C2",       // creme
+    accent: "#E04F26",
+    background: "#171615",
+    foreground: "#EFE9C2",
   },
-  light: { /* âmbar escurecido para #8A5206 — ver o comentário no arquivo */ },
+  light: { /* mesma marca em tom escurecido — ver o comentário no arquivo */ },
 }
 ```
+
+⚠️ **A paleta acima é herdada do projeto de origem** e está no repo só para o site
+continuar renderizando. As cores do Restaurante Prato ainda não chegaram; a troca
+é o PR 2.
 
 Change these and the whole site re-colours — no CSS edits needed. The neutral
 tokens (`card`, `muted`, `border`) live in `src/app/globals.css` and are warm on
@@ -183,12 +189,12 @@ Contrast is verifiable: `node docs/superpowers/specs/2026-08-07-palette-contrast
 Top of `src/config/site.ts`:
 
 ```ts
-name: "Fogão de Ouro",  // shown in the wordmark and page titles
-foundedYear: 2001,      // drives the "X anos" copy
-contact: { email, phone, whatsapp, address },
-social:  { instagram },
-openingHours: { days, opens, closes },  // copy + schema.org
-servesCuisine: [...],                   // schema.org Restaurant
+name: "Restaurante Prato",  // shown in the wordmark and page titles
+foundedYear: 1998,          // drives the "X anos" copy
+contact: { email, whatsapp, address },   // `phone` é opcional: pode não haver fixo
+social:  {},                             // opcional: sem rede, `sameAs` some
+openingHours?: { days, opens, closes },  // opcional: copy + schema.org
+servesCuisine?: [...],                   // opcional: schema.org Restaurant
 ```
 
 ### Navigation menu
@@ -221,25 +227,18 @@ See [`SNAPSHOT.md`](SNAPSHOT.md).
 > the admin. This is deliberate: demo rows would be invented content on a real
 > client's site.
 
-### Logo — delivered
+### Logo — ainda não entregue
 
-The client's mark is in. The original lives in `docs/Logos-fogao_de_Ouro/`; the
-cuts the site actually uses are in [`public/brand/`](public/brand/README.md),
-which documents how each one was derived and why.
+A logo do Restaurante Prato ainda não chegou, e os arquivos do cliente anterior
+foram removidos do repo — exibi-los seria publicar a marca de outra empresa.
 
-The short version: the lockup is stacked and nearly square, so the header and the
-admin login use a **wordmark-only** cut, while the footer and the Open Graph card
-carry the complete mark. The lockup's tagline is graphite and only reaches 1.97:1
-on the dark ground, so the dark theme gets a cut with a cream tagline — swapped by
-CSS in `globals.css`, not by Tailwind's `dark:` variant, which would ignore the
-site's `data-theme` toggle.
+Até a nova chegar a marca é **tipográfica**: `src/components/layout/logo.tsx`
+desenha `siteConfig.name` na serifada display que o site já carrega, e as rotas de
+imagem (`src/app/icon.tsx`, `apple-icon.tsx`, `[locale]/opengraph-image.tsx`)
+compõem com texto sobre o fundo escuro da marca. Os detalhes e o que fazer quando
+a logo chegar estão em [`public/brand/`](public/brand/README.md).
 
-`npm run brand:rasters` regenerates the PNGs that `src/app/icon.tsx`,
-`apple-icon.tsx` and `opengraph-image.tsx` embed (satori can't resolve the logo's
-gradient fills from an SVG). The outputs are committed, so a normal build never
-needs it.
-
-There is no `favicon.ico`; `src/app/icon.tsx` covers every current browser.
+Não existe `favicon.ico`; `src/app/icon.tsx` cobre todos os navegadores atuais.
 
 ### Photography — still a placeholder
 

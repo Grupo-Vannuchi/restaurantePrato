@@ -6,8 +6,8 @@ the in-app Terms of Use and Privacy Policy.
 
 ## Reporting a vulnerability
 
-Email **fogaodeouro@fogaodeouro.com.br** (the restaurant's contact address; can
-be swapped for a dedicated security address later) with a description and
+Email **pratocoffee@gmail.com** (the restaurant's contact address; can be
+swapped for a dedicated security address later) with a description and
 reproduction steps. Do **not** open a public issue for a security problem. We
 aim to acknowledge within a few business days.
 

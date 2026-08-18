@@ -82,4 +82,14 @@ describe("nenhum vestígio do cliente anterior", () => {
       ]),
     ).toEqual([]);
   });
+
+  it("nos documentos de instrução na raiz do repositório", () => {
+    expect(
+      offenders(["AGENTS.md", "CLAUDE.md", "README.md", "SECURITY.md"]),
+    ).toEqual([]);
+  });
+
+  it("em varredura completa do código e dos assets", () => {
+    expect(offenders(["src", "public", "prisma"])).toEqual([]);
+  });
 });

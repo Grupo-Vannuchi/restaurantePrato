@@ -222,19 +222,26 @@ git remote set-url --push upstream no_push
 git remote -v            # the upstream (push) line must read: no_push
 ```
 
-**Why.** This repo is a **fork of the N8X Marketing site** (the agency), and
-`upstream` still points at `https://github.com/Grupo-Vannuchi/n8x.git` — the
-agency's own repository — with push enabled by default. A single mistyped
-`git push upstream` would publish **the client's site into the agency's
-repository**: the Fogão de Ouro brand, content and history, in a repo that
+**Why.** This repo is a **fork of another restaurant's site**, and `upstream`
+still points at `https://github.com/Grupo-Vannuchi/FogaoDeOuro.git` — that
+project's own repository — with push enabled by default. A single mistyped
+`git push upstream` would publish **this client's site into the other client's
+repository**: the Restaurante Prato brand, content and history, in a repo that
 belongs to a different business and has a different audience. The command above
 makes that push fail immediately instead of succeeding quietly. `origin`
-(`Grupo-Vannuchi/FogaoDeOuro`) is untouched and keeps working normally.
+(`Victor227br/restaurantePrato`) is untouched and keeps working normally.
 
 ⚠️ This lives in `.git/config`, which is **not versioned** — a fresh clone does
 not inherit it, and neither does a second working copy on another machine. It
 has to be re-run per clone. Don't remove it as "leftover config": fetching from
 `upstream` still works, only pushing is blocked, which is exactly the intent.
+
+⚠️ **The Prato's own infrastructure is still to be created.** The Supabase
+project (with the public `media` bucket and the Data API left disabled), the
+Vercel project, a freshly generated `SESSION_SECRET`, the Upstash pair and a new
+Evolution instance for lead notifications all have to be provisioned before the
+first deploy — the environment sections above describe each one. Never reuse the
+previous project's credentials.
 
 ## CSP (pending)
 

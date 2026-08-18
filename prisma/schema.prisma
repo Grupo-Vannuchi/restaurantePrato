@@ -120,7 +120,7 @@ model MenuItem {
   available   Boolean      @default(true)
   order       Int          @default(0)
   tags        String[]     @default([]) // "vegetariano", "picante", …
-  /// "A Semana no Fogão": prato fixo de um dia útil, 1 (segunda) a 5 (sexta).
+  /// "Pratos da semana": prato fixo de um dia útil, 1 (segunda) a 5 (sexta).
   /// Null = item permanente. Evita um model dedicado só para os cinco pratos.
   weekday     Int?
   createdAt   DateTime     @default(now())
