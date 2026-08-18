@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────
- *  FOGÃO DE OURO RESTAURANTE — BRAND CONFIGURATION
+ *  RESTAURANTE PRATO — BRAND CONFIGURATION
  * ─────────────────────────────────────────────────────────────────────────
  * This is the single source of truth for branding. To re-skin the entire site
  * for another brand, edit the values below — name, contact details, social
@@ -41,7 +41,7 @@ export type NavItem = {
 /**
  * Service hours. `days` uses schema.org `DayOfWeek` names because the value is
  * emitted verbatim into `openingHoursSpecification` — the signal that makes
- * Google show "Aberto · fecha às 15h" next to the listing.
+ * Google show "Aberto · fecha às 18h" next to the listing.
  */
 export type OpeningHours = {
   days: (
@@ -138,37 +138,35 @@ export type SiteConfig = {
 };
 
 export const siteConfig: SiteConfig = {
-  name: "Fogão de Ouro",
-  legalName: "FOGÃO DE OURO RESTAURANTE E PIZZARIA LTDA",
-  foundedYear: 2001,
-  registration: "04.160.109/0001-47",
+  name: "Restaurante Prato",
+  legalName: "PRATO COFFEE SHOP REFEICOES LTDA",
+  foundedYear: 1998,
+  registration: "03.354.096/0001-84",
 
   contact: {
-    // Caixa real do restaurante. O endereço no domínio próprio
-    // (@fogaodeouro.com.br) não existe: o domínio ainda não foi comprado.
-    email: "fgdeouro3@gmail.com",
-    phone: "+55 (13) 3219-1552",
+    email: "pratocoffee@gmail.com",
+    // Sem telefone fixo: o número do cliente é exclusivamente WhatsApp, então
+    // `phone` fica de fora e cada CTA de ligar some (ver `phoneLink`).
     whatsapp: {
       // `number` alimenta o link wa.me e por isso é só dígitos, com DDI e sem
-      // pontuação — qualquer "+", parêntese ou hífen quebra o deep link.
-      // `display` é o que a página de contato mostra para o visitante.
-      number: "5513991632985",
-      display: "+55 (13) 99163-2985",
+      // pontuação — qualquer "+", parênteses ou hífen quebra o deep link.
+      number: "5513978208568",
+      display: "+55 (13) 97820-8568",
       defaultMessage:
-        "Olá! Gostaria de reservar uma mesa no Fogão de Ouro. Podem me ajudar?",
+        "Olá! Gostaria de reservar uma mesa no Restaurante Prato. Podem me ajudar?",
     },
     address: {
-      street: "Rua Frei Gaspar, 46 — Centro Histórico",
+      street: "R. Augusto Severo, 25 — Centro",
       city: "Santos",
       region: "SP",
       country: "Brasil",
-      postalCode: "11010-090",
+      postalCode: "11010-050",
     },
   },
 
-  social: {
-    instagram: "https://instagram.com/fogao.de.ouro",
-  },
+  // ⚠️ PENDENTE: Instagram e Facebook do restaurante. Alimentam `sameAs` no
+  // structured data; enquanto vazio, o campo sai do grafo sozinho.
+  social: {},
 
   nav: [
     { key: "inicio", href: "/" },
@@ -178,24 +176,15 @@ export const siteConfig: SiteConfig = {
     { key: "contato", href: "/contato" },
   ],
 
-  openingHours: {
-    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-    opens: "11:00",
-    closes: "15:00",
-  },
-
-  servesCuisine: ["Brasileira", "Churrasco", "Frutos do mar", "Buffet"],
+  // ⚠️ PENDENTE: horário de funcionamento. Omitido de propósito — ver Task 2.
+  // ⚠️ PENDENTE: `servesCuisine`. Omitido de propósito — ver Task 3.
 
   /**
-   * Dark-first, per the client's visual direction: a graphite ground makes the
-   * food photography the protagonist. The four brand colours are amber
-   * (#E68A08 — "Ouro"), ember (#E04F26), warm graphite (#474544) and cream
-   * (#EFE9C2).
+   * ⚠️ PALETA HERDADA DO CLIENTE ANTERIOR — trocar no PR 2, quando as cores do
+   * Restaurante Prato chegarem. Os hex abaixo são do cliente anterior e estão
+   * aqui só para o site continuar renderizando; não são a marca deste cliente.
    *
-   * The light theme darkens the amber to #8A5206: the pure brand amber over
-   * cream is 2.14:1, which is unreadable. Same hue, darker tone — the practice
-   * of shipping a per-theme brand hex is what the previous brand did too.
-   * Contrast ratios are reproducible via
+   * Contrastes verificáveis com
    * `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`.
    */
   theme: {

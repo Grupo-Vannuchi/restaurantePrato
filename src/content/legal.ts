@@ -15,10 +15,10 @@
  * do que publicar em branco, por isso o campo que falta está marcado em vez de
  * preenchido por aproximação. **Só falta o domínio final** — ainda não comprado.
  *
- * Razão social, CNPJ e e-mail vieram do cliente em 12/08/2026; os dígitos
- * verificadores do CNPJ foram conferidos. Razão social, CNPJ e e-mail também
- * vivem em `src/config/site.ts` (`legalName`, `registration`, `contact.email`),
- * que alimenta o rodapé e o structured data — os dois arquivos precisam concordar.
+ * Razão social, CNPJ, endereço, CEP e e-mail vieram do cliente em 17/08/2026; os
+ * dígitos verificadores do CNPJ foram conferidos. Esses dados também vivem em
+ * `src/config/site.ts` (`legalName`, `registration`, `contact.email`), que alimenta
+ * o rodapé e o structured data — os dois arquivos precisam concordar.
  */
 
 /** Marca um dado que ainda não foi fornecido pelo cliente. Nunca inventar. */
@@ -26,16 +26,16 @@ const PENDENTE = (campo: string) => `«PENDENTE: ${campo}»`;
 
 /** Controller (data + legal entity) — used across both documents. */
 export const legalEntity = {
-  legalName: "FOGÃO DE OURO RESTAURANTE E PIZZARIA LTDA",
-  tradeName: "Fogão de Ouro Restaurante",
-  cnpj: "04.160.109/0001-47",
-  address:
-    "Rua Frei Gaspar, nº 46 — Centro Histórico, CEP 11010-090, Santos/SP, Brasil",
-  phones: "(13) 3219-1552",
-  email: "fgdeouro3@gmail.com",
+  legalName: "PRATO COFFEE SHOP REFEICOES LTDA",
+  tradeName: "Restaurante Prato",
+  cnpj: "03.354.096/0001-84",
+  address: "R. Augusto Severo, nº 25 — Centro, CEP 11010-050, Santos/SP, Brasil",
+  // Sem telefone fixo: o único canal de voz/mensagem é o WhatsApp, que já consta
+  // no site. Os documentos legais passam a apontar só para o e-mail.
+  email: "pratocoffee@gmail.com",
   // Mesmo endereço do contato geral: o restaurante não tem um encarregado de
   // dados separado, e apontar a LGPD para uma caixa que ninguém lê seria pior.
-  privacyEmail: "fgdeouro3@gmail.com",
+  privacyEmail: "pratocoffee@gmail.com",
   site: PENDENTE("domínio final do site"),
 } as const;
 
@@ -56,7 +56,6 @@ const b = {
   tradeName: `**${e.tradeName}**`,
   cnpj: `**${e.cnpj}**`,
   address: `**${e.address}**`,
-  phones: `**${e.phones}**`,
   email: `**${e.email}**`,
   privacyEmail: `**${e.privacyEmail}**`,
   site: `**${e.site}**`,
@@ -65,7 +64,7 @@ const b = {
 const pt: { terms: LegalDoc; privacy: LegalDoc } = {
   terms: {
     title: "Termos de Uso",
-    updated: "Última atualização: 7 de agosto de 2026",
+    updated: "Última atualização: 17 de agosto de 2026",
     intro: [
       `Estes Termos de Uso ("Termos") regulam o acesso e a utilização do site ${b.site} ("Site"), mantido por ${b.legalName}, nome fantasia ${b.tradeName}, inscrita no CNPJ sob o nº ${b.cnpj}, com sede em ${b.address} ("nós", "nosso" ou "Empresa").`,
       "Ao acessar ou utilizar o Site, você ('Usuário') declara ter lido, compreendido e concordado integralmente com estes Termos. Caso não concorde com qualquer disposição, pedimos que não utilize o Site.",
@@ -161,7 +160,7 @@ const pt: { terms: LegalDoc; privacy: LegalDoc } = {
       {
         heading: "13. Comunicações",
         body: [
-          `As comunicações entre o Usuário e a Empresa poderão ser realizadas pelos canais oficiais indicados no Site, especialmente o e-mail ${b.email} e os telefones ${b.phones}.`,
+          `As comunicações entre o Usuário e a Empresa poderão ser realizadas pelos canais oficiais indicados no Site, especialmente o e-mail ${b.email}.`,
         ],
       },
       {
@@ -187,14 +186,14 @@ const pt: { terms: LegalDoc; privacy: LegalDoc } = {
       {
         heading: "17. Contato",
         body: [
-          `Em caso de dúvidas sobre estes Termos, entre em contato com ${b.legalName} (${b.tradeName}) pelo e-mail ${b.email} ou pelos telefones ${b.phones}.`,
+          `Em caso de dúvidas sobre estes Termos, entre em contato com ${b.legalName} (${b.tradeName}) pelo e-mail ${b.email}.`,
         ],
       },
     ],
   },
   privacy: {
     title: "Política de Privacidade",
-    updated: "Última atualização: 7 de agosto de 2026",
+    updated: "Última atualização: 17 de agosto de 2026",
     intro: [
       `Esta Política de Privacidade descreve como ${b.legalName}, nome fantasia ${b.tradeName}, inscrita no CNPJ nº ${b.cnpj}, com sede em ${b.address} ("nós" ou "Empresa"), coleta, utiliza, armazena e protege os dados pessoais dos usuários do site ${b.site} ("Site").`,
       "O tratamento de dados pessoais é realizado em conformidade com a Lei nº 13.709/2018 (Lei Geral de Proteção de Dados — LGPD) e demais normas aplicáveis. Ao utilizar o Site, você declara estar ciente desta Política.",
@@ -221,7 +220,6 @@ const pt: { terms: LegalDoc; privacy: LegalDoc } = {
         heading: "3. Encarregado e canal de atendimento",
         body: [
           `Para assuntos relativos a dados pessoais e privacidade, bem como para o exercício dos seus direitos, disponibilizamos o canal de atendimento: ${b.privacyEmail}.`,
-          `Você também pode entrar em contato pelos telefones ${b.phones}.`,
         ],
       },
       {
@@ -330,7 +328,7 @@ const pt: { terms: LegalDoc; privacy: LegalDoc } = {
       {
         heading: "19. Contato",
         body: [
-          `Dúvidas, solicitações ou reclamações relativas a esta Política e ao tratamento de dados pessoais podem ser encaminhadas a ${b.legalName} (${b.tradeName}) pelo e-mail ${b.privacyEmail} ou pelos telefones ${b.phones}.`,
+          `Dúvidas, solicitações ou reclamações relativas a esta Política e ao tratamento de dados pessoais podem ser encaminhadas a ${b.legalName} (${b.tradeName}) pelo e-mail ${b.privacyEmail}.`,
         ],
       },
     ],
