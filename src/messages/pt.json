@@ -145,7 +145,7 @@
     "salaoLateValue": "Clima mais calmo, ideal para comer sem pressa, com reposição garantida no buffet."
   },
   "contact": {
-    "title": "Estamos no Centro de Santos",
+    "title": "A poucos passos de você no Centro",
     "subtitle": "R. Augusto Severo, 25 — Centro, Santos/SP.",
     "infoTitle": "Como falar com a gente",
     "route": "Traçar rota",
@@ -162,7 +162,7 @@
       "phone": "Telefone (opcional)",
       "company": "Empresa (opcional)",
       "message": "Mensagem",
-      "messagePlaceholder": "Conte o que você precisa — reserva, evento, dúvida…",
+      "messagePlaceholder": "Conte o que você precisa — grupo, evento, dúvida…",
       "submit": "Enviar mensagem",
       "submitting": "Enviando…",
       "success": "Mensagem enviada! Em breve entramos em contato.",
