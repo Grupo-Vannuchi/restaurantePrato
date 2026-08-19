@@ -22,9 +22,7 @@
     "callUs": "Ligar {phone}",
     "viewAllGallery": "Ver toda a galeria",
     "viewAllMenu": "Ver toda a gastronomia",
-    "learnMore": "Saiba mais",
     "sendWhatsapp": "Chamar no WhatsApp",
-    "backHome": "Voltar para o início",
     "loading": "Carregando…"
   },
   "home": {
@@ -92,9 +90,7 @@
     "title": "Galeria",
     "subtitle": "O ambiente e os pratos da casa.",
     "empty": "Em breve, novas fotos por aqui.",
-    "photoAlt": "Foto do restaurante",
-    "ctaTitle": "Quer ver de perto?",
-    "ctaButton": "Fazer minha reserva"
+    "photoAlt": "Foto do restaurante"
   },
   "gastronomia": {
     "title": "Nossa Gastronomia",
@@ -114,7 +110,6 @@
     "title": "Novidades",
     "subtitle": "Novidades e informações do restaurante.",
     "empty": "Em breve, novidades por aqui.",
-    "viewAll": "Ver todas as novidades",
     "listTitle": "Todas as novidades",
     "view": "Ver",
     "viewImage": "Ver imagem",
@@ -124,7 +119,6 @@
     "relatedTitle": "Páginas relacionadas",
     "regionsTitle": "Regiões que atendemos com {title}:",
     "menuLabel": "Abrir novidades",
-    "menuTitle": "Novidades",
     "menuClose": "Fechar"
   },
   "reservas": {
@@ -233,7 +227,6 @@
       "email": "E-mail",
       "message": "Mensagem",
       "status": "Status",
-      "receivedAt": "Recebido em",
       "markContacted": "Marcar como respondido",
       "archive": "Arquivar",
       "typeContact": "Contato",
