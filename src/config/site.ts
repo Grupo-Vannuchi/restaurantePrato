@@ -164,9 +164,12 @@ export const siteConfig: SiteConfig = {
     },
   },
 
-  // ⚠️ PENDENTE: Instagram e Facebook do restaurante. Alimentam `sameAs` no
-  // structured data; enquanto vazio, o campo sai do grafo sozinho.
-  social: {},
+  // Instagram confirmado em 19/08/2026; alimenta `sameAs` no structured data e
+  // a lista de redes do rodapé, que itera este objeto genericamente.
+  // ⚠️ PENDENTE: Facebook. Enquanto ausente, sai do grafo sozinho.
+  social: {
+    instagram: "https://instagram.com/restaurante.prato",
+  },
 
   nav: [
     { key: "inicio", href: "/" },

@@ -3,6 +3,9 @@ import { localeMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
+// lucide-react removeu ícones de marca (ver `brand-icons.tsx`); o rodapé já
+// importa o Instagram de lá.
+import { Instagram } from "@/components/ui/brand-icons";
 import { PageHeader } from "@/components/page-header";
 import { Section } from "@/components/ui/section";
 import { ContactForm } from "@/components/forms/contact-form";
@@ -62,6 +65,18 @@ export default async function ContactPage({
             label: t("labels.whatsapp"),
             value: contact.whatsapp.display,
             href: whatsapp,
+          },
+        ]
+      : []),
+    // Só listado quando há perfil configurado — mesmo contrato do WhatsApp
+    // acima. O rodapé já itera `siteConfig.social` sozinho.
+    ...(siteConfig.social.instagram
+      ? [
+          {
+            icon: Instagram,
+            label: t("labels.instagram"),
+            value: "@restaurante.prato",
+            href: siteConfig.social.instagram,
           },
         ]
       : []),
