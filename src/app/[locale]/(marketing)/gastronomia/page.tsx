@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ArrowRight } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/page-header";
 import { MenuItemCard } from "@/components/menu-item-card";
+import { ClosingCta } from "@/components/sections/closing-cta";
 import { Reveal } from "@/components/ui/reveal";
+import { buttonVariants } from "@/components/ui/button";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { getMenu } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
@@ -57,6 +61,27 @@ export default async function ServicesPage({
           </Section>
         ))
       )}
+      {/* Quem terminou de ler o cardápio quer saber a que horas pode vir, não
+          reservar mesa. A conversão por WhatsApp continua no `WhatsappButton`
+          flutuante do layout de marketing, presente em toda página. */}
+      <ClosingCta
+        title={t("ctaTitle")}
+        actions={
+          <Link
+            href="/reservas"
+            className={buttonVariants({
+              variant: "accent",
+              size: "lg",
+              className: "group",
+            })}
+          >
+            {t("ctaButton")}
+            <ArrowRight className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+        }
+      >
+        <p className="text-pretty opacity-90">{t("ctaSubtitle")}</p>
+      </ClosingCta>
     </>
   );
 }

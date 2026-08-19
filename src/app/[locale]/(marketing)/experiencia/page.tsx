@@ -7,10 +7,10 @@ import { ArrowRight, Check } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/page-header";
 import { Section } from "@/components/ui/section";
-import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { ReserveButton } from "@/components/reserve-button";
+import { ClosingCta } from "@/components/sections/closing-cta";
 import { GalleryPreview } from "@/components/sections/gallery-preview";
 import { fillYears, siteConfig } from "@/config/site";
 
@@ -91,50 +91,43 @@ export default async function AboutPage({
         </div>
       </Section>
 
-      <section className="py-20 sm:py-section">
-        <Container>
-          <Reveal className="relative overflow-hidden rounded-2xl bg-brand px-6 py-16 text-brand-foreground sm:px-12">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-white/10 blur-2xl"
+      <ClosingCta
+        title={t("contactCta.title")}
+        actions={
+          <>
+            <Link
+              href="/contato"
+              className={buttonVariants({
+                variant: "accent",
+                size: "lg",
+                className: "group",
+              })}
+            >
+              {tc("talkToUs")}
+              <ArrowRight className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+            <ReserveButton
+              variant="outline"
+              size="lg"
+              className="border-white/40 text-brand-foreground hover:bg-white/10"
+              label={tc("reserveTable")}
             />
-            <div className="relative mx-auto max-w-2xl text-center">
-              <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
-                {t("contactCta.title")}
-              </h2>
-              <div className="mt-5 flex flex-col gap-3">
-                {contactParagraphs.map((p, i) => (
-                  <p key={i} className="text-pretty leading-relaxed opacity-90">
-                    {p}
-                  </p>
-                ))}
-              </div>
-              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                <Link
-                  href="/contato"
-                  className={buttonVariants({
-                    variant: "accent",
-                    size: "lg",
-                    className: "group",
-                  })}
-                >
-                  {tc("talkToUs")}
-                  <ArrowRight className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
-                </Link>
-                <ReserveButton
-                  variant="outline"
-                  size="lg"
-                  className="border-white/40 text-brand-foreground hover:bg-white/10"
-                  label={tc("reserveTable")}
-                />
-              </div>
-            </div>
-          </Reveal>
+          </>
+        }
+        footer={
           <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-muted-foreground">
             {t("disclaimer")}
           </p>
-        </Container>
-      </section>
+        }
+      >
+        <div className="flex flex-col gap-3">
+          {contactParagraphs.map((p, i) => (
+            <p key={i} className="text-pretty leading-relaxed opacity-90">
+              {p}
+            </p>
+          ))}
+        </div>
+      </ClosingCta>
 
       {/* §3.3 do briefing: a galeria do salão vive dentro desta página — não é
           item de menu. O time não aparece: a direção visual do cliente proíbe
