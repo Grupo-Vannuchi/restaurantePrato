@@ -286,12 +286,15 @@ chaves mortas** de §5.7 — passam a ser consumidas — e ganham
 | `reservas.subtitle` | De segunda a sexta, das 11h às 15h. |
 | `reservas.practicalTitle` | Como está o salão |
 | `reservas.hoursLabel` | **novo** · Horário |
-| `reservas.salao.earlyLabel` | **novo** · 11h |
-| `reservas.salao.earlyValue` | **novo** · Buffet intacto, comida recém-saída do fogo e muita tranquilidade. O paraíso de quem almoça cedo. |
-| `reservas.salao.peakLabel` | **novo** · Das 12h às 13h30 |
-| `reservas.salao.peakValue` | **novo** · O fluxo intenso do Centro. Mas fica tranquilo: a rotatividade é alta e a chapa não para. |
-| `reservas.salao.lateLabel` | **novo** · A partir das 13h30 |
-| `reservas.salao.lateValue` | **novo** · Clima mais calmo, ideal para comer sem pressa, com reposição garantida no buffet. |
+| `reservas.salaoEarlyLabel` | **novo** · 11h |
+| `reservas.salaoEarlyValue` | **novo** · Buffet intacto, comida recém-saída do fogo e muita tranquilidade. O paraíso de quem almoça cedo. |
+| `reservas.salaoPeakLabel` | **novo** · Das 12h às 13h30 |
+| `reservas.salaoPeakValue` | **novo** · O fluxo intenso do Centro. Mas fica tranquilo: a rotatividade é alta e a chapa não para. |
+| `reservas.salaoLateLabel` | **novo** · A partir das 13h30 |
+| `reservas.salaoLateValue` | **novo** · Clima mais calmo, ideal para comer sem pressa, com reposição garantida no buffet. |
+
+*(Chaves planas, não um objeto `salao` aninhado: o namespace `reservas` já é todo
+plano, e o `Fact` consome uma string por vez.)*
 | `reservas.groupsTitle` | Reservas para grupos e eventos *(inalterado)* |
 | `reservas.groupsCopy` | Vai trazer a equipe? Fale com a gente para acertar dia, horário e número de pessoas. |
 | `reservas.addressLabel` | Endereço *(inalterado)* |
@@ -329,18 +332,24 @@ horário. A implementação:
 > `src/config/site.ts`, `src/content/legal.ts`, `metadata.description` e
 > `experiencia.disclaimer` juntos.
 
-`src/app/llms.txt/route.ts` tem **duas strings hardcoded** que este spec muda e
-que não estão no catálogo:
+**"Cafeteria" está hardcoded em quatro arquivos fora do catálogo** (levantado em
+19/08). Todos perdem "e cafeteria" por §3.3:
 
-- a linha `> Restaurante e cafeteria no Centro de Santos — …` perde "e cafeteria"
-  (§3.3);
-- o link `line("Horários & Reservas", "/reservas", "Reservas e informações
-  práticas")` vira `line("Horários", "/reservas", "Horário de funcionamento e
-  informações práticas")` (§3.4).
+| Arquivo | Linha |
+|---|---|
+| `src/app/llms.txt/route.ts` | 48 |
+| `src/app/llms-full.txt/route.ts` | 80 |
+| `src/app/manifest.ts` | 8 |
+| `src/app/[locale]/opengraph-image.tsx` | 45 |
+
+`src/app/llms.txt/route.ts` tem ainda uma segunda string a mudar: o link
+`line("Horários & Reservas", "/reservas", "Reservas e informações práticas")`
+vira `line("Horários", "/reservas", "Horário de funcionamento e informações
+práticas")` (§3.4).
 
 ### 5.7 Chaves mortas encontradas na varredura
 
-Varrendo as 382 chaves folha do catálogo contra `src/` em 19/08, oito não são
+Varrendo as 382 chaves folha do catálogo contra `src/` em 19/08, dez não são
 consumidas por nenhum componente:
 
 | Chave | Destino |
@@ -348,11 +357,17 @@ consumidas por nenhum componente:
 | `common.learnMore` | apagar |
 | `common.backHome` | apagar |
 | `galeria.ctaTitle` · `galeria.ctaButton` | apagar |
+| `gastronomia.viewAll` · `novidades.viewAll` | apagar |
 | `novidades.menuTitle` | apagar |
 | `admin.leads.receivedAt` | apagar — a tabela formata `lead.createdAt` direto |
 | `gastronomia.ctaTitle` · `gastronomia.ctaButton` | **manter** — religadas em §5.3.1 |
 
-**Seis chaves saem do catálogo.** O `pt.json` é o arquivo que já regrediu duas vezes neste
+As duas `viewAll` de namespace são invisíveis para uma varredura por último
+segmento, porque `common.viewAllMenu` e `common.viewAllGallery` — essas sim
+vivas, em `menu-preview.tsx:32` e `gallery-preview.tsx:31` — contêm a mesma
+substring. Confirmadas mortas por busca direta.
+
+**Oito chaves saem do catálogo.** O `pt.json` é o arquivo que já regrediu duas vezes neste
 repositório — a segunda derrubando o deploy, a CI e o E2E ao mesmo tempo — e é
 justamente por isso que existe o hook de `pre-push`. Chave morta num catálogo
 desse tamanho é ruído que esconde a próxima regressão.
@@ -456,6 +471,6 @@ servesCuisine: ["Brasileira", "Churrasco"],
    na seção de grupos de `/reservas` (§3.4).
 8. Nenhuma rota renomeada e nenhuma migration. Nenhum componente de seção novo —
    exceto o fechamento de `/gastronomia` (§5.3.1), aprovado em 19/08.
-9. As seis chaves mortas de §5.7 saíram do catálogo, e
+9. As oito chaves mortas de §5.7 saíram do catálogo, e
    `admin.whatsapp.state_connecting` / `state_close` **continuam lá**. Verificar
    o painel de WhatsApp do admin depois da limpeza.
