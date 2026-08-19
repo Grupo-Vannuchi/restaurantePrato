@@ -54,7 +54,7 @@ export default async function ReservasPage({
   setRequestLocale(locale);
   const t = await getTranslations("reservas");
 
-  const openingHoursText = openingHoursLabel();
+  const hours = openingHoursLabel();
 
   return (
     <>
@@ -79,15 +79,31 @@ export default async function ReservasPage({
         </div>
       </Section>
 
-      {/* 5.3 — Informações práticas */}
+      {/* 5.3 — Como está o salão ao longo do serviço */}
       <Section>
         <SectionHeader title={t("practicalTitle")} align="left" />
         <div className="mt-10 grid gap-8 sm:grid-cols-2">
+          {/* `openingHoursLabel` já inclui os dias — ver o aviso na função. */}
+          {hours ? (
+            <Fact icon={Clock} label={t("hoursLabel")} value={hours} />
+          ) : null}
           <Fact icon={MapPin} label={t("addressLabel")} value={fullAddress()} />
+          <Fact
+            icon={Clock}
+            label={t("salaoEarlyLabel")}
+            value={t("salaoEarlyValue")}
+          />
+          <Fact
+            icon={Clock}
+            label={t("salaoPeakLabel")}
+            value={t("salaoPeakValue")}
+          />
+          <Fact
+            icon={Clock}
+            label={t("salaoLateLabel")}
+            value={t("salaoLateValue")}
+          />
         </div>
-        {openingHoursText ? (
-          <p className="sr-only">{openingHoursText}</p>
-        ) : null}
       </Section>
     </>
   );

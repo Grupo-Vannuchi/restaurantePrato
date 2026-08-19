@@ -9,7 +9,7 @@
     "inicio": "Início",
     "experiencia": "A Experiência",
     "gastronomia": "Nossa Gastronomia",
-    "reservas": "Horários & Reservas",
+    "reservas": "Horários",
     "contato": "Contato",
     "novidades": "Novidades",
     "openMenu": "Abrir menu",
@@ -128,14 +128,21 @@
     "menuClose": "Fechar"
   },
   "reservas": {
-    "title": "Horários & Reservas",
-    "metaDescription": "Reservas no Restaurante Prato, no Centro de Santos.",
-    "subtitle": "Fale com a gente pelo WhatsApp.",
+    "title": "Horários",
+    "metaDescription": "Horário do Restaurante Prato, no Centro de Santos: de segunda a sexta, das 11h às 15h.",
+    "subtitle": "De segunda a sexta, das 11h às 15h.",
     "groupsTitle": "Reservas para grupos e eventos",
-    "groupsCopy": "Fale com a gente para acertar dia, horário e número de pessoas.",
+    "groupsCopy": "Vai trazer a equipe? Fale com a gente para acertar dia, horário e número de pessoas.",
     "groupsMessage": "Olá! Gostaria de informações sobre reserva para grupos e eventos.",
-    "practicalTitle": "Informações práticas",
-    "addressLabel": "Endereço"
+    "practicalTitle": "Como está o salão",
+    "addressLabel": "Endereço",
+    "hoursLabel": "Horário",
+    "salaoEarlyLabel": "11h",
+    "salaoEarlyValue": "Buffet intacto, comida recém-saída do fogo e muita tranquilidade. O paraíso de quem almoça cedo.",
+    "salaoPeakLabel": "Das 12h às 13h30",
+    "salaoPeakValue": "O fluxo intenso do Centro. Mas fica tranquilo: a rotatividade é alta e a chapa não para.",
+    "salaoLateLabel": "A partir das 13h30",
+    "salaoLateValue": "Clima mais calmo, ideal para comer sem pressa, com reposição garantida no buffet."
   },
   "contact": {
     "title": "Estamos no Centro de Santos",
