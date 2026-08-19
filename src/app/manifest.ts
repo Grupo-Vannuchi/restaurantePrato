@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: siteConfig.name,
     short_name: siteConfig.name.split(" ")[0],
-    description: `Restaurante e cafeteria no Centro de ${siteConfig.contact.address.city}`,
+    description: `Almoço, buffet e churrasco no Centro de ${siteConfig.contact.address.city}`,
     start_url: "/",
     display: "standalone",
     // Dark-first: the install splash and the browser chrome should match the

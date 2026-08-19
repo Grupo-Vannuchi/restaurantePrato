@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "defaultTitle": "{brand} | Restaurante e Cafeteria no Centro de Santos",
+    "defaultTitle": "{brand} | Almoço, buffet e churrasco no Centro de Santos",
     "titleTemplate": "%s · {brand}",
-    "description": "Restaurante e cafeteria no Centro de Santos, na R. Augusto Severo, 25. Desde 1998.",
-    "keywords": "restaurante centro de santos, cafeteria centro de santos, onde almoçar no centro de santos, restaurante santos sp"
+    "description": "Buffet completo e churrasco na brasa no Centro de Santos, na R. Augusto Severo, 25. De segunda a sexta, das 11h às 15h. Desde 1998.",
+    "keywords": "almoço centro de santos, buffet centro de santos, churrasco centro de santos, restaurante centro de santos, onde almoçar no centro de santos"
   },
   "nav": {
     "inicio": "Início",
@@ -176,7 +176,7 @@
     "required": "Campo obrigatório."
   },
   "footer": {
-    "tagline": "Restaurante e cafeteria no Centro de Santos.",
+    "tagline": "A sua melhor e mais saborosa pausa do dia.",
     "navTitle": "Navegação",
     "contactTitle": "Contato",
     "socialTitle": "Redes",

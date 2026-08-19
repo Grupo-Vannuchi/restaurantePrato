@@ -42,7 +42,7 @@ export default function OpengraphImage() {
           {siteConfig.name}
         </div>
         <div style={{ display: "flex", fontSize: 34, opacity: 0.85 }}>
-          Restaurante e cafeteria no Centro de {city}/{region}
+          Buffet e churrasco no Centro de {city}/{region}
         </div>
         {hours ? (
           <div style={{ display: "flex", fontSize: 28, color: brand }}>

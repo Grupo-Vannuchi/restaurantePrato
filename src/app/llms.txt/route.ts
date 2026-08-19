@@ -24,7 +24,7 @@ export async function GET(): Promise<Response> {
     line("A Experiência", "/experiencia", "A casa e o que esperar de uma visita"),
     line("Nossa Gastronomia", "/gastronomia", "O cardápio da casa"),
     line("Galeria", "/galeria", "Fotos do ambiente e dos pratos"),
-    line("Horários & Reservas", "/reservas", "Reservas e informações práticas"),
+    line("Horários", "/reservas", "Horário de funcionamento e informações práticas"),
     line("Contato", "/contato", "Endereço e como chegar"),
   ];
 
@@ -46,7 +46,7 @@ export async function GET(): Promise<Response> {
   const sections = [
     `# ${name}`,
     "",
-    `> Restaurante e cafeteria no Centro de Santos — ${fullAddress()}.${hours}`,
+    `> Buffet completo e churrasco na brasa no Centro de Santos — ${fullAddress()}.${hours}`,
     "",
     "## Páginas principais",
     ...core,
