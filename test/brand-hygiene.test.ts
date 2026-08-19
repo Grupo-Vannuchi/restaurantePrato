@@ -22,6 +22,7 @@ const FORBIDDEN = [
   "Frei Gaspar",
   "Bolsa do Café",
   "Museu do Café",
+  "Centro Histórico",
   "180 lugares",
   "1.200 avaliações",
   "por quilo",

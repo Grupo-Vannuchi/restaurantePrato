@@ -30,7 +30,7 @@
   "home": {
     "hero": {
       "eyebrow": "{years} anos no Centro de Santos",
-      "primaryCta": "Conheça a experiência",
+      "primaryCta": "Ver o cardápio",
       "secondaryCta": "Como chegar",
       "carouselLabel": "Destaques",
       "prevSlide": "Slide anterior",
@@ -38,30 +38,30 @@
       "goToSlide": "Ir para o slide {n}",
       "slides": [
         {
-          "title": "Restaurante e cafeteria no Centro de Santos.",
-          "subtitle": "Há {years} anos na R. Augusto Severo, no coração do Centro."
+          "title": "A sua melhor e mais saborosa pausa do dia.",
+          "subtitle": "Um buffet completo, sempre quentinho, com aquele tempero caseiro inconfundível — e o autêntico churrasco na brasa, fatiado na hora, para recarregar a energia pro expediente."
         }
       ]
     },
     "gastronomia": {
-      "eyebrow": "A experiência",
-      "title": "Tudo o que espera por você",
-      "subtitle": "o cardápio da casa."
+      "eyebrow": "Nossa comida",
+      "title": "Fartura, sabor e agilidade pro seu dia a dia.",
+      "subtitle": "Sua pausa é sagrada. Por isso o buffet é completo, fresquinho e com bastante proteína — o almoço de responsa no Centro, sem frescura e com muito sabor."
     },
     "galeria": {
-      "eyebrow": "Galeria",
-      "title": "O salão e a mesa",
-      "subtitle": "O ambiente e os pratos da casa."
+      "eyebrow": "O nosso espaço",
+      "title": "O restaurante do dia a dia.",
+      "subtitle": "Sem formalidade, feito para quem trabalha duro no Centro."
     },
     "testimonials": {
       "eyebrow": "Avaliações do Google",
       "title": "O que dizem por aqui",
-      "subtitle": "A palavra de quem já veio."
+      "subtitle": "Quem experimenta, não troca."
     },
     "cta": {
-      "title": "Venha nos visitar no Centro de Santos.",
-      "subtitle": "Fale com a gente pelo WhatsApp para reservar a sua mesa.",
-      "button": "Horários & Reservas"
+      "title": "11h da manhã: o buffet já está servido.",
+      "subtitle": "Gosta de almoçar mais cedo e com tranquilidade? A partir das 11h a comida já está montada, bem quente, com o churrasco saindo direto da brasa.",
+      "button": "Veja nossos horários"
     }
   },
   "experiencia": {
