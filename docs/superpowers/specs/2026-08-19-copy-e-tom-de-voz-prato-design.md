@@ -61,18 +61,31 @@ posicionamento do restaurante do qual este repo é fork.
 **Decisão:** "Centro de Santos" em todo lugar. Não é só higiene de fork: é como
 as pessoas buscam.
 
-### 3.3 A cafeteria some da copy
+### 3.3 Não é cafeteria — é restaurante
 
-A razão social é PRATO COFFEE SHOP REFEIÇÕES e o dado confirmado descreve
-"restaurante **e** cafeteria". O documento de copy não menciona café uma única
-vez — é integralmente buffet, churrasco e almoço executivo.
+A razão social é PRATO COFFEE SHOP REFEIÇÕES, e por causa dela o levantamento de
+17/08 registrou a natureza do negócio como "restaurante **e** cafeteria" — em
+`docs/WHITELABEL-RESTAURANTE-PRATO.md`, no spec do rebrand e em `AGENTS.md`,
+todos como **dado confirmado**.
 
-**Decisão:** "cafeteria" sai da copy do site (metadata, rodapé, `llms.txt`,
-`/experiencia`). A razão social continua em `src/content/legal.ts`, porque lá é
-registro, não posicionamento.
+Era leitura da razão social, não do negócio. O documento de copy entregue em
+19/08 não menciona café uma única vez: é integralmente buffet, churrasco na brasa
+e almoço de trabalhador.
 
-Se a cafeteria voltar a ser um argumento comercial, ela precisa de dado próprio
-(o que serve, em que horário) antes de virar texto.
+**Decisão (dono do projeto, 19/08):** o Prato é um **restaurante de almoço**, e o
+Fogão de Ouro — também restaurante de almoço — é a base estrutural correta. Isso
+tem duas consequências de peso diferente:
+
+1. **"Cafeteria" sai da copy do site** — `metadata`, `footer.tagline`,
+   `llms.txt`, `llms-full.txt`, `manifest.ts`, imagem OG e `/experiencia`.
+2. **A linha de dado confirmado é corrigida nos três documentos de instrução.**
+   Esta é a parte mais séria: dado confirmado errado não levanta suspeita em
+   ninguém — é copiado adiante como verdade. Uma pendência ao menos anuncia que
+   falta algo.
+
+⚠️ A razão social continua **intacta** em `src/config/site.ts` (`legalName`) e em
+`src/content/legal.ts`. Lá ela é registro na Receita, não descrição do negócio, e
+trocá-la seria falsificar documento jurídico.
 
 ### 3.4 Reservas vs. buffet de alta rotatividade
 

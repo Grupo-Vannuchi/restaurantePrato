@@ -1618,10 +1618,44 @@ horário, o Instagram e o tipo de cozinha estão pendentes. Depois deste plano,
 não estão. Documento que mente sobre o estado do repo é pior que documento
 ausente — a próxima pessoa vai reabrir uma pendência já fechada.
 
-- [ ] **Step 1: Atualizar a tabela de dados confirmados**
+E há uma correção mais séria: **"restaurante e cafeteria" está registrado como
+dado confirmado** em três documentos. O cliente corrigiu em 19/08 — é
+restaurante, e o Fogão de Ouro (restaurante de almoço) é a base correta. Uma
+linha de dado confirmado errada é pior que uma pendência: ela é copiada adiante
+sem ninguém reconferir.
 
-Em `docs/WHITELABEL-RESTAURANTE-PRATO.md`, na tabela "Dados confirmados",
-adicionar três linhas no fim:
+⚠️ A razão social `PRATO COFFEE SHOP REFEICOES LTDA` **não muda em lugar
+nenhum** — é registro na Receita, não descrição do negócio.
+
+- [ ] **Step 1: Corrigir a natureza do negócio e atualizar os dados confirmados**
+
+Em `docs/WHITELABEL-RESTAURANTE-PRATO.md`, na linha 5, trocar
+
+```markdown
+Ele está sendo re-skinado para o **Restaurante Prato**, restaurante e cafeteria
+na R. Augusto Severo, 25, no Centro de Santos/SP.
+```
+
+por
+
+```markdown
+Ele está sendo re-skinado para o **Restaurante Prato**, restaurante na
+R. Augusto Severo, 25, no Centro de Santos/SP.
+```
+
+Na tabela "Dados confirmados", substituir a linha de Natureza
+
+```markdown
+| Natureza | Restaurante **e** cafeteria; aceita reserva |
+```
+
+por
+
+```markdown
+| Natureza | Restaurante de almoço — buffet e churrasco na brasa; aceita reserva. **Não é cafeteria** *(corrigido em 19/08/2026)*. A razão social diz "Coffee Shop", mas isso é registro, não posicionamento |
+```
+
+e adicionar três linhas no fim da mesma tabela:
 
 ```markdown
 | Horário | Segunda a sexta, das 11h às 15h *(19/08/2026)* |
@@ -1656,17 +1690,34 @@ No mesmo arquivo, na seção "Sequência de PRs", marcar o PR 3 e apontar o spec
 - [ ] **Step 4: Fechar as perguntas resolvidas no spec do rebrand**
 
 Em `docs/superpowers/specs/2026-08-17-whitelabel-restaurante-prato-design.md`,
-na seção `### 4.1.1 Resolvidas em 17/08/2026`, acrescentar ao fim:
+corrigir primeiro a linha de Natureza da tabela de dados confirmados (linha 42):
+
+```markdown
+| Natureza | restaurante de almoço — buffet e churrasco; aceita reserva. **Não é cafeteria** *(corrigido em 19/08/2026)* | mantém `/reservas` e `acceptsReservations` |
+```
+
+E na linha 15, trocar a menção a "Coffee Shop" na frase de abertura por uma que
+não confunda razão social com posicionamento:
+
+```markdown
+Coffee Shop na razão social, no Centro de Santos/SP — mas o negócio é um
+restaurante de almoço, não uma cafeteria (corrigido em 19/08/2026).
+```
+
+Depois, na seção `### 4.1.1 Resolvidas em 17/08/2026`, acrescentar ao fim:
 
 ```markdown
 
 **Resolvidas em 19/08/2026** — ver
 [`2026-08-19-copy-e-tom-de-voz-prato-design.md`](2026-08-19-copy-e-tom-de-voz-prato-design.md):
 
-- **"Coffee shop" muda a estrutura?** Não. O documento de copy do cliente não
-  menciona café uma única vez — a estrutura de restaurante de almoço fica, e
-  "cafeteria" sai da copy do site (a razão social continua nos documentos
-  legais).
+- **"Coffee shop" muda a estrutura?** Não — e mais: **não é cafeteria.** O dono
+  do projeto confirmou em 19/08 que o Prato é um restaurante de almoço, e que o
+  Fogão de Ouro (também restaurante de almoço) é a base correta. O documento de
+  copy do cliente não menciona café uma única vez. A estrutura de restaurante
+  fica, "cafeteria" sai da copy e dos documentos de instrução, e a razão social
+  *Coffee Shop Refeições* continua só onde é registro (`legalName` em
+  `site.ts`, `legal.ts`).
 - **Horário, Instagram e tipo de cozinha** foram confirmados e publicados.
 
 Continua aberta a pergunta **1 (preços no cardápio)**, e abriu-se uma nova: o
@@ -1676,7 +1727,24 @@ confirmados em 17/08.
 
 - [ ] **Step 5: Atualizar o AGENTS.md**
 
-Em `AGENTS.md`, localizar o parágrafo que começa com **"Phone, opening hours and
+Em `AGENTS.md`, na linha 9, trocar
+
+```markdown
+**This is the site of the Restaurante Prato**, a restaurant and coffee shop at
+```
+
+por
+
+```markdown
+**This is the site of the Restaurante Prato**, a lunch restaurant at
+```
+
+⚠️ Não trocar por "a restaurant and cafeteria" nem reintroduzir "coffee shop"
+mais adiante. A razão social carrega "Coffee Shop", mas o negócio é um
+restaurante de almoço — buffet e churrasco na brasa — e é o Fogão de Ouro,
+também restaurante de almoço, que serve de base estrutural.
+
+Depois, localizar o parágrafo que começa com **"Phone, opening hours and
 cuisine are optional on purpose."** e substituí-lo por:
 
 ```markdown
