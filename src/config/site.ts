@@ -188,7 +188,10 @@ export const siteConfig: SiteConfig = {
     closes: "15:00",
   },
 
-  // ⚠️ PENDENTE: `servesCuisine`. Omitido de propósito — ver Task 3.
+  // Derivado do documento de copy do cliente (19/08/2026): churrasco na brasa,
+  // buffet e comida caseira. "Buffet" fica de fora de propósito — é modelo de
+  // serviço, não cozinha, e este campo alimenta `Restaurant.servesCuisine`.
+  servesCuisine: ["Brasileira", "Churrasco"],
 
   /**
    * ⚠️ PALETA HERDADA DO CLIENTE ANTERIOR — trocar no PR 2, quando as cores do
