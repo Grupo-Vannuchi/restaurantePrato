@@ -740,7 +740,7 @@ npm run dev
 
 Abrir `http://localhost:3000` e confirmar, de cima para baixo:
 
-1. o eyebrow ainda diz "27 anos no Centro de Santos";
+1. o eyebrow ainda mostra os anos de casa ("28 anos no Centro de Santos" em 2026);
 2. o H1 é "A sua melhor e mais saborosa pausa do dia.";
 3. o botão primário diz "Ver o cardápio" e **leva para `/gastronomia`**;
 4. o botão secundário diz "Como chegar" e leva para `/contato`;

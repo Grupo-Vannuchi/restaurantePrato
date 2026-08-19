@@ -129,7 +129,7 @@ O documento nunca usa tradição — o argumento dele é agilidade e fartura. A 
 atual apoia em `{years} anos no Centro de Santos` no eyebrow do hero e no
 `/experiencia`.
 
-**Decisão:** o eyebrow dos 27 anos **fica onde está**. A copy do documento entra
+**Decisão:** o eyebrow dos anos de casa **fica onde está**. A copy do documento entra
 abaixo dele. `foundedYear` continua alimentando `foundingDate` no schema.
 
 ### 3.7 O documento veio com OCR corrompido
