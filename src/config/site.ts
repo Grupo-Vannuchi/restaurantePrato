@@ -176,7 +176,15 @@ export const siteConfig: SiteConfig = {
     { key: "contato", href: "/contato" },
   ],
 
-  // ⚠️ PENDENTE: horário de funcionamento. Omitido de propósito — ver Task 2.
+  // Confirmado pelo cliente em 19/08/2026. Alimenta `openingHoursSpecification`
+  // no `Restaurant` JSON-LD, a grade de horários de `/reservas`, a linha do
+  // `/llms.txt` e a imagem OG — todos via `openingHoursLabel()`.
+  openingHours: {
+    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    opens: "11:00",
+    closes: "15:00",
+  },
+
   // ⚠️ PENDENTE: `servesCuisine`. Omitido de propósito — ver Task 3.
 
   /**
@@ -224,6 +232,71 @@ export function yearsInBusiness(now: Date = new Date()): number {
  */
 export function fillYears(text: string, now: Date = new Date()): string {
   return text.replaceAll("{years}", String(yearsInBusiness(now)));
+}
+
+/** Ordem canônica da semana, para detectar um intervalo contíguo de dias. */
+const DAY_ORDER: OpeningHours["days"] = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+/** Rótulo curto em português de cada dia da semana. */
+const DAY_LABELS: Record<OpeningHours["days"][number], string> = {
+  Monday: "seg",
+  Tuesday: "ter",
+  Wednesday: "qua",
+  Thursday: "qui",
+  Friday: "sex",
+  Saturday: "sáb",
+  Sunday: "dom",
+};
+
+/** "11:00" → "11h"; "11:30" → "11h30". */
+function hourLabel(value: string): string {
+  const [h, m] = value.split(":");
+  return m === "00" ? `${Number(h)}h` : `${Number(h)}h${m}`;
+}
+
+/**
+ * Uma linha legível de horário — "Seg a sex, das 11h às 15h" — ou `null`
+ * enquanto o horário do restaurante não é conhecido.
+ *
+ * ⚠️ O intervalo de dias faz parte do contrato, não é enfeite. Antes desta
+ * função, `llms.txt` e a imagem OG montavam a linha só com `opens`/`closes` e
+ * produziam "Aberto das 11h às 15h" — que afirma, para quem lê, que a casa abre
+ * todo dia. O Prato fecha no fim de semana; a string sem dias mandaria o
+ * visitante para a porta fechada no sábado. Qualquer consumidor novo de horário
+ * deve chamar isto em vez de formatar por conta.
+ */
+export function openingHoursLabel(
+  hours: OpeningHours | undefined = siteConfig.openingHours,
+): string | null {
+  if (!hours) return null;
+
+  const ordered = DAY_ORDER.filter((day) => hours.days.includes(day));
+  if (ordered.length === 0) return null;
+
+  const first = DAY_LABELS[ordered[0]];
+  const last = DAY_LABELS[ordered[ordered.length - 1]];
+  const contiguous =
+    DAY_ORDER.indexOf(ordered[ordered.length - 1]) -
+      DAY_ORDER.indexOf(ordered[0]) ===
+    ordered.length - 1;
+
+  const range =
+    ordered.length === 1
+      ? first
+      : contiguous
+        ? `${first} a ${last}`
+        : ordered.map((day) => DAY_LABELS[day]).join(", ");
+
+  const label = `${range}, das ${hourLabel(hours.opens)} às ${hourLabel(hours.closes)}`;
+  return label.charAt(0).toUpperCase() + label.slice(1);
 }
 
 /** Whether a WhatsApp number has been configured for the restaurant. */

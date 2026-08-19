@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { siteConfig } from "@/config/site";
+import { openingHoursLabel, siteConfig } from "@/config/site";
 
 /**
  * Imagem de compartilhamento padrão de todas as rotas (Open Graph + Twitter).
@@ -19,7 +19,7 @@ export const dynamic = "force-static";
 export default function OpengraphImage() {
   const { background, brand, foreground } = siteConfig.theme.dark;
   const { city, region } = siteConfig.contact.address;
-  const { openingHours } = siteConfig;
+  const hours = openingHoursLabel();
 
   return new ImageResponse(
     (
@@ -44,9 +44,9 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", fontSize: 34, opacity: 0.85 }}>
           Restaurante e cafeteria no Centro de {city}/{region}
         </div>
-        {openingHours ? (
+        {hours ? (
           <div style={{ display: "flex", fontSize: 28, color: brand }}>
-            {`${openingHours.opens.replace(":00", "h")} às ${openingHours.closes.replace(":00", "h")}`}
+            {hours}
           </div>
         ) : null}
       </div>

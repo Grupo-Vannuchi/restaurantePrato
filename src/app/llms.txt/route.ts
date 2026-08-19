@@ -1,4 +1,4 @@
-import { siteConfig, fullAddress } from "@/config/site";
+import { openingHoursLabel, siteConfig, fullAddress } from "@/config/site";
 import { defaultLocale } from "@/i18n/routing";
 import { localizedUrl } from "@/lib/seo";
 import { getMenu } from "@/lib/queries";
@@ -38,10 +38,11 @@ export async function GET(): Promise<Response> {
     // Database unavailable — ship the core pages only.
   }
 
-  const { openingHours } = siteConfig;
-  const hours = openingHours
-    ? ` Aberto das ${openingHours.opens.replace(":00", "h")} às ${openingHours.closes.replace(":00", "h")}.`
-    : "";
+  // `openingHoursLabel` já inclui os dias — ver o aviso na função. Formatar
+  // aqui a partir de `opens`/`closes` publicaria "aberto das 11h às 15h" sem
+  // dizer que a casa fecha no fim de semana.
+  const label = openingHoursLabel();
+  const hours = label ? ` ${label}.` : "";
   const sections = [
     `# ${name}`,
     "",
