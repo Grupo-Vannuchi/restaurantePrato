@@ -3,6 +3,7 @@ import {
   openingHoursLabel,
   phoneLink,
   siteConfig,
+  type OpeningHours,
   type SiteConfig,
 } from "@/config/site";
 
@@ -30,6 +31,18 @@ describe("horário de funcionamento", () => {
 });
 
 describe("openingHoursLabel", () => {
+  it("devolve null quando não há horário nenhum (fork novo, campo omitido)", () => {
+    // Diferente do teste acima (que testa `ordered.length === 0`), este mira o
+    // guard `if (!hours) return null`. Como o parâmetro tem default
+    // `= siteConfig.openingHours`, um `undefined` explícito cai no mesmo
+    // horário real do Prato — não existe forma de alcançar esse branch pela
+    // API normal. O cast abaixo é de propósito, só para simular em teste o
+    // estado inicial de um fork novo (`openingHours` omitido da config, como
+    // o AGENTS.md descreve). Não remover o cast "para limpar": sem ele este
+    // guard fica sem nenhuma cobertura de teste.
+    expect(openingHoursLabel(null as unknown as OpeningHours)).toBeNull();
+  });
+
   it("devolve null quando não há dias configurados", () => {
     // Não dá para testar isto com `openingHoursLabel(undefined)`: em JS, um
     // argumento explicitamente `undefined` cai no mesmo valor default que a

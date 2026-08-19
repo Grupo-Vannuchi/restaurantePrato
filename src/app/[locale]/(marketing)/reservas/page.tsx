@@ -6,7 +6,7 @@ import { localeMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { ReserveButton } from "@/components/reserve-button";
-import { fullAddress, siteConfig } from "@/config/site";
+import { fullAddress, openingHoursLabel } from "@/config/site";
 
 export async function generateMetadata({
   params,
@@ -54,7 +54,7 @@ export default async function ReservasPage({
   setRequestLocale(locale);
   const t = await getTranslations("reservas");
 
-  const { openingHours } = siteConfig;
+  const openingHoursText = openingHoursLabel();
 
   return (
     <>
@@ -85,10 +85,8 @@ export default async function ReservasPage({
         <div className="mt-10 grid gap-8 sm:grid-cols-2">
           <Fact icon={MapPin} label={t("addressLabel")} value={fullAddress()} />
         </div>
-        {openingHours ? (
-          <p className="sr-only">
-            {`${openingHours.opens}–${openingHours.closes}`}
-          </p>
+        {openingHoursText ? (
+          <p className="sr-only">{openingHoursText}</p>
         ) : null}
       </Section>
     </>
