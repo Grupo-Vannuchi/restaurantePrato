@@ -2,8 +2,8 @@
 
 Este repositório é um **fork do site pronto do Fogão de Ouro**, um restaurante do
 Centro Histórico de Santos — que por sua vez era um fork do site da agência N8X.
-Ele está sendo re-skinado para o **Restaurante Prato**, restaurante e cafeteria
-na R. Augusto Severo, 25, no Centro de Santos/SP.
+Ele está sendo re-skinado para o **Restaurante Prato**, restaurante na
+R. Augusto Severo, 25, no Centro de Santos/SP.
 
 **A estrutura de restaurante não muda.** Rotas, cardápio, galeria, reservas por
 WhatsApp, schema.org `Restaurant`, PT-only, admin com seis seções — tudo isso é
@@ -44,7 +44,10 @@ propósito: veja [`superpowers/README.md`](superpowers/README.md).
 | E-mail | pratocoffee@gmail.com |
 | WhatsApp | 5513978208568 · exibido `+55 (13) 97820-8568` |
 | Fundação | 1998 |
-| Natureza | Restaurante **e** cafeteria; aceita reserva |
+| Natureza | Restaurante de almoço — buffet e churrasco na brasa; aceita reserva. **Não é cafeteria** *(corrigido em 19/08/2026)*. A razão social diz "Coffee Shop", mas isso é registro, não posicionamento |
+| Horário | Segunda a sexta, das 11h às 15h *(19/08/2026)* |
+| Instagram | [@restaurante.prato](https://instagram.com/restaurante.prato) *(19/08/2026)* |
+| Cozinha | Brasileira, churrasco *(19/08/2026)* |
 
 Esses valores vivem em dois arquivos que precisam concordar:
 [`src/config/site.ts`](../src/config/site.ts) (marca, contato, structured data)
@@ -54,13 +57,12 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
 
 | Pendência | O que trava hoje |
 |---|---|
-| Horário de funcionamento | `openingHours` é opcional e está omitido: some o `openingHoursSpecification` do schema, o `Fact` de horário em `/reservas` e a linha de horário do `/llms.txt` e da imagem OG |
 | Paleta da marca | O tema em `site.ts` ainda é o herdado; sai no PR 2 |
 | Logo | A marca é **tipográfica** (`src/components/layout/logo.tsx`, `icon.tsx`, `apple-icon.tsx`, `opengraph-image.tsx`). Ver [`public/brand/README.md`](../public/brand/README.md) |
-| Copy definitiva | O catálogo `src/messages/pt.json` está no mínimo verdadeiro; entra no PR 3 |
+| Copy definitiva | ✅ Entregue em 19/08 e aplicada. O documento diverge do endereço confirmado (diz 09, o confirmado é 25) — ver a linha abaixo |
+| **Número do endereço** | O documento de copy diz "Rua Augusto Severo, 09"; o dado confirmado em 17/08 e o CNPJ dizem **25**. Mantido 25 até o cliente responder. Acoplado a quatro lugares: `src/config/site.ts`, `src/content/legal.ts`, `metadata.description` e `experiencia.disclaimer` |
+| Facebook | `social` só tem Instagram; o `sameAs` sai com um item |
 | Fotos (hero e galeria) | O hero tem um slide e `slideImages` está vazio |
-| Tipo de cozinha | `servesCuisine` é opcional e está omitido |
-| Instagram / Facebook | `social` está vazio, então `sameAs` sai do grafo sozinho |
 | Domínio final | `«PENDENTE»` em `src/content/legal.ts`; **enquanto existir, `SITE_INDEXABLE` fica `false`** |
 | Telefone fixo | Não existe: `contact.phone` é opcional e cada CTA de ligar some sozinho |
 | Cardápio | Categorias, itens e fotos entram pelo admin, não pelo código |
@@ -74,8 +76,11 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
 2. **PR 2 — identidade visual:** paleta do Prato (validar com
    `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`), logo, ícones e
    imagem OG voltando a ser imagem.
-3. **PR 3 — copy e conteúdo:** textos definitivos, horário de funcionamento,
-   fotos do hero e da galeria, cardápio pelo admin.
+3. **PR 3 — copy e conteúdo** ✅ parcialmente (este plano:
+   [`superpowers/plans/2026-08-19-copy-e-tom-de-voz-prato.md`](superpowers/plans/2026-08-19-copy-e-tom-de-voz-prato.md),
+   spec [`superpowers/specs/2026-08-19-copy-e-tom-de-voz-prato-design.md`](superpowers/specs/2026-08-19-copy-e-tom-de-voz-prato-design.md)):
+   copy definitiva, tom de voz, horário, Instagram e tipo de cozinha.
+   **Falta:** fotos do hero e da galeria, cardápio e depoimentos pelo admin.
 
 ## Infra — ainda para criar
 

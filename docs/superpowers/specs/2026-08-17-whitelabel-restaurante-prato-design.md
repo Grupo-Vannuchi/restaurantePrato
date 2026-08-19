@@ -11,8 +11,9 @@ de *por que* o código tem a forma que tem.
 
 ## 1. Objetivo
 
-Transformar o site do **Fogão de Ouro** no site do **Restaurante Prato** — Prato
-Coffee Shop, no Centro de Santos/SP.
+Transformar o site do **Fogão de Ouro** no site do **Restaurante Prato** —
+Coffee Shop na razão social, no Centro de Santos/SP — mas o negócio é um
+restaurante de almoço, não uma cafeteria (corrigido em 19/08/2026).
 
 Este é um white-label de **segunda geração**, e isso muda o tamanho do trabalho.
 O rebrand anterior partiu do site de uma *agência*: teve de remover funis, cinco
@@ -39,7 +40,7 @@ demais materiais não chegam.
 | CNPJ | 03.354.096/0001-84 | `site.ts` → `registration`; `legal.ts` |
 | Endereço | R. Augusto Severo, 25 — Centro, Santos/SP | `site.ts` → `contact.address`; `legal.ts` |
 | CEP | 11010-050 | `site.ts` → `contact.address.postalCode`; `legal.ts` |
-| Natureza | restaurante **e** cafeteria — aceita reserva | mantém `/reservas` e `acceptsReservations` |
+| Natureza | restaurante de almoço — buffet e churrasco; aceita reserva. **Não é cafeteria** *(corrigido em 19/08/2026)* | mantém `/reservas` e `acceptsReservations` |
 | E-mail | pratocoffee@gmail.com | `site.ts` → `contact.email`; `legal.ts` (inclusive LGPD) |
 | WhatsApp | +55 (13) 97820-8568 → `5513978208568` | `site.ts` → `contact.whatsapp` |
 | Fundação | junho de 1998 → `foundedYear: 1998` | `site.ts` |
@@ -278,8 +279,25 @@ pelo `npm install`. Continua valendo.
 ### 4.1.1 Resolvidas em 17/08/2026
 
 - **CEP:** 11010-050 (§2.1).
-- **Reservas:** o Prato é restaurante *e* cafeteria, e aceita reserva. `/reservas`
-  e `acceptsReservations: true` permanecem como estão.
+- **Reservas:** o Prato aceita reserva. `/reservas` e `acceptsReservations: true`
+  permanecem como estão. (Esta entrada dizia "restaurante *e* cafeteria" — errado;
+  ver a correção em 19/08/2026, abaixo.)
+
+**Resolvidas em 19/08/2026** — ver
+[`2026-08-19-copy-e-tom-de-voz-prato-design.md`](2026-08-19-copy-e-tom-de-voz-prato-design.md):
+
+- **"Coffee shop" muda a estrutura?** Não — e mais: **não é cafeteria.** O dono
+  do projeto confirmou em 19/08 que o Prato é um restaurante de almoço, e que o
+  Fogão de Ouro (também restaurante de almoço) é a base correta. O documento de
+  copy do cliente não menciona café uma única vez. A estrutura de restaurante
+  fica, "cafeteria" sai da copy e dos documentos de instrução, e a razão social
+  *Coffee Shop Refeições* continua só onde é registro (`legalName` em
+  `site.ts`, `legal.ts`).
+- **Horário, Instagram e tipo de cozinha** foram confirmados e publicados.
+
+Continua aberta a pergunta **1 (preços no cardápio)**, e abriu-se uma nova: o
+**número do endereço**, que o documento de copy diz ser 09 contra os 25
+confirmados em 17/08.
 
 ### 4.2 Riscos técnicos
 

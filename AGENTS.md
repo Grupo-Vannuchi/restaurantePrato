@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Working in this repo (agents & humans)
 
-**This is the site of the Restaurante Prato**, a restaurant and coffee shop at
+**This is the site of the Restaurante Prato**, a lunch restaurant at
 R. Augusto Severo, 25, in the Centro of Santos/SP. The repo is a **fork of
 another restaurant's finished site** (which was itself a fork of an agency
 site), re-skinned for this client — so the restaurant structure (routes, menu,
@@ -91,13 +91,17 @@ respectively — renaming the models would cost a table migration, a mass
 cache invalidation and Storage folders pointing nowhere, for zero
 user-visible change. Don't "finish the job" later.
 
-**Phone, opening hours and cuisine are optional on purpose.** The Prato has no
-landline, and its hours and cuisine types have not been confirmed, so
-`contact.phone`, `openingHours` and `servesCuisine` are optional in `SiteConfig`
-and currently omitted. Every consumer degrades: the call CTAs disappear, and
-`openingHoursSpecification`/`servesCuisine` drop out of the `Restaurant` schema
-instead of publishing a wrong value. Don't make them required again, and don't
-fill them with the previous client's values.
+**Phone is optional on purpose — hours and cuisine are now known.** The Prato has
+no landline, so `contact.phone` stays optional and currently omitted, and every
+call CTA disappears on its own. `openingHours` (Mon–Fri 11:00–15:00) and
+`servesCuisine` (Brasileira, Churrasco) were confirmed on 19/08/2026 and are now
+published — but they stay **optional in the type**, because the degradation they
+buy is real and was expensive to build. Don't make them required.
+
+⚠️ **Never format opening hours by hand.** Call `openingHoursLabel()` from
+`config/site.ts`. Two consumers used to build the line from `opens`/`closes`
+alone and rendered "Aberto das 11h às 15h" — which tells the reader the place
+opens on Saturday. The helper always includes the day range.
 
 **Reservations go straight to WhatsApp.** There is no booking backend.
 `whatsappLink()` returns `null` while no number is configured, and every caller
@@ -167,6 +171,14 @@ null by hardcoding a number.
   `pt.json`. `LocalizedText` is still a `Record<Locale, string>`, so DB content
   keeps its JSON shape — there is just one key in it now. ICU braces in stored
   copy that should render literally must be escaped: `'{NOME}'`.
+- **A missing ICU placeholder fails silently, not loudly.** Calling `t()`/`t.rich()`
+  on a message that has a `{placeholder}` without supplying it doesn't throw —
+  next-intl's default `getMessageFallback` prints the key itself instead (this is
+  exactly how `/experiencia` once rendered the literal string `experiencia.lead`
+  on the page). Neither `npm run typecheck` nor `npm run build` catches it.
+  `test/icu-placeholders.test.tsx` audits the catalog's placeholder inventory
+  against its call sites — extend it when you add a message with a placeholder,
+  don't just eyeball the page.
 
 ## Brand & theme
 
@@ -178,7 +190,10 @@ null by hardcoding a number.
   Prato colours have not arrived yet — swapping them is PR 2. The light theme
   ships a darker brand hex than the dark theme on purpose: the pure tone over
   the cream ground was 2.14:1. Verify any palette change with
-  `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`.
+  `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`. The
+  brand-coloured closing card on `/`, `/experiencia` and `/gastronomia` now
+  renders from one shared component (`components/sections/closing-cta.tsx`), so
+  that swap touches one place instead of three.
 - ⚠️ **The logo has not arrived either.** The mark is typographic
   (`components/layout/logo.tsx`, `app/icon.tsx`, `apple-icon.tsx`,
   `[locale]/opengraph-image.tsx`); the previous client's files were removed. See
