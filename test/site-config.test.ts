@@ -6,6 +6,7 @@ import {
   type OpeningHours,
   type SiteConfig,
 } from "@/config/site";
+import messages from "@/messages/pt.json";
 
 describe("phoneLink", () => {
   it("devolve null quando não há telefone configurado", () => {
@@ -102,5 +103,46 @@ describe("openingHoursLabel", () => {
     if (label !== null) {
       expect(label).toMatch(/seg|ter|qua|qui|sex|sáb|dom/i);
     }
+  });
+});
+
+describe("horário reescrito como prosa em pt.json (reservas)", () => {
+  // `reservas.subtitle` e `reservas.metaDescription` (src/messages/pt.json)
+  // repetem o horário como frase fixa — "De segunda a sexta, das 11h às
+  // 15h." — em vez de chamar `openingHoursLabel()` como o `Fact` da página
+  // faz. É proposital: fica melhor como prosa aprovada pelo cliente do que
+  // como template. Mas isso cria uma segunda fonte da verdade: o card de
+  // horário em /reservas acompanha `siteConfig.openingHours` sozinho; esta
+  // prosa, não — se o horário mudar, alguém precisa lembrar de reescrever
+  // as duas strings à mão.
+  //
+  // Por isso o teste abaixo prende `siteConfig.openingHours` ao par exato
+  // que a prosa assume (Seg-Sex, 11h-15h). Qualquer mudança de dias ou de
+  // um dos dois horários quebra este teste — de propósito, para forçar quem
+  // mudou `openingHours` a também atualizar `reservas.subtitle` e
+  // `reservas.metaDescription` em pt.json antes de dar a task por concluída.
+  it("siteConfig.openingHours continua Seg-Sex, 11h–15h — o par que a prosa assume", () => {
+    expect(
+      siteConfig.openingHours,
+      "openingHours mudou (dias e/ou horário). Atualize também " +
+        "reservas.subtitle e reservas.metaDescription em " +
+        "src/messages/pt.json — eles repetem o horário como prosa fixa e " +
+        "não são gerados por openingHoursLabel().",
+    ).toEqual({
+      days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "11:00",
+      closes: "15:00",
+    } satisfies OpeningHours);
+  });
+
+  it("reservas.subtitle e reservas.metaDescription ainda descrevem esse horário", () => {
+    // Complementa o teste acima: se a prosa for editada (por qualquer
+    // motivo) sem que `openingHours` tenha mudado, este teste avisa —
+    // mantendo as duas strings visíveis num diff em vez de deixá-las
+    // divergir em silêncio.
+    expect(messages.reservas.subtitle).toBe("De segunda a sexta, das 11h às 15h.");
+    expect(messages.reservas.metaDescription).toBe(
+      "Horário do Restaurante Prato, no Centro de Santos: de segunda a sexta, das 11h às 15h.",
+    );
   });
 });

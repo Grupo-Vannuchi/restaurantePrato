@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, MapPin, Sofa, Sunrise, Users } from "lucide-react";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
@@ -60,11 +60,38 @@ export default async function ReservasPage({
     <>
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
+      {/* Como está o salão ao longo do serviço — vem antes da seção de
+         grupos porque a página passou a liderar com o horário, não com o
+         convite para reservar (decisão do dono, 19/08: ver o commit "UPD:
+         /reservas passa a liderar com o horario"). */}
       <Section>
-        <ReserveButton size="lg" />
+        <SectionHeader title={t("practicalTitle")} align="left" />
+        <div className="mt-10 grid gap-8 sm:grid-cols-2">
+          {/* `openingHoursLabel` já inclui os dias — ver o aviso na função. */}
+          {hours ? (
+            <Fact icon={Clock} label={t("hoursLabel")} value={hours} />
+          ) : null}
+          <Fact icon={MapPin} label={t("addressLabel")} value={fullAddress()} />
+          <Fact
+            icon={Sunrise}
+            label={t("salaoEarlyLabel")}
+            value={t("salaoEarlyValue")}
+          />
+          <Fact
+            icon={Users}
+            label={t("salaoPeakLabel")}
+            value={t("salaoPeakValue")}
+          />
+          <Fact
+            icon={Sofa}
+            label={t("salaoLateLabel")}
+            value={t("salaoLateValue")}
+          />
+        </div>
       </Section>
 
-      {/* 5.2 — Reservas para grupos e eventos */}
+      {/* Reservas para grupos e eventos — o único convite de reserva que
+         sobra na página; o botão avulso do topo foi removido de propósito. */}
       <Section className="border-y border-border bg-muted/30">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
@@ -76,33 +103,6 @@ export default async function ReservasPage({
           <div className="mt-8 flex justify-center">
             <ReserveButton size="lg" message={t("groupsMessage")} />
           </div>
-        </div>
-      </Section>
-
-      {/* 5.3 — Como está o salão ao longo do serviço */}
-      <Section>
-        <SectionHeader title={t("practicalTitle")} align="left" />
-        <div className="mt-10 grid gap-8 sm:grid-cols-2">
-          {/* `openingHoursLabel` já inclui os dias — ver o aviso na função. */}
-          {hours ? (
-            <Fact icon={Clock} label={t("hoursLabel")} value={hours} />
-          ) : null}
-          <Fact icon={MapPin} label={t("addressLabel")} value={fullAddress()} />
-          <Fact
-            icon={Clock}
-            label={t("salaoEarlyLabel")}
-            value={t("salaoEarlyValue")}
-          />
-          <Fact
-            icon={Clock}
-            label={t("salaoPeakLabel")}
-            value={t("salaoPeakValue")}
-          />
-          <Fact
-            icon={Clock}
-            label={t("salaoLateLabel")}
-            value={t("salaoLateValue")}
-          />
         </div>
       </Section>
     </>
