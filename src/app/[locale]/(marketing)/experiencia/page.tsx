@@ -12,7 +12,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { ReserveButton } from "@/components/reserve-button";
 import { GalleryPreview } from "@/components/sections/gallery-preview";
-import { fillYears } from "@/config/site";
+import { fillYears, siteConfig } from "@/config/site";
 
 export async function generateMetadata({
   params,
@@ -74,7 +74,10 @@ export default async function AboutPage({
 
       <Section>
         <p className="max-w-3xl text-pretty text-xl leading-relaxed">
-          {t.rich("lead", richTags)}
+          {/* "lead" tem o placeholder ICU {foundedYear} — sem ele o next-intl
+              cai no fallback padrão (o nome literal da chave) em vez de
+              lançar um erro, então o bug só aparece olhando a página. */}
+          {t.rich("lead", { ...richTags, foundedYear: siteConfig.foundedYear })}
         </p>
       </Section>
 
