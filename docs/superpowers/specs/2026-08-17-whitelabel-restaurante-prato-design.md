@@ -61,13 +61,13 @@ o cliente.
 
 | Dado | Trava o quê | Chega quando |
 |---|---|---|
-| Horário de funcionamento | `/reservas`, `openingHoursSpecification`, `llms.txt`, imagem OG | junto com a copy |
-| Tipo de cozinha | `servesCuisine` | junto com a copy |
-| Copy institucional | ~40 strings em `pt.json` + 4 rotas de texto | o cliente vai enviar |
+| Horário de funcionamento | `/reservas`, `openingHoursSpecification`, `llms.txt`, imagem OG | junto com a copy — **resolvido em 19/08/2026**: segunda a sexta, das 11h às 15h, publicado em `site.ts` *(ver §4.1.1 e `docs/WHITELABEL-RESTAURANTE-PRATO.md`)* |
+| Tipo de cozinha | `servesCuisine` | junto com a copy — **resolvido em 19/08/2026**: `["Brasileira", "Churrasco"]`, publicado *(ver §4.1.1 e `docs/WHITELABEL-RESTAURANTE-PRATO.md`)* |
+| Copy institucional | ~40 strings em `pt.json` + 4 rotas de texto | o cliente vai enviar — **resolvido em 19/08/2026**: entregue e aplicada em todas as páginas públicas *(ver §4.1.1 e `docs/WHITELABEL-RESTAURANTE-PRATO.md`)* |
 | Paleta de cores | `theme.light` / `theme.dark` | o cliente vai enviar |
 | Logo | `public/brand/`, `logo.tsx`, `icon`, `apple-icon`, `opengraph-image` | o cliente vai enviar |
 | Fotos (hero, galeria, cardápio) | `hero.tsx` (`slideImages` está vazio), admin | o cliente vai enviar |
-| Instagram / Facebook | `social` → `sameAs` do JSON-LD | a confirmar |
+| Instagram / Facebook | `social` → `sameAs` do JSON-LD | a confirmar — **Instagram resolvido em 19/08/2026** (`https://instagram.com/restaurante.prato`, publicado); **Facebook continua pendente** *(ver §4.1.1 e `docs/WHITELABEL-RESTAURANTE-PRATO.md`)* |
 | Domínio final | `NEXT_PUBLIC_SITE_URL`; fica `«PENDENTE»` no `legal.ts` | a confirmar |
 
 ### 2.3 Infraestrutura
@@ -274,7 +274,9 @@ pelo `npm install`. Continua valendo.
    desenhadas para um restaurante de almoço executivo. O dono do projeto confirmou
    reaproveitar a estrutura; se a copy revelar um posicionamento de cafeteria,
    renomear rota continua sendo **três edições acopladas** (`NavKey`, chaves `nav`
-   no `pt.json`, pastas em `(marketing)/`).
+   no `pt.json`, pastas em `(marketing)/`). **Respondida em 19/08/2026: não
+   revelou** — o Prato é restaurante de almoço, não cafeteria, e a estrutura
+   fica como está. Ver §4.1.1.
 
 ### 4.1.1 Resolvidas em 17/08/2026
 
