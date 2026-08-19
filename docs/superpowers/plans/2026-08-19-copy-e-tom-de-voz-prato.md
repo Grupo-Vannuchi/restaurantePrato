@@ -58,8 +58,10 @@ Valem para **todas** as tasks abaixo.
 | `src/app/[locale]/opengraph-image.tsx` | cartão de compartilhamento | 1, 9 |
 | `src/messages/pt.json` | **todo** o texto de UI | 2, 4–10 |
 | `src/components/sections/hero-carousel.tsx` | destino dos CTAs do hero | 4 |
-| `src/app/[locale]/(marketing)/experiencia/page.tsx` | chamada de `subtitle` | 5 |
+| `src/app/[locale]/(marketing)/experiencia/page.tsx` | chamada de `subtitle`, fechamento | 5, 7 |
 | `src/app/[locale]/(marketing)/reservas/page.tsx` | grade de horários | 6 |
+| `src/components/sections/closing-cta.tsx` | **novo** — card de fechamento compartilhado | 7 |
+| `src/components/sections/cta.tsx` | fechamento da home | 7 |
 | `src/app/[locale]/(marketing)/gastronomia/page.tsx` | seção de fechamento | 7 |
 | `src/app/[locale]/(marketing)/contato/page.tsx` | canal do Instagram | 2 |
 | `test/copy-hygiene.test.ts` | **novo** — guarda de emoji e de "Centro Histórico" | 4 |
@@ -1085,25 +1087,200 @@ EOF
 
 ---
 
-### Task 7: `/gastronomia` — copy nova e o fechamento religado
+### Task 7: `/gastronomia` — copy nova, e o fechamento vira componente
 
 **Files:**
+- Create: `src/components/sections/closing-cta.tsx`
 - Modify: `src/messages/pt.json` (namespace `gastronomia`)
 - Modify: `src/app/[locale]/(marketing)/gastronomia/page.tsx`
+- Modify: `src/components/sections/cta.tsx`
+- Modify: `src/app/[locale]/(marketing)/experiencia/page.tsx`
 
 **Interfaces:**
 - Consumes: nada de tasks anteriores
-- Produces: nada consumido por tasks posteriores
+- Produces: `ClosingCta` — componente exportado de
+  `src/components/sections/closing-cta.tsx`, com a assinatura
+  `{ title: string; children?: ReactNode; actions: ReactNode; footer?: ReactNode }`
 
-**Contexto que o implementador precisa:** a página hoje termina seca — renderiza
-o `PageHeader` e as categorias do banco, e acabou. `gastronomia.ctaTitle` e
-`gastronomia.ctaButton` existem no catálogo mas **nenhum componente as consome**.
-Esta task religa esse fechamento; é a **única** seção nova de todo o plano, e foi
-aprovada explicitamente.
+**Contexto que o implementador precisa:** `/gastronomia` hoje termina seca —
+renderiza o `PageHeader` e as categorias do banco, e acabou.
+`gastronomia.ctaTitle` e `gastronomia.ctaButton` existem no catálogo mas
+**nenhum componente as consome**. Esta task religa esse fechamento.
 
-O padrão visual é o mesmo do fechamento de `/experiencia` — não inventar outro.
+O bloco de fechamento (card na cor da marca, blob de blur, título centralizado,
+fileira de botões) já está **duplicado** em `src/components/sections/cta.tsx` e
+em `src/app/[locale]/(marketing)/experiencia/page.tsx:91-131`. Em vez de fazer a
+terceira cópia, esta task **extrai o componente** e converte os três chamadores.
 
-- [ ] **Step 1: Reescrever o namespace**
+Isso não é limpeza gratuita: a paleta do cliente ainda não chegou. Quando chegar
+(PR 2), a troca precisa acontecer num lugar só, não em três.
+
+⚠️ **Uma diferença visual consciente.** Os dois blocos existentes divergem: em
+`cta.tsx` o `text-center` está no `Reveal` e o parágrafo tem `max-w-xl`; em
+`/experiencia` o `text-center` está num `div` interno com `mx-auto max-w-2xl`. O
+componente normaliza para a estrutura de `/experiencia`, então **o subtítulo do
+CTA da home fica um pouco mais largo** (`max-w-xl` → `max-w-2xl`). É a única
+mudança visual desta task, e é intencional. Não tente preservar as duas variantes
+com uma prop.
+
+- [ ] **Step 1: Criar o componente**
+
+Criar `src/components/sections/closing-cta.tsx`:
+
+```tsx
+import type { ReactNode } from "react";
+import { Container } from "@/components/ui/container";
+import { Reveal } from "@/components/ui/reveal";
+
+/**
+ * O card de fechamento na cor da marca: título, corpo e uma fileira de ações.
+ *
+ * Existe porque o mesmo bloco estava copiado em `sections/cta.tsx` e em
+ * `/experiencia`, e `/gastronomia` seria a terceira cópia. O motivo prático de
+ * unificar agora é o PR 2: a paleta do cliente ainda não chegou, e quando
+ * chegar a troca precisa acontecer num lugar só.
+ *
+ * `footer` existe para o disclaimer de `/experiencia`, que fica dentro do
+ * `Container` mas **fora** do card colorido.
+ */
+export function ClosingCta({
+  title,
+  children,
+  actions,
+  footer,
+}: {
+  title: string;
+  children?: ReactNode;
+  actions: ReactNode;
+  footer?: ReactNode;
+}) {
+  return (
+    <section className="py-20 sm:py-section">
+      <Container>
+        <Reveal className="relative overflow-hidden rounded-2xl bg-brand px-6 py-16 text-brand-foreground sm:px-12">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-white/10 blur-2xl"
+          />
+          <div className="relative mx-auto max-w-2xl text-center">
+            <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+              {title}
+            </h2>
+            {children ? <div className="mt-5">{children}</div> : null}
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              {actions}
+            </div>
+          </div>
+        </Reveal>
+        {footer}
+      </Container>
+    </section>
+  );
+}
+```
+
+- [ ] **Step 2: Converter o CTA da home**
+
+Substituir `src/components/sections/cta.tsx` inteiro por:
+
+```tsx
+import { getTranslations } from "next-intl/server";
+import { ArrowRight } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { buttonVariants } from "@/components/ui/button";
+import { ClosingCta } from "@/components/sections/closing-cta";
+import { ReserveButton } from "@/components/reserve-button";
+
+export async function CTA() {
+  const t = await getTranslations("home.cta");
+
+  return (
+    <ClosingCta
+      title={t("title")}
+      actions={
+        <>
+          <Link
+            href="/reservas"
+            className={buttonVariants({
+              variant: "accent",
+              size: "lg",
+              className: "group",
+            })}
+          >
+            {t("button")}
+            <ArrowRight className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+          <ReserveButton
+            variant="outline"
+            size="lg"
+            className="border-white/40 text-brand-foreground hover:bg-white/10"
+          />
+        </>
+      }
+    >
+      <p className="text-pretty opacity-90">{t("subtitle")}</p>
+    </ClosingCta>
+  );
+}
+```
+
+- [ ] **Step 3: Converter o fechamento de `/experiencia`**
+
+Em `src/app/[locale]/(marketing)/experiencia/page.tsx`, substituir o bloco que
+vai de `<section className="py-20 sm:py-section">` até o `</section>` que fecha
+esse mesmo bloco (o fechamento com o `contactCta`, terminando depois do
+parágrafo de `disclaimer`) por:
+
+```tsx
+      <ClosingCta
+        title={t("contactCta.title")}
+        actions={
+          <>
+            <Link
+              href="/contato"
+              className={buttonVariants({
+                variant: "accent",
+                size: "lg",
+                className: "group",
+              })}
+            >
+              {tc("talkToUs")}
+              <ArrowRight className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+            <ReserveButton
+              variant="outline"
+              size="lg"
+              className="border-white/40 text-brand-foreground hover:bg-white/10"
+              label={tc("reserveTable")}
+            />
+          </>
+        }
+        footer={
+          <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-muted-foreground">
+            {t("disclaimer")}
+          </p>
+        }
+      >
+        <div className="flex flex-col gap-3">
+          {contactParagraphs.map((p, i) => (
+            <p key={i} className="text-pretty leading-relaxed opacity-90">
+              {p}
+            </p>
+          ))}
+        </div>
+      </ClosingCta>
+```
+
+E adicionar o import:
+
+```tsx
+import { ClosingCta } from "@/components/sections/closing-cta";
+```
+
+Se `Container` ou `Reveal` ficarem sem uso no arquivo depois disso, o
+`npm run lint` aponta — remova os imports órfãos.
+
+- [ ] **Step 4: Reescrever o namespace `gastronomia`**
 
 Em `src/messages/pt.json`, substituir o objeto `gastronomia` inteiro por:
 
@@ -1128,11 +1305,11 @@ Duas observações sobre o que saiu e o que ficou:
 
 - **`viewAll` sai** — o objeto acima não o contém. Ele estava morto: só
   `common.viewAllMenu` e `common.viewAllGallery` são consumidos, por
-  `src/components/menu-preview.tsx:32` e `gallery-preview.tsx:31`.
+  `src/components/sections/menu-preview.tsx:32` e `gallery-preview.tsx:31`.
 - **`weekOfTitle` e os `weekday*` ficam** — são consumidos por
   `src/components/menu-item-card.tsx`. Não apagar.
 
-- [ ] **Step 2: Religar o fechamento da página**
+- [ ] **Step 5: Religar o fechamento de `/gastronomia`**
 
 Em `src/app/[locale]/(marketing)/gastronomia/page.tsx`, trocar os imports do
 topo por:
@@ -1144,7 +1321,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/page-header";
 import { MenuItemCard } from "@/components/menu-item-card";
-import { Container } from "@/components/ui/container";
+import { ClosingCta } from "@/components/sections/closing-cta";
 import { Reveal } from "@/components/ui/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { Section, SectionHeader } from "@/components/ui/section";
@@ -1153,45 +1330,34 @@ import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 ```
 
-E, no `return`, inserir a seção de fechamento logo **antes** do `</>` final —
-isto é, depois do bloco `{categories.length === 0 ? … : …}`:
+E, no `return`, inserir o fechamento logo **antes** do `</>` final — isto é,
+depois do bloco `{categories.length === 0 ? … : …}`:
 
 ```tsx
-      {/* Fechamento: quem terminou de ler o cardápio quer saber a que horas
-          pode vir, não reservar mesa. A conversão por WhatsApp continua no
-          `WhatsappButton` flutuante do layout de marketing. */}
-      <section className="py-20 sm:py-section">
-        <Container>
-          <Reveal className="relative overflow-hidden rounded-2xl bg-brand px-6 py-16 text-center text-brand-foreground sm:px-12">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-white/10 blur-2xl"
-            />
-            <h2 className="relative mx-auto max-w-2xl text-balance text-3xl font-bold tracking-tight sm:text-4xl">
-              {t("ctaTitle")}
-            </h2>
-            <p className="relative mx-auto mt-4 max-w-xl text-pretty opacity-90">
-              {t("ctaSubtitle")}
-            </p>
-            <div className="relative mt-8 flex justify-center">
-              <Link
-                href="/reservas"
-                className={buttonVariants({
-                  variant: "accent",
-                  size: "lg",
-                  className: "group",
-                })}
-              >
-                {t("ctaButton")}
-                <ArrowRight className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
+      {/* Quem terminou de ler o cardápio quer saber a que horas pode vir, não
+          reservar mesa. A conversão por WhatsApp continua no `WhatsappButton`
+          flutuante do layout de marketing, presente em toda página. */}
+      <ClosingCta
+        title={t("ctaTitle")}
+        actions={
+          <Link
+            href="/reservas"
+            className={buttonVariants({
+              variant: "accent",
+              size: "lg",
+              className: "group",
+            })}
+          >
+            {t("ctaButton")}
+            <ArrowRight className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+        }
+      >
+        <p className="text-pretty opacity-90">{t("ctaSubtitle")}</p>
+      </ClosingCta>
 ```
 
-- [ ] **Step 3: Validar**
+- [ ] **Step 6: Validar**
 
 ```bash
 npm run typecheck && npm run lint && npm test
@@ -1199,38 +1365,51 @@ npm run typecheck && npm run lint && npm test
 
 Esperado: os três passam.
 
-- [ ] **Step 4: Conferir na tela**
+- [ ] **Step 7: Conferir as três páginas na tela**
+
+Esta task mexeu em três telas — conferir as três, não só a nova.
 
 ```bash
 npm run dev
 ```
 
-Abrir `http://localhost:3000/gastronomia` e confirmar:
-
-1. o subtítulo é "Comida de verdade, churrasco na brasa e tempero caseiro.";
-2. no fim da página existe um bloco na cor da marca com o título "Qualidade,
-   fartura e agilidade para a sua pausa.";
-3. o botão diz "Ver os horários" e leva para `/reservas`;
-4. o bloco aparece **mesmo com o cardápio vazio** (o banco local pode não ter
-   categorias) — ele fica fora do condicional de `categories.length`.
+1. `http://localhost:3000/gastronomia` — o subtítulo é "Comida de verdade,
+   churrasco na brasa e tempero caseiro."; no fim da página existe o card na cor
+   da marca com "Qualidade, fartura e agilidade para a sua pausa." e o botão
+   "Ver os horários" levando para `/reservas`. O card aparece **mesmo com o
+   cardápio vazio** — ele fica fora do condicional de `categories.length`.
+2. `http://localhost:3000` — o card de fechamento continua com os **dois**
+   botões ("Veja nossos horários" e o de WhatsApp) e continua idêntico ao que
+   era, exceto pelo subtítulo um pouco mais largo (mudança consciente).
+3. `http://localhost:3000/experiencia` — o card de fechamento continua com os
+   dois botões, e o parágrafo de disclaimer continua **abaixo e fora** do card
+   colorido, centralizado e em texto pequeno.
 
 Encerrar com Ctrl+C.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
-git add src/messages/pt.json "src/app/[locale]/(marketing)/gastronomia/page.tsx"
+git add src/messages/pt.json src/components/sections/closing-cta.tsx src/components/sections/cta.tsx "src/app/[locale]/(marketing)/gastronomia/page.tsx" "src/app/[locale]/(marketing)/experiencia/page.tsx"
 git commit -m "$(cat <<'EOF'
-UPD: /gastronomia ganha copy nova e recupera o fechamento
+UPD: /gastronomia recupera o fechamento, que vira componente
 
 A varredura do catalogo mostrou que gastronomia.ctaTitle e ctaButton
 existiam sem nenhum componente consumindo -- a pagina terminava seca,
-sem passo seguinte nenhum para quem acabou de ler o cardapio.
+sem passo seguinte para quem acabou de ler o cardapio.
 
-Em vez de apagar as chaves, o fechamento volta, com o mesmo padrao
-visual do fechamento de /experiencia. O botao leva para /reservas: quem
-leu o cardapio quer saber a que horas pode vir. A conversao por WhatsApp
-continua no botao flutuante do layout.
+O bloco de fechamento ja estava copiado em sections/cta.tsx e em
+/experiencia; /gastronomia seria a terceira copia. Vira ClosingCta, com
+props de titulo, corpo e acoes. O motivo pratico e o PR 2: quando a
+paleta do cliente chegar, a troca acontece num lugar so.
+
+Uma mudanca visual consciente: os dois blocos divergiam, e o componente
+normaliza para a estrutura de /experiencia -- o subtitulo do CTA da home
+fica um pouco mais largo.
+
+O botao de /gastronomia leva para /reservas: quem leu o cardapio quer
+saber a que horas pode vir. A conversao por WhatsApp continua no botao
+flutuante do layout.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
 EOF
