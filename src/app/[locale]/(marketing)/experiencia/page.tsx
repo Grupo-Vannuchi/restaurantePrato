@@ -12,7 +12,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { ReserveButton } from "@/components/reserve-button";
 import { GalleryPreview } from "@/components/sections/gallery-preview";
-import { fillYears, siteConfig } from "@/config/site";
+import { fillYears } from "@/config/site";
 
 export async function generateMetadata({
   params,
@@ -69,7 +69,7 @@ export default async function AboutPage({
     <>
       <PageHeader
         title={t("title")}
-        subtitle={t("subtitle", { foundedYear: siteConfig.foundedYear })}
+        subtitle={t("subtitle")}
       />
 
       <Section>
