@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { Link } from "@/i18n/navigation";
+import { ehLinkSeguro } from "@/lib/safe-link";
 
 /**
  * Lightweight, dependency-free renderer for the lightly-marked-up text stored in
@@ -48,7 +49,7 @@ function renderInline(text: string): React.ReactNode[] {
           >
             {linkLabel}
           </Link>
-        ) : (
+        ) : ehLinkSeguro(linkHref) ? (
           <a
             key={key++}
             href={linkHref}
@@ -58,6 +59,12 @@ function renderInline(text: string): React.ReactNode[] {
           >
             {linkLabel}
           </a>
+        ) : (
+          // Destino recusado (`javascript:`, `data:`, ou coisa sem esquema
+          // reconhecível): sobra o rótulo como texto. Some o link, fica a
+          // frase — melhor que uma página quebrada, e muito melhor que um
+          // `href` que executa código no clique.
+          <Fragment key={key++}>{linkLabel}</Fragment>
         ),
       );
     } else if (bold) {
