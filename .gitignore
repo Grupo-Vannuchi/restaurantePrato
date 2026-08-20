@@ -60,3 +60,10 @@ next-env.d.ts
 # this project reads.
 docs/Logos-fogao_de_Ouro/*.zip
 docs/Logos-fogao_de_Ouro/EPS/
+
+# Backups do banco. O repositorio e PUBLICO e os contatos trazem nome, e-mail,
+# telefone e mensagem de quem escreveu pelo site — dado pessoal nao entra aqui.
+# `snapshot.sql` e a excecao consciente: e o retrato do banco LOCAL de
+# desenvolvimento, sem contato nenhum, e o SNAPSHOT.md depende dele.
+prisma/backups/*
+!prisma/backups/snapshot.sql

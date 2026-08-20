@@ -199,6 +199,43 @@ Everything else about the site — cardápio, galeria, avaliações, novidades �
 then entered through the admin panel. A new environment legitimately starts with
 an **empty** public site; that is the expected state, not a failed deploy.
 
+## Backup do conteúdo
+
+```bash
+DATABASE_URL="<url do banco>" npm run db:export
+```
+
+Grava `prisma/backups/conteudo-<data>.json` com cardápio, galeria, novidades,
+depoimentos, contatos e a configuração de notificação. O nome é ordenável, e o
+arquivo traz a data e a contagem de cada tabela no topo — um backup que parece
+completo e está vazio é pior que backup nenhum, porque adia a descoberta.
+
+**Por que existe, se o Supabase tem backup próprio.** O backup do provedor
+serve para catástrofe: banco corrompido, projeto apagado. Ele não serve para o
+acidente comum — alguém excluir uma categoria do cardápio com trinta pratos
+dentro (`onDelete: Cascade`) numa terça-feira. E não depende do plano.
+
+**Por que JSON e não `pg_dump`.** O `pg_dump` não está instalado na máquina de
+desenvolvimento: o `npm run db:dump` funciona porque roda *dentro* do contêiner
+Docker, e contra o Supabase não serve. O `db:export` fala pelo Prisma e roda em
+qualquer lugar que rode o projeto.
+
+⚠️ **O arquivo contém dado pessoal.** Os contatos trazem nome, e-mail, telefone
+e mensagem. O `.gitignore` cobre `prisma/backups/*` — com uma exceção
+consciente para o `snapshot.sql`, que é o retrato do banco **local** e não tem
+contato nenhum. **Este repositório é público:** não versione, não anexe em
+chat, trate como a senha do banco.
+
+O hash da senha do admin fica de fora de propósito. Sem ele o arquivo deixa de
+ser material de invasão, e a perda é nenhuma: recriar o acesso é um comando
+(`db:set-admin`), enquanto um hash vazado é permanente.
+
+⚠️ **A suíte E2E escreve, se você deixar.** `e2e/contact.spec.ts` envia o
+formulário de verdade. Contra um site publicado ele se pula sozinho; para rodar
+de propósito, `E2E_ALLOW_WRITES=1` — e a limpeza é sua. Em 20/08/2026 duas
+execuções da suíte completa contra o deploy deixaram dois contatos "Ana E2E" na
+lista do restaurante antes de a trava existir.
+
 ## Local development
 
 ```bash
