@@ -44,6 +44,12 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https://*.supabase.co https://lh3.googleusercontent.com",
   "font-src 'self' data:",
   `connect-src 'self'${isDev ? " ws: http://localhost:*" : ""}`,
+  // O rodapé embute o mapa do Google (`mapEmbedUrl()` em config/site.ts) num
+  // iframe, em toda página. Sem esta direção ele cai na `default-src` e o
+  // navegador recusa o quadro: o mapa vira um retângulo vazio, e nada no
+  // servidor acusa. `maps.google.com` é o endereço que o código monta;
+  // `www.google.com` é para onde o Google redireciona o embed.
+  "frame-src https://maps.google.com https://www.google.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

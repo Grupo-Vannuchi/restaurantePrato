@@ -40,6 +40,14 @@ for (const path of PAGES) {
 
     await page.goto(path, { waitUntil: "networkidle" });
 
+    // O rodapé embute o mapa com `loading="lazy"`, então ele só busca o quadro
+    // quando entra em tela. Sem rolar até o fim, cinco das seis páginas
+    // passavam por sorte: a violação existia e o teste não a via. Foi assim que
+    // a /galeria — curta o bastante para mostrar o rodapé sem rolagem — virou a
+    // única a acusar.
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(2000);
+
     expect(violations, violations.join("\n")).toEqual([]);
   });
 }

@@ -48,6 +48,15 @@ describe("cabeçalhos de segurança", () => {
     expect(csp).toContain("object-src 'none'");
   });
 
+  it("autoriza o mapa do rodapé", async () => {
+    // O rodapé embute o Google Maps num iframe, em toda página. Sem uma
+    // `frame-src` explícita ele cai na `default-src 'self'` e o navegador
+    // recusa o quadro — o mapa vira um retângulo vazio, sem erro visível no
+    // servidor. Foi exatamente o que aconteceu quando a CSP entrou.
+    const csp = (await headersFor("/"))["Content-Security-Policy"];
+    expect(csp).toMatch(/frame-src[^;]*maps\.google\.com/);
+  });
+
   it("autoriza as imagens do Storage do Supabase", async () => {
     const csp = (await headersFor("/"))["Content-Security-Policy"];
     expect(csp).toMatch(/img-src[^;]*\*\.supabase\.co/);
