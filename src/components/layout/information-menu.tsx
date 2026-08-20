@@ -30,7 +30,7 @@ export function InformationMenu({ links }: { links: InformationLink[] }) {
         <Menu className="size-6" />
       </Link>
 
-      <div className="invisible absolute right-0 top-full z-50 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100">
+      <div className="invisible absolute right-0 top-full z-50 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
         <div className="max-h-[min(70vh,32rem)] min-w-64 max-w-80 overflow-y-auto overscroll-contain rounded-md border border-border bg-background p-1 shadow-lg">
           {links.length === 0 ? (
             <p className="px-3 py-2 text-sm text-muted-foreground">{t("empty")}</p>

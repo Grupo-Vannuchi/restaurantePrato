@@ -72,9 +72,9 @@ export function Header({
                   className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground group-focus-within:text-foreground"
                 >
                   {t(item.key)}
-                  <ChevronDown className="size-4 transition-transform group-hover:rotate-180" />
+                  <ChevronDown className="size-4 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" />
                 </Link>
-                <div className="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100">
+                <div className="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                   <ul className="min-w-56 max-w-72 rounded-md border border-border bg-background p-1 shadow-lg">
                     {links.map((link) => (
                       <li key={link.slug}>

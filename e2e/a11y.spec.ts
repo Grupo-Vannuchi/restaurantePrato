@@ -113,3 +113,34 @@ test("o foco do teclado fica visível ao percorrer a página", async ({ page }) 
     ).toBe(true);
   }
 });
+
+/**
+ * Menu suspenso: abre no mouse, tem que abrir no teclado.
+ *
+ * O painel é CSS puro — nasce `invisible` e o `hover` o revela. Quem navega por
+ * teclado nunca dispara `hover`, e `visibility: hidden` também tira os links de
+ * dentro da ordem de tabulação: para essa pessoa o menu não existe.
+ *
+ * O que denuncia que era defeito, e não decisão: o gatilho já carregava
+ * `group-focus-within:text-foreground`. Alguém pensou no foco de teclado,
+ * mudou a cor do gatilho e esqueceu o painel.
+ *
+ * Aqui vai o hambúrguer de novidades, que está em toda página. O menu de
+ * `gastronomia` usa o mesmo mecanismo mas só é renderizado quando existem
+ * categorias de cardápio — enquanto não existirem, quem o cobre é
+ * `test/keyboard-dropdowns.test.ts`, que lê a fonte em vez do resultado.
+ */
+test("o menu de novidades abre com o foco do teclado, não só no hover", async ({ page }) => {
+  await page.goto("/");
+
+  const gatilho = page.locator('a[aria-label="Abrir novidades"]');
+  const grupo = page.locator("div.group").filter({ has: gatilho });
+  const painel = grupo.locator(":scope > div");
+
+  // Fechado antes de qualquer interação — senão o teste passaria mesmo com o
+  // painel permanentemente aberto, que é outro defeito.
+  await expect(painel).toBeHidden();
+
+  await gatilho.focus();
+  await expect(painel).toBeVisible();
+});
