@@ -73,7 +73,8 @@ dado guardado vira HTML:
 | `json-ld.tsx` | **título/descrição de novidade** | **era buraco real — fechado** |
 | `rich-text.tsx` (`href`) | destino escrito na novidade | lista de permissão |
 | `testimonials.tsx` (`sourceUrl`) | painel | lista de permissão no `zod` |
-| `src` de imagem (7 pontos) | painel | preso pelo `img-src` da CSP |
+| `src` de imagem (10 pontos) | painel | preso pelo `img-src` da CSP |
+| `src` do mapa (2 pontos) | `siteConfig` (código) | preso pelo `frame-src` da CSP |
 
 O do JSON-LD era real e foi confirmado num parser de HTML de verdade: sem
 escape, o DOM enxerga **2 elementos `<script>`** e o segundo executa; com
