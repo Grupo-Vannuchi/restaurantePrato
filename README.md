@@ -1,8 +1,8 @@
 # Restaurante Prato
 
-[![CI](https://github.com/Victor227br/restaurantePrato/actions/workflows/ci.yml/badge.svg)](https://github.com/Victor227br/restaurantePrato/actions/workflows/ci.yml)
+[![CI](https://github.com/Grupo-Vannuchi/restaurantePrato/actions/workflows/ci.yml/badge.svg)](https://github.com/Grupo-Vannuchi/restaurantePrato/actions/workflows/ci.yml)
 
-Site institucional do **Restaurante Prato**, restaurante e cafeteria no Centro de
+Site institucional do **Restaurante Prato**, restaurante de almoço no Centro de
 Santos/SP, construído com Next.js 16 (App Router), TypeScript, Tailwind CSS v4,
 Prisma e PostgreSQL: hero, a experiência da casa, a gastronomia, galeria,
 horários & reservas, contato, avaliações — mais um admin autenticado.

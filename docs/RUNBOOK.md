@@ -228,8 +228,32 @@ project's own repository — with push enabled by default. A single mistyped
 `git push upstream` would publish **this client's site into the other client's
 repository**: the Restaurante Prato brand, content and history, in a repo that
 belongs to a different business and has a different audience. The command above
-makes that push fail immediately instead of succeeding quietly. `origin`
-(`Victor227br/restaurantePrato`) is untouched and keeps working normally.
+makes that push fail immediately instead of succeeding quietly.
+
+**`origin` is `Grupo-Vannuchi/restaurantePrato`** (público), na mesma
+organização do `FogaoDeOuro` e dos demais sites de cliente. O repositório
+pessoal onde o fork nasceu continua alcançável como o remote `victor`
+(`Victor227br/restaurantePrato`) — **também com o push travado em `no_push`**,
+porque a conta que trabalha aqui não tem escrita lá e um push acidental só
+produziria um erro confuso:
+
+```bash
+git remote set-url --push victor no_push
+```
+
+⚠️ **O push exige o escopo `workflow` no token do GitHub.** A história versiona
+`.github/workflows/ci.yml`, e o GitHub recusa qualquer *Personal Access Token*
+sem esse escopo que crie ou altere um arquivo de workflow — a mensagem é
+`refusing to allow a Personal Access Token to create or update workflow`. Uma
+credencial só com `repo` empurra tudo, menos este projeto. Resolver:
+`gh auth refresh -h github.com -s workflow`. Se o `git` estiver usando o
+Gerenciador de Credenciais do Windows em vez do `gh`, o escopo novo não chega
+até ele; aponte o repositório para o `gh`:
+
+```bash
+git config --local --replace-all credential.helper ""
+git config --local --add credential.helper '!gh auth git-credential'
+```
 
 ⚠️ This lives in `.git/config`, which is **not versioned** — a fresh clone does
 not inherit it, and neither does a second working copy on another machine. It
