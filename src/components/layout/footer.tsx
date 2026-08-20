@@ -40,7 +40,7 @@ export async function Footer() {
         </div>
 
         <nav aria-label={t("navTitle")} className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold">{t("navTitle")}</h3>
+          <h2 className="text-sm font-semibold">{t("navTitle")}</h2>
           {siteConfig.nav.map((item) => (
             <Link
               key={item.key}
@@ -53,7 +53,7 @@ export async function Footer() {
         </nav>
 
         <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold">{t("contactTitle")}</h3>
+          <h2 className="text-sm font-semibold">{t("contactTitle")}</h2>
           <a
             href={`mailto:${siteConfig.contact.email}`}
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -78,7 +78,7 @@ export async function Footer() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold">{t("socialTitle")}</h3>
+          <h2 className="text-sm font-semibold">{t("socialTitle")}</h2>
           <div className="flex gap-3">
             {socials.map(([key, url]) => {
               const Icon = socialIcons[key];
