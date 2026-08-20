@@ -192,6 +192,12 @@
     "description": "A página que você procura não existe ou foi movida.",
     "back": "Voltar para o início"
   },
+  "errorPage": {
+    "title": "Algo deu errado",
+    "description": "Não conseguimos carregar esta página. Tente de novo — se continuar, fale com a gente pelo WhatsApp.",
+    "retry": "Tentar de novo",
+    "back": "Voltar para o início"
+  },
   "admin": {
     "login": {
       "title": "Painel administrativo",
