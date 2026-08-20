@@ -224,7 +224,12 @@ null by hardcoding a number.
   JSON-LD (`components/json-ld.tsx`): Google forbids *self-serving reviews* —
   emitting `Review`/`aggregateRating` about your own business, on your own
   site, risks losing the rich result entirely. Don't "helpfully" wire
-  testimonials into the schema later.
+  testimonials into the schema later. **This is now enforced, not just
+  written:** `test/json-ld-sem-avaliacao.test.ts` fails if `json-ld.tsx` so much
+  as imports testimonial data, and `e2e/structured-data.spec.ts` parses what the
+  published pages actually emit and refuses `review`/`aggregateRating` at any
+  nesting depth. Both carry a sentinel assertion, so they fail instead of
+  passing vacuously if the schema moves elsewhere.
 
 ## Workflow & board
 
