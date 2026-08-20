@@ -16,6 +16,9 @@ export async function GalleryPhotoCard({ photo }: { photo: GalleryPhotoView }) {
         alt={photo.caption || t("photoAlt")}
         width={640}
         height={480}
+        // Grade de 1 / 2 / 3 colunas: sem isto o navegador pede o arquivo do
+        // tamanho da janela inteira e joga fora dois terços dos bytes.
+        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
         className="aspect-[4/3] w-full rounded-xl object-cover"
       />
       {photo.caption ? (
