@@ -2,5 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "regions": ["gru1"],
   "framework": "nextjs",
-  "buildCommand": "npx prisma migrate deploy && next build"
+  "buildCommand": "npx prisma migrate deploy && next build",
+  "git": {
+    "deploymentEnabled": {
+      "Development": false
+    }
+  }
 }
