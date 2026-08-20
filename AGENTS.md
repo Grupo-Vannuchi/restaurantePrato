@@ -160,11 +160,14 @@ null by hardcoding a number.
 - **Integration state can go stale** — detect and surface it (the Evolution
   instance connection state feeds the admin WhatsApp panel). Never fail
   silently in a way that mimics a different outcome.
-- **Headers** are set in `next.config.ts`, CSP included — but a **partial**
-  one: everything that does not depend on a nonce is closed, and `script-src`
-  still carries `'unsafe-inline'`, so it does **not** mitigate XSS yet
-  (ADR-0004 stays open on that half; a nonce per request would drop all 31
-  prerendered pages to on-demand rendering).
+- **Headers** are set in `next.config.ts`, CSP included. It is **partial by
+  decision, not by omission**: `script-src` keeps `'unsafe-inline'` because Next
+  inlines the RSC payload as 23 `<script>` blocks per page — only a per-request
+  nonce removes it, and that drops all 31 prerendered pages to on-demand
+  rendering. The trade was settled by measurement, not preference: every place
+  stored data becomes HTML was swept and closed at the source. ADR-0004 lists
+  them and names the three conditions that reopen it. **Don't add a nonce
+  middleware on a hunch** — and don't read `'unsafe-inline'` as unfinished work.
   ⚠️ **Whatever the page loads, the policy must name.** The footer's Google
   Maps iframe was refused the moment the CSP shipped — `frame-src` was missing
   and it fell back to `default-src 'self'`. Nothing failed server-side: build

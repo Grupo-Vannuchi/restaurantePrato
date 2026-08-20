@@ -36,8 +36,13 @@ aim to acknowledge within a few business days.
   a **partial Content-Security-Policy**. The policy closes `base-uri`,
   `form-action`, `frame-ancestors` and `object-src`, and scopes `img-src`,
   `font-src`, `connect-src` and `frame-src` to what the site actually loads.
-  **`script-src` still carries `'unsafe-inline'`, so XSS is not yet mitigated**
-  — that half needs the nonce middleware and stays a known gap (ADR-0004).
+  **`script-src` carries `'unsafe-inline'` by decision, not by omission.** Next
+  inlines the RSC payload as 23 `<script>` blocks per page, so only a per-request
+  nonce could drop it — and the nonce costs all 31 prerendered pages. The trade
+  was settled by sweeping every place stored data becomes HTML and closing each
+  at the source; ADR-0004 lists them, and names the three conditions that reopen
+  the question (a third-party script, a public write that reaches HTML, or
+  visitor-written content that other visitors read).
 
 ## Pre-deploy checklist
 
