@@ -160,8 +160,17 @@ null by hardcoding a number.
 - **Integration state can go stale** — detect and surface it (the Evolution
   instance connection state feeds the admin WhatsApp panel). Never fail
   silently in a way that mimics a different outcome.
-- **Headers** are set in `next.config.ts`. CSP is intentionally **deferred**
-  (needs a nonce middleware; would break inline JSON-LD) — see ADR-0004.
+- **Headers** are set in `next.config.ts`, CSP included — but a **partial**
+  one: everything that does not depend on a nonce is closed, and `script-src`
+  still carries `'unsafe-inline'`, so it does **not** mitigate XSS yet
+  (ADR-0004 stays open on that half; a nonce per request would drop all 31
+  prerendered pages to on-demand rendering).
+  ⚠️ **Whatever the page loads, the policy must name.** The footer's Google
+  Maps iframe was refused the moment the CSP shipped — `frame-src` was missing
+  and it fell back to `default-src 'self'`. Nothing failed server-side: build
+  green, HTTP 200, and an empty rectangle for the visitor. `e2e/csp.spec.ts`
+  reads the browser console on six pages **after scrolling to the footer**,
+  because the map is lazy-loaded and only the shortest page exposed it.
 - Validate user input with `zod`; rely on Prisma's parameterized queries (no raw
   SQL concatenation).
 

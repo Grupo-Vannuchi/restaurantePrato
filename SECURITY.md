@@ -32,9 +32,12 @@ aim to acknowledge within a few business days.
   is exposed to the admin panel so a disconnected WhatsApp instance is visible
   instead of failing silently or mimicking a different outcome.
 - **Response headers** (`next.config.ts`): HSTS, `X-Frame-Options: DENY`,
-  `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`.
-  A **CSP is not yet in place** (needs a nonce middleware — see ADR-0004); this is
-  a known gap.
+  `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy` and
+  a **partial Content-Security-Policy**. The policy closes `base-uri`,
+  `form-action`, `frame-ancestors` and `object-src`, and scopes `img-src`,
+  `font-src`, `connect-src` and `frame-src` to what the site actually loads.
+  **`script-src` still carries `'unsafe-inline'`, so XSS is not yet mitigated**
+  — that half needs the nonce middleware and stays a known gap (ADR-0004).
 
 ## Pre-deploy checklist
 
