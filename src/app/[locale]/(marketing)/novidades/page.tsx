@@ -18,7 +18,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "novidades" });
   return {
     title: t("title"),
-    description: t("subtitle"),
+    description: t("metaDescription"),
     ...localeMetadata(locale, "/novidades"),
   };
 }

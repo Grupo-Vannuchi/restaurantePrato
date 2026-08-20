@@ -21,7 +21,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "gastronomia" });
   return {
     title: t("title"),
-    description: t("subtitle"),
+    description: t("metaDescription"),
     ...localeMetadata(locale, "/gastronomia"),
   };
 }

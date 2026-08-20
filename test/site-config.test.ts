@@ -142,7 +142,22 @@ describe("horário reescrito como prosa em pt.json (reservas)", () => {
     // divergir em silêncio.
     expect(messages.reservas.subtitle).toBe("De segunda a sexta, das 11h às 15h.");
     expect(messages.reservas.metaDescription).toBe(
-      "Horário do Restaurante Prato, no Centro de Santos: de segunda a sexta, das 11h às 15h.",
+      "Restaurante Prato, no Centro de Santos: almoço de segunda a sexta, das 11h às 15h. " +
+        "Reserve sua mesa pelo WhatsApp e garanta lugar no horário de pico.",
     );
+
+    // As igualdades acima mantêm a edição visível num diff. Estas amarram a
+    // prosa ao `siteConfig`: se o horário mudar lá, o número some daqui e o
+    // teste aponta a frase exata que ficou mentindo — em vez de exigir que
+    // alguém lembre de conferir.
+    const hora = (h: string) => h.replace(":00", "h");
+    for (const texto of [
+      messages.reservas.subtitle,
+      messages.reservas.metaDescription,
+    ]) {
+      expect(texto).toContain(hora(siteConfig.openingHours!.opens));
+      expect(texto).toContain(hora(siteConfig.openingHours!.closes));
+      expect(texto.toLowerCase()).toContain("segunda a sexta");
+    }
   });
 });
