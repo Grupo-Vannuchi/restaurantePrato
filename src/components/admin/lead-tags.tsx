@@ -58,7 +58,7 @@ export function LeadTags({ id, tags }: { id: string; tags: string[] }) {
           onChange={(e) => setValue(e.target.value)}
           placeholder={t("addTag")}
           maxLength={40}
-          className="w-28 rounded-full border border-border bg-card px-2.5 py-0.5 text-xs transition-colors placeholder:text-muted-foreground focus-visible:border-brand focus-visible:outline-none"
+          className="w-28 rounded-full border border-border bg-card px-2.5 py-0.5 text-xs transition-colors placeholder:text-muted-foreground focus-visible:border-brand"
         />
         <button
           type="submit"

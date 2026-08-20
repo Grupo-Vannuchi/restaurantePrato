@@ -15,7 +15,7 @@ import {
 import type { EvoGroup, EvoInstance } from "@/lib/evolution";
 
 const selectStyles =
-  "w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus-visible:border-brand focus-visible:outline-none disabled:opacity-60";
+  "w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus-visible:border-brand disabled:opacity-60";
 
 type Status = "loading" | "ok" | "error";
 

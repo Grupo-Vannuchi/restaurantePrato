@@ -74,7 +74,7 @@ export function InformationGallery({
   const current = index !== null ? items[index] : null;
 
   const arrowClass =
-    "absolute top-1/2 z-10 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 focus-visible:bg-white/25 focus-visible:outline-none";
+    "absolute top-1/2 z-10 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 focus-visible:bg-white/25";
 
   return (
     <GalleryContext.Provider value={{ openAt }}>
@@ -96,7 +96,7 @@ export function InformationGallery({
             type="button"
             onClick={close}
             aria-label={t("menuClose")}
-            className="absolute right-3 top-3 z-10 inline-flex size-10 items-center justify-center rounded-md text-white/90 transition-colors hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none"
+            className="absolute right-3 top-3 z-10 inline-flex size-10 items-center justify-center rounded-md text-white/90 transition-colors hover:bg-white/10 focus-visible:bg-white/10"
           >
             <X className="size-6" />
           </button>

@@ -71,3 +71,38 @@ for (const path of PAGES) {
     expect(semAlt).toBe(0);
   });
 }
+
+test("o foco do teclado fica visível ao percorrer a página", async ({ page }) => {
+  // `globals.css` desenha um contorno na cor da marca em `:focus-visible`. Uma
+  // classe `focus-visible:outline-none` num componente apaga essa regra — e foi
+  // o que aconteceu com o botão do site inteiro: o foco existia, invisível.
+  // Critério WCAG 2.4.7, nível AA.
+  await page.goto("/reservas");
+
+  // 30 paradas: o suficiente para atravessar o cabeçalho inteiro e alcançar
+  // os botões do corpo da página, que é onde o defeito estava.
+  for (let i = 0; i < 30; i++) {
+    await page.keyboard.press("Tab");
+
+    const contorno = await page.evaluate(() => {
+      const alvo = document.activeElement;
+      if (!alvo || alvo === document.body) return null;
+      const estilo = getComputedStyle(alvo);
+      return {
+        tag: alvo.tagName,
+        largura: parseFloat(estilo.outlineWidth) || 0,
+        estiloContorno: estilo.outlineStyle,
+        sombra: estilo.boxShadow,
+      };
+    });
+
+    if (!contorno) continue;
+
+    const temContorno = contorno.largura > 0 && contorno.estiloContorno !== "none";
+    const temSombra = contorno.sombra !== "none" && contorno.sombra !== "";
+    expect(
+      temContorno || temSombra,
+      `<${contorno.tag}> recebeu foco sem indicação visível`,
+    ).toBe(true);
+  }
+});

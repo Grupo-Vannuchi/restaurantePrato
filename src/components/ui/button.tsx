@@ -4,8 +4,19 @@ import { cn } from "@/lib/utils";
 type Variant = "primary" | "outline" | "ghost" | "accent";
 type Size = "sm" | "md" | "lg";
 
+/**
+ * ⚠️ Sem `focus-visible:outline-none` aqui, e de propósito.
+ *
+ * `globals.css` desenha um contorno na cor da marca em `:focus-visible`, para
+ * quem navega por teclado. Uma classe de utilitário apagando o contorno vence
+ * essa regra por precedência de camada — e o botão do site inteiro passou a
+ * receber foco de forma invisível, sem nada no lugar. Critério WCAG 2.4.7.
+ *
+ * Se algum dia for preciso trocar o contorno por um anel, troque: apagar sem
+ * substituir é que não.
+ */
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-60";
+  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors disabled:pointer-events-none disabled:opacity-60";
 
 const variants: Record<Variant, string> = {
   primary: "bg-brand text-brand-foreground hover:opacity-90",

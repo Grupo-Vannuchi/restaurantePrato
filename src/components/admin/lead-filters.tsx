@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
 const selectStyles =
-  "rounded-lg border border-border bg-card px-3 py-2 text-sm transition-colors focus-visible:border-brand focus-visible:outline-none";
+  "rounded-lg border border-border bg-card px-3 py-2 text-sm transition-colors focus-visible:border-brand";
 
 export type LeadFilterValues = {
   type?: string;

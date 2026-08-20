@@ -24,7 +24,7 @@ export function InformationCard({
   const gallery = useInformationGallery();
 
   const actionClass =
-    "inline-flex size-10 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white hover:text-brand focus-visible:bg-white focus-visible:text-brand focus-visible:outline-none";
+    "inline-flex size-10 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white hover:text-brand focus-visible:bg-white focus-visible:text-brand";
 
   return (
     <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-brand">
