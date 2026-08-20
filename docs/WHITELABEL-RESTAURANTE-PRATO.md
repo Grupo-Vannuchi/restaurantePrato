@@ -82,13 +82,27 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
    copy definitiva, tom de voz, horário, Instagram e tipo de cozinha.
    **Falta:** fotos do hero e da galeria, cardápio e depoimentos pelo admin.
 
-## Infra — ainda para criar
+## Infra — no ar desde 20/08/2026
 
-Projeto novo no Supabase (com o bucket público `media` e a Data API desabilitada)
-e projeto novo na Vercel, com `SESSION_SECRET` gerado do zero, `DATABASE_URL`
-(pooler 6543, `?pgbouncer=true`, **sem** `connection_limit=1`), `DIRECT_URL`
-(5432), `NEXT_PUBLIC_SITE_URL`, Upstash e uma instância Evolution nova para a
-notificação de leads. Os passos estão em [`RUNBOOK.md`](RUNBOOK.md).
+O site está publicado em **https://restaurante-prato.vercel.app**, fechado aos
+buscadores (`SITE_INDEXABLE=false`) enquanto o domínio final for `«PENDENTE»`.
+
+| Peça | Estado |
+|---|---|
+| Supabase | projeto `dkgqqqazdrwulcmnyvft`, região `sa-east-1`; 22 migrações aplicadas, 9 tabelas |
+| Bucket `media` | criado e público |
+| Data API | **desabilitada** — verificado tentando ler `admin_users` e `leads` com a chave publishable |
+| Vercel | projeto `restaurante-prato`, escopo `moraesvannuchi-debugs-projects`, região `gru1`, ligado a `Grupo-Vannuchi/restaurantePrato` |
+| Variáveis | 7 em Production, incluindo `SESSION_SECRET` gerado do zero |
+| Primeiro admin | criado com `db:set-admin`; o placeholder `admin@example.com` não existe |
+
+⚠️ **`vercel git connect` oferece o `upstream` primeiro.** A lista de remotes
+começa pelo repositório do Fogão de Ouro; aceitar o padrão ligaria o projeto do
+Prato ao repo do outro cliente. Passe a URL explícita.
+
+**Ainda não provisionados:** Upstash (o rate limit cai para memória, que não
+sobrevive entre instâncias serverless) e a instância Evolution da notificação de
+lead. Os passos estão em [`RUNBOOK.md`](RUNBOOK.md).
 
 ⚠️ `prisma/seed.ts` cria o admin com a senha padrão `changeme123` quando
 `SEED_ADMIN_PASSWORD` não está definida. Nunca subir para produção assim.

@@ -260,12 +260,27 @@ not inherit it, and neither does a second working copy on another machine. It
 has to be re-run per clone. Don't remove it as "leftover config": fetching from
 `upstream` still works, only pushing is blocked, which is exactly the intent.
 
-⚠️ **The Prato's own infrastructure is still to be created.** The Supabase
-project (with the public `media` bucket and the Data API left disabled), the
-Vercel project, a freshly generated `SESSION_SECRET`, the Upstash pair and a new
-Evolution instance for lead notifications all have to be provisioned before the
-first deploy — the environment sections above describe each one. Never reuse the
-previous project's credentials.
+✅ **A infraestrutura do Prato existe desde 20/08/2026.** O Supabase
+(`dkgqqqazdrwulcmnyvft`, `sa-east-1`, bucket `media` público, Data API
+desligada), o projeto `restaurante-prato` na Vercel (escopo
+`moraesvannuchi-debugs-projects`, região `gru1`) e o primeiro admin já estão de
+pé; o site responde em https://restaurante-prato.vercel.app, fechado aos
+buscadores. **Continuam por provisionar** o par do Upstash e uma instância
+Evolution nova para a notificação de lead. Nunca reaproveitar credencial do
+projeto anterior.
+
+⚠️ **`vercel git connect` lista o `upstream` primeiro.** Num clone deste repo a
+lista de remotes começa pelo `Grupo-Vannuchi/FogaoDeOuro`; aceitar o padrão
+ligaria o projeto do Prato ao repositório do outro cliente. Passe a URL:
+
+```bash
+vercel git connect https://github.com/Grupo-Vannuchi/restaurantePrato.git --yes
+```
+
+⚠️ **Um projeto criado com `vercel project add` nasce sem framework.** Sem
+código para inspecionar, a Vercel registra o preset como *Other*, que serve
+`public/` como site estático. Por isso o `vercel.json` declara
+`"framework": "nextjs"` — o valor do arquivo tem precedência sobre o painel.
 
 ## CSP (pending)
 
