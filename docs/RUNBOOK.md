@@ -230,6 +230,39 @@ O hash da senha do admin fica de fora de propósito. Sem ele o arquivo deixa de
 ser material de invasão, e a perda é nenhuma: recriar o acesso é um comando
 (`db:set-admin`), enquanto um hash vazado é permanente.
 
+### Restaurar
+
+```
+DATABASE_URL="<url do banco>" npm run db:import -- prisma/backups/conteudo-<data>.json
+DATABASE_URL="<url do banco>" npm run db:import -- <arquivo> --confirmar
+```
+
+**Sem `--confirmar` ele não toca no banco.** Lê, confere e imprime o que faria.
+Restaurar é operação que se faz com pressa, depois de já ter perdido alguma
+coisa, e apontar para o banco errado é o acidente mais fácil de cometer — o
+ensaio é a chance de ver o destino antes de escrever nele.
+
+**Confere o arquivo antes de aceitar.** É para isso que a contagem existe no
+topo do backup: download interrompido ou arquivo colado pela metade chega com a
+promessa e sem o conteúdo, e restaurar isso em silêncio apaga a diferença sem
+ninguém ver. O comando recusa e lista **todos** os problemas de uma vez, em vez
+de um por rodada.
+
+**Não apaga nada, e pode rodar duas vezes.** A escrita é `upsert` linha a
+linha: o que existe e não está no arquivo continua lá, e repetir dá o mesmo
+resultado que rodar uma vez. Restaurar não deveria ser uma segunda forma de
+perder dado.
+
+⚠️ **O admin não volta pelo backup** — o arquivo não traz o hash da senha. O
+comando avisa e segue; o caminho é `npm run db:set-admin`.
+
+⚠️ **O caminho de escrita (`--confirmar`) ainda não foi exercido contra um banco
+de verdade.** Em 20/08/2026 validou-se a leitura, a validação, a ordem de
+inserção e o ensaio — inclusive a recusa de arquivo truncado, com arquivo
+corrompido de propósito. A escrita não foi testada porque o banco Docker local
+estava desligado e o banco de produção não é bancada de teste. **Antes de contar
+com ele num aperto, ensaie uma restauração completa no Docker local.**
+
 ⚠️ **A suíte E2E escreve, se você deixar.** `e2e/contact.spec.ts` envia o
 formulário de verdade. Contra um site publicado ele se pula sozinho; para rodar
 de propósito, `E2E_ALLOW_WRITES=1` — e a limpeza é sua. Em 20/08/2026 duas
