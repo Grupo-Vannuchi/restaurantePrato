@@ -16,13 +16,31 @@ import { absoluteUrl, localizedUrl } from "@/lib/seo";
 const ORG_ID = `${localizedUrl(defaultLocale)}/#organization`;
 const SITE_ID = `${localizedUrl(defaultLocale)}/#website`;
 
-/** Serialize a JSON-LD object into a `<script>` tag safe for `<head>`/`<body>`. */
+/**
+ * Serializa o objeto JSON-LD para dentro de uma tag `<script>`.
+ *
+ * ⚠️ `JSON.stringify` **não escapa `<`** — não é função dele. Como o resultado
+ * é injetado com `dangerouslySetInnerHTML`, um `</script>` dentro de qualquer
+ * texto fecharia a tag ali, e o que viesse depois seria HTML executado pelo
+ * navegador.
+ *
+ * Isto foi inofensivo enquanto o payload vinha só de `siteConfig` — e o
+ * comentário que estava aqui afirmava exatamente isso. Deixou de ser verdade
+ * quando as novidades passaram a alimentar o schema `Article`: `title` e
+ * `description` são digitados no painel.
+ *
+ * `<` é escape válido de JSON, então o texto chega intacto a quem lê o
+ * dado estruturado — o Google vê a mesma frase que a página mostra.
+ */
+export function serializarJsonLd(data: Record<string, unknown>): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
     <script
       type="application/ld+json"
-      // Schema.org payload is built from trusted static config, not user input.
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: serializarJsonLd(data) }}
     />
   );
 }
