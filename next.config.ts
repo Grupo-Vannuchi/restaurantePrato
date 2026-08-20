@@ -4,11 +4,56 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 /**
+ * O servidor de desenvolvimento do Next avalia código em runtime (React Fast
+ * Refresh) e conversa por WebSocket com o navegador. Produção não faz nem uma
+ * coisa nem outra — daí as duas frouxidões abaixo valerem só aqui.
+ */
+const isDev = process.env.NODE_ENV === "development";
+
+/**
+ * Content-Security-Policy — parcial, e parcial de propósito.
+ *
+ * A ADR-0004 adiou a CSP inteira porque `script-src` sem `'unsafe-inline'`
+ * exige um nonce por requisição, e nonce por requisição tira do modo estático
+ * as 31 páginas que hoje são pré-renderizadas. Esse continua sendo o trabalho
+ * pendente, e é o único que mitiga XSS.
+ *
+ * O que **não** dependia disso, e portanto entra agora, fecha ataques reais:
+ *
+ * - `base-uri`: sem ela, um `<base>` injetado reescreve o destino de toda URL
+ *   relativa da página — incluindo o do formulário de contato.
+ * - `form-action`: prende o envio de formulário à própria origem, então nem
+ *   um formulário injetado consegue postar os dados do visitante noutro lugar.
+ * - `frame-ancestors`: a versão moderna do X-Frame-Options, que o header
+ *   antigo já cobre nos navegadores atuais mas não nas especificações novas.
+ * - `object-src`: mata `<object>`/`<embed>`, que este site não usa.
+ * - `default-src`: tudo que não tem direção própria cai em `'self'`.
+ *
+ * ⚠️ `script-src` traz `'unsafe-inline'` e por isso **não protege contra XSS**.
+ * Ele está aqui porque `default-src 'self'` sozinho bloquearia o JSON-LD e os
+ * scripts de hidratação do Next — ou seja, é o que impede a CSP de quebrar o
+ * site, não uma proteção. A ADR-0004 segue aberta nessa parte.
+ *
+ * `img-src` precisa concordar com o `remotePatterns` lá embaixo; `blob:` é o
+ * preview local da imagem no upload do admin, antes de ela existir no Storage.
+ */
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://*.supabase.co https://lh3.googleusercontent.com",
+  "font-src 'self' data:",
+  `connect-src 'self'${isDev ? " ws: http://localhost:*" : ""}`,
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+/**
  * Baseline security headers applied to every response. These are the "safe"
- * set that never breaks rendering. A Content-Security-Policy is deliberately
- * NOT set here: the site emits inline JSON-LD (<script type="application/ld+json">)
- * and loads external fonts/images, so a CSP needs a nonce middleware + testing
- * and should land as its own change.
+ * set that never breaks rendering.
  */
 const securityHeaders = [
   // Force HTTPS for two years (ignored on http/localhost by browsers).
@@ -27,6 +72,7 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
   },
+  { key: "Content-Security-Policy", value: contentSecurityPolicy },
 ];
 
 const nextConfig: NextConfig = {
@@ -42,12 +88,14 @@ const nextConfig: NextConfig = {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
   images: {
-    // Remote sources used for seeded/demo imagery. Add a client's CDN here.
+    // Toda imagem autorizada precisa existir também na `img-src` da CSP, acima.
+    //
+    // Os bancos de imagem que o fork trazia (Unsplash, Picsum, LoremFlickr)
+    // saíram: eles serviam o conteúdo de demonstração da agência, e aqui a
+    // regra é foto autoral do restaurante. Enquanto estivessem autorizados,
+    // bastava colar uma URL de banco de imagens num campo do painel para
+    // publicar foto genérica como se fosse da casa.
     remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "picsum.photos" },
-      // Per-information cover images: on-topic keyword + a unique lock per entry.
-      { protocol: "https", hostname: "loremflickr.com" },
       // Google Drive images: use the lh3.googleusercontent.com/d/<FILE_ID> form,
       // NOT the drive.google.com/file/d/<ID>/view share link.
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
