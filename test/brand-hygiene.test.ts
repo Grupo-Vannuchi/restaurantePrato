@@ -35,18 +35,31 @@ const FORBIDDEN = [
 
 const TEXT_EXT = new Set([".ts", ".tsx", ".json", ".css", ".mjs", ".md", ".txt"]);
 
-/** Todos os arquivos de texto sob um caminho, que pode ser arquivo ou pasta. */
+/**
+ * Um alvo citado nome a nome na lista: arquivo entra sempre, pasta é varrida.
+ *
+ * A extensão só filtra o que a varredura acha sozinha dentro de uma pasta.
+ * Enquanto ela filtrava também os alvos explícitos, `.env.example` ficava de
+ * fora — para o `extname` a extensão dele é `.example` — e o cabeçalho do
+ * template atravessou o rebrand ainda dizendo o nome do cliente anterior.
+ */
 function walk(target: string): string[] {
+  const full = join(process.cwd(), target);
+  return statSync(full).isFile() ? [full] : walkInside(target);
+}
+
+/** Arquivos de texto dentro de uma pasta, recursivamente. */
+function walkInside(target: string): string[] {
   const full = join(process.cwd(), target);
   if (statSync(full).isFile()) {
     return TEXT_EXT.has(extname(full)) ? [full] : [];
   }
-  return readdirSync(full).flatMap((entry) => walk(join(target, entry)));
+  return readdirSync(full).flatMap((entry) => walkInside(join(target, entry)));
 }
 
 /** `caminho: termo` para cada vestígio encontrado. */
 function offenders(targets: string[]): string[] {
-  return targets.flatMap(walk).flatMap((file) => {
+  return targets.flatMap((target) => walk(target)).flatMap((file) => {
     const text = readFileSync(file, "utf8");
     return FORBIDDEN.filter((term) => text.includes(term)).map(
       (term) => `${file.replace(process.cwd(), "")}: ${term}`,
@@ -87,6 +100,18 @@ describe("nenhum vestígio do cliente anterior", () => {
   it("nos documentos de instrução na raiz do repositório", () => {
     expect(
       offenders(["AGENTS.md", "CLAUDE.md", "README.md", "SECURITY.md"]),
+    ).toEqual([]);
+  });
+
+  it("nos arquivos de configuração da raiz", () => {
+    expect(
+      offenders([
+        ".env.example",
+        "docker-compose.yml",
+        "vercel.json",
+        "package.json",
+        "prisma.config.ts",
+      ]),
     ).toEqual([]);
   });
 
