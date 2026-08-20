@@ -98,6 +98,13 @@ test("o foco do teclado fica visível ao percorrer a página", async ({ page }) 
 
     if (!contorno) continue;
 
+    // O `<iframe>` do mapa fica de fora, e não por conveniência: quando o Tab
+    // entra num quadro embutido, o foco passa para o documento de dentro. O
+    // indicador visível ali é responsabilidade de quem serve aquele documento
+    // — o Google —, e a página de fora não tem como desenhá-lo. Exigir
+    // contorno no elemento `<iframe>` é exigir o impossível.
+    if (contorno.tag === "IFRAME") continue;
+
     const temContorno = contorno.largura > 0 && contorno.estiloContorno !== "none";
     const temSombra = contorno.sombra !== "none" && contorno.sombra !== "";
     expect(
