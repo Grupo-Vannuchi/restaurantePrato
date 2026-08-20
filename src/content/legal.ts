@@ -39,6 +39,48 @@ export const legalEntity = {
   site: PENDENTE("domínio final do site"),
 } as const;
 
+/** O prefixo que `PENDENTE()` escreve — reconhecer o valor exige reconhecê-lo. */
+const MARCA_PENDENTE = "«PENDENTE:";
+
+/**
+ * Campos do cliente que ainda não chegaram.
+ *
+ * Recebe a entidade por parâmetro (com a real por padrão) para poder ser
+ * testada de verdade: uma função que só sabe ler uma constante do módulo só
+ * pode ser testada contra o estado de hoje.
+ */
+export function pendenciasLegais(
+  entidade: Record<string, string> = legalEntity,
+): string[] {
+  return Object.entries(entidade)
+    .filter(([, valor]) => typeof valor === "string" && valor.includes(MARCA_PENDENTE))
+    .map(([campo]) => campo);
+}
+
+/**
+ * Por que o site não pode abrir aos buscadores — ou `null` quando pode.
+ *
+ * O aviso de não publicar com pendência existia como comentário no topo deste
+ * arquivo, e comentário não impede nada. Isto impede: `src/lib/env.ts` chama
+ * esta função e derruba a construção do site em vez de deixar subir uma página
+ * indexada com documento de LGPD incompleto.
+ *
+ * Errar aqui não custa retrabalho, custa retirada: página indexada leva semanas
+ * para sair do índice, e nesse meio-tempo ela é o documento legal do cliente.
+ */
+export function impedimentoParaIndexar(
+  indexavel: boolean,
+  pendencias: string[],
+): string | null {
+  if (!indexavel || pendencias.length === 0) return null;
+  return (
+    `SITE_INDEXABLE=true, mas src/content/legal.ts ainda tem dado do cliente ` +
+    `pendente: ${pendencias.join(", ")}. Abrir o site aos buscadores assim ` +
+    `publica um documento de LGPD incompleto, e tirar uma página do índice ` +
+    `leva semanas. Preencha o dado ou mantenha SITE_INDEXABLE=false.`
+  );
+}
+
 export type LegalSection = { heading: string; body: string[] };
 export type LegalDoc = {
   title: string;

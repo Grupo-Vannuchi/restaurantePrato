@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { impedimentoParaIndexar, pendenciasLegais } from "@/content/legal";
+
 /**
  * Centralised, validated access to environment variables.
  *
@@ -121,3 +123,24 @@ export const env = {
   ...clientEnv,
   ...(isServer ? parseServerEnv() : ({} as ReturnType<typeof parseServerEnv>)),
 };
+
+/**
+ * Tranca de lançamento: abrir aos buscadores com documento legal incompleto
+ * derruba a construção do site.
+ *
+ * `src/content/legal.ts` marca com `«PENDENTE: …»` cada dado do cliente que
+ * ainda não chegou, em vez de preencher por aproximação — dado de outra empresa
+ * num documento de LGPD é pior que campo em branco. O aviso de "não publicar
+ * enquanto houver pendência" existia como comentário, e comentário não impede
+ * ninguém.
+ *
+ * Roda aqui porque este módulo é lido durante o `build` (o `robots.ts` e o
+ * layout raiz importam `env`), então a falha aparece na construção — antes de
+ * existir uma página indexada. Errar na outra direção não custa retrabalho,
+ * custa retirada: página indexada leva semanas para sair do índice, e nesse
+ * meio-tempo ela é o documento legal do cliente.
+ */
+if (isServer) {
+  const impedimento = impedimentoParaIndexar(env.SITE_INDEXABLE, pendenciasLegais());
+  if (impedimento) throw new Error(impedimento);
+}

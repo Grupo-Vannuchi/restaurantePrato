@@ -125,6 +125,13 @@ Isso é deliberado, e o motivo está no topo de
 Política de Privacidade e dos Termos. Um site indexado declarando um domínio que
 não existe é pior que um site invisível.
 
+⚠️ **Isso deixou de ser combinado e virou trava.** Desde 20/08/2026,
+`SITE_INDEXABLE=true` com qualquer `«PENDENTE»` em `src/content/legal.ts`
+**derruba o build** — a falha estoura na coleta do `/robots.txt`, que é
+justamente a página que abriria o site, e a mensagem diz qual campo falta. Não
+há como abrir por engano, e não há como abrir por pressa. Se você precisa abrir,
+o caminho é preencher o dado, não contornar a trava.
+
 Some aí o fato de que `canonical`, `sitemap` e as imagens de compartilhamento
 apontam para o host configurado em `NEXT_PUBLIC_SITE_URL`. Indexar o
 `.vercel.app` antes do domínio real põe o endereço errado no índice do Google, e
