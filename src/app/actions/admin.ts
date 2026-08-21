@@ -34,9 +34,12 @@ export async function updateLeadStatus(
 
   try {
     await prisma.lead.update({ where: { id }, data: { status } });
-    // Admin routes are localized; revalidate both prefixes.
+    // O site é só em português e o prefixo padrão é omitido
+    // (`localePrefix: "as-needed"`), então existe UM caminho: `/admin/leads`.
+    // A chamada para `/en/admin/leads` veio do fork bilíngue e apontava para
+    // rota inexistente. Quem de fato atualiza a tela é o `router.refresh()` do
+    // componente cliente — esta chamada limpa o cache de rota e é o cinto.
     revalidatePath("/admin/leads");
-    revalidatePath("/en/admin/leads");
     return { ok: true };
   } catch (error) {
     console.error("Failed to update lead status", error);
@@ -59,7 +62,6 @@ export async function updateLeadTags(
       data: { tags: normalizeTags(tags) },
     });
     revalidatePath("/admin/leads");
-    revalidatePath("/en/admin/leads");
     return { ok: true };
   } catch (error) {
     console.error("Failed to update lead tags", error);
