@@ -2,6 +2,7 @@ import { openingHoursLabel, siteConfig, fullAddress } from "@/config/site";
 import { defaultLocale } from "@/i18n/routing";
 import { localizedUrl } from "@/lib/seo";
 import { getMenu } from "@/lib/queries";
+import { env } from "@/lib/env";
 
 /**
  * `/llms.txt` — a concise, link-rich map of the site for LLM/AI crawlers, per
@@ -17,7 +18,16 @@ function line(title: string, path: string, description?: string): string {
     : `- [${title}](${url})`;
 }
 
+/**
+ * Enquanto o site estiver fechado aos buscadores (`SITE_INDEXABLE=false`, o
+ * estado normal até o domínio chegar), esta rota não existe. Serví-la seria a
+ * contradição que o `robots.ts` já descreve: pedir para não ser rastreado e
+ * deixar o mapa do site à mão, num caminho que é convenção pública e que
+ * ninguém precisa que seja anunciado.
+ */
 export async function GET(): Promise<Response> {
+  if (!env.SITE_INDEXABLE) return new Response("Not Found", { status: 404 });
+
   const { name } = siteConfig;
 
   const core = [

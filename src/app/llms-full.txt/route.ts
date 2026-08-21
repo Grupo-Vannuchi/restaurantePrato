@@ -7,6 +7,7 @@ import {
   getInformationBySlug,
 } from "@/lib/queries";
 import type { MenuCategoryView } from "@/lib/queries";
+import { env } from "@/lib/env";
 
 /**
  * `/llms-full.txt` — the expanded companion to `/llms.txt`: the FULL text of the
@@ -71,7 +72,14 @@ async function collect<T extends { slug: string }, D>(
   return out;
 }
 
+/**
+ * Enquanto o site estiver fechado aos buscadores (`SITE_INDEXABLE=false`), esta
+ * rota não existe — ver a mesma nota em `/llms.txt`. Aqui o vazamento seria
+ * maior: este arquivo publica o texto integral da gastronomia e das novidades.
+ */
 export async function GET(): Promise<Response> {
+  if (!env.SITE_INDEXABLE) return new Response("Not Found", { status: 404 });
+
   const { name } = siteConfig;
 
   const sections: string[] = [
