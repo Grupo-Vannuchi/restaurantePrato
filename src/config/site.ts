@@ -71,6 +71,14 @@ export type SiteConfig = {
   foundedYear: number;
   /** Company registration number (Brazil: CNPJ). Optional. */
   registration?: string;
+  /**
+   * Fuso horário do restaurante, no formato IANA.
+   *
+   * ⚠️ Toda data mostrada a uma pessoa é formatada neste fuso — nunca no do
+   * servidor, que na Vercel é UTC. Use `restaurantDateFormat()` de
+   * `@/lib/dates`; não instancie `Intl.DateTimeFormat` por conta própria.
+   */
+  timeZone: string;
 
   contact: {
     email: string;
@@ -142,6 +150,8 @@ export const siteConfig: SiteConfig = {
   legalName: "PRATO COFFEE SHOP REFEICOES LTDA",
   foundedYear: 1998,
   registration: "03.354.096/0001-84",
+  // Santos/SP. Um fork para restaurante de outro fuso troca só esta linha.
+  timeZone: "America/Sao_Paulo",
 
   contact: {
     email: "pratocoffee@gmail.com",

@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inbox, UtensilsCrossed, Images } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
 import { getDashboardStats, getRecentLeads } from "@/lib/admin-queries";
+import { restaurantDateFormat } from "@/lib/dates";
 import { resolveLocale } from "@/i18n/routing";
 
 export default async function DashboardPage({
@@ -25,7 +26,7 @@ export default async function DashboardPage({
     { label: t("totalGalleryPhotos"), value: stats.totalGalleryPhotos, icon: Images },
   ];
 
-  const dateFormatter = new Intl.DateTimeFormat(locale, {
+  const dateFormatter = restaurantDateFormat(locale, {
     dateStyle: "medium",
   });
 

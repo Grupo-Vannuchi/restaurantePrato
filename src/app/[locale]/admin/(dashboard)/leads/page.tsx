@@ -8,6 +8,7 @@ import { LeadTags } from "@/components/admin/lead-tags";
 import { LeadNotifyConfig } from "@/components/admin/lead-notify-config";
 import { LeadForwardButton } from "@/components/admin/lead-forward-button";
 import { sourceLabel } from "@/lib/attribution";
+import { restaurantDateFormat } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 import { resolveLocale } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
@@ -62,7 +63,7 @@ export default async function LeadsPage({
     CONTACTED: t("statusContacted"),
     ARCHIVED: t("statusArchived"),
   };
-  const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium" });
+  const dateFormatter = restaurantDateFormat(locale, { dateStyle: "medium" });
 
   return (
     <div className="flex flex-col gap-6">
