@@ -51,14 +51,27 @@ export function ImageUploadField({
     if (!file) return;
     setError(null);
     setUploading(true);
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("preset", preset);
-    const res = await uploadImageAction(fd);
-    setUploading(false);
-    if (res.ok) onChange(res.url);
-    else setError(t(errorKey(res.error)));
-    if (inputRef.current) inputRef.current.value = "";
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("preset", preset);
+      const res = await uploadImageAction(fd);
+      if (res.ok) onChange(res.url);
+      else setError(t(errorKey(res.error)));
+    } catch {
+      // A ação nem chegou a responder: acima do teto de corpo da requisição
+      // (16 MB) o Next recusa antes de executá-la, e queda de rede dá no mesmo.
+      // Foto de celular passa de 16 MB com facilidade, então este caminho é
+      // rotina, não exceção.
+      setError(t("error"));
+    } finally {
+      // Em `finally`, não no caminho feliz: sem isto o botão ficava girando
+      // "Enviando…" para sempre, e o campo de arquivo continuava apontando
+      // para a foto escolhida — reescolher a MESMA não dispara `change`, então
+      // nem tentar de novo era possível.
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
   }
 
   return (
