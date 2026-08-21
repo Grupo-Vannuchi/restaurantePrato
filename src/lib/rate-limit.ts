@@ -91,7 +91,26 @@ export async function rateLimit(
   }
 }
 
-/** Best-effort client IP from proxy headers (Vercel sets x-forwarded-for). */
+/**
+ * IP do cliente, lido dos cabeçalhos do proxy.
+ *
+ * ⚠️ **Pegar o primeiro item do `x-forwarded-for` só é seguro porque isto roda
+ * na Vercel.** O cabeçalho é escrito pelo cliente em muitas hospedagens, e
+ * proxies que apenas *acrescentam* deixam o valor do atacante na frente — ali o
+ * primeiro item é justamente o que não se pode acreditar, e todo freio por IP
+ * (contato e login) vira decoração: basta girar o cabeçalho a cada tentativa.
+ *
+ * A Vercel não acrescenta, sobrescreve. A documentação é explícita: "Vercel
+ * overwrites this header and does not forward external IPs to prevent
+ * spoofing" — a exceção é o *trusted proxy* de contas Enterprise, que este
+ * projeto não usa (https://vercel.com/docs/headers/request-headers).
+ *
+ * Ou seja: a garantia é da hospedagem, não do código. **Sair da Vercel — para
+ * um Node atrás de nginx, por exemplo — quebra os dois freios em silêncio**,
+ * sem erro de build, sem teste vermelho e sem nada na tela. Nesse dia, troque
+ * por um IP vindo do proxy confiável (o item mais à direita, contando os saltos
+ * conhecidos) antes de subir.
+ */
 export async function clientIp(): Promise<string> {
   const h = await headers();
   const fwd = h.get("x-forwarded-for");
