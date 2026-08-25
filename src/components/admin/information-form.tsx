@@ -50,16 +50,25 @@ export function InformationForm({
   async function onSubmit(values: InformationFormValues) {
     setServerError(null);
     const input = formToInput(values);
-    const result: InformationActionResult =
-      mode === "edit" && informationId
-        ? await updateInformation(informationId, input)
-        : await createInformation(input);
+    try {
+      const result: InformationActionResult =
+        mode === "edit" && informationId
+          ? await updateInformation(informationId, input)
+          : await createInformation(input);
 
-    if (result.ok) {
-      router.push("/admin/novidades");
-      router.refresh();
-    } else {
-      setServerError(t(`error.${result.error}`));
+      if (result.ok) {
+        router.push("/admin/novidades");
+        router.refresh();
+      } else {
+        setServerError(t(`error.${result.error}`));
+      }
+    } catch {
+      // A ação nem chegou a responder: rede caída, servidor reiniciando,
+      // deploy no meio da requisição. O react-hook-form devolve
+      // `isSubmitting` a false no seu próprio `finally` e RELANÇA — então,
+      // sem este ramo, o botão destravava e a tela não dizia nada. Diante
+      // da ambiguidade a pessoa clica de novo e arrisca duplicar o registro.
+      setServerError(t("error.unknown"));
     }
   }
 

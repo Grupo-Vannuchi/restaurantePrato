@@ -44,15 +44,24 @@ export function GalleryPhotoForm({
   async function onSubmit(values: GalleryPhotoFormValues) {
     setServerError(null);
     const input = photoFormToInput(values);
-    const result: GalleryActionResult =
-      mode === "edit" && photoId
-        ? await updateGalleryPhoto(photoId, input)
-        : await createGalleryPhoto(input);
+    try {
+      const result: GalleryActionResult =
+        mode === "edit" && photoId
+          ? await updateGalleryPhoto(photoId, input)
+          : await createGalleryPhoto(input);
 
-    if (result.ok) {
-      router.push("/admin/galeria");
-      router.refresh();
-    } else {
+      if (result.ok) {
+        router.push("/admin/galeria");
+        router.refresh();
+      } else {
+        setServerError(t("errorUnknown"));
+      }
+    } catch {
+      // A ação nem chegou a responder: rede caída, servidor reiniciando,
+      // deploy no meio da requisição. O react-hook-form devolve
+      // `isSubmitting` a false no seu próprio `finally` e RELANÇA — então,
+      // sem este ramo, o botão destravava e a tela não dizia nada. Diante
+      // da ambiguidade a pessoa clica de novo e arrisca duplicar o registro.
       setServerError(t("errorUnknown"));
     }
   }

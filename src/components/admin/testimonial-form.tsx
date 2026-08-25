@@ -46,16 +46,25 @@ export function TestimonialForm({
   async function onSubmit(values: TestimonialFormValues) {
     setServerError(null);
     const input = formToInput(values);
-    const result: TestimonialActionResult =
-      mode === "edit" && testimonialId
-        ? await updateTestimonial(testimonialId, input)
-        : await createTestimonial(input);
+    try {
+      const result: TestimonialActionResult =
+        mode === "edit" && testimonialId
+          ? await updateTestimonial(testimonialId, input)
+          : await createTestimonial(input);
 
-    if (result.ok) {
-      router.push("/admin/testimonials");
-      router.refresh();
-    } else {
-      setServerError(t(`error.${result.error}`));
+      if (result.ok) {
+        router.push("/admin/testimonials");
+        router.refresh();
+      } else {
+        setServerError(t(`error.${result.error}`));
+      }
+    } catch {
+      // A ação nem chegou a responder: rede caída, servidor reiniciando,
+      // deploy no meio da requisição. O react-hook-form devolve
+      // `isSubmitting` a false no seu próprio `finally` e RELANÇA — então,
+      // sem este ramo, o botão destravava e a tela não dizia nada. Diante
+      // da ambiguidade a pessoa clica de novo e arrisca duplicar o registro.
+      setServerError(t("error.unknown"));
     }
   }
 

@@ -42,17 +42,26 @@ export function MenuCategoryForm({
   async function onSubmit(values: MenuCategoryFormValues) {
     setServerError(null);
     const input = categoryFormToInput(values);
-    const result: MenuActionResult =
-      mode === "edit" && categoryId
-        ? await updateMenuCategory(categoryId, input)
-        : await createMenuCategory(input);
+    try {
+      const result: MenuActionResult =
+        mode === "edit" && categoryId
+          ? await updateMenuCategory(categoryId, input)
+          : await createMenuCategory(input);
 
-    if (result.ok) {
-      router.push("/admin/cardapio");
-      router.refresh();
-    } else if (result.error === "duplicate") {
-      setServerError(t("errorDuplicate"));
-    } else {
+      if (result.ok) {
+        router.push("/admin/cardapio");
+        router.refresh();
+      } else if (result.error === "duplicate") {
+        setServerError(t("errorDuplicate"));
+      } else {
+        setServerError(t("errorUnknown"));
+      }
+    } catch {
+      // A ação nem chegou a responder: rede caída, servidor reiniciando,
+      // deploy no meio da requisição. O react-hook-form devolve
+      // `isSubmitting` a false no seu próprio `finally` e RELANÇA — então,
+      // sem este ramo, o botão destravava e a tela não dizia nada. Diante
+      // da ambiguidade a pessoa clica de novo e arrisca duplicar o registro.
       setServerError(t("errorUnknown"));
     }
   }
