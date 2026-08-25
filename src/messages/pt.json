@@ -240,6 +240,7 @@
       "status": "Status",
       "markContacted": "Marcar como respondido",
       "archive": "Arquivar",
+      "updateError": "Não foi possível atualizar. Tente de novo.",
       "typeContact": "Contato",
       "statusNew": "Novo",
       "statusContacted": "Respondido",

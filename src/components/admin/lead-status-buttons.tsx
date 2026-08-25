@@ -1,10 +1,9 @@
 "use client";
 
-import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import type { LeadStatus } from "@prisma/client";
-import { useRouter } from "@/i18n/navigation";
 import { updateLeadStatus } from "@/app/actions/admin";
+import { useAdminAction } from "@/components/admin/use-admin-action";
 import { Button } from "@/components/ui/button";
 
 export function LeadStatusButtons({
@@ -15,18 +14,14 @@ export function LeadStatusButtons({
   status: LeadStatus;
 }) {
   const t = useTranslations("admin.leads");
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  const { pending, erro, run } = useAdminAction(t("updateError"));
 
   function setStatus(next: LeadStatus) {
-    startTransition(async () => {
-      await updateLeadStatus(id, next);
-      router.refresh();
-    });
+    void run(() => updateLeadStatus(id, next));
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       {status !== "CONTACTED" ? (
         <Button
           variant="outline"
@@ -47,6 +42,7 @@ export function LeadStatusButtons({
           {t("archive")}
         </Button>
       ) : null}
+      {erro ? <span className="text-xs text-red-500">{erro}</span> : null}
     </div>
   );
 }
