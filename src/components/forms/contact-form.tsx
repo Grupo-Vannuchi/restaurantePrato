@@ -33,14 +33,27 @@ export function ContactForm() {
 
   async function onSubmit(data: ContactInput) {
     setStatus("idle");
-    const result = await submitContactLead(
-      { ...data, ...readAttribution() },
-      locale,
-    );
-    if (result.ok) {
-      reset();
-      setStatus("success");
-    } else {
+    try {
+      const result = await submitContactLead(
+        { ...data, ...readAttribution() },
+        locale,
+      );
+      if (result.ok) {
+        reset();
+        setStatus("success");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      // A ação nem chegou a responder: rede caída, servidor reiniciando, deploy
+      // no meio da requisição. Sem este ramo, `setStatus("error")` não roda — o
+      // react-hook-form devolve `isSubmitting` a false no seu próprio `finally`
+      // e relança, então o botão destrava e a tela não muda em nada.
+      //
+      // Aqui o silêncio custa mais caro que no painel: quem está do outro lado é
+      // um cliente escrevendo para o restaurante. Ele vê o botão voltar ao
+      // normal, presume que enviou, e vai embora esperando resposta. Ninguém no
+      // restaurante fica sabendo que ele existiu.
       setStatus("error");
     }
   }

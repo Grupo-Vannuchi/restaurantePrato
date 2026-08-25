@@ -61,6 +61,54 @@ describe("ContactForm", () => {
     expect(await screen.findByRole("status")).toBeInTheDocument();
   });
 
+  /**
+   * O visitante precisa saber quando a mensagem NAO saiu.
+   *
+   * O formulario ja mostrava o aviso quando a acao RESPONDE que nao deu. Faltava
+   * o caso em que ela nao chega a responder — rede caida, servidor reiniciando,
+   * o freio por IP recusando. Sem `try/catch`, `setStatus("error")` nunca roda: o
+   * react-hook-form devolve `isSubmitting` a false no seu proprio `finally` e
+   * RELANCA, entao o botao destrava e a tela nao muda em nada.
+   *
+   * Aqui o silencio custa mais caro que no painel. Quem esta do outro lado e um
+   * cliente em potencial escrevendo para o restaurante: ele ve o botao voltar ao
+   * normal, presume que enviou, e vai embora esperando resposta que nunca vem.
+   * Ninguem no restaurante fica sabendo que existiu.
+   *
+   * A falha de transporte e simulada com a acao devolvendo `undefined` — ler
+   * `.ok` de `undefined` lanca dentro do `try`, igual ao `await` de uma chamada
+   * recusada, e sem deixar promessa rejeitada orfa em `mock.results`.
+   */
+  it("avisa o visitante quando o envio nao chega ao servidor", async () => {
+    mockSubmit.mockResolvedValue(undefined as never);
+    const user = userEvent.setup();
+    renderWithIntl(<ContactForm />);
+
+    const [name, email, , , message] = screen.getAllByRole("textbox");
+    await user.type(name, "Ana");
+    await user.type(email, "ana@example.com");
+    await user.type(message, "Ola, gostaria de reservar uma mesa para amanha.");
+    await user.click(screen.getByRole("button"));
+
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("continua avisando quando a acao responde que nao deu", async () => {
+    // Sentinela: o `catch` novo nao pode engolir o caminho que ja funcionava.
+    mockSubmit.mockResolvedValue({ ok: false });
+    const user = userEvent.setup();
+    renderWithIntl(<ContactForm />);
+
+    const [name, email, , , message] = screen.getAllByRole("textbox");
+    await user.type(name, "Ana");
+    await user.type(email, "ana@example.com");
+    await user.type(message, "Ola, gostaria de reservar uma mesa para amanha.");
+    await user.click(screen.getByRole("button"));
+
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
+  });
+
   it("has no detectable accessibility violations", async () => {
     const { container } = renderWithIntl(<ContactForm />);
     const results = await axe(container);

@@ -74,47 +74,67 @@ describe("quando o salvamento não chega ao servidor", () => {
   });
 });
 
-describe("os formulários do painel", () => {
-  // A guarda contra a divergência: os cinco tinham o mesmo buraco, e um deles
-  // ficar para trás numa correção futura não apareceria em lugar nenhum.
-  const PASTA = join(process.cwd(), "src", "components", "admin");
-  const ARQUIVOS = readdirSync(PASTA).filter((n) => n.endsWith("-form.tsx"));
+describe("os formulários que enviam para o servidor", () => {
+  // A guarda contra a divergência. Ela cobre `admin/` E `forms/` de propósito:
+  // a varredura anterior olhava só o painel, e por isso não viu que o
+  // formulário PÚBLICO de contato tinha o mesmo buraco — o mais caro dos seis,
+  // porque do outro lado dele está um cliente escrevendo para o restaurante.
+  const PASTAS = [
+    join(process.cwd(), "src", "components", "admin"),
+    join(process.cwd(), "src", "components", "forms"),
+  ];
+
+  const ARQUIVOS = PASTAS.flatMap((pasta) =>
+    readdirSync(pasta)
+      .filter((n) => n.endsWith("-form.tsx"))
+      .map((n) => ({ nome: n, caminho: join(pasta, n) })),
+  );
 
   // Normaliza a quebra de linha: os arquivos do repo usam a do Windows, e o
   // recorte do corpo abaixo procura pela do Unix. Sem normalizar, a varredura
   // nunca acha o fim do onSubmit e acusa todo mundo, inclusive quem está certo.
-  const fonte = (nome: string) =>
-    readFileSync(join(PASTA, nome), "utf8").split("\r\n").join("\n");
+  const fonte = (caminho: string) =>
+    readFileSync(caminho, "utf8").split("\r\n").join("\n");
 
   const ANCORA = "async function onSubmit";
   const FIM_DA_FUNCAO = "\n  }\n";
 
   /** Os que enviam por react-hook-form, com um `onSubmit` que chama a ação. */
-  const COM_ONSUBMIT = ARQUIVOS.filter((n) => fonte(n).includes(ANCORA));
+  const COM_ONSUBMIT = ARQUIVOS.filter((a) => fonte(a.caminho).includes(ANCORA));
 
-  it("são cinco os que enviam por onSubmit — senão a guarda não guarda", () => {
-    expect(COM_ONSUBMIT).toHaveLength(5);
+  it("são seis os que enviam por onSubmit — senão a guarda não guarda", () => {
+    expect(COM_ONSUBMIT.map((a) => a.nome).sort()).toEqual([
+      "contact-form.tsx",
+      "gallery-photo-form.tsx",
+      "information-form.tsx",
+      "menu-category-form.tsx",
+      "menu-item-form.tsx",
+      "testimonial-form.tsx",
+    ]);
   });
 
   it("todos protegem o envio contra a ação que não responde", () => {
-    const desprotegidos = COM_ONSUBMIT.filter((nome) => {
-      const texto = fonte(nome);
+    const desprotegidos = COM_ONSUBMIT.filter(({ caminho }) => {
+      const texto = fonte(caminho);
       const daAncora = texto.slice(texto.indexOf(ANCORA));
       const corpo = daAncora.slice(0, daAncora.indexOf(FIM_DA_FUNCAO));
       return !corpo.includes("try {") || !corpo.includes("} catch");
-    });
+    }).map((a) => a.nome);
 
     expect(desprotegidos).toEqual([]);
   });
 
   it("deixa o login de fora de propósito", () => {
-    // `login-form.tsx` é o sexto arquivo `-form.tsx` e NÃO entra na varredura
+    // `login-form.tsx` é o sétimo arquivo `-form.tsx` e NÃO entra na varredura
     // acima — por decisão, não por descuido. Ele envia por `useActionState`,
     // sem `onSubmit`, e a ação `login()` termina em `redirect()`, que funciona
     // LANÇANDO um erro especial que o Next precisa receber. Um `try/catch` ali
     // engoliria o redirecionamento, e o login pararia de sair da tela de login.
-    expect(ARQUIVOS).toContain("login-form.tsx");
-    expect(COM_ONSUBMIT).not.toContain("login-form.tsx");
-    expect(fonte("login-form.tsx")).toMatch(/useActionState/);
+    const nomes = ARQUIVOS.map((a) => a.nome);
+    const login = ARQUIVOS.find((a) => a.nome === "login-form.tsx")!;
+
+    expect(nomes).toContain("login-form.tsx");
+    expect(COM_ONSUBMIT.map((a) => a.nome)).not.toContain("login-form.tsx");
+    expect(fonte(login.caminho)).toMatch(/useActionState/);
   });
 });
