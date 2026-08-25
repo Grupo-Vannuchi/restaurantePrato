@@ -23,13 +23,22 @@ export function LeadForwardButton({ id }: { id: string }) {
   async function onClick() {
     setErr(null);
     setState("sending");
-    const res = await forwardLeadAction(id);
-    if (res.ok) {
-      setState("sent");
-      router.refresh();
-    } else {
+    try {
+      const res = await forwardLeadAction(id);
+      if (res.ok) {
+        setState("sent");
+        router.refresh();
+      } else {
+        setState("error");
+        setErr(t(`error.${errorKey(res.error)}` as "error.sendFailed"));
+      }
+    } catch {
+      // A ação nem chegou a responder. Este botão fala com a Evolution, que é
+      // um servidor EXTERNO e cai de verdade — sem este ramo o botão ficava
+      // travado em "enviando" para sempre, e a rejeição subia para o error
+      // boundary em vez de virar aviso.
       setState("error");
-      setErr(t(`error.${errorKey(res.error)}` as "error.sendFailed"));
+      setErr(t("error.sendFailed"));
     }
   }
 

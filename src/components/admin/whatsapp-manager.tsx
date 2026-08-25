@@ -18,6 +18,27 @@ import {
 
 type Qr = { instance: string; base64: string | null };
 
+/**
+ * Executa uma chamada à Evolution sem deixar a rejeição escapar.
+ *
+ * As seis ações deste painel vão para um servidor EXTERNO, que fica fora do ar
+ * de verdade — não é hipótese. Sem isto, cada uma quebrava de um jeito próprio:
+ * a listagem prendia o painel no esqueleto animado para sempre, criar e conectar
+ * travavam o botão em "Criando…", e a checagem do QR (a cada 3 segundos) virava
+ * rejeição não tratada em looping.
+ *
+ * Devolver `null` faz o chamador tratar "não respondeu" e "respondeu que não deu"
+ * pelo mesmo caminho — `!res?.ok` —, que é o que se quer: para quem olha a tela,
+ * os dois são a mesma coisa.
+ */
+async function semEstourar<T>(acao: () => Promise<T>): Promise<T | null> {
+  try {
+    return await acao();
+  } catch {
+    return null;
+  }
+}
+
 const STATE_STYLES: Record<string, string> = {
   open: "bg-emerald-500/10 text-emerald-600",
   connecting: "bg-amber-500/10 text-amber-600",
@@ -41,8 +62,8 @@ export function WhatsappManager({
   // is here to see current connection state.
   async function refresh() {
     setStatus("loading");
-    const res = await listInstancesAction(true);
-    if (res.ok) {
+    const res = await semEstourar(() => listInstancesAction(true));
+    if (res?.ok) {
       setInstances(res.data);
       setStatus("ok");
     } else {
@@ -53,9 +74,9 @@ export function WhatsappManager({
   // Load the list client-side so a slow Evolution server never blocks the page.
   useEffect(() => {
     let active = true;
-    listInstancesAction(true).then((res) => {
+    semEstourar(() => listInstancesAction(true)).then((res) => {
       if (!active) return;
-      if (res.ok) {
+      if (res?.ok) {
         setInstances(res.data);
         setStatus("ok");
       } else {
@@ -71,8 +92,8 @@ export function WhatsappManager({
   useEffect(() => {
     if (!qr) return;
     const id = setInterval(async () => {
-      const res = await connectionStateAction(qr.instance);
-      if (res.ok && res.data === "open") {
+      const res = await semEstourar(() => connectionStateAction(qr.instance));
+      if (res?.ok && res.data === "open") {
         setQr(null);
         await refresh();
       }
@@ -85,9 +106,9 @@ export function WhatsappManager({
     if (!name) return;
     setError(null);
     setBusy("create");
-    const res = await createInstanceAction(name);
+    const res = await semEstourar(() => createInstanceAction(name));
     setBusy(null);
-    if (!res.ok) return setError(t("createError"));
+    if (!res?.ok) return setError(t("createError"));
     setNewName("");
     setQr({ instance: name, base64: res.data.base64 });
     await refresh();
@@ -96,25 +117,29 @@ export function WhatsappManager({
   async function onConnect(name: string) {
     setError(null);
     setBusy(name);
-    const res = await connectInstanceAction(name);
+    const res = await semEstourar(() => connectInstanceAction(name));
     setBusy(null);
-    if (!res.ok) return setError(t("connectError"));
+    if (!res?.ok) return setError(t("connectError"));
     setQr({ instance: name, base64: res.data.base64 });
   }
 
   async function onLogout(name: string) {
     if (!confirm(t("confirmLogout", { name }))) return;
+    setError(null);
     setBusy(name);
-    await logoutInstanceAction(name);
+    const res = await semEstourar(() => logoutInstanceAction(name));
     setBusy(null);
+    if (!res?.ok) return setError(t("logoutError"));
     await refresh();
   }
 
   async function onDelete(name: string) {
     if (!confirm(t("confirmDelete", { name }))) return;
+    setError(null);
     setBusy(name);
-    await deleteInstanceAction(name);
+    const res = await semEstourar(() => deleteInstanceAction(name));
     setBusy(null);
+    if (!res?.ok) return setError(t("deleteError"));
     await refresh();
   }
 

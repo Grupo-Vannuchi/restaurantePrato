@@ -441,6 +441,8 @@
       "creating": "Criando…",
       "createError": "Não foi possível criar a instância.",
       "connectError": "Não foi possível gerar o QR Code.",
+      "logoutError": "Não foi possível desconectar. Tente de novo.",
+      "deleteError": "Não foi possível apagar a instância. Tente de novo.",
       "listTitle": "Instâncias",
       "refresh": "Atualizar",
       "empty": "Nenhuma instância ainda.",
@@ -479,6 +481,7 @@
       "forward": "Encaminhar",
       "error": {
         "missing_target": "Escolha uma instância e um grupo para ativar.",
+        "saveFailed": "Não foi possível salvar. Tente de novo.",
         "unauthorized": "Sessão expirada. Faça login novamente.",
         "notConfigured": "Configure o grupo primeiro.",
         "sendFailed": "Falha ao enviar. Tente de novo."

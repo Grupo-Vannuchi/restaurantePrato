@@ -95,9 +95,18 @@ export function LeadNotifyConfig() {
     setNotice(null);
     setSaving(true);
     const groupName = groups.find((g) => g.id === groupId)?.name ?? "";
-    const res = await saveLeadNotifyConfig({ enabled, instance, groupId, groupName });
-    setSaving(false);
-    setNotice(res.ok ? t("saved") : t(`error.${res.error}` as "error.missing_target"));
+    try {
+      const res = await saveLeadNotifyConfig({ enabled, instance, groupId, groupName });
+      setNotice(res.ok ? t("saved") : t(`error.${res.error}` as "error.missing_target"));
+    } catch {
+      // Os dois carregamentos deste painel já se protegiam com `.catch()` —
+      // quem o escreveu sabia que a Evolution cai. O salvar tinha ficado de
+      // fora, e a rejeição deixava `setSaving(false)` para trás: o botão
+      // travava em "Salvando…" sem aviso e sem forma de tentar de novo.
+      setNotice(t("error.saveFailed"));
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (

@@ -11,8 +11,11 @@ vi.mock("@/app/actions/admin", () => ({
   updateLeadStatus: vi.fn(),
   updateLeadTags: vi.fn(),
 }));
+vi.mock("@/app/actions/lead-notify", () => ({ forwardLeadAction: vi.fn() }));
 
 import { updateLeadStatus, updateLeadTags } from "@/app/actions/admin";
+import { forwardLeadAction } from "@/app/actions/lead-notify";
+import { LeadForwardButton } from "@/components/admin/lead-forward-button";
 import { LeadStatusButtons } from "@/components/admin/lead-status-buttons";
 import { LeadTags } from "@/components/admin/lead-tags";
 import { renderWithIntl, screen, userEvent, waitFor } from "./test-utils";
@@ -33,11 +36,13 @@ import { renderWithIntl, screen, userEvent, waitFor } from "./test-utils";
  */
 const status = vi.mocked(updateLeadStatus);
 const etiquetas = vi.mocked(updateLeadTags);
+const encaminhar = vi.mocked(forwardLeadAction);
 const MENSAGEM = "Não foi possível atualizar. Tente de novo.";
 
 beforeEach(() => {
   status.mockReset();
   etiquetas.mockReset();
+  encaminhar.mockReset();
   refresh.mockReset();
 });
 
@@ -93,6 +98,39 @@ describe("etiquetar o contato", () => {
 
     await waitFor(() => expect(screen.getByText(MENSAGEM)).toBeInTheDocument());
     expect(refresh).not.toHaveBeenCalled();
+  });
+});
+
+describe("reencaminhar o contato para o WhatsApp", () => {
+  // Este botão trata `{ok:false}` desde sempre — o buraco é só a rejeição. Ele
+  // conversa com a Evolution, que é externa e cai; sem `try/catch`, o botão
+  // ficava travado em "enviando" para sempre e a rejeição subia para o error
+  // boundary.
+  it("avisa quando a ação nem chega a responder, e libera o botão", async () => {
+    encaminhar.mockResolvedValue(undefined as never);
+    const user = userEvent.setup();
+    renderWithIntl(<LeadForwardButton id="lead-1" />);
+
+    const botao = screen.getByRole("button");
+    await user.click(botao);
+
+    await waitFor(() => {
+      expect(screen.getByText("Falha ao enviar. Tente de novo.")).toBeInTheDocument();
+    });
+    expect(botao).not.toBeDisabled();
+  });
+
+  it("continua nomeando o erro que a própria ação devolve", async () => {
+    // Sentinela: o `catch` novo não pode engolir o caminho que já funcionava.
+    encaminhar.mockResolvedValue({ ok: false, error: "not_configured" });
+    const user = userEvent.setup();
+    renderWithIntl(<LeadForwardButton id="lead-1" />);
+
+    await user.click(screen.getByRole("button"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Configure o grupo primeiro.")).toBeInTheDocument();
+    });
   });
 });
 
