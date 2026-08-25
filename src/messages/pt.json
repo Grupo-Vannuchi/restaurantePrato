@@ -266,6 +266,7 @@
       "edit": "Editar",
       "delete": "Excluir",
       "deleteConfirm": "Excluir \"{title}\"? Esta ação não pode ser desfeita.",
+      "deleteError": "Não foi possível excluir. Tente de novo.",
       "statusPublished": "Publicada",
       "statusDraft": "Rascunho",
       "sectionBasics": "Informações básicas",
@@ -342,6 +343,7 @@
       "saving": "Salvando…",
       "deleteCategoryConfirm": "Apagar \"{name}\"? Os pratos desta categoria também serão apagados.",
       "deleteItemConfirm": "Apagar \"{name}\"?",
+      "deleteError": "Não foi possível excluir. Tente de novo.",
       "errorDuplicate": "Já existe um item com esse identificador na URL.",
       "errorUnknown": "Não foi possível salvar. Tente de novo."
     },
@@ -369,6 +371,7 @@
       "saving": "Salvando…",
       "noCaption": "Sem legenda",
       "deleteConfirm": "Apagar esta foto?",
+      "deleteError": "Não foi possível excluir. Tente de novo.",
       "errorUnknown": "Não foi possível salvar. Tente de novo."
     },
     "testimonials": {
@@ -379,6 +382,7 @@
       "edit": "Editar",
       "delete": "Excluir",
       "deleteConfirm": "Excluir \"{name}\"? Esta ação não pode ser desfeita.",
+      "deleteError": "Não foi possível excluir. Tente de novo.",
       "statusPublished": "Publicado",
       "statusDraft": "Rascunho",
       "stars": "{count, plural, one {# estrela} other {# estrelas}}",
