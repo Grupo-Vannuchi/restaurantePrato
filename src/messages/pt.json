@@ -215,6 +215,7 @@
     "nav": {
       "dashboard": "Visão geral",
       "skipToContent": "Pular para o conteúdo",
+      "noticeRegion": "Avisos do painel",
       "leads": "Contatos",
       "novidades": "Novidades",
       "cardapio": "Cardápio",

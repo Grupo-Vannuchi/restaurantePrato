@@ -67,14 +67,39 @@ describe("os componentes de resultado do painel", () => {
       return e.name.endsWith(".tsx") ? [caminho] : [];
     });
 
-  // Só utilitário de cor APLICADO — `hover:text-red-600` num botão de excluir é
-  // afordância de interação, não mensagem, e fica de fora.
-  const CORES_CRUAS = /(?:^|\s)text-(?:red|emerald|amber)-\d{3}(?=\s|"|$)/;
+  // Cor de significado escrita à mão, em vez do token medido. Cobre `text-`,
+  // `border-` e `bg-`, porque a primeira versão desta guarda só olhava `text-`
+  // e deixou passar um `aria-[invalid=true]:border-red-500` — a borda de campo
+  // inválido, que é exatamente uma cor de significado.
+  //
+  // E varre TODO literal de texto do arquivo, não só o que está dentro de
+  // `className=`. A segunda versão ainda deixava o mesmo caso passar, porque
+  // aquele estilo morava numa constante `const selectStyles = "..."` — fora de
+  // qualquer atributo. Guarda que só olha onde o defeito era esperado não é
+  // guarda.
+  //
+  // `hover:` e `focus:` ficam de fora de propósito: ali a cor é afordância de
+  // interação, não estado. Um `hover:text-red-600` num botão de excluir não
+  // comunica erro nenhum.
+  const SEMANTICAS = /^(?:text|border|bg)-(?:red|emerald|amber)-\d{3}(?:\/\d+)?$/;
+  const INTERACAO = /(?:^|:)(?:hover|focus|focus-visible|group-hover|active):/;
 
-  it("nenhum pinta resultado com cor crua do Tailwind", () => {
+  const corCrua = (fonte: string): string[] =>
+    [...fonte.matchAll(/"([^"]*)"/g)]
+      .flatMap((m) => m[1]!.split(/\s+/))
+      .filter((classe) => {
+        if (INTERACAO.test(classe)) return false;
+        const util = classe.split(":").pop() ?? "";
+        return SEMANTICAS.test(util);
+      });
+
+  it("nenhum pinta significado com cor crua do Tailwind", () => {
     const crus = arquivos(PASTA)
-      .filter((c) => CORES_CRUAS.test(readFileSync(c, "utf8")))
-      .map((c) => relative(process.cwd(), c).split(sep).join("/"));
+      .map((c) => ({
+        arquivo: relative(process.cwd(), c).split(sep).join("/"),
+        classes: corCrua(readFileSync(c, "utf8")),
+      }))
+      .filter((x) => x.classes.length > 0);
 
     expect(crus).toEqual([]);
   });

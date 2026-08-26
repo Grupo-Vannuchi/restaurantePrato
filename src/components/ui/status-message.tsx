@@ -35,10 +35,16 @@ export function StatusMessage({
   children?: string | null;
   className?: string;
 }) {
-  if (!children) return null;
   const { role, cor } = TONS[tone];
+  // A região existe DESDE SEMPRE, vazia — e é o `admin-notice.tsx` quem explica
+  // por quê: região viva só é anunciada de forma confiável se já estiver no DOM
+  // quando o texto muda. Nascer junto com a mensagem faz o leitor de tela
+  // perder o anúncio, e era o que este componente fazia (`if (!children)
+  // return null`), contradizendo a regra escrita no mesmo dia, ao lado.
+  //
+  // A classe só entra com mensagem, para a região vazia não ocupar espaço.
   return (
-    <span role={role} className={cn("text-xs", cor, className)}>
+    <span role={role} className={children ? cn("text-xs", cor, className) : undefined}>
       {children}
     </span>
   );

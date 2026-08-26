@@ -1,9 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -42,16 +45,31 @@ export function useAdminNotice(): Aviso | null {
 }
 
 export function AdminNotice({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("admin.nav");
+  const rotulo = t("noticeRegion");
   const [mensagem, setMensagem] = useState("");
   const regiaoRef = useRef<HTMLDivElement | null>(null);
 
+  const focoPendente = useRef(false);
+
   const announce = useCallback((message: string) => {
+    focoPendente.current = true;
     setMensagem(message);
-    // O foco vai para cá porque o elemento que o tinha deixou de existir: a
-    // escolha não é entre mover e não mover, é entre um destino pensado e o
-    // `<body>`, que joga a pessoa para o topo do documento sem pista nenhuma.
-    regiaoRef.current?.focus();
   }, []);
+
+  // O foco vai para cá porque o elemento que o tinha deixou de existir: a
+  // escolha não é entre mover e não mover, é entre um destino pensado e o
+  // `<body>`, que joga a pessoa para o topo do documento sem pista nenhuma.
+  //
+  // Em efeito, e não dentro do `announce`: `setMensagem` é agendado, então
+  // focar ali levava a pessoa para uma região ainda VAZIA. Funcionava por
+  // acidente — o `aria-live` da atualização seguinte cobria o anúncio —, e
+  // acidente não é desenho.
+  useEffect(() => {
+    if (!focoPendente.current) return;
+    focoPendente.current = false;
+    regiaoRef.current?.focus();
+  }, [mensagem]);
 
   return (
     <AdminNoticeContext.Provider value={{ announce }}>
@@ -59,6 +77,9 @@ export function AdminNotice({ children }: { children: React.ReactNode }) {
         ref={regiaoRef}
         role="status"
         aria-live="polite"
+        // A região recebe foco de propósito, então precisa se apresentar: sem
+        // nome, quem chega nela ouve só o conteúdo e não sabe para onde foi.
+        aria-label={rotulo}
         tabIndex={-1}
         className={
           mensagem

@@ -73,7 +73,7 @@ function Auxiliares({
 export const Input = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement> & ExtrasDoCampo
->(function Input({ className, hint, error, id, "aria-describedby": descrito, ...props }, ref) {
+>(function Input({ className, hint, error, id, "aria-describedby": descrito, "aria-invalid": invalido, ...props }, ref) {
   const { base, hintId, errorId, describedBy } = useDescricao(
     id,
     hint,
@@ -85,7 +85,7 @@ export const Input = React.forwardRef<
       <input
         ref={ref}
         id={base}
-        aria-invalid={error ? true : props["aria-invalid"]}
+        aria-invalid={error ? true : invalido}
         aria-describedby={describedBy}
         className={cn(fieldStyles, className)}
         {...props}
@@ -98,7 +98,7 @@ export const Input = React.forwardRef<
 export const Textarea = React.forwardRef<
   HTMLTextAreaElement,
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & ExtrasDoCampo
->(function Textarea({ className, hint, error, id, "aria-describedby": descrito, ...props }, ref) {
+>(function Textarea({ className, hint, error, id, "aria-describedby": descrito, "aria-invalid": invalido, ...props }, ref) {
   const { base, hintId, errorId, describedBy } = useDescricao(
     id,
     hint,
@@ -110,7 +110,7 @@ export const Textarea = React.forwardRef<
       <textarea
         ref={ref}
         id={base}
-        aria-invalid={error ? true : props["aria-invalid"]}
+        aria-invalid={error ? true : invalido}
         aria-describedby={describedBy}
         className={cn(fieldStyles, "min-h-32 resize-y", className)}
         {...props}
@@ -130,7 +130,7 @@ export const Textarea = React.forwardRef<
 export const Select = React.forwardRef<
   HTMLSelectElement,
   React.SelectHTMLAttributes<HTMLSelectElement> & ExtrasDoCampo
->(function Select({ className, hint, error, id, "aria-describedby": descrito, children, ...props }, ref) {
+>(function Select({ className, hint, error, id, "aria-describedby": descrito, "aria-invalid": invalido, children, ...props }, ref) {
   const { base, hintId, errorId, describedBy } = useDescricao(
     id,
     hint,
@@ -142,7 +142,7 @@ export const Select = React.forwardRef<
       <select
         ref={ref}
         id={base}
-        aria-invalid={error ? true : props["aria-invalid"]}
+        aria-invalid={error ? true : invalido}
         aria-describedby={describedBy}
         className={cn(fieldStyles, className)}
         {...props}
