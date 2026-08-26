@@ -233,7 +233,7 @@ export function WhatsappManager({
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{inst.name}</span>
+                    <h3 className="font-medium">{inst.name}</h3>
                     {inst.name === defaultInstance ? (
                       <span className="rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
                         {t("badgeDefault")}

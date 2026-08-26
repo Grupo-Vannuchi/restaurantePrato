@@ -16,7 +16,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 const statusStyles: Record<LeadStatus, string> = {
   NEW: "bg-brand/10 text-brand",
-  CONTACTED: "bg-emerald-500/10 text-emerald-600",
+  CONTACTED: "bg-success/10 text-success",
   ARCHIVED: "bg-muted text-muted-foreground",
 };
 
@@ -96,7 +96,7 @@ export default async function LeadsPage({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-semibold">{lead.name}</span>
+                    <h2 className="font-semibold">{lead.name}</h2>
                     <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                       {typeLabel[lead.type]}
                     </span>
@@ -109,7 +109,7 @@ export default async function LeadsPage({
                       {statusLabel[lead.status]}
                     </span>
                     {lead.whatsappNotifiedAt ? (
-                      <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600">
+                      <span className="rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
                         {t("whatsappSent")}
                       </span>
                     ) : null}

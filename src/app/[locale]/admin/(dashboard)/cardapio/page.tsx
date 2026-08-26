@@ -47,14 +47,14 @@ export default async function AdminCardapioPage({
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-semibold">
+                    <h2 className="font-semibold">
                       {localize(category.name, locale)}
-                    </span>
+                    </h2>
                     <span
                       className={cn(
                         "rounded-full px-2 py-0.5 text-xs font-medium",
                         category.published
-                          ? "bg-emerald-500/10 text-emerald-600"
+                          ? "bg-success/10 text-success"
                           : "bg-muted text-muted-foreground",
                       )}
                     >
@@ -92,14 +92,14 @@ export default async function AdminCardapioPage({
                         className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-muted/40 px-3 py-2"
                       >
                         <div className="flex min-w-0 flex-wrap items-center gap-2">
-                          <span className="truncate text-sm font-medium">
+                          <h3 className="truncate text-sm font-medium">
                             {localize(item.name, locale)}
-                          </span>
+                          </h3>
                           <span
                             className={cn(
                               "rounded-full px-2 py-0.5 text-xs font-medium",
                               item.available
-                                ? "bg-emerald-500/10 text-emerald-600"
+                                ? "bg-success/10 text-success"
                                 : "bg-muted text-muted-foreground",
                             )}
                           >

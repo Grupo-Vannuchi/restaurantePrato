@@ -69,7 +69,7 @@ export default async function LeadsWhatsappPage({
       {!configured ? (
         <div className="rounded-xl border border-border bg-card p-5">
           <div className="flex items-start gap-3">
-            <AlertCircle className="mt-0.5 size-5 shrink-0 text-amber-500" />
+            <AlertCircle className="mt-0.5 size-5 shrink-0 text-warning" />
             <div>
               <p className="font-medium">{t("notConfigured")}</p>
               <p className="mt-1 text-sm text-muted-foreground">

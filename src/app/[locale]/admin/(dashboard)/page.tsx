@@ -69,7 +69,7 @@ export default async function DashboardPage({
               className="flex items-center justify-between gap-4 px-5 py-3"
             >
               <div className="min-w-0">
-                <p className="truncate font-medium">{lead.name}</p>
+                <h3 className="truncate font-medium">{lead.name}</h3>
                 <p className="truncate text-sm text-muted-foreground">
                   {lead.email}
                 </p>

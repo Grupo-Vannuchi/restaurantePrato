@@ -38,7 +38,7 @@ export default async function AdminTestimonialsPage({
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold">{item.authorName}</span>
+                  <h2 className="font-semibold">{item.authorName}</h2>
                   <span
                     className="flex gap-0.5"
                     aria-label={t("stars", { count: item.rating })}
@@ -51,7 +51,7 @@ export default async function AdminTestimonialsPage({
                     className={cn(
                       "rounded-full px-2 py-0.5 text-xs font-medium",
                       item.published
-                        ? "bg-emerald-500/10 text-emerald-600"
+                        ? "bg-success/10 text-success"
                         : "bg-muted text-muted-foreground",
                     )}
                   >

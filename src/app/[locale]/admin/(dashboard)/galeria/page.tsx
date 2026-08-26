@@ -53,7 +53,7 @@ export default async function AdminGaleriaPage({
                   className={cn(
                     "rounded-full px-2 py-0.5 text-xs font-medium",
                     photo.published
-                      ? "bg-emerald-500/10 text-emerald-600"
+                      ? "bg-success/10 text-success"
                       : "bg-muted text-muted-foreground",
                   )}
                 >
@@ -61,9 +61,13 @@ export default async function AdminGaleriaPage({
                 </span>
               </div>
 
-              <p className="truncate text-sm text-muted-foreground">
+              {/* Cabeçalho, não parágrafo: era o ÚNICO texto que identificava
+                  o cartão, e uma foto sem legenda deixava o `<li>` inteiro sem
+                  nome — os botões "Editar" e "Excluir" dentro dele ficavam
+                  indistinguíveis dos das outras fotos. */}
+              <h2 className="truncate text-sm text-muted-foreground">
                 {localize(photo.caption, locale) || t("noCaption")}
-              </p>
+              </h2>
 
               <div className="flex items-center gap-1 border-t border-border pt-3">
                 <Link

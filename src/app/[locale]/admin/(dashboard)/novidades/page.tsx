@@ -44,11 +44,19 @@ export default async function AdminInformationsPage({
                 </span>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-semibold">
+                    <h2 className="font-semibold">
                       {localize(information.title, locale)}
-                    </span>
+                    </h2>
                     {information.featured ? (
+                      /* `role="img"` junto com o rótulo: o lucide só põe
+                         `aria-hidden` quando NÃO há prop de acessibilidade, e
+                         passar `aria-label` desliga esse escudo sem dar papel
+                         nenhum ao SVG. O resultado era um gráfico nomeado e sem
+                         papel, que vários leitores de tela ignoram — e aí "esta
+                         novidade está em destaque" existia só na cor da
+                         estrela. */
                       <Star
+                        role="img"
                         className="size-4 fill-accent text-accent"
                         aria-label={t("featured")}
                       />
@@ -57,7 +65,7 @@ export default async function AdminInformationsPage({
                       className={cn(
                         "rounded-full px-2 py-0.5 text-xs font-medium",
                         information.published
-                          ? "bg-emerald-500/10 text-emerald-600"
+                          ? "bg-success/10 text-success"
                           : "bg-muted text-muted-foreground",
                       )}
                     >
