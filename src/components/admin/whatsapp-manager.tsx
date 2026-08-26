@@ -6,6 +6,7 @@ import { Plus, RefreshCw, QrCode, LogOut, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
+import { useModalFocus } from "@/components/use-modal-focus";
 import type { EvoInstance } from "@/lib/evolution";
 import {
   listInstancesAction,
@@ -57,6 +58,13 @@ export function WhatsappManager({
   const [busy, setBusy] = useState<string | null>(null);
   const [qr, setQr] = useState<Qr | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // O QR abre sobre a página inteira: sem isto o foco fica atrás do véu e não há
+  // saída pelo teclado — o botão de fechar mora dentro da janela.
+  const qrDialogRef = useModalFocus({
+    open: qr !== null,
+    onClose: () => setQr(null),
+  });
 
   // Always read fresh on the management screen (bypass the 60s cache) — the admin
   // is here to see current connection state.
@@ -283,8 +291,18 @@ export function WhatsappManager({
 
       {/* QR modal */}
       {qr ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-center">
+        <div
+          ref={qrDialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="qr-titulo"
+          onClick={() => setQr(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-center"
+          >
             <button
               type="button"
               onClick={() => setQr(null)}
@@ -293,7 +311,9 @@ export function WhatsappManager({
             >
               <X className="size-4" />
             </button>
-            <h3 className="text-lg font-bold">{t("scanTitle")}</h3>
+            <h3 id="qr-titulo" className="text-lg font-bold">
+              {t("scanTitle")}
+            </h3>
             <p className="mt-1 text-sm text-muted-foreground">
               {t("scanHint", { name: qr.instance })}
             </p>
@@ -301,7 +321,7 @@ export function WhatsappManager({
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={qr.base64}
-                alt="QR code"
+                alt={t("qrAlt", { name: qr.instance })}
                 className="mx-auto mt-4 size-64 rounded-lg bg-white p-2"
               />
             ) : (

@@ -5,13 +5,13 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { InformationView } from "@/lib/queries";
+import { useModalFocus } from "@/components/use-modal-focus";
 
 /**
  * Shared lightbox carousel for the information cover images. A single modal lives
@@ -38,18 +38,10 @@ export function InformationGallery({
   const [index, setIndex] = useState<number | null>(null);
   const isOpen = index !== null;
 
-  const dialogRef = useRef<HTMLDivElement | null>(null);
-  /** Quem abriu o modal — para o foco ter para onde voltar quando ele fechar. */
-  const gatilhoRef = useRef<HTMLElement | null>(null);
-
   const openAt = useCallback(
     (slug: string) => {
       const i = items.findIndex((it) => it.slug === slug);
-      if (i < 0) return;
-      // Guardado ANTES de abrir: depois da troca de estado o elemento ativo já
-      // pode ter mudado, e é este que a pessoa espera reencontrar ao fechar.
-      gatilhoRef.current = document.activeElement as HTMLElement | null;
-      setIndex(i);
+      if (i >= 0) setIndex(i);
     },
     [items],
   );
@@ -64,66 +56,21 @@ export function InformationGallery({
     [items.length],
   );
 
-  /**
-   * Gestão de foco do modal.
-   *
-   * `aria-modal="true"` promete à tecnologia assistiva que o resto da página
-   * está inerte. Sem mover o foco para dentro, a promessa é falsa: o foco fica
-   * no gatilho, ATRÁS do overlay, e a tabulação segue passeando pela página
-   * escondida — sem alcançar o fechar nem as setas, que existem e têm rótulo.
-   * Ao fechar, o foco tem que voltar de onde saiu; cair no `<body>` devolve a
-   * pessoa ao topo do documento e faz perder o lugar na lista.
-   */
+  // Foco, prisão da tabulação, Esc e devolução do foco vivem em `useModalFocus`,
+  // compartilhado com a janela do QR Code do painel. Duas implementações de
+  // janela modal divergem: uma ganha correção, a outra fica para trás.
+  const dialogRef = useModalFocus({ open: isOpen, onClose: close });
+
+  // Só as setas ficam aqui — são deste carrossel, não de toda janela modal.
   useEffect(() => {
     if (!isOpen) return;
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    const focaveis = (): HTMLElement[] =>
-      [
-        ...dialog.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-        ),
-      ].filter((el) => !el.hasAttribute("disabled"));
-
-    // O primeiro focável é o botão de fechar — a saída, que é o que a pessoa
-    // mais precisa ter à mão ao entrar.
-    focaveis()[0]?.focus();
-
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") return close();
-      if (e.key === "ArrowLeft") return move(-1);
-      if (e.key === "ArrowRight") return move(1);
-      if (e.key !== "Tab") return;
-
-      const alvos = focaveis();
-      if (alvos.length === 0) return;
-      const primeiro = alvos[0]!;
-      const ultimo = alvos[alvos.length - 1]!;
-      const ativo = document.activeElement;
-      const dentro = ativo instanceof Node && dialog.contains(ativo);
-
-      // A volta é circular: chegando à ponta, o Tab retorna à outra ponta em
-      // vez de sair. Se o foco estiver fora (nunca deveria), traz de volta.
-      if (e.shiftKey && (!dentro || ativo === primeiro)) {
-        e.preventDefault();
-        ultimo.focus();
-      } else if (!e.shiftKey && (!dentro || ativo === ultimo)) {
-        e.preventDefault();
-        primeiro.focus();
-      }
+      if (e.key === "ArrowLeft") move(-1);
+      else if (e.key === "ArrowRight") move(1);
     };
-
     document.addEventListener("keydown", onKey);
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previous;
-      gatilhoRef.current?.focus();
-      gatilhoRef.current = null;
-    };
-  }, [isOpen, close, move]);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isOpen, move]);
 
   const current = index !== null ? items[index] : null;
 

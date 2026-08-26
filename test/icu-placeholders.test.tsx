@@ -117,6 +117,7 @@ const ALLOWED: Record<string, string[]> = {
   "admin.whatsapp.confirmLogout": ["name"],
   "admin.whatsapp.confirmDelete": ["name"],
   "admin.whatsapp.scanHint": ["name"],
+  "admin.whatsapp.qrAlt": ["name"],
 };
 
 /** Extrai os nomes de placeholder ICU (`{nome}` ou `{nome, ...}`) de uma string. */

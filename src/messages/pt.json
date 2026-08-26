@@ -459,6 +459,7 @@
       "confirmDelete": "Excluir a instância \"{name}\"? Esta ação não pode ser desfeita.",
       "scanTitle": "Leia o QR Code",
       "scanHint": "Abra o WhatsApp > Aparelhos conectados e leia o código para conectar \"{name}\".",
+      "qrAlt": "QR Code para conectar a instância {name} ao WhatsApp",
       "noQr": "QR Code indisponível. Tente novamente.",
       "waiting": "Aguardando conexão…",
       "close": "Fechar"
