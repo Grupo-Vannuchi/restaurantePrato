@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, RefreshCw, QrCode, LogOut, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/field";
+import { Input, Label } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import { useModalFocus } from "@/components/use-modal-focus";
 import type { EvoInstance } from "@/lib/evolution";
@@ -159,7 +159,12 @@ export function WhatsappManager({
         <p className="mt-1 text-sm text-muted-foreground">{t("createHint")}</p>
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <div className="min-w-56 flex-1">
+            {/* O rótulo é do campo; o `placeholder` volta a ser só exemplo. Sem
+                ele o leitor anunciava "Ex: VENDAS, edição" — um valor de
+                exemplo no lugar do nome — e a pista sumia ao digitar. */}
+            <Label htmlFor="nova-instancia">{t("nameLabel")}</Label>
             <Input
+              id="nova-instancia"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder={t("namePlaceholder")}

@@ -214,6 +214,7 @@
     },
     "nav": {
       "dashboard": "Visão geral",
+      "skipToContent": "Pular para o conteúdo",
       "leads": "Contatos",
       "novidades": "Novidades",
       "cardapio": "Cardápio",
@@ -436,6 +437,7 @@
       "notConfiguredHint": "Defina EVOLUTION_BASE_URL e EVOLUTION_API_KEY no ambiente para gerenciar instâncias.",
       "createTitle": "Nova instância",
       "createHint": "Dê um nome e leia o QR Code com o WhatsApp para conectar.",
+      "nameLabel": "Nome da instância",
       "namePlaceholder": "Ex: VENDAS",
       "create": "Criar instância",
       "creating": "Criando…",
