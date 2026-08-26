@@ -3,6 +3,7 @@ import { LogOut, ExternalLink } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/logo";
 import { AdminNav } from "@/components/admin/admin-nav";
+import { AdminNotice } from "@/components/admin/admin-notice";
 import { logout } from "@/app/actions/auth";
 import type { CurrentUser } from "@/lib/auth";
 import type { Locale } from "@/i18n/routing";
@@ -83,7 +84,10 @@ export async function AdminShell({
         {/* `tabIndex={-1}` deixa o alvo receber foco por programa (o salto do
             link acima) sem entrar na ordem de tabulação. */}
         <main id="conteudo" tabIndex={-1} className="flex-1 p-6 sm:p-8">
-          {children}
+          {/* A região de aviso envolve o conteúdo porque precisa SOBREVIVER às
+              ações feitas nele: quem excluía uma linha era destruído junto com
+              ela, e levava embora qualquer aviso que estivesse ali dentro. */}
+          <AdminNotice>{children}</AdminNotice>
         </main>
       </div>
     </div>

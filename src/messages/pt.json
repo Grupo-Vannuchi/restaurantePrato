@@ -242,6 +242,7 @@
       "markContacted": "Marcar como respondido",
       "archive": "Arquivar",
       "updateError": "Não foi possível atualizar. Tente de novo.",
+      "updateSuccess": "Contato atualizado.",
       "typeContact": "Contato",
       "statusNew": "Novo",
       "statusContacted": "Respondido",
@@ -269,6 +270,7 @@
       "delete": "Excluir",
       "deleteConfirm": "Excluir \"{title}\"? Esta ação não pode ser desfeita.",
       "deleteError": "Não foi possível excluir. Tente de novo.",
+      "deleteSuccess": "Novidade excluída.",
       "statusPublished": "Publicada",
       "statusDraft": "Rascunho",
       "sectionBasics": "Informações básicas",
@@ -346,6 +348,8 @@
       "deleteCategoryConfirm": "Apagar \"{name}\"? Os pratos desta categoria também serão apagados.",
       "deleteItemConfirm": "Apagar \"{name}\"?",
       "deleteError": "Não foi possível excluir. Tente de novo.",
+      "deleteCategorySuccess": "Categoria excluída.",
+      "deleteItemSuccess": "Item excluído.",
       "errorDuplicate": "Já existe um item com esse identificador na URL.",
       "errorUnknown": "Não foi possível salvar. Tente de novo."
     },
@@ -374,6 +378,7 @@
       "noCaption": "Sem legenda",
       "deleteConfirm": "Apagar esta foto?",
       "deleteError": "Não foi possível excluir. Tente de novo.",
+      "deleteSuccess": "Foto excluída.",
       "errorUnknown": "Não foi possível salvar. Tente de novo."
     },
     "testimonials": {
@@ -385,6 +390,7 @@
       "delete": "Excluir",
       "deleteConfirm": "Excluir \"{name}\"? Esta ação não pode ser desfeita.",
       "deleteError": "Não foi possível excluir. Tente de novo.",
+      "deleteSuccess": "Depoimento excluído.",
       "statusPublished": "Publicado",
       "statusDraft": "Rascunho",
       "stars": "{count, plural, one {# estrela} other {# estrelas}}",

@@ -18,6 +18,7 @@ export function TestimonialDeleteButton({
       label={t("delete")}
       confirmMessage={t("deleteConfirm", { name })}
       errorMessage={t("deleteError")}
+      successMessage={t("deleteSuccess")}
       onDelete={() => deleteTestimonial(id)}
     />
   );

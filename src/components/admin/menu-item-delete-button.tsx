@@ -18,6 +18,7 @@ export function MenuItemDeleteButton({
       label={t("delete")}
       confirmMessage={t("deleteItemConfirm", { name })}
       errorMessage={t("deleteError")}
+      successMessage={t("deleteItemSuccess")}
       onDelete={() => deleteMenuItem(id)}
     />
   );

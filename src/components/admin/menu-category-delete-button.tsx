@@ -18,6 +18,7 @@ export function MenuCategoryDeleteButton({
       label={t("delete")}
       confirmMessage={t("deleteCategoryConfirm", { name })}
       errorMessage={t("deleteError")}
+      successMessage={t("deleteCategorySuccess")}
       onDelete={() => deleteMenuCategory(id)}
     />
   );

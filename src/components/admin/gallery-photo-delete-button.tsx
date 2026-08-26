@@ -12,6 +12,7 @@ export function GalleryPhotoDeleteButton({ id }: { id: string }) {
       label={t("delete")}
       confirmMessage={t("deleteConfirm")}
       errorMessage={t("deleteError")}
+      successMessage={t("deleteSuccess")}
       onDelete={() => deleteGalleryPhoto(id)}
     />
   );

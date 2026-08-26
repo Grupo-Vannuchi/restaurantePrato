@@ -18,6 +18,7 @@ export function InformationDeleteButton({
       label={t("delete")}
       confirmMessage={t("deleteConfirm", { title })}
       errorMessage={t("deleteError")}
+      successMessage={t("deleteSuccess")}
       onDelete={() => deleteInformation(id)}
     />
   );

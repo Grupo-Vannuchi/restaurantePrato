@@ -9,7 +9,10 @@ import { StatusMessage } from "@/components/ui/status-message";
 
 export function LeadTags({ id, tags }: { id: string; tags: string[] }) {
   const t = useTranslations("admin.leads");
-  const { pending, erro, run } = useAdminAction(t("updateError"));
+  const { pending, erro, run } = useAdminAction({
+    errorMessage: t("updateError"),
+    successMessage: t("updateSuccess"),
+  });
   const [value, setValue] = useState("");
 
   function commit(next: string[]) {

@@ -15,7 +15,10 @@ export function LeadStatusButtons({
   status: LeadStatus;
 }) {
   const t = useTranslations("admin.leads");
-  const { pending, erro, run } = useAdminAction(t("updateError"));
+  const { pending, erro, run } = useAdminAction({
+    errorMessage: t("updateError"),
+    successMessage: t("updateSuccess"),
+  });
 
   function setStatus(next: LeadStatus) {
     void run(() => updateLeadStatus(id, next));

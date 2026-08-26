@@ -22,6 +22,7 @@ export function DeleteButtonBase({
   label,
   confirmMessage,
   errorMessage,
+  successMessage,
   onDelete,
 }: {
   /** Texto do botão, que também é seu rótulo acessível. */
@@ -30,10 +31,12 @@ export function DeleteButtonBase({
   confirmMessage: string;
   /** Mostrada ao lado do botão quando a exclusão não acontece. */
   errorMessage: string;
+  /** Anunciada no painel quando ela acontece. */
+  successMessage: string;
   /** A server action já com o id aplicado. */
   onDelete: () => Promise<{ ok: boolean }>;
 }) {
-  const { pending, erro, run } = useAdminAction(errorMessage);
+  const { pending, erro, run } = useAdminAction({ errorMessage, successMessage });
 
   function onClick() {
     if (!window.confirm(confirmMessage)) return;
