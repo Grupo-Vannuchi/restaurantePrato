@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Playfair_Display } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import {
+  getMessages,
   getTranslations,
   setRequestLocale,
 } from "next-intl/server";
@@ -14,10 +15,6 @@ import { locales, routing, resolveLocale } from "@/i18n/routing";
 import "../globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 /**
  * Display face for headings — the client's direction asks for "serifada
  * elegante nos títulos + sans limpa no corpo". Self-hosted by `next/font`, so
@@ -89,10 +86,14 @@ export default async function LocaleLayout({
   // Enables static rendering for this locale (next-intl).
   setRequestLocale(locale);
 
+  // Tudo menos o painel. `admin` é 57% do catálogo e não serve ao visitante.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { admin: _painel, ...mensagensPublicas } = await getMessages();
+
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full`}
+      className={`${geistSans.variable} ${playfair.variable} h-full`}
       suppressHydrationWarning
     >
       <head>
@@ -107,7 +108,16 @@ export default async function LocaleLayout({
         />
       </head>
       <body className="flex min-h-full flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        {/* `messages` explícito, e o motivo é medido: sem a prop, o next-intl
+            serializa o CATÁLOGO INTEIRO no payload de toda página. A namespace
+            `admin` sozinha são 12 KB de textos de login, erros do WhatsApp e
+            dicas de campo do cardápio — baixados por quem só quer ver o menu, e
+            de novo a cada navegação interna.
+
+            O painel recebe o catálogo completo no próprio layout dele. */}
+        <NextIntlClientProvider messages={mensagensPublicas}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

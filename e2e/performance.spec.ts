@@ -61,3 +61,28 @@ test("nenhuma requisição sai para terceiros", async ({ page, baseURL }) => {
 
   expect([...externos], [...externos].join(", ")).toEqual([]);
 });
+
+/**
+ * O catálogo do painel não viaja para o visitante.
+ *
+ * `NextIntlClientProvider` sem a prop `messages` serializa o catálogo INTEIRO
+ * no payload de toda página. A namespace `admin` sozinha são ~12 KB de textos
+ * de login, erros do Evolution e dicas de campo do cardápio — baixados por
+ * quem só quer ver o cardápio, e de novo a cada navegação interna.
+ *
+ * Medido: tirá-la levou o HTML da home de 67.524 para 55.117 bytes (−18%).
+ *
+ * Este teste vive no navegador, e não numa varredura de código, porque o que
+ * importa é o que o servidor ENTREGA — a prop pode existir e estar errada.
+ */
+for (const path of ["/", "/gastronomia", "/contato"]) {
+  test(`${path} não entrega o catálogo do painel ao visitante`, async ({
+    request,
+  }) => {
+    const html = await (await request.get(path)).text();
+
+    // Textos que só existem na namespace `admin` do catálogo.
+    expect(html).not.toContain("Painel administrativo");
+    expect(html).not.toContain("Não foi possível criar a instância");
+  });
+}

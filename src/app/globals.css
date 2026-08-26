@@ -99,7 +99,6 @@
   --warning: #fcd34d;
 }
 
-
 @layer base {
   * {
     border-color: var(--color-border);
@@ -156,29 +155,6 @@
   }
 }
 
-/*
- * Infinite logo marquee (the "brands that trust us" strip). The track holds two
- * identical copies of the logos and slides left by exactly one copy, so the loop
- * is seamless. Pauses on hover. For reduced motion it stops and wraps the logos
- * into a static, centered row instead.
- */
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee-track {
-  animation: marquee var(--marquee-duration, 30s) linear infinite;
-}
-
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -187,17 +163,5 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-
-  .marquee-track {
-    animation: none;
-    transform: none;
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .marquee-clone {
-    display: none;
   }
 }
