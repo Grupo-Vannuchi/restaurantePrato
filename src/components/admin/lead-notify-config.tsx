@@ -12,10 +12,11 @@ import {
   listGroupsAction,
 } from "@/app/actions/lead-notify";
 import type { EvoGroup, EvoInstance } from "@/lib/evolution";
+import { Select } from "@/components/ui/field";
 import { StatusMessage } from "@/components/ui/status-message";
 
-const selectStyles =
-  "w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus-visible:border-brand disabled:opacity-60";
+// Compacto, como os filtros: o `twMerge` do `cn` faz vencer as da primitiva.
+const campoCompacto = "px-3 py-2 disabled:opacity-60";
 
 type Status = "loading" | "ok" | "error";
 
@@ -37,7 +38,13 @@ export function LeadNotifyConfig() {
   const [groupStatus, setGroupStatus] = useState<Status>("loading");
 
   const [saving, setSaving] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
+  // O tom é DADO DO ESTADO, não do idioma. Antes ele saía de
+  // `notice === t("saved")`: comparar texto traduzido para decidir se algo deu
+  // certo funciona até alguém editar o `pt.json` — aí um sucesso passa a ser
+  // anunciado como erro, e nada no build acusa.
+  const [notice, setNotice] = useState<
+    { texto: string; tom: "success" | "error" } | null
+  >(null);
 
   const loadGroups = useCallback((inst: string) => {
     if (!inst) {
@@ -97,13 +104,20 @@ export function LeadNotifyConfig() {
     const groupName = groups.find((g) => g.id === groupId)?.name ?? "";
     try {
       const res = await saveLeadNotifyConfig({ enabled, instance, groupId, groupName });
-      setNotice(res.ok ? t("saved") : t(`error.${res.error}` as "error.missing_target"));
+      setNotice(
+        res.ok
+          ? { texto: t("saved"), tom: "success" }
+          : {
+              texto: t(`error.${res.error}` as "error.missing_target"),
+              tom: "error",
+            },
+      );
     } catch {
       // Os dois carregamentos deste painel já se protegiam com `.catch()` —
       // quem o escreveu sabia que a Evolution cai. O salvar tinha ficado de
       // fora, e a rejeição deixava `setSaving(false)` para trás: o botão
       // travava em "Salvando…" sem aviso e sem forma de tentar de novo.
-      setNotice(t("error.saveFailed"));
+      setNotice({ texto: t("error.saveFailed"), tom: "error" });
     } finally {
       setSaving(false);
     }
@@ -120,11 +134,12 @@ export function LeadNotifyConfig() {
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div>
           <Label htmlFor="ln-instance">{t("instance")}</Label>
-          <select
+          <Select
             id="ln-instance"
-            className={selectStyles}
+            className={campoCompacto}
             value={instance}
             disabled={instStatus === "loading"}
+            aria-busy={instStatus === "loading"}
             onChange={(e) => onInstanceChange(e.target.value)}
           >
             <option value="">{t("selectInstance")}</option>
@@ -137,7 +152,7 @@ export function LeadNotifyConfig() {
                 {i.state !== "open" ? ` — ${t("disconnected")}` : ""}
               </option>
             ))}
-          </select>
+          </Select>
           {instStatus === "loading" ? (
             <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
               <Loader2 className="size-3 animate-spin" />
@@ -152,11 +167,12 @@ export function LeadNotifyConfig() {
 
         <div>
           <Label htmlFor="ln-group">{t("group")}</Label>
-          <select
+          <Select
             id="ln-group"
-            className={selectStyles}
+            className={campoCompacto}
             value={groupId}
             disabled={!instance || groupStatus === "loading"}
+            aria-busy={groupStatus === "loading"}
             onChange={(e) => setGroupId(e.target.value)}
           >
             <option value="">{t("selectGroup")}</option>
@@ -165,7 +181,7 @@ export function LeadNotifyConfig() {
                 {g.name}
               </option>
             ))}
-          </select>
+          </Select>
           {groupStatus === "loading" ? (
             <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
               <Loader2 className="size-3 animate-spin" />
@@ -193,8 +209,8 @@ export function LeadNotifyConfig() {
           {/* O papel segue o significado: `status` confirma, `alert` interrompe.
               Antes os dois dividiam o mesmo `<span>`, distinguidos só pela cor —
               quem não enxerga a cor não sabia se tinha salvado. */}
-          <StatusMessage tone={notice === t("saved") ? "success" : "error"}>
-            {notice}
+          <StatusMessage tone={notice?.tom ?? "success"}>
+            {notice?.texto}
           </StatusMessage>
           <Button size="sm" onClick={onSave} disabled={saving}>
             {saving ? t("saving") : t("save")}

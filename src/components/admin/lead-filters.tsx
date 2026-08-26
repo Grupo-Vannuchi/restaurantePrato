@@ -3,9 +3,11 @@
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Select } from "@/components/ui/field";
 
-const selectStyles =
-  "rounded-lg border border-border bg-card px-3 py-2 text-sm transition-colors focus-visible:border-brand";
+// Compacto: os filtros são fichas na barra, não campos de formulário. O
+// `twMerge` do `cn` faz estas classes vencerem as da primitiva.
+const filtroCompacto = "w-auto px-3 py-2";
 
 export type LeadFilterValues = {
   type?: string;
@@ -36,19 +38,19 @@ export function LeadFilters({
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <select
+      <Select
         aria-label={t("filterType")}
-        className={selectStyles}
+        className={filtroCompacto}
         value={current.type ?? ""}
         onChange={(e) => setParam("type", e.target.value)}
       >
         <option value="">{t("filterTypeAll")}</option>
         <option value="CONTACT">{t("typeContact")}</option>
-      </select>
+      </Select>
 
-      <select
+      <Select
         aria-label={t("filterStatus")}
-        className={selectStyles}
+        className={filtroCompacto}
         value={current.status ?? ""}
         onChange={(e) => setParam("status", e.target.value)}
       >
@@ -56,12 +58,12 @@ export function LeadFilters({
         <option value="NEW">{t("statusNew")}</option>
         <option value="CONTACTED">{t("statusContacted")}</option>
         <option value="ARCHIVED">{t("statusArchived")}</option>
-      </select>
+      </Select>
 
       {tags.length > 0 ? (
-        <select
+        <Select
           aria-label={t("filterTag")}
-          className={selectStyles}
+          className={filtroCompacto}
           value={current.tag ?? ""}
           onChange={(e) => setParam("tag", e.target.value)}
         >
@@ -71,7 +73,7 @@ export function LeadFilters({
               {tag}
             </option>
           ))}
-        </select>
+        </Select>
       ) : null}
 
       {hasFilters ? (

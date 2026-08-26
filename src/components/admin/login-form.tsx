@@ -14,7 +14,7 @@ export function LoginForm() {
   const [state, action, pending] = useActionState(login, initialState);
 
   return (
-    <form action={action} className="flex flex-col gap-4">
+    <form action={action} className="flex flex-col gap-4" noValidate>
       <input type="hidden" name="locale" value={locale} />
 
       <div>
@@ -22,6 +22,8 @@ export function LoginForm() {
         <Input
           id="email"
           name="email"
+          aria-invalid={state.error || undefined}
+          aria-describedby={state.error ? "erro-login" : undefined}
           type="email"
           autoComplete="email"
           required
@@ -33,6 +35,8 @@ export function LoginForm() {
         <Input
           id="password"
           name="password"
+          aria-invalid={state.error || undefined}
+          aria-describedby={state.error ? "erro-login" : undefined}
           type="password"
           autoComplete="current-password"
           required
@@ -40,7 +44,7 @@ export function LoginForm() {
       </div>
 
       {state.error ? (
-        <p role="alert" className="text-sm text-danger">
+        <p id="erro-login" role="alert" className="text-sm text-danger">
           {t("error")}
         </p>
       ) : null}

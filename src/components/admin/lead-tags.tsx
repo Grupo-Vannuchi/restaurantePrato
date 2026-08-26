@@ -56,6 +56,11 @@ export function LeadTags({ id, tags }: { id: string; tags: string[] }) {
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          // Nome próprio: o campo e o botão ao lado usavam a MESMA chave, então
+          // o leitor anunciava "Adicionar tag, edição" e logo depois
+          // "Adicionar tag, botão" — dois controles vizinhos indistinguíveis. E
+          // o nome vinha do placeholder, que some ao digitar.
+          aria-label={t("newTag")}
           placeholder={t("addTag")}
           maxLength={40}
           className="w-28 rounded-full border border-border bg-card px-2.5 py-0.5 text-xs transition-colors placeholder:text-muted-foreground focus-visible:border-brand"

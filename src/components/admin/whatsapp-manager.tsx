@@ -111,7 +111,7 @@ export function WhatsappManager({
 
   async function onCreate() {
     const name = newName.trim();
-    if (!name) return;
+    if (!name) return setError(t("nameRequired"));
     setError(null);
     setBusy("create");
     const res = await semEstourar(() => createInstanceAction(name));
@@ -170,7 +170,11 @@ export function WhatsappManager({
               placeholder={t("namePlaceholder")}
             />
           </div>
-          <Button onClick={onCreate} disabled={busy === "create" || !newName.trim()}>
+          {/* Desabilitado SÓ enquanto cria. Antes ele também saía da ordem de
+              tabulação com o campo vazio, sem nada explicando por quê — quem
+              navega por teclado tabulava e o botão simplesmente não existia. A
+              validação acontece no clique, que é onde dá para dizer o motivo. */}
+          <Button onClick={onCreate} disabled={busy === "create"}>
             <Plus className="size-4" />
             {busy === "create" ? t("creating") : t("create")}
           </Button>

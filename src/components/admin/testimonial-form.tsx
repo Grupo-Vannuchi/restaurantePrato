@@ -4,11 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea, Label } from "@/components/ui/field";
+import { Input, Textarea, Label, Select } from "@/components/ui/field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Link, useRouter } from "@/i18n/navigation";
 import { locales } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
 import { formToInput, type TestimonialFormValues } from "@/lib/testimonial-form";
 import {
   createTestimonial,
@@ -17,9 +16,6 @@ import {
 } from "@/app/actions/testimonials";
 
 const localeLabel = (locale: string) => locale.toUpperCase();
-
-const selectStyles =
-  "w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm transition-colors focus-visible:border-brand aria-[invalid=true]:border-danger";
 
 export function TestimonialForm({
   mode,
@@ -105,13 +101,13 @@ export function TestimonialForm({
           </div>
           <div>
             <Label htmlFor="rating">{t("rating")}</Label>
-            <select id="rating" className={cn(selectStyles)} {...register("rating")}>
+            <Select id="rating" {...register("rating")}>
               {[5, 4, 3, 2, 1].map((n) => (
                 <option key={n} value={n}>
                   {t("stars", { count: n })}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <div>
             <Label htmlFor="order">{t("order")}</Label>
