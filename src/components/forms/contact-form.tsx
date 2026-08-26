@@ -126,7 +126,7 @@ export function ContactForm() {
       </div>
 
       {status === "error" ? (
-        <p role="alert" className="text-sm text-red-500">
+        <p role="alert" className="text-sm text-danger">
           {t("error")}
         </p>
       ) : null}

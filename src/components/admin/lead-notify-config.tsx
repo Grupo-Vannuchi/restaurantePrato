@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { Loader2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/field";
-import { cn } from "@/lib/utils";
 import { listInstancesAction } from "@/app/actions/whatsapp";
 import {
   getLeadNotifyConfig,
@@ -13,6 +12,7 @@ import {
   listGroupsAction,
 } from "@/app/actions/lead-notify";
 import type { EvoGroup, EvoInstance } from "@/lib/evolution";
+import { StatusMessage } from "@/components/ui/status-message";
 
 const selectStyles =
   "w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus-visible:border-brand disabled:opacity-60";
@@ -144,7 +144,9 @@ export function LeadNotifyConfig() {
               {t("loadingInstances")}
             </p>
           ) : instStatus === "error" ? (
-            <p className="mt-1 text-xs text-amber-600">{t("instancesError")}</p>
+            <StatusMessage tone="warning" className="mt-1 block">
+              {t("instancesError")}
+            </StatusMessage>
           ) : null}
         </div>
 
@@ -170,9 +172,9 @@ export function LeadNotifyConfig() {
               {t("loadingGroups")}
             </p>
           ) : groupStatus === "error" ? (
-            <p className="mt-1 text-xs text-amber-600">
+            <StatusMessage tone="warning" className="mt-1 block">
               {instanceDisconnected ? t("instanceDisconnected") : t("groupsError")}
-            </p>
+            </StatusMessage>
           ) : null}
         </div>
       </div>
@@ -188,16 +190,12 @@ export function LeadNotifyConfig() {
           {t("enable")}
         </label>
         <div className="flex items-center gap-3">
-          {notice ? (
-            <span
-              className={cn(
-                "text-xs",
-                notice === t("saved") ? "text-emerald-600" : "text-red-500",
-              )}
-            >
-              {notice}
-            </span>
-          ) : null}
+          {/* O papel segue o significado: `status` confirma, `alert` interrompe.
+              Antes os dois dividiam o mesmo `<span>`, distinguidos só pela cor —
+              quem não enxerga a cor não sabia se tinha salvado. */}
+          <StatusMessage tone={notice === t("saved") ? "success" : "error"}>
+            {notice}
+          </StatusMessage>
           <Button size="sm" onClick={onSave} disabled={saving}>
             {saving ? t("saving") : t("save")}
           </Button>

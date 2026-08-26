@@ -2,6 +2,7 @@
 
 import { Trash2 } from "lucide-react";
 import { useAdminAction } from "@/components/admin/use-admin-action";
+import { StatusMessage } from "@/components/ui/status-message";
 
 /**
  * Botão de excluir do painel — a base única dos cinco.
@@ -51,7 +52,7 @@ export function DeleteButtonBase({
         <Trash2 className="size-4" />
         {label}
       </button>
-      {erro ? <span className="text-xs text-red-500">{erro}</span> : null}
+      <StatusMessage tone="error">{erro}</StatusMessage>
     </div>
   );
 }

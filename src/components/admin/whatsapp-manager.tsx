@@ -41,8 +41,8 @@ async function semEstourar<T>(acao: () => Promise<T>): Promise<T | null> {
 }
 
 const STATE_STYLES: Record<string, string> = {
-  open: "bg-emerald-500/10 text-emerald-600",
-  connecting: "bg-amber-500/10 text-amber-600",
+  open: "bg-success/10 text-success",
+  connecting: "bg-warning/10 text-warning",
   close: "bg-muted text-muted-foreground",
 };
 
@@ -173,7 +173,7 @@ export function WhatsappManager({
       </div>
 
       {error ? (
-        <p role="alert" className="rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-600">
+        <p role="alert" className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">
           {error}
         </p>
       ) : null}
@@ -214,7 +214,7 @@ export function WhatsappManager({
             </ul>
           </>
         ) : status === "error" ? (
-          <p className="text-sm text-amber-600">{t("loadError")}</p>
+          <p className="text-sm text-warning">{t("loadError")}</p>
         ) : instances.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("empty")}</p>
         ) : (

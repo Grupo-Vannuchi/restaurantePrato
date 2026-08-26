@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { X, Plus } from "lucide-react";
 import { updateLeadTags } from "@/app/actions/admin";
 import { useAdminAction } from "@/components/admin/use-admin-action";
+import { StatusMessage } from "@/components/ui/status-message";
 
 export function LeadTags({ id, tags }: { id: string; tags: string[] }) {
   const t = useTranslations("admin.leads");
@@ -66,7 +67,7 @@ export function LeadTags({ id, tags }: { id: string; tags: string[] }) {
         </button>
       </form>
 
-      {erro ? <span className="text-xs text-red-500">{erro}</span> : null}
+      <StatusMessage tone="error">{erro}</StatusMessage>
     </div>
   );
 }

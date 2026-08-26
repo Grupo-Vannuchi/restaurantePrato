@@ -128,7 +128,7 @@ export function MenuCategoryForm({
       </fieldset>
 
       {serverError ? (
-        <p role="alert" className="text-sm text-red-500">
+        <p role="alert" className="text-sm text-danger">
           {serverError}
         </p>
       ) : null}

@@ -5,6 +5,7 @@ import type { LeadStatus } from "@prisma/client";
 import { updateLeadStatus } from "@/app/actions/admin";
 import { useAdminAction } from "@/components/admin/use-admin-action";
 import { Button } from "@/components/ui/button";
+import { StatusMessage } from "@/components/ui/status-message";
 
 export function LeadStatusButtons({
   id,
@@ -42,7 +43,7 @@ export function LeadStatusButtons({
           {t("archive")}
         </Button>
       ) : null}
-      {erro ? <span className="text-xs text-red-500">{erro}</span> : null}
+      <StatusMessage tone="error">{erro}</StatusMessage>
     </div>
   );
 }

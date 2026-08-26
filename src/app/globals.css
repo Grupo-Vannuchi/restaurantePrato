@@ -18,6 +18,8 @@
 
   --color-card: var(--card);
   --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-card-foreground: var(--card-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
@@ -56,6 +58,8 @@
   Escuro 7,07:1 (card) / 7,32:1 (muted) / 7,96:1 (grafite).
   Claro   6,69:1 (card) / 5,39:1 (muted) / 5,86:1 (creme). */
   --danger: #ff8a8a;
+  --success: #6ee7b7;
+  --warning: #fcd34d;
 }
 
 /* Light neutrals. Follow the OS by default, but let an explicit `data-theme`
@@ -68,6 +72,8 @@
     --muted-foreground: #6b6862;
     --border: #ded7ae;
     --danger: #b3000a;
+    --success: #046c4e;
+    --warning: #8a4b00;
   }
 }
 
@@ -78,6 +84,8 @@
   --muted-foreground: #6b6862;
   --border: #ded7ae;
   --danger: #b3000a;
+  --success: #046c4e;
+  --warning: #8a4b00;
 }
 
 :root[data-theme="dark"] {
@@ -87,6 +95,8 @@
   --muted-foreground: #b8b2a6;
   --border: #474544;
   --danger: #ff8a8a;
+  --success: #6ee7b7;
+  --warning: #fcd34d;
 }
 
 
