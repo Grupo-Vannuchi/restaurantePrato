@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea, Label, FieldError } from "@/components/ui/field";
+import { Input, Textarea, Label } from "@/components/ui/field";
 import { Link, useRouter } from "@/i18n/navigation";
 import { locales } from "@/i18n/routing";
 import {
@@ -79,11 +79,10 @@ export function MenuCategoryForm({
             <Input
               id="slug"
               placeholder="entradas"
-              aria-invalid={Boolean(errors.slug)}
               {...register("slug", required)}
+              error={errors.slug?.message}
+              hint={t("categorySlugHint")}
             />
-            <FieldError>{errors.slug?.message}</FieldError>
-            <p className="mt-1 text-xs text-muted-foreground">{t("categorySlugHint")}</p>
           </div>
           <div>
             <Label htmlFor="order">{t("order")}</Label>
@@ -103,19 +102,17 @@ export function MenuCategoryForm({
               <Label htmlFor={`name-${locale}`}>{t("categoryName")}</Label>
               <Input
                 id={`name-${locale}`}
-                aria-invalid={Boolean(errors.name?.[locale])}
                 {...register(`name.${locale}` as const, locale === locales[0] ? required : {})}
+                error={errors.name?.[locale]?.message}
               />
-              <FieldError>{errors.name?.[locale]?.message}</FieldError>
             </div>
             <div>
               <Label htmlFor={`description-${locale}`}>{t("categoryDescription")}</Label>
               <Textarea
                 id={`description-${locale}`}
-                aria-invalid={Boolean(errors.description?.[locale])}
                 {...register(`description.${locale}` as const)}
+                error={errors.description?.[locale]?.message}
               />
-              <FieldError>{errors.description?.[locale]?.message}</FieldError>
             </div>
           </div>
         </fieldset>

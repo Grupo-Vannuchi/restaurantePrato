@@ -4,11 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea, Label, FieldError } from "@/components/ui/field";
+import { Input, Textarea, Label, Select } from "@/components/ui/field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Link, useRouter } from "@/i18n/navigation";
 import { locales } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
 import { itemFormToInput, type MenuItemFormValues } from "@/lib/menu-form";
 import {
   createMenuItem,
@@ -17,9 +16,6 @@ import {
 } from "@/app/actions/menu";
 
 const localeLabel = (locale: string) => locale.toUpperCase();
-
-const selectStyles =
-  "w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm transition-colors focus-visible:border-brand aria-[invalid=true]:border-red-500";
 
 /** 1 = segunda … 5 = sexta — o restaurante não abre no fim de semana. */
 const weekdays = [1, 2, 3, 4, 5] as const;
@@ -85,10 +81,9 @@ export function MenuItemForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="categoryId">{t("itemCategory")}</Label>
-            <select
+            <Select
               id="categoryId"
-              aria-invalid={Boolean(errors.categoryId)}
-              className={cn(selectStyles)}
+              error={errors.categoryId?.message}
               {...register("categoryId", required)}
             >
               {categories.map((c) => (
@@ -96,36 +91,36 @@ export function MenuItemForm({
                   {c.name}
                 </option>
               ))}
-            </select>
-            <FieldError>{errors.categoryId?.message}</FieldError>
+            </Select>
           </div>
           <div>
             <Label htmlFor="slug">{t("itemSlug")}</Label>
             <Input
               id="slug"
               placeholder="picanha-na-brasa"
-              aria-invalid={Boolean(errors.slug)}
               {...register("slug", required)}
+              error={errors.slug?.message}
+              hint={t("itemSlugHint")}
             />
-            <FieldError>{errors.slug?.message}</FieldError>
-            <p className="mt-1 text-xs text-muted-foreground">{t("itemSlugHint")}</p>
           </div>
           <div>
             <Label htmlFor="tags">{t("itemTags")}</Label>
-            <Input id="tags" {...register("tags")} />
-            <p className="mt-1 text-xs text-muted-foreground">{t("itemTagsHint")}</p>
+            <Input id="tags" {...register("tags")} hint={t("itemTagsHint")} />
           </div>
           <div>
             <Label htmlFor="weekday">{t("itemWeekday")}</Label>
-            <select id="weekday" className={cn(selectStyles)} {...register("weekday")}>
+            <Select
+              id="weekday"
+              hint={t("itemWeekdayHint")}
+              {...register("weekday")}
+            >
               <option value="">{t("weekdayNone")}</option>
               {weekdays.map((n) => (
                 <option key={n} value={n}>
                   {t(`weekday${n}`)}
                 </option>
               ))}
-            </select>
-            <p className="mt-1 text-xs text-muted-foreground">{t("itemWeekdayHint")}</p>
+            </Select>
           </div>
           <div>
             <Label htmlFor="order">{t("order")}</Label>
@@ -154,19 +149,17 @@ export function MenuItemForm({
               <Label htmlFor={`name-${locale}`}>{t("itemName")}</Label>
               <Input
                 id={`name-${locale}`}
-                aria-invalid={Boolean(errors.name?.[locale])}
                 {...register(`name.${locale}` as const, locale === locales[0] ? required : {})}
+                error={errors.name?.[locale]?.message}
               />
-              <FieldError>{errors.name?.[locale]?.message}</FieldError>
             </div>
             <div>
               <Label htmlFor={`description-${locale}`}>{t("itemDescription")}</Label>
               <Textarea
                 id={`description-${locale}`}
-                aria-invalid={Boolean(errors.description?.[locale])}
                 {...register(`description.${locale}` as const)}
+                error={errors.description?.[locale]?.message}
               />
-              <FieldError>{errors.description?.[locale]?.message}</FieldError>
             </div>
           </div>
         </fieldset>

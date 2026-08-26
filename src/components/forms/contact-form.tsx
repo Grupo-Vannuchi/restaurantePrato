@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea, Label, FieldError } from "@/components/ui/field";
+import { Input, Textarea, Label } from "@/components/ui/field";
 import { submitContactLead } from "@/app/actions/leads";
 import { contactSchema, type ContactInput } from "@/lib/validations/lead";
 import { readAttribution } from "@/lib/attribution";
@@ -87,10 +87,9 @@ export function ContactForm() {
           <Input
             id="name"
             autoComplete="name"
-            aria-invalid={Boolean(errors.name)}
             {...register("name")}
+            error={errors.name?.message}
           />
-          <FieldError>{errors.name?.message}</FieldError>
         </div>
         <div>
           <Label htmlFor="email">{t("email")}</Label>
@@ -98,10 +97,9 @@ export function ContactForm() {
             id="email"
             type="email"
             autoComplete="email"
-            aria-invalid={Boolean(errors.email)}
             {...register("email")}
+            error={errors.email?.message}
           />
-          <FieldError>{errors.email?.message}</FieldError>
         </div>
         <div>
           <Label htmlFor="phone">{t("phone")}</Label>
@@ -122,10 +120,9 @@ export function ContactForm() {
         <Textarea
           id="message"
           placeholder={t("messagePlaceholder")}
-          aria-invalid={Boolean(errors.message)}
           {...register("message")}
+          error={errors.message?.message}
         />
-        <FieldError>{errors.message?.message}</FieldError>
       </div>
 
       {status === "error" ? (

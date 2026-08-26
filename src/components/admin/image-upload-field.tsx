@@ -34,6 +34,7 @@ export function ImageUploadField({
   preset,
   value,
   onChange,
+  error: erroDeValidacao,
 }: {
   id?: string;
   label?: string;
@@ -41,6 +42,8 @@ export function ImageUploadField({
   preset: ImagePreset;
   value: string;
   onChange: (url: string) => void;
+  /** Erro de validação do formulário — separado da falha de ENVIO, abaixo. */
+  error?: string;
 }) {
   const t = useTranslations("admin.upload");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -126,9 +129,12 @@ export function ImageUploadField({
             placeholder={t("urlPlaceholder")}
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            hint={hint}
+            // Dois erros diferentes no mesmo campo: o que o formulário reprovou
+            // e o que o envio da imagem devolveu. O de envio vem primeiro
+            // porque é o mais recente — foi a última coisa que a pessoa fez.
+            error={error ?? erroDeValidacao}
           />
-          {error ? <p className="text-xs text-red-500">{error}</p> : null}
-          {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
         </div>
       </div>
     </div>

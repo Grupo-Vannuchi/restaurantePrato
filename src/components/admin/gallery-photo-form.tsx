@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea, Label, FieldError } from "@/components/ui/field";
+import { Input, Textarea, Label } from "@/components/ui/field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Link, useRouter } from "@/i18n/navigation";
 import { locales } from "@/i18n/routing";
@@ -84,8 +84,7 @@ export function GalleryPhotoForm({
           </div>
           <div>
             <Label htmlFor="order">{t("order")}</Label>
-            <Input id="order" type="number" inputMode="numeric" {...register("order")} />
-            <p className="mt-1 text-xs text-muted-foreground">{t("orderHint")}</p>
+            <Input id="order" type="number" inputMode="numeric" {...register("order")} hint={t("orderHint")} />
           </div>
         </div>
       </fieldset>
@@ -100,11 +99,10 @@ export function GalleryPhotoForm({
             <Label htmlFor={`caption-${locale}`}>{t("caption")}</Label>
             <Textarea
               id={`caption-${locale}`}
-              aria-invalid={Boolean(errors.caption?.[locale])}
               {...register(`caption.${locale}` as const)}
+              error={errors.caption?.[locale]?.message}
+              hint={t("captionHint")}
             />
-            <FieldError>{errors.caption?.[locale]?.message}</FieldError>
-            <p className="mt-1 text-xs text-muted-foreground">{t("captionHint")}</p>
           </div>
         </fieldset>
       ))}

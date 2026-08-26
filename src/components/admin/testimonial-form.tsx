@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea, Label, FieldError } from "@/components/ui/field";
+import { Input, Textarea, Label } from "@/components/ui/field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Link, useRouter } from "@/i18n/navigation";
 import { locales } from "@/i18n/routing";
@@ -80,31 +80,28 @@ export function TestimonialForm({
             <Label htmlFor="authorName">{t("authorName")}</Label>
             <Input
               id="authorName"
-              aria-invalid={Boolean(errors.authorName)}
               {...register("authorName", required)}
+              error={errors.authorName?.message}
             />
-            <FieldError>{errors.authorName?.message}</FieldError>
           </div>
           <div>
             <Label htmlFor="source">{t("source")}</Label>
             <Input
               id="source"
-              aria-invalid={Boolean(errors.source)}
               {...register("source", required)}
+              error={errors.source?.message}
+              hint={t("sourceHint")}
             />
-            <p className="mt-1 text-xs text-muted-foreground">{t("sourceHint")}</p>
-            <FieldError>{errors.source?.message}</FieldError>
           </div>
           <div>
             <Label htmlFor="sourceUrl">{t("sourceUrl")}</Label>
             <Input
               id="sourceUrl"
               placeholder="https://maps.google.com/…"
-              aria-invalid={Boolean(errors.sourceUrl)}
               {...register("sourceUrl")}
+              error={errors.sourceUrl?.message}
+              hint={t("sourceUrlHint")}
             />
-            <p className="mt-1 text-xs text-muted-foreground">{t("sourceUrlHint")}</p>
-            <FieldError>{errors.sourceUrl?.message}</FieldError>
           </div>
           <div>
             <Label htmlFor="rating">{t("rating")}</Label>
@@ -118,8 +115,7 @@ export function TestimonialForm({
           </div>
           <div>
             <Label htmlFor="order">{t("order")}</Label>
-            <Input id="order" type="number" inputMode="numeric" {...register("order")} />
-            <p className="mt-1 text-xs text-muted-foreground">{t("orderHint")}</p>
+            <Input id="order" type="number" inputMode="numeric" {...register("order")} hint={t("orderHint")} />
           </div>
           <div className="sm:col-span-2">
             <ImageUploadField
@@ -129,8 +125,8 @@ export function TestimonialForm({
               preset="avatar"
               value={watch("avatarUrl") ?? ""}
               onChange={(v) => setValue("avatarUrl", v, { shouldDirty: true })}
+              error={errors.avatarUrl?.message}
             />
-            <FieldError>{errors.avatarUrl?.message}</FieldError>
           </div>
         </div>
       </fieldset>
@@ -146,10 +142,9 @@ export function TestimonialForm({
               <Label htmlFor={`quote-${locale}`}>{t("quote")}</Label>
               <Textarea
                 id={`quote-${locale}`}
-                aria-invalid={Boolean(errors.quote?.[locale])}
                 {...register(`quote.${locale}` as const, locale === locales[0] ? required : {})}
+                error={errors.quote?.[locale]?.message}
               />
-              <FieldError>{errors.quote?.[locale]?.message}</FieldError>
             </div>
           </div>
         </fieldset>

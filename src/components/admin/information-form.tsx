@@ -4,12 +4,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea, Label, FieldError } from "@/components/ui/field";
+import { Input, Textarea, Label, Select } from "@/components/ui/field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Icon, iconNames } from "@/components/ui/icon";
 import { Link, useRouter } from "@/i18n/navigation";
 import { locales } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
 import { formToInput, type InformationFormValues } from "@/lib/information-form";
 import {
   createInformation,
@@ -19,9 +18,6 @@ import {
 
 /** Display name for a locale tab/label (e.g. "PT", "EN"). */
 const localeLabel = (locale: string) => locale.toUpperCase();
-
-const selectStyles =
-  "w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm transition-colors focus-visible:border-brand aria-[invalid=true]:border-red-500";
 
 export function InformationForm({
   mode,
@@ -85,11 +81,10 @@ export function InformationForm({
             <Input
               id="slug"
               placeholder="company-history"
-              aria-invalid={Boolean(errors.slug)}
               {...register("slug", required)}
+              hint={t("slugHint")}
+              error={errors.slug?.message}
             />
-            <FieldError>{errors.slug?.message}</FieldError>
-            <p className="mt-1 text-xs text-muted-foreground">{t("slugHint")}</p>
           </div>
           <div>
             <Label htmlFor="icon">{t("icon")}</Label>
@@ -97,10 +92,10 @@ export function InformationForm({
               <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
                 <Icon name={selectedIcon} className="size-5" />
               </span>
-              <select
+              <Select
                 id="icon"
-                aria-invalid={Boolean(errors.icon)}
-                className={cn(selectStyles)}
+                aria-describedby="icon-dica"
+                error={errors.icon?.message}
                 {...register("icon", required)}
               >
                 <option value="">{t("iconPlaceholder")}</option>
@@ -109,15 +104,15 @@ export function InformationForm({
                     {name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
-            <FieldError>{errors.icon?.message}</FieldError>
-            <p className="mt-1 text-xs text-muted-foreground">{t("iconHint")}</p>
+            <p id="icon-dica" className="mt-1 text-xs text-muted-foreground">
+              {t("iconHint")}
+            </p>
           </div>
           <div>
             <Label htmlFor="order">{t("order")}</Label>
-            <Input id="order" type="number" inputMode="numeric" {...register("order")} />
-            <p className="mt-1 text-xs text-muted-foreground">{t("orderHint")}</p>
+            <Input id="order" type="number" inputMode="numeric" {...register("order")} hint={t("orderHint")} />
           </div>
           <div className="sm:col-span-2">
             <ImageUploadField
@@ -143,22 +138,20 @@ export function InformationForm({
               <Label htmlFor={`title-${locale}`}>{t("titleField")}</Label>
               <Input
                 id={`title-${locale}`}
-                aria-invalid={Boolean(errors.title?.[locale])}
                 {...register(`title.${locale}` as const, locale === locales[0] ? required : {})}
+                error={errors.title?.[locale]?.message}
               />
-              <FieldError>{errors.title?.[locale]?.message}</FieldError>
             </div>
             <div>
               <Label htmlFor={`description-${locale}`}>{t("description")}</Label>
               <Textarea
                 id={`description-${locale}`}
-                aria-invalid={Boolean(errors.description?.[locale])}
                 {...register(
                   `description.${locale}` as const,
                   locale === locales[0] ? required : {},
                 )}
+                error={errors.description?.[locale]?.message}
               />
-              <FieldError>{errors.description?.[locale]?.message}</FieldError>
             </div>
             <div>
               <Label htmlFor={`content-${locale}`}>{t("content")}</Label>
@@ -169,9 +162,9 @@ export function InformationForm({
                   `content.${locale}` as const,
                   locale === locales[0] ? required : {},
                 )}
+                error={errors.content?.[locale]?.message}
+                hint={t("contentHint")}
               />
-              <p className="mt-1 text-xs text-muted-foreground">{t("contentHint")}</p>
-              <FieldError>{errors.content?.[locale]?.message}</FieldError>
             </div>
           </div>
         </fieldset>
