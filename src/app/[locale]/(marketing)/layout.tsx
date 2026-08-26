@@ -4,8 +4,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { WhatsappButton } from "@/components/layout/whatsapp-button";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/json-ld";
-import { getInformations, getMenuCategoryLinks } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
+import { getHeaderLinks } from "@/lib/header-links";
 
 export default async function MarketingLayout({
   children,
@@ -20,16 +20,12 @@ export default async function MarketingLayout({
 
   // The gallery is no longer a top-level menu item, so the header only needs
   // the gastronomy children — one query fewer on every marketing page.
-  const [categories, informations] = await Promise.all([
-    getMenuCategoryLinks(locale),
-    getInformations(locale),
-  ]);
-  const categoryLinks = categories.map((c) => ({ slug: c.slug, title: c.name }));
-  const informationLinks = informations.map((i) => ({
-    slug: i.slug,
-    title: i.title,
-    icon: i.icon,
-  }));
+  //
+  // ⚠️ Vai por `getHeaderLinks`, que TOLERA o banco fora do ar. Estas duas
+  // buscas ficavam aqui sem tratamento, e uma falha delas derrubava o site
+  // inteiro com erro 500 — sendo que endereço, horário e reservas não vêm do
+  // banco. Ver a nota em `lib/header-links.ts`.
+  const { categoryLinks, informationLinks } = await getHeaderLinks(locale);
 
   return (
     <>
