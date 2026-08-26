@@ -26,7 +26,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col gap-1">
+    <nav aria-label={t("primary")} className="flex flex-col gap-1">
       {items.map((item) => {
         const active = item.exact
           ? pathname === item.href

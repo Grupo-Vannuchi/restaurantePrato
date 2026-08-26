@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import { LogOut, ExternalLink } from "lucide-react";
-import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/logo";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { AdminNotice } from "@/components/admin/admin-notice";
@@ -37,7 +36,13 @@ export async function AdminShell({
       >
         {t("skipToContent")}
       </a>
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-card p-4 md:flex">
+      {/* Contentor, não `<aside>`: aquele elemento mapeia para o marco
+          `complementary`, e a navegação PRIMÁRIA do painel sendo anunciada como
+          "conteúdo complementar" é o oposto do que ela é. Quem carrega o marco
+          aqui é o `<nav>` do `AdminNav`, que ganhou nome. O mesmo vale para a
+          barra do celular abaixo, que era `<header>` — o mesmo bloco não pode
+          ser um marco no computador e outro no telefone. */}
+      <div className="hidden w-64 shrink-0 flex-col border-r border-border bg-card p-4 md:flex">
         <div className="px-2 py-3">
           <Logo className="text-xl" />
         </div>
@@ -45,13 +50,23 @@ export async function AdminShell({
           <AdminNav />
         </div>
         <div className="flex flex-col gap-1 border-t border-border pt-3">
-          <Link
+          <p className="px-3 py-1 text-sm font-medium">{user.name}</p>
+          {/* O ícone de link externo é universalmente lido como "abre em nova
+              aba". Antes o link navegava no mesmo contexto — promessa falsa — e
+              se anunciava só com o nome da pessoa, que não diz destino nenhum.
+              Agora abre de verdade (útil: não se perde a página do painel) e
+              tem nome próprio. O nome acessível CONTÉM o texto visível, para o
+              comando por voz continuar funcionando. */}
+          <a
             href="/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label={t("viewSiteNewTab")}
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
-            <ExternalLink className="size-4" />
-            {user.name}
-          </Link>
+            <ExternalLink className="size-4" aria-hidden />
+            {t("viewSite")}
+          </a>
           <form action={logout.bind(null, locale)}>
             <button
               type="submit"
@@ -62,11 +77,11 @@ export async function AdminShell({
             </button>
           </form>
         </div>
-      </aside>
+      </div>
 
       <div className="flex flex-1 flex-col">
         {/* Mobile top bar */}
-        <header className="flex flex-col gap-3 border-b border-border bg-card px-4 py-3 md:hidden">
+        <div className="flex flex-col gap-3 border-b border-border bg-card px-4 py-3 md:hidden">
           <div className="flex items-center justify-between">
             <Logo className="text-lg" />
             <form action={logout.bind(null, locale)}>
@@ -80,7 +95,7 @@ export async function AdminShell({
             </form>
           </div>
           <AdminNav />
-        </header>
+        </div>
         {/* `tabIndex={-1}` deixa o alvo receber foco por programa (o salto do
             link acima) sem entrar na ordem de tabulação. */}
         <main id="conteudo" tabIndex={-1} className="flex-1 p-6 sm:p-8">
