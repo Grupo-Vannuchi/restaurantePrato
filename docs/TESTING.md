@@ -63,7 +63,9 @@ Scripts (package.json):
   (Use **MSW** only if/when a real client-side `fetch` appears.)
 - **`@/lib/prisma`**: mock it for any action *unit* test (no DB in unit tests).
 - **Never** mock React or `next-intl` internals; wrap with the real provider.
-- React Compiler is off in Vitest (plain React) — fine; purity is a lint concern.
+- React Compiler is off in Vitest (plain React) — and off in the build too:
+  it is not configured anywhere. Purity is still required; it is a React
+  rule, not a compiler rule. See the note in `AGENTS.md`.
 
 ### Playwright
 - **`playwright.config.ts`** — `webServer` runs the app against a **test DB**

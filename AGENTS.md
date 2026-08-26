@@ -132,9 +132,19 @@ null by hardcoding a number.
 
 ## React / Next.js — skills: `react-patterns`, `react-performance`, `nextjs-turbopack`
 
-- **Render is pure** (React Compiler is on). No `Date.now()`, `Math.random()`,
-  `crypto.randomUUID()` or mutation during render — use refs, effects, or event
-  handlers. No `setState` during render.
+- **Render is pure.** No `Date.now()`, `Math.random()`, `crypto.randomUUID()`
+  or mutation during render — use refs, effects, or event handlers. No
+  `setState` during render.
+  ⚠️ An older version of this rule claimed the React Compiler was enabled here.
+  **It is not** — it appears nowhere in `next.config.ts`, the plugin is not
+  installed, and the build does not register it. The claim travelled through seven plan documents
+  in `docs/superpowers/plans/` and reached a code comment written on 25/08 that
+  justified a decision with it. Those plans are a historical record and stay as
+  written; this file is the live instruction and does not.
+  **The rule itself stands** — impure render is a React bug with or without the
+  compiler; only its justification was inflated. Same shape as the "400+ static
+  pages" folklore corrected under Prisma below. `test/documentacao-confere-com-o-build.test.ts`
+  now fails if this file and `next.config.ts` disagree about it.
 - **Stale closures kill data.** Don't read state you just set in the same handler.
   Compute the new value locally and pass it forward.
 - **Kill request waterfalls.** Independent `await`s → `Promise.all`. Check cheap

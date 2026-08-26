@@ -51,8 +51,9 @@ export function useModalFocus({
   // costuma passar uma arrow function nova a cada render; se ela entrasse nas
   // dependências, o efeito se desmontaria e remontaria a cada render — e a
   // limpeza devolve o foco ao gatilho, então o foco sairia da janela sozinho,
-  // repetidamente. Sincronizado em efeito, e não durante o render, porque o
-  // React Compiler exige render puro.
+  // repetidamente. Sincronizado em efeito, e não durante o render, porque
+  // mutar durante o render é impuro — regra do React, não do compilador (que,
+  // ao contrário do que este comentário dizia em 25/08, não está ligado aqui).
   useEffect(() => {
     fecharRef.current = onClose;
   });
