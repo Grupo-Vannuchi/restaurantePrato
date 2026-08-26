@@ -101,6 +101,11 @@ const nextConfig: NextConfig = {
     // regra é foto autoral do restaurante. Enquanto estivessem autorizados,
     // bastava colar uma URL de banco de imagens num campo do painel para
     // publicar foto genérica como se fosse da casa.
+    // AVIF primeiro: o navegador escolhe o primeiro formato que aceita, e AVIF
+    // costuma ser 20–30% menor que WebP na mesma qualidade — diferença maior
+    // justamente em foto de comida, que tem gradação suave. O padrão do Next é
+    // só WebP, então isto não vinha de graça.
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       // Google Drive images: use the lh3.googleusercontent.com/d/<FILE_ID> form,
       // NOT the drive.google.com/file/d/<ID>/view share link.

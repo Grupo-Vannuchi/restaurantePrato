@@ -15,10 +15,19 @@ import type { InformationView } from "@/lib/queries";
  *   • image button → opens the shared lightbox carousel at this image
  * (see InformationGallery, which renders the single modal for the whole grid).
  */
+/**
+ * `priority` marca a PRIMEIRA foto da listagem. Sem ela, `next/image` deixa
+ * tudo preguiçoso e o navegador só descobre a imagem depois de baixar e
+ * aplicar o CSS — atraso puro justamente no maior elemento da tela. Só a
+ * primeira: marcar todas faria as fotos disputarem banda entre si.
+ */
 export function InformationCard({
   information,
+  priority = false,
 }: {
   information: InformationView;
+  /** Só a primeira da grade — ver a nota acima. */
+  priority?: boolean;
 }) {
   const t = useTranslations("novidades");
   const gallery = useInformationGallery();
@@ -34,6 +43,7 @@ export function InformationCard({
           alt=""
           fill
           sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          priority={priority}
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : null}

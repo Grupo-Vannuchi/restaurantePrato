@@ -1,18 +1,6 @@
 import {
-  Palette,
   Camera,
-  Megaphone,
-  TrendingUp,
-  Target,
   Sparkles,
-  FileSearchIcon,
-  Cpu,
-  Share2,
-  Bot,
-  Globe,
-  Workflow,
-  Printer,
-  Video,
   Info,
   BookOpen,
   FileText,
@@ -24,25 +12,24 @@ import {
 import { Instagram } from "@/components/ui/brand-icons";
 
 /**
- * Maps the icon names stored on `Information.icon` to lucide components. Add
- * new entries here when introducing informations with new icons; unknown
- * names fall back to a neutral sparkle.
+ * Nomes guardados em `Information.icon` → componentes do lucide. Nome
+ * desconhecido cai numa faísca neutra, então remover daqui nunca quebra
+ * conteúdo já publicado.
+ *
+ * ⚠️ **Este `Record` é estático, logo NÃO é removível na compilação**: todo
+ * ícone listado embarca em toda página pública, ainda que a página desenhe
+ * zero. Por isso a lista é curta de propósito — cada entrada custa bytes a
+ * todo visitante.
+ *
+ * Doze entradas saíram por serem do site da agência de onde este projeto foi
+ * forkado: robô, fluxo de trabalho, impressora, métrica de campanha, paleta.
+ * Um restaurante não publica novidade com esses ícones, e eles pesavam em toda
+ * visita. Se o cliente pedir ícones de comida (talher, chapéu de chef,
+ * calendário), acrescentar aqui é uma linha cada.
  */
 const icons: Record<string, LucideIcon> = {
   Instagram,
-  Palette,
   Camera,
-  Megaphone,
-  TrendingUp,
-  Target,
-  FileSearchIcon,
-  Cpu,
-  Share2,
-  Bot,
-  Globe,
-  Workflow,
-  Printer,
-  Video,
   Info,
   BookOpen,
   FileText,

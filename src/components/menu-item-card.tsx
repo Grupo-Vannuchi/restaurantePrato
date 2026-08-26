@@ -6,7 +6,20 @@ import type { MenuItemView } from "@/lib/queries";
 const weekdayKeys = ["weekday1", "weekday2", "weekday3", "weekday4", "weekday5"] as const;
 
 /** Card de um prato. Sem preço: o cliente não publica valores. */
-export async function MenuItemCard({ item }: { item: MenuItemView }) {
+/**
+ * `priority` marca a PRIMEIRA foto da listagem. Sem ela, `next/image` deixa
+ * tudo preguiçoso e o navegador só descobre a imagem depois de baixar e
+ * aplicar o CSS — atraso puro justamente no maior elemento da tela. Só a
+ * primeira: marcar todas faria as fotos disputarem banda entre si.
+ */
+export async function MenuItemCard({
+  item,
+  priority = false,
+}: {
+  item: MenuItemView;
+  /** Só a primeira da grade — ver a nota acima. */
+  priority?: boolean;
+}) {
   const t = await getTranslations("gastronomia");
   return (
     <article className="flex h-full flex-col gap-3 rounded-xl border border-border bg-card p-5">
@@ -25,6 +38,7 @@ export async function MenuItemCard({ item }: { item: MenuItemView }) {
           // Grade de 1 / 2 / 3 colunas: sem isto o navegador pede o arquivo do
           // tamanho da janela inteira e joga fora dois terços dos bytes.
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          priority={priority}
           className="h-40 w-full rounded-lg object-cover"
         />
       ) : null}

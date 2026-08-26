@@ -86,6 +86,12 @@ export default async function LocaleLayout({
   // Enables static rendering for this locale (next-intl).
   setRequestLocale(locale);
 
+  // Origem do Storage, para o `preconnect` abaixo. `URL` normaliza para só o
+  // esquema + host, que é o que `preconnect` espera.
+  const origemDasImagens = env.SUPABASE_URL
+    ? new URL(env.SUPABASE_URL).origin
+    : null;
+
   // Tudo menos o painel. `admin` é 57% do catálogo e não serve ao visitante.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { admin: _painel, ...mensagensPublicas } = await getMessages();
@@ -97,6 +103,20 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Abre a conexão com o servidor de imagens ANTES de a primeira foto
+            ser pedida. Toda imagem cadastrada pelo painel vem do Supabase, que
+            é outro domínio: sem isto, a primeira foto paga DNS + TCP + TLS
+            dentro do caminho crítico — e a primeira foto de uma página costuma
+            ser o maior elemento dela.
+
+            Só sai quando o Storage está configurado; num ambiente sem ele, um
+            `preconnect` para lugar nenhum é desperdício de uma conexão. */}
+        {origemDasImagens ? (
+          <>
+            <link rel="preconnect" href={origemDasImagens} />
+            <link rel="dns-prefetch" href={origemDasImagens} />
+          </>
+        ) : null}
         <ThemeStyle />
         {/* Applies a saved theme choice before first paint so the page never
             flashes the wrong palette. No stored choice (or "system") leaves the

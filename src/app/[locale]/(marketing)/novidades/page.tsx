@@ -42,11 +42,20 @@ export default async function InformationsPage({
         ) : (
           <InformationGallery items={informations}>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {informations.map((information, i) => (
-                <Reveal key={information.id} delay={(i % 4) * 80} className="h-full">
-                  <InformationCard information={information} />
-                </Reveal>
-              ))}
+              {informations.map((information, i) =>
+                // A primeira fica fora da revelação — ver a nota em
+                // `galeria/page.tsx`: esconder o LCP atrás da hidratação anula
+                // a prioridade dada à imagem.
+                i === 0 ? (
+                  <div key={information.id} className="h-full">
+                    <InformationCard information={information} priority />
+                  </div>
+                ) : (
+                  <Reveal key={information.id} delay={(i % 4) * 80} className="h-full">
+                    <InformationCard information={information} />
+                  </Reveal>
+                ),
+              )}
             </div>
           </InformationGallery>
         )}

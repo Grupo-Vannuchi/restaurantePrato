@@ -40,11 +40,22 @@ export default async function PortfolioPage({
           <p className="text-center text-muted-foreground">{t("empty")}</p>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {photos.map((photo, i) => (
-              <Reveal key={photo.id} delay={(i % 3) * 90} className="h-full">
-                <GalleryPhotoCard photo={photo} />
-              </Reveal>
-            ))}
+            {photos.map((photo, i) =>
+              // A primeira foto fica FORA da revelação, pelo mesmo motivo que o
+              // título das páginas internas saiu dela: `Reveal` nasce com
+              // `opacity: 0` e só aparece depois de hidratar. Ela é o maior
+              // elemento da tela — esconder o LCP atrás do JavaScript anula o
+              // `priority` que acabou de ser dado a ela.
+              i === 0 ? (
+                <div key={photo.id} className="h-full">
+                  <GalleryPhotoCard photo={photo} priority />
+                </div>
+              ) : (
+                <Reveal key={photo.id} delay={(i % 3) * 90} className="h-full">
+                  <GalleryPhotoCard photo={photo} />
+                </Reveal>
+              ),
+            )}
           </div>
         )}
       </Section>

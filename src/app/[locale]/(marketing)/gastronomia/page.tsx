@@ -52,11 +52,19 @@ export default async function ServicesPage({
               align="left"
             />
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {category.items.map((item, i) => (
-                <Reveal key={item.id} delay={(i % 3) * 90} className="h-full">
-                  <MenuItemCard item={item} />
-                </Reveal>
-              ))}
+              {category.items.map((item, i) =>
+                // A primeira fica fora da revelação — ver a nota em
+                // `galeria/page.tsx`.
+                i === 0 ? (
+                  <div key={item.id} className="h-full">
+                    <MenuItemCard item={item} priority />
+                  </div>
+                ) : (
+                  <Reveal key={item.id} delay={(i % 3) * 90} className="h-full">
+                    <MenuItemCard item={item} />
+                  </Reveal>
+                ),
+              )}
             </div>
           </Section>
         ))
