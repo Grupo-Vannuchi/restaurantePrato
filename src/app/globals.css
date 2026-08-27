@@ -89,9 +89,27 @@
     font-family: var(--font-serif);
   }
 
-  /* Visible, brand-coloured focus ring for keyboard users. */
+  /*
+   * Anel de foco do teclado.
+   *
+   * ⚠️ A cor é `--foreground`, e NÃO a da marca. O contorno era `--color-brand`
+   * e o cartão de fechamento de `/`, `/experiencia` e `/gastronomia` pinta o
+   * fundo com essa mesma cor: marca sobre marca dá 1,00:1. O contorno existia,
+   * e quem navega por teclado não via onde estava — em três botões de
+   * conversão. Critério WCAG 1.4.11 (nível AA) pede 3:1 contra o que está atrás.
+   *
+   * `--foreground` não é uma cor escolhida por gosto: é, por definição, a cor
+   * que contrasta com a superfície do tema. Medido contra as seis superfícies
+   * que o site tem hoje, o pior caso é 3,92:1 (sobre a marca) e o melhor
+   * 19,56:1. Um anel duplo mantendo o verde foi medido também e reprova sobre
+   * o accent (2,60:1) e sobre o verde do WhatsApp (2,51:1).
+   *
+   * Guardado por `e2e/foco-visivel-no-cartao-da-marca.spec.ts`, que mede
+   * contraste de verdade — a checagem antiga só perguntava se o contorno
+   * existia, e passava verde com o defeito no ar.
+   */
   :focus-visible {
-    outline: 2px solid var(--color-brand);
+    outline: 2px solid var(--color-foreground);
     outline-offset: 2px;
   }
 }

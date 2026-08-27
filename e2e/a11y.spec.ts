@@ -73,7 +73,7 @@ for (const path of PAGES) {
 }
 
 test("o foco do teclado fica visível ao percorrer a página", async ({ page }) => {
-  // `globals.css` desenha um contorno na cor da marca em `:focus-visible`. Uma
+  // `globals.css` desenha um contorno em `:focus-visible`. Uma
   // classe `focus-visible:outline-none` num componente apaga essa regra — e foi
   // o que aconteceu com o botão do site inteiro: o foco existia, invisível.
   // Critério WCAG 2.4.7, nível AA.
@@ -104,6 +104,12 @@ test("o foco do teclado fica visível ao percorrer a página", async ({ page }) 
     // — o Google —, e a página de fora não tem como desenhá-lo. Exigir
     // contorno no elemento `<iframe>` é exigir o impossível.
     if (contorno.tag === "IFRAME") continue;
+
+    // O overlay de erro do `next dev` (`<nextjs-portal>`) entra na ordem de
+    // tabulação e não tem contorno. Não é o site: em produção ele não existe.
+    // Sem esta isenção a suíte só passa contra um build, o que na prática
+    // significava não rodá-la localmente.
+    if (contorno.tag === "NEXTJS-PORTAL") continue;
 
     const temContorno = contorno.largura > 0 && contorno.estiloContorno !== "none";
     const temSombra = contorno.sombra !== "none" && contorno.sombra !== "";
