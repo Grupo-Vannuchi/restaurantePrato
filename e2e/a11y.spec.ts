@@ -162,8 +162,13 @@ test("o menu de novidades abre com o foco do teclado, não só no hover", async 
   test.skip(isMobile, "o menu suspenso só existe a partir do breakpoint md");
   await page.goto("/");
 
-  const gatilho = page.locator('a[aria-label="Abrir novidades"]');
-  const grupo = page.locator("div.group").filter({ has: gatilho });
+  // Localizado pelo destino, e não pelo rótulo: o rótulo é copy e mudou em
+  // 27/08 ("Abrir novidades" prometia um comportamento que um `<a href>` não
+  // tem). Um teste de estrutura não deve quebrar quando a copy muda.
+  const grupo = page
+    .locator("header div.group")
+    .filter({ has: page.locator('a[href="/novidades"]') });
+  const gatilho = grupo.locator('a[href="/novidades"]');
   const painel = grupo.locator(":scope > div");
 
   // Fechado antes de qualquer interação — senão o teste passaria mesmo com o

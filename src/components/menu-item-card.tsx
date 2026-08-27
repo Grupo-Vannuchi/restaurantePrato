@@ -32,7 +32,8 @@ export async function MenuItemCard({
       {item.image ? (
         <Image
           src={item.image}
-          alt={item.name}
+          // Decorativo: o `<h3>` logo abaixo é o nome do prato.
+          alt=""
           width={480}
           height={320}
           // Grade de 1 / 2 / 3 colunas: sem isto o navegador pede o arquivo do

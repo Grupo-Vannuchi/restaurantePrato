@@ -57,7 +57,8 @@
     "testimonials": {
       "eyebrow": "Avaliações do Google",
       "title": "O que dizem por aqui",
-      "subtitle": "Quem experimenta, não troca."
+      "subtitle": "Quem experimenta, não troca.",
+      "ratingLabel": "Nota {rating} de 5 estrelas"
     },
     "cta": {
       "title": "11h da manhã: o buffet já está servido.",
@@ -122,7 +123,7 @@
     "nextImage": "Próxima imagem",
     "imageCaption": "Imagem ilustrativa de {title}",
     "relatedTitle": "Páginas relacionadas",
-    "menuLabel": "Abrir novidades",
+    "menuLabel": "Novidades",
     "menuClose": "Fechar",
     "metaDescription": "Avisos de funcionamento, feriados e novidades do Restaurante Prato, no Centro de Santos. Confira antes de vir almoçar, de segunda a sexta."
   },
@@ -184,7 +185,8 @@
     "registration": "CNPJ {value}",
     "mapTitle": "Nossa localização no mapa",
     "terms": "Termos de Uso",
-    "privacy": "Política de Privacidade"
+    "privacy": "Política de Privacidade",
+    "socialLink": "{network} de {brand}, abre em nova aba"
   },
   "notFound": {
     "title": "Página não encontrada",

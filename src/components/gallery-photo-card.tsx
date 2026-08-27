@@ -26,7 +26,10 @@ export async function GalleryPhotoCard({
     <figure className="flex flex-col gap-2">
       <Image
         src={photo.image}
-        alt={photo.caption || t("photoAlt")}
+        // Com legenda, o `alt` fica vazio: a `<figcaption>` logo abaixo já
+        // descreve a foto, e repetir faz o leitor dizer a mesma frase duas
+        // vezes. Sem legenda, o `alt` é a única descrição que existe.
+        alt={photo.caption ? "" : t("photoAlt")}
         width={640}
         height={480}
         // Grade de 1 / 2 / 3 colunas: sem isto o navegador pede o arquivo do

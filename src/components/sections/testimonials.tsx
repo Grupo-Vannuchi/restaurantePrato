@@ -26,48 +26,64 @@ export async function Testimonials({ locale }: { locale: Locale }) {
             as="li"
             key={item.id}
             delay={(i % 3) * 90}
-            className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="rounded-xl border border-border bg-card p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg"
           >
-            <div className="flex gap-0.5" aria-label={`${item.rating}/5`}>
-              {Array.from({ length: item.rating }).map((_, i) => (
-                <Star
-                  key={i}
-                  className="size-4 fill-brand text-brand"
-                  aria-hidden
-                />
-              ))}
-            </div>
-            <blockquote className="flex-1 text-pretty text-sm leading-relaxed">
-              “{item.quote}”
-            </blockquote>
-            <figcaption className="flex items-center gap-3 border-t border-border pt-4">
-              {item.avatarUrl ? (
-                <Image
-                  src={item.avatarUrl}
-                  alt={item.authorName}
-                  width={44}
-                  height={44}
-                  className="size-11 rounded-full object-cover"
-                />
-              ) : null}
-              <div>
-                <p className="text-sm font-semibold">{item.authorName}</p>
-                <p className="text-xs text-muted-foreground">
-                  {item.sourceUrl ? (
-                    <a
-                      href={item.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline underline-offset-2 hover:text-foreground"
-                    >
-                      {item.source}
-                    </a>
-                  ) : (
-                    item.source
-                  )}
-                </p>
+            {/* O `<figure>` faltava: a `<figcaption>` pendurava direto do `<li>`
+                do `Reveal`, HTML inválido, e a legenda perdia o vínculo
+                semântico com a citação que ela assina. */}
+            <figure className="flex h-full flex-col gap-4">
+              {/* `role="img"` não é enfeite: `aria-label` num elemento genérico
+                é ignorado, e as estrelas estão `aria-hidden`. Sem o papel, a
+                nota não era anunciada de forma nenhuma. E "5/5" não se lê bem
+                em voz alta — a escala vai por extenso. */}
+              <div
+                role="img"
+                aria-label={t("ratingLabel", { rating: item.rating })}
+                className="flex gap-0.5"
+              >
+                {Array.from({ length: item.rating }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className="size-4 fill-brand text-brand"
+                    aria-hidden
+                  />
+                ))}
               </div>
-            </figcaption>
+              <blockquote className="flex-1 text-pretty text-sm leading-relaxed">
+                “{item.quote}”
+              </blockquote>
+              <figcaption className="flex items-center gap-3 border-t border-border pt-4">
+                {item.avatarUrl ? (
+                  <Image
+                    src={item.avatarUrl}
+                    // Decorativo: o nome do autor está no `<p>` logo abaixo, e
+                    // repeti-lo aqui faz o leitor anunciar a mesma pessoa duas
+                    // vezes seguidas.
+                    alt=""
+                    width={44}
+                    height={44}
+                    className="size-11 rounded-full object-cover"
+                  />
+                ) : null}
+                <div>
+                  <p className="text-sm font-semibold">{item.authorName}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {item.sourceUrl ? (
+                      <a
+                        href={item.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-2 hover:text-foreground"
+                      >
+                        {item.source}
+                      </a>
+                    ) : (
+                      item.source
+                    )}
+                  </p>
+                </div>
+              </figcaption>
+            </figure>
           </Reveal>
         ))}
       </ul>

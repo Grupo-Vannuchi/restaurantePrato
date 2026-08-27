@@ -19,8 +19,8 @@ export async function Footer() {
   const tn = await getTranslations("nav");
   const year = new Date().getFullYear();
 
-  const socials = Object.entries(siteConfig.social).filter(
-    ([, url]) => Boolean(url),
+  const socials = Object.entries(siteConfig.social).filter(([, url]) =>
+    Boolean(url),
   ) as [keyof typeof socialIcons, string][];
 
   const address = fullAddress();
@@ -73,7 +73,8 @@ export async function Footer() {
           >
             {siteConfig.contact.address.street}
             <br />
-            {siteConfig.contact.address.city} — {siteConfig.contact.address.region}
+            {siteConfig.contact.address.city} —{" "}
+            {siteConfig.contact.address.region}
           </a>
         </div>
 
@@ -88,7 +89,13 @@ export async function Footer() {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={key}
+                  // Era a chave crua do objeto: o leitor anunciava
+                  // "instagram", em minúsculas. E `target="_blank"` sem aviso
+                  // troca o contexto de quem não vê a aba nova aparecer.
+                  aria-label={t("socialLink", {
+                    network: key.charAt(0).toUpperCase() + key.slice(1),
+                    brand: siteConfig.name,
+                  })}
                   className="inline-flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-brand hover:text-brand"
                 >
                   <Icon className="size-4" />
@@ -124,7 +131,9 @@ export async function Footer() {
               {t("privacy")}
             </Link>
             {siteConfig.registration ? (
-              <span>{t("registration", { value: siteConfig.registration })}</span>
+              <span>
+                {t("registration", { value: siteConfig.registration })}
+              </span>
             ) : null}
           </div>
         </Container>

@@ -94,6 +94,10 @@ const ALLOWED: Record<string, string[]> = {
   "common.callUs": ["phone"],
   "home.hero.eyebrow": ["years"],
   "home.hero.goToSlide": ["n"],
+  // A nota do depoimento, anunciada por extenso: "5/5" nao se le bem em voz alta.
+  "home.testimonials.ratingLabel": ["rating"],
+  // O link de rede social do rodape, que anunciava a chave crua do objeto.
+  "footer.socialLink": ["brand", "network"],
   // O botão que abre o submenu no painel do celular. Ele tinha o mesmo nome
   // acessível do link ao lado; agora se apresenta pelo que faz.
   "nav.openSubmenu": ["label"],
