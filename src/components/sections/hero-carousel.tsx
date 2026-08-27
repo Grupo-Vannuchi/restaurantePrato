@@ -194,7 +194,7 @@ export function HeroCarousel({
                       "h-2.5 rounded-full transition-all",
                       i === index
                         ? "w-8 bg-brand"
-                        : "w-2.5 bg-foreground/30 group-hover:bg-foreground/50",
+                        : "w-2.5 bg-foreground/50 group-hover:bg-foreground/70",
                     )}
                   />
                 </button>

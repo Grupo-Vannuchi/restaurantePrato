@@ -27,7 +27,7 @@ export async function CTA() {
           <ReserveButton
             variant="outline"
             size="lg"
-            className="border-white/40 text-brand-foreground hover:bg-white/10"
+            className="border-white/70 text-brand-foreground hover:bg-white/10"
           />
         </>
       }
