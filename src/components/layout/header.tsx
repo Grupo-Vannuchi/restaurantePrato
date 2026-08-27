@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -13,6 +13,16 @@ import { Icon } from "@/components/ui/icon";
 import { buttonVariants } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { siteConfig, type NavKey } from "@/config/site";
+
+/**
+ * Id do painel do celular — o botão o declara em `aria-controls`.
+ *
+ * Exportado porque é contrato, e `test/menu-do-celular.test.tsx` se ancora
+ * nele: no jsdom não há CSS, então o `<nav>` do desktop e o do celular
+ * coexistem com o mesmo nome. No navegador só um dos dois chega à árvore de
+ * acessibilidade, porque o outro está em `display: none`.
+ */
+export const PAINEL_DO_CELULAR = "menu-do-celular";
 
 export type DropdownLink = {
   slug: string;
@@ -30,6 +40,27 @@ export function Header({
   const tc = useTranslations("common");
   const [open, setOpen] = useState(false);
   const [openKey, setOpenKey] = useState<NavKey | null>(null);
+  const alternadorRef = useRef<HTMLButtonElement | null>(null);
+
+  /*
+   * Escape fecha o menu do celular e devolve o foco ao botão.
+   *
+   * Não é armadilha de foco, e não deve ser: o painel é uma revelação
+   * (disclosure), não um diálogo modal — ele é irmão seguinte do botão no DOM,
+   * então o Tab entra nele naturalmente. O que faltava era só a saída pelo
+   * teclado, e devolver o foco a quem abriu: fechar sem devolver deixa a pessoa
+   * no `<body>`, sem pista de onde estava.
+   */
+  useEffect(() => {
+    if (!open) return;
+    const aoTeclar = (evento: KeyboardEvent) => {
+      if (evento.key !== "Escape") return;
+      setOpen(false);
+      alternadorRef.current?.focus();
+    };
+    document.addEventListener("keydown", aoTeclar);
+    return () => document.removeEventListener("keydown", aoTeclar);
+  }, [open]);
 
   /**
    * Per-nav-key child links that turn an item into a dropdown. Only
@@ -45,9 +76,11 @@ export function Header({
       <Container className="flex h-16 items-center justify-between">
         <Logo />
 
+        {/* O rótulo vem do catálogo: era a string crua "Primary", em inglês,
+            num site que é PT-only por decisão de projeto. */}
         <nav
           className="hidden items-center gap-8 md:flex"
-          aria-label="Primary"
+          aria-label={t("primaryNav")}
         >
           {siteConfig.nav.map((item) => {
             const links = dropdowns[item.key] ?? [];
@@ -101,8 +134,10 @@ export function Header({
 
         <button
           type="button"
+          ref={alternadorRef}
           className="inline-flex size-10 items-center justify-center rounded-md md:hidden"
           aria-expanded={open}
+          aria-controls={PAINEL_DO_CELULAR}
           aria-label={open ? t("closeMenu") : t("openMenu")}
           onClick={() => setOpen((v) => !v)}
         >
@@ -111,7 +146,14 @@ export function Header({
       </Container>
 
       {open ? (
-        <div className="border-t border-border bg-background md:hidden">
+        /* `<nav>`, e não `<div>`: no desktop existe um marco de navegação e no
+           celular eram `<Link>` soltos. Quem navega por marcos perdia a
+           navegação inteira justamente no aparelho por onde a maioria chega. */
+        <nav
+          id={PAINEL_DO_CELULAR}
+          aria-label={t("primaryNav")}
+          className="border-t border-border bg-background md:hidden"
+        >
           <Container className="flex flex-col gap-1 py-4">
             {siteConfig.nav.map((item) => {
               const links = dropdowns[item.key] ?? [];
@@ -141,10 +183,15 @@ export function Header({
                     >
                       {t(item.key)}
                     </Link>
+                    {/* O nome não pode ser o mesmo do link ao lado: o leitor
+                        anunciava "Nossa Gastronomia, link" e logo depois
+                        "Nossa Gastronomia, botão, recolhido" — dois controles,
+                        nomes idênticos, destinos diferentes. */}
                     <button
                       type="button"
                       aria-expanded={expanded}
-                      aria-label={t(item.key)}
+                      aria-controls={`submenu-${item.key}`}
+                      aria-label={t("openSubmenu", { label: t(item.key) })}
                       onClick={() =>
                         setOpenKey((k) => (k === item.key ? null : item.key))
                       }
@@ -158,7 +205,10 @@ export function Header({
                     </button>
                   </div>
                   {expanded ? (
-                    <ul className="ml-2 flex flex-col gap-0.5 border-l border-border pl-2">
+                    <ul
+                      id={`submenu-${item.key}`}
+                      className="ml-2 flex flex-col gap-0.5 border-l border-border pl-2"
+                    >
                       {links.map((link) => (
                         <li key={link.slug}>
                           <Link
@@ -207,7 +257,7 @@ export function Header({
               </Link>
             </div>
           </Container>
-        </div>
+        </nav>
       ) : null}
     </header>
   );

@@ -136,7 +136,15 @@ test("o foco do teclado fica visível ao percorrer a página", async ({ page }) 
  * categorias de cardápio — enquanto não existirem, quem o cobre é
  * `test/keyboard-dropdowns.test.ts`, que lê a fonte em vez do resultado.
  */
-test("o menu de novidades abre com o foco do teclado, não só no hover", async ({ page }) => {
+test("o menu de novidades abre com o foco do teclado, não só no hover", async ({
+  page,
+  isMobile,
+}) => {
+  // O menu suspenso é `hidden md:flex`: no celular ele não existe, e lá a
+  // navegação inteira vive no painel do hambúrguer, coberta por
+  // `e2e/menu-do-celular.spec.ts`. A isenção nasceu junto com o projeto
+  // `celular` do `playwright.config.ts`.
+  test.skip(isMobile, "o menu suspenso só existe a partir do breakpoint md");
   await page.goto("/");
 
   const gatilho = page.locator('a[aria-label="Abrir novidades"]');

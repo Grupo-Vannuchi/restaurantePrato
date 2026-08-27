@@ -31,7 +31,21 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  /*
+   * ⚠️ Dois projetos, e o de celular não é luxo.
+   *
+   * A suíte rodava só em `Desktop Chrome`, e todo o bloco `md:hidden` do
+   * cabeçalho — o menu inteiro de quem entra pelo telefone — nunca foi
+   * exercitado por teste nenhum, e2e ou unitário. Num site de restaurante é de
+   * celular que a maioria chega.
+   *
+   * Os defeitos que esta linha encontrou de cara estão em
+   * `e2e/menu-do-celular.spec.ts`.
+   */
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "celular", use: { ...devices["Pixel 7"] } },
+  ],
   // Sem servidor local quando a suíte mira um site publicado: subir um seria
   // desperdício e, pior, mascararia uma falha do deploy com um build local que
   // funciona.

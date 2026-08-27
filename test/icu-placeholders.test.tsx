@@ -94,6 +94,9 @@ const ALLOWED: Record<string, string[]> = {
   "common.callUs": ["phone"],
   "home.hero.eyebrow": ["years"],
   "home.hero.goToSlide": ["n"],
+  // O botão que abre o submenu no painel do celular. Ele tinha o mesmo nome
+  // acessível do link ao lado; agora se apresenta pelo que faz.
+  "nav.openSubmenu": ["label"],
   "experiencia.lead": ["foundedYear"],
   "novidades.imageCaption": ["title"],
   "novidades.regionsTitle": ["title"],

@@ -14,7 +14,9 @@
     "novidades": "Novidades",
     "openMenu": "Abrir menu",
     "closeMenu": "Fechar menu",
-    "skipToContent": "Pular para o conteúdo"
+    "skipToContent": "Pular para o conteúdo",
+    "primaryNav": "Navegação principal",
+    "openSubmenu": "Abrir submenu de {label}"
   },
   "common": {
     "talkToUs": "Falar com o restaurante",
