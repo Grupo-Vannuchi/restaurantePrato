@@ -45,3 +45,50 @@ describe("higiene da copy", () => {
     expect(offenders).toEqual([]);
   });
 });
+
+describe("travessão na copy", () => {
+  /**
+   * Decisão do cliente em 26/08: travessão fora da copy.
+   *
+   * O motivo dado foi direto, e é o mesmo que o prompt de escrita registra:
+   * travessão usado como recurso de estilo, para emendar duas ideias no lugar
+   * de um ponto ou de uma conjunção, virou marca registrada de texto gerado por
+   * máquina. Num site de restaurante de bairro, isso soa a folheto genérico.
+   *
+   * A troca não é mecânica. Trocar todo travessão por ponto produz frase picada
+   * ("Churrasco na brasa. O barulho da carne chiando.") — que é o outro vício
+   * que o mesmo prompt manda evitar. Cada ocorrência virou vírgula, dois-pontos
+   * ou conjunção, conforme o que a frase pedia.
+   *
+   * ⚠️ Vale só para o CATÁLOGO, que é o texto que o visitante lê. Comentário de
+   * código e documentação seguem livres: ali o travessão é pontuação legítima,
+   * e a regra é sobre a voz da marca, não sobre a língua portuguesa.
+   */
+  const TRAVESSOES = /[—–]/;
+
+  function textos(valor: unknown, caminho: string): [string, string][] {
+    if (typeof valor === "string") return [[caminho, valor]];
+    if (Array.isArray(valor)) {
+      return valor.flatMap((v, i) => textos(v, `${caminho}[${i}]`));
+    }
+    if (valor && typeof valor === "object") {
+      return Object.entries(valor).flatMap(([k, v]) =>
+        textos(v, caminho ? `${caminho}.${k}` : k),
+      );
+    }
+    return [];
+  }
+
+  it("nenhuma mensagem do catálogo usa travessão", () => {
+    const catalogo = JSON.parse(catalog) as Record<string, unknown>;
+    const comTravessao = textos(catalogo, "")
+      .filter(([, texto]) => TRAVESSOES.test(texto))
+      .map(([caminho]) => caminho);
+
+    expect(comTravessao).toEqual([]);
+  });
+
+  it("continua havendo catálogo para varrer — senão a guarda não guarda", () => {
+    expect(textos(JSON.parse(catalog), "").length).toBeGreaterThan(100);
+  });
+});

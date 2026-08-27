@@ -38,14 +38,14 @@
       "slides": [
         {
           "title": "A sua melhor e mais saborosa pausa do dia.",
-          "subtitle": "Um buffet completo, sempre quentinho, com aquele tempero caseiro inconfundível — e o autêntico churrasco na brasa, fatiado na hora, para recarregar a energia pro expediente."
+          "subtitle": "Um buffet completo, sempre quentinho, com aquele tempero caseiro inconfundível, e o autêntico churrasco na brasa fatiado na hora para recarregar a energia pro expediente."
         }
       ]
     },
     "gastronomia": {
       "eyebrow": "Nossa comida",
       "title": "Fartura, sabor e agilidade pro seu dia a dia.",
-      "subtitle": "Sua pausa é sagrada. Por isso o buffet é completo, fresquinho e com bastante proteína — o almoço de responsa no Centro, sem frescura e com muito sabor."
+      "subtitle": "Sua pausa é sagrada. Por isso o buffet é completo, fresquinho e com bastante proteína. É o almoço de responsa no Centro, sem frescura e com muito sabor."
     },
     "galeria": {
       "eyebrow": "O nosso espaço",
@@ -67,16 +67,16 @@
     "title": "A Experiência",
     "metaDescription": "Buffet completo, churrasco na brasa e tempero caseiro no Centro de Santos. O Restaurante Prato serve almoço de segunda a sexta, das 11h às 15h.",
     "subtitle": "A sua pausa merecida no coração do Centro.",
-    "lead": "Muito mais do que uma refeição rápida. O Prato foi pensado para quem valoriza o próprio tempo: ambiente dinâmico, alta rotatividade e nada de longas esperas. Comida de verdade, farta e sempre quente, para você recarregar as energias e voltar pontualmente ao expediente. No Centro de Santos desde {foundedYear}.",
+    "lead": "O Prato foi pensado para quem valoriza o próprio tempo. O salão é dinâmico, a rotatividade é alta e não há longas esperas. A comida chega farta e sempre quente, para você recarregar as energias e voltar pontualmente ao expediente. No Centro de Santos desde {foundedYear}.",
     "audience": {
       "title": "Quem experimenta, não troca.",
       "intro": "O que você encontra aqui todo dia:",
       "items": [
-        "Churrasco na brasa — o barulho da carne chiando e aquela casquinha dourada. Os melhores cortes, todos os dias.",
-        "Buffet completo — variedade farta de saladas, pratos quentes e guarnições para montar o seu pratão.",
-        "Agilidade — pegou, serviu, comeu. O salão é preparado para você não perder um minuto da sua pausa.",
-        "Comida quente — bancada quente do início ao fim do expediente.",
-        "Ambiente acolhedor — o restaurante do dia a dia, sem formalidade, feito para quem trabalha duro no Centro."
+        "Churrasco na brasa, com o barulho da carne chiando e aquela casquinha dourada. Os melhores cortes, todos os dias.",
+        "Buffet completo, com variedade farta de saladas, pratos quentes e guarnições para você montar o seu pratão.",
+        "Agilidade de verdade: pegou, serviu, comeu. O salão é preparado para você não perder um minuto da sua pausa.",
+        "Comida quente na bancada do início ao fim do expediente.",
+        "Ambiente acolhedor, o restaurante do dia a dia, sem formalidade, feito para quem trabalha duro no Centro."
       ]
     },
     "contactCta": {
@@ -85,7 +85,7 @@
         "O buffet está servido a partir das 11h, de segunda a sexta. Chegue cedo e aproveite o salão tranquilo."
       ]
     },
-    "disclaimer": "Restaurante Prato — R. Augusto Severo, 25, Centro, Santos/SP."
+    "disclaimer": "Restaurante Prato, na R. Augusto Severo, 25, Centro, Santos/SP."
   },
   "galeria": {
     "title": "Galeria",
@@ -144,7 +144,7 @@
   },
   "contact": {
     "title": "A poucos passos de você no Centro",
-    "subtitle": "R. Augusto Severo, 25 — Centro, Santos/SP.",
+    "subtitle": "R. Augusto Severo, 25, Centro, Santos/SP.",
     "infoTitle": "Como falar com a gente",
     "route": "Traçar rota",
     "labels": {
@@ -160,7 +160,7 @@
       "phone": "Telefone (opcional)",
       "company": "Empresa (opcional)",
       "message": "Mensagem",
-      "messagePlaceholder": "Conte o que você precisa — grupo, evento, dúvida…",
+      "messagePlaceholder": "Conte o que você precisa: grupo, evento, dúvida.",
       "submit": "Enviar mensagem",
       "submitting": "Enviando…",
       "success": "Mensagem enviada! Em breve entramos em contato.",
@@ -192,7 +192,7 @@
   },
   "errorPage": {
     "title": "Algo deu errado",
-    "description": "Não conseguimos carregar esta página. Tente de novo — se continuar, fale com a gente pelo WhatsApp.",
+    "description": "Não conseguimos carregar esta página. Tente de novo. Se continuar, fale com a gente pelo WhatsApp.",
     "retry": "Tentar de novo",
     "back": "Voltar para o início"
   },
@@ -405,7 +405,7 @@
       "source": "Onde foi publicada",
       "sourceHint": "Normalmente \"Google\". É o que aparece junto do link.",
       "sourceUrl": "Link para a avaliação",
-      "sourceUrlHint": "Cole o link direto da avaliação no Google. É ele que deixa a citação verificável — sem ele, a avaliação parece inventada.",
+      "sourceUrlHint": "Cole o link direto da avaliação no Google. É ele que deixa a citação verificável: sem ele, a avaliação parece inventada.",
       "quote": "Depoimento",
       "published": "Publicado (visível no site)",
       "create": "Adicionar depoimento",
