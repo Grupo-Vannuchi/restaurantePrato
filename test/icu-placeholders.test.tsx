@@ -99,7 +99,6 @@ const ALLOWED: Record<string, string[]> = {
   "nav.openSubmenu": ["label"],
   "experiencia.lead": ["foundedYear"],
   "novidades.imageCaption": ["title"],
-  "novidades.regionsTitle": ["title"],
   "footer.registration": ["value"],
   "admin.dashboard.welcome": ["name"],
   "admin.leads.removeTag": ["tag"],

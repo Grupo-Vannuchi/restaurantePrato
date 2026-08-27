@@ -9,7 +9,6 @@ import { Icon } from "@/components/ui/icon";
 import { RichText } from "@/components/rich-text";
 import { InformationCard } from "@/components/information-card";
 import { InformationGallery } from "@/components/information-gallery";
-import { ServiceRegions } from "@/components/service-regions";
 import { getInformationBySlug, getInformations } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata, localizedUrl, absoluteUrl } from "@/lib/seo";
@@ -183,9 +182,6 @@ export default async function InformationPage({
           </section>
         ) : null}
 
-        <ServiceRegions
-          heading={t("regionsTitle", { title: information.title })}
-        />
       </Container>
     </article>
   );
