@@ -14,10 +14,34 @@ import { expect, test } from "@playwright/test";
 
 const LIMITE_LCP_MS = 2500; // limiar "bom" do Core Web Vitals
 
+/*
+ * ⚠️ Contra um servidor de desenvolvimento estes números não medem nada.
+ *
+ * `next dev` compila sob demanda e não minifica: o LCP que ele produz é o custo
+ * da ferramenta, não o que chega ao visitante. Medido em 27/08/2026 no projeto
+ * `celular`, `/gastronomia` deu **2820 ms e 3172 ms** no `next dev` local e
+ * passou folgado no site publicado, na mesma máquina, no mesmo minuto.
+ *
+ * A alternativa seria afrouxar o limite até o dev passar — e aí o teste
+ * deixaria de pegar a regressão de verdade que ele existe para pegar. Preferiu-
+ * se não medir a medir errado.
+ *
+ * O pulo aparece como "skipped" no relatório do Playwright, com este motivo:
+ * lacuna declarada, não silenciosa. Em CI o `webServer` sobe um build de
+ * produção, então lá ele roda.
+ */
+const alvo = process.env.E2E_BASE_URL ?? "http://localhost:3000";
+const ehServidorDeDesenvolvimento =
+  /localhost|127\.0\.0\.1/.test(alvo) && !process.env.CI;
+
 for (const path of ["/", "/gastronomia", "/galeria"]) {
   test(`${path} pinta o maior elemento em menos de ${LIMITE_LCP_MS}ms`, async ({
     page,
   }) => {
+    test.skip(
+      ehServidorDeDesenvolvimento,
+      "LCP contra `next dev` mede a ferramenta, não o site — aponte E2E_BASE_URL para o site publicado",
+    );
     await page.goto(path, { waitUntil: "networkidle" });
 
     const lcp = await page.evaluate(
