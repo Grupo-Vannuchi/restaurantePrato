@@ -204,15 +204,34 @@ null by hardcoding a number.
 
 ## Brand & theme
 
-- **Dark-first.** The dark palette sits on bare `:root` in `theme-style.tsx`;
-  light is the variant. `globals.css` mirrors that inversion for the neutral
-  tokens — keep the two files agreeing about which theme is the default.
-- ⚠️ **The palette in `site.ts` is inherited from the project this repo was
-  forked from** and is there only so the site keeps rendering. The Restaurante
-  Prato colours have not arrived yet — swapping them is PR 2. The light theme
-  ships a darker brand hex than the dark theme on purpose: the pure tone over
-  the cream ground was 2.14:1. Verify any palette change with
-  `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`. The
+- **One palette, one look.** The site had three appearance states (light, dark
+  and "whatever the OS says") with a toggle, inherited from the fork. The client
+  delivered a single palette on 26/08 — off white, near-black and two greens —
+  and keeping the three would have meant inventing the dark variants they never
+  supplied. The toggle, the `prefers-color-scheme` blocks and the `data-theme`
+  attribute are gone; `theme-style.tsx` emits one `:root` rule and keeps
+  `color-scheme: light`, which is what makes the browser paint form fields,
+  scrollbar and address bar in the right tone. `test/uma-cara-so.test.ts` fails
+  if any of that machinery comes back — including a stray Tailwind `dark:`
+  variant, which reads `prefers-color-scheme` on its own and would repaint the
+  site behind the reader's back.
+- **The palette is the client's, delivered on 26/08**: primary `#68822A`,
+  secondary `#A5C842`, off white `#FFFFFF`, contrast `#0C0C0C`. Two of them
+  needed a rule, and both are measurement, not taste:
+  - `brand` ships `#607827`, not the client's `#68822A`. The original gives
+    4.36:1 on white and 4.36:1 with white text on top — it fails the 4.5:1
+    minimum in both directions. And white is not the worst case: brand-coloured
+    text also sits on card and muted surfaces, which are darker, so the number
+    that governs is the darkest one. `#607827` clears all three (4.98 / 4.80 /
+    4.52). Eight per cent darker, the same green to the eye.
+  - `accent` is the client's `#A5C842` untouched, but it is a **surface**
+    colour, never a stroke: 1.92:1 on white makes it invisible as text or as a
+    thin line; with near-black text on top it is 10.31:1, and that is how it
+    appears. Icons and graphic detail use `brand`.
+  ⚠️ **Never eyeball a palette change.** `test/palette-contrast.test.ts` reads
+  the colours from `siteConfig` and names the failing pair. There is also
+  `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`, which did this
+  once by hand with the hexes written inside it. The
   brand-coloured closing card on `/`, `/experiencia` and `/gastronomia` now
   renders from one shared component (`components/sections/closing-cta.tsx`), so
   that swap touches one place instead of three.

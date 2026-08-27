@@ -57,7 +57,6 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
 
 | Pendência | O que trava hoje |
 |---|---|
-| Paleta da marca | O tema em `site.ts` ainda é o herdado; sai no PR 2 |
 | Logo | A marca é **tipográfica** (`src/components/layout/logo.tsx`, `icon.tsx`, `apple-icon.tsx`, `opengraph-image.tsx`). Ver [`public/brand/README.md`](../public/brand/README.md) |
 | Copy definitiva | ✅ Entregue em 19/08 e aplicada. O documento diverge do endereço confirmado (diz 09, o confirmado é 25) — ver a linha abaixo |
 | **Número do endereço** | O documento de copy diz "Rua Augusto Severo, 09"; o dado confirmado em 17/08 e o CNPJ dizem **25**. Mantido 25 até o cliente responder. Acoplado a quatro lugares: `src/config/site.ts`, `src/content/legal.ts`, `metadata.description` e `experiencia.disclaimer` |
@@ -73,9 +72,12 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
    [`superpowers/plans/2026-08-17-rebrand-prato-pr1.md`](superpowers/plans/2026-08-17-rebrand-prato-pr1.md)):
    campos opcionais, dados do cliente, marca tipográfica interina, copy
    neutralizada, documentação.
-2. **PR 2 — identidade visual:** paleta do Prato (validar com
-   `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`), logo, ícones e
-   imagem OG voltando a ser imagem.
+2. **PR 2 — identidade visual** ✅ parcialmente: a **paleta chegou em 26/08** e
+   está aplicada, com o site passando a ter uma cara só (sem alternador de
+   tema). Ver a seção *Brand & theme* do [`AGENTS.md`](../AGENTS.md) para as
+   duas cores que precisaram de regra de uso, e `test/palette-contrast.test.ts`
+   para a verificação. **Falta:** logo, ícones e imagem OG voltando a ser
+   imagem — a marca segue tipográfica.
 3. **PR 3 — copy e conteúdo** ✅ parcialmente (este plano:
    [`superpowers/plans/2026-08-19-copy-e-tom-de-voz-prato.md`](superpowers/plans/2026-08-19-copy-e-tom-de-voz-prato.md),
    spec [`superpowers/specs/2026-08-19-copy-e-tom-de-voz-prato-design.md`](superpowers/specs/2026-08-19-copy-e-tom-de-voz-prato-design.md)):
