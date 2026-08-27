@@ -82,6 +82,12 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // O Next anuncia `X-Powered-By: Next.js` por padrão. Os ~25 bytes não pesam;
+  // dizer a quem varre a internet qual pilha rodar exploit contra é que não
+  // precisa. Medido: na Vercel o cabeçalho nem chega ao visitante, mas rodando
+  // o mesmo código localmente ele aparece — a proteção é da hospedagem, não do
+  // código, e sair dela o traria de volta sem nada acusar.
+  poweredByHeader: false,
   // Admin image uploads go through a Server Action; the default 1MB body cap is
   // too small for a phone photo. Match the action's 15MB limit (+ FormData
   // overhead). Only admins (session-gated) can hit the upload action.
