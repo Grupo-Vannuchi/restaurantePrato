@@ -52,7 +52,7 @@
   --card: #fafbf7;
   --card-foreground: #0c0c0c; /* 18,44:1 sobre o cartão */
   --muted: #f2f5eb;
-  --muted-foreground: #565c4e; /* 6,92 / 6,52 / 6,08 nas três superfícies */
+  --muted-foreground: #565c4e; /* 6,92 / 6,65 / 6,27 nas três superfícies */
 
   /* Borda decorativa de cartão: separa sem pesar. */
   --border: #dae1cc;
@@ -138,6 +138,14 @@
   [data-reveal][data-visible="true"] {
     opacity: 1;
     transform: none;
+    /*
+     * ⚠️ Devolve a camada de composição. `will-change` é para o instante ANTES
+     * da animação: sem esta linha, cada elemento revelado guardava uma camada
+     * própria pelo resto da vida da página, e em `/gastronomia` e `/galeria`
+     * são dezenas de cards, todos já parados. Camada é memória de vídeo, e
+     * quem paga é o celular modesto de quem procura almoço no Centro.
+     */
+    will-change: auto;
   }
 }
 
