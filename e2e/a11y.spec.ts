@@ -9,6 +9,21 @@ import { expect, test } from "@playwright/test";
  * deles aparece em `npm run build`, `typecheck` ou `lint`.
  */
 
+/*
+ * ⚠️ `/novidades/[slug]` NÃO está nesta lista, e a ausência é documentada de
+ * propósito em vez de silenciosa.
+ *
+ * A página só existe quando há um artigo cadastrado pelo painel, e
+ * `generateStaticParams()` devolve `[]` de propósito — nenhum slug é
+ * pré-renderizado. Com o banco local vazio (é o estado do Prato hoje: schema
+ * aplicado, zero conteúdo), qualquer slug responde 404, e um teste que visita
+ * uma página inexistente passa sem verificar nada.
+ *
+ * O que era verificável ali virou teste unitário determinístico:
+ * `test/titulo-do-artigo-nao-pula-nivel.test.tsx` cobre o risco de salto de
+ * nível vindo do texto que o cliente digita. Quando houver conteúdo real, esta
+ * lista ganha a rota.
+ */
 const PAGES = [
   "/",
   "/experiencia",
