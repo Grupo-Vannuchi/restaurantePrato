@@ -185,12 +185,6 @@
     "terms": "Termos de Uso",
     "privacy": "Política de Privacidade"
   },
-  "theme": {
-    "toggle": "Tema: {mode}. Clique para alternar.",
-    "system": "sistema",
-    "light": "claro",
-    "dark": "escuro"
-  },
   "notFound": {
     "title": "Página não encontrada",
     "description": "A página que você procura não existe ou foi movida.",

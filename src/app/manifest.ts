@@ -10,8 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     // Dark-first: the install splash and the browser chrome should match the
     // theme the site actually ships with, not the secondary light palette.
-    background_color: siteConfig.theme.dark.background,
-    theme_color: siteConfig.theme.dark.brand,
+    background_color: siteConfig.theme.background,
+    theme_color: siteConfig.theme.brand,
     icons: [
       // No `/favicon.ico`: the previous brand's file was removed and the icon is
       // now generated from the palette by `src/app/icon.tsx`. Ship a real .ico

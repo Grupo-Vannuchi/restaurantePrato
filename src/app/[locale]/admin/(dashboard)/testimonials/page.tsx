@@ -44,7 +44,7 @@ export default async function AdminTestimonialsPage({
                     aria-label={t("stars", { count: item.rating })}
                   >
                     {Array.from({ length: item.rating }).map((_, i) => (
-                      <Star key={i} className="size-3.5 fill-accent text-accent" aria-hidden />
+                      <Star key={i} className="size-3.5 fill-brand text-brand" aria-hidden />
                     ))}
                   </span>
                   <span

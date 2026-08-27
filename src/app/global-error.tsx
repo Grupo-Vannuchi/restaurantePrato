@@ -27,7 +27,7 @@ export default function GlobalError({
   }, [error]);
 
   const { background, foreground, brand, brandForeground } =
-    siteConfig.theme.dark;
+    siteConfig.theme;
 
   return (
     <html lang="pt-BR">

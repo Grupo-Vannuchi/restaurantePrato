@@ -8,7 +8,8 @@ export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
 export default function AppleIcon() {
-  const { background, brand } = siteConfig.theme.dark;
+  // Ver a nota em `icon.tsx`: fundo da marca, marca em off white.
+  const { brand: background, brandForeground: brand } = siteConfig.theme;
 
   return new ImageResponse(
     (

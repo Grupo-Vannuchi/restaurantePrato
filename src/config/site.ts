@@ -139,10 +139,11 @@ export type SiteConfig = {
    */
   servesCuisine?: string[];
 
-  theme: {
-    light: ThemePalette;
-    dark: ThemePalette;
-  };
+  /**
+   * A paleta do restaurante. UMA só: o site tem uma cara, sem alternador.
+   * Ver a nota sobre o `accent` no valor abaixo.
+   */
+  theme: ThemePalette;
 };
 
 export const siteConfig: SiteConfig = {
@@ -211,21 +212,33 @@ export const siteConfig: SiteConfig = {
    * Contrastes verificáveis com
    * `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`.
    */
+  // Cores entregues pelo cliente em 26/08/2026:
+  //   principal  #68822A · secundária #A5C842 · off white #FFFFFF · contraste #0C0C0C
+  //
+  // ⚠️ Duas ressalvas, medidas, e nenhuma é opinião:
+  //
+  // `brand` sai #607827 e não o #68822A do cliente. O tom original dá 4,36:1
+  // sobre o branco e 4,36:1 com texto branco por cima — reprova o mínimo de
+  // 4,5:1 nos dois sentidos. E o teto não é o branco: texto da marca também
+  // aparece sobre cartão e sobre o muted, que são mais escuros, então a conta
+  // que vale é a da superfície mais escura. #607827 fecha nas três (4,98 /
+  // 4,80 / 4,52) e com branco por cima. Oito por cento mais escuro que o
+  // original, e o mesmo verde a olho. Mesma manobra que a paleta anterior já
+  // usava, e pelo mesmo motivo.
+  //
+  // `accent` é o #A5C842 do cliente, intacto — mas ele é COR DE SUPERFÍCIE, não
+  // de traço: 1,92:1 sobre o branco, o que o torna invisível como texto ou linha
+  // fina. Com texto quase-preto por cima dá 10,19:1, e é assim que ele aparece
+  // (o botão `accent` já usa texto escuro). Ícone e detalhe gráfico usam
+  // `brand`, que se distingue do fundo.
+  //
+  // Conferíveis por `test/palette-contrast.test.ts`.
   theme: {
-    light: {
-      brand: "#8A5206", // 5.20:1 sobre o creme
-      brandForeground: "#ffffff", // 6.38:1 sobre o brand
-      accent: "#E04F26", // 3.22:1 — gráfico/UI, nunca texto
-      background: "#EFE9C2",
-      foreground: "#474544", // 7.77:1
-    },
-    dark: {
-      brand: "#E68A08", // 6.89:1 sobre o grafite
-      brandForeground: "#171615", // 6.89:1 sobre o brand
-      accent: "#E04F26", // 4.57:1
-      background: "#171615",
-      foreground: "#EFE9C2", // 14.72:1
-    },
+    brand: "#607827", // 4,98 sobre o fundo · 4,80 no cartão · 4,52 no muted
+    brandForeground: "#FFFFFF", // 4,66:1 sobre o brand
+    accent: "#A5C842", // superfície: 10,19:1 com texto escuro por cima
+    background: "#FFFFFF",
+    foreground: "#0C0C0C", // 19,56:1
   },
 };
 

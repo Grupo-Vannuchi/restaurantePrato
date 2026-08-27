@@ -1,3 +1,6 @@
+import { readFileSync, readdirSync } from "node:fs";
+import { join, relative, sep } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import { siteConfig, type ThemePalette } from "@/config/site";
@@ -26,6 +29,18 @@ import { siteConfig, type ThemePalette } from "@/config/site";
  * ao lado dele em `site.ts` já dizia isso antes deste teste existir.
  */
 
+/** O texto que o botão `accent` põe por cima dele — ver `ui/button.tsx`. */
+const TEXTO_SOBRE_ACENTO = "#0a0a0a";
+
+/** Todo arquivo de componente sob `src/`. */
+function arquivos(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    const caminho = join(dir, e.name);
+    if (e.isDirectory()) return arquivos(caminho);
+    return /\.tsx?$/.test(e.name) ? [caminho] : [];
+  });
+}
+
 /** Luminância relativa, conforme a fórmula da WCAG. */
 function luminancia(hex: string): number {
   const canais = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
@@ -41,12 +56,9 @@ function contraste(a: string, b: string): number {
   return (maior! + 0.05) / (menor! + 0.05);
 }
 
-const TEMAS: [string, ThemePalette][] = [
-  ["claro", siteConfig.theme.light],
-  ["escuro", siteConfig.theme.dark],
-];
+const paleta: ThemePalette = siteConfig.theme;
 
-describe.each(TEMAS)("tema %s", (_nome, paleta) => {
+describe("a paleta do restaurante", () => {
   it("o texto da página é legível sobre o fundo", () => {
     const razao = contraste(paleta.foreground, paleta.background);
     expect(razao, `${razao.toFixed(2)}:1 — mínimo 4.5:1`).toBeGreaterThanOrEqual(
@@ -69,8 +81,34 @@ describe.each(TEMAS)("tema %s", (_nome, paleta) => {
     expect(razao, `${razao.toFixed(2)}:1 — mínimo 3:1`).toBeGreaterThanOrEqual(3);
   });
 
-  it("o acento se distingue do fundo como elemento gráfico", () => {
-    const razao = contraste(paleta.accent, paleta.background);
-    expect(razao, `${razao.toFixed(2)}:1 — mínimo 3:1`).toBeGreaterThanOrEqual(3);
+  it("o acento comporta texto escuro por cima", () => {
+    // ⚠️ Esta asserção MUDOU de forma em 26/08, e a mudança precisa de defesa.
+    //
+    // Antes ela cobrava `accent` vs `background` >= 3:1, tratando o acento como
+    // elemento gráfico solto. A secundária entregue pelo cliente é um verde-
+    // limão claro: 1,92:1 sobre o off white. Escurecê-la para passar seria
+    // inventar uma cor que o cliente não deu.
+    //
+    // O que se faz com ela no projeto é preenchimento de botão, e ali a regra
+    // que protege o leitor não é "a cor se destaca do fundo", é "o texto se lê
+    // sobre a cor" — o botão é localizado pelo rótulo, não pela mancha. É essa
+    // que passa a ser cobrada, e ela é mais rigorosa: 4,5:1 em vez de 3:1.
+    //
+    // A contrapartida está na guarda seguinte: o acento não pode virar traço.
+    const razao = contraste(TEXTO_SOBRE_ACENTO, paleta.accent);
+    expect(razao, `${razao.toFixed(2)}:1 — mínimo 4.5:1`).toBeGreaterThanOrEqual(
+      4.5,
+    );
+  });
+
+  it("o acento nunca é usado como texto sobre o fundo da página", () => {
+    // A outra metade da decisão acima. Como superfície ele funciona; como
+    // traço fino ou texto sobre o branco, seria quase invisível.
+    const componentes = arquivos(join(process.cwd(), "src"));
+    const comoTexto = componentes
+      .filter((c) => /(?:^|\s|")text-accent(?:\s|"|$)/m.test(readFileSync(c, "utf8")))
+      .map((c) => relative(process.cwd(), c).split(sep).join("/"));
+
+    expect(comoTexto).toEqual([]);
   });
 });

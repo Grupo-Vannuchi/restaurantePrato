@@ -100,7 +100,6 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       className={`${geistSans.variable} ${playfair.variable} h-full`}
-      suppressHydrationWarning
     >
       <head>
         {/* Abre a conexão com o servidor de imagens ANTES de a primeira foto
@@ -117,15 +116,11 @@ export default async function LocaleLayout({
             <link rel="dns-prefetch" href={origemDasImagens} />
           </>
         ) : null}
+        {/* Uma paleta só: não há escolha guardada para aplicar antes da
+            primeira pintura, e por isso o `suppressHydrationWarning` do <html>
+            saiu junto — ele existia só porque aquele script mexia no elemento
+            antes do React. */}
         <ThemeStyle />
-        {/* Applies a saved theme choice before first paint so the page never
-            flashes the wrong palette. No stored choice (or "system") leaves the
-            attribute off, so the OS preference wins. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}`,
-          }}
-        />
       </head>
       <body className="flex min-h-full flex-col">
         {/* `messages` explícito, e o motivo é medido: sem a prop, o next-intl

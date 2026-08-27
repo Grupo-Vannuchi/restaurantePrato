@@ -17,7 +17,10 @@ export const contentType = "image/png";
 export const dynamic = "force-static";
 
 export default function OpengraphImage() {
-  const { background, brand, foreground } = siteConfig.theme.dark;
+  // O cartão de compartilhamento nasce no verde da marca, com texto em off
+  // white — é o que o identifica como Prato numa timeline.
+  const { brand: background, brandForeground: foreground } = siteConfig.theme;
+  const brand = siteConfig.theme.accent;
   const { city, region } = siteConfig.contact.address;
   const hours = openingHoursLabel();
 

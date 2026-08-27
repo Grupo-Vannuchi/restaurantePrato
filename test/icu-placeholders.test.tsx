@@ -98,7 +98,6 @@ const ALLOWED: Record<string, string[]> = {
   "novidades.imageCaption": ["title"],
   "novidades.regionsTitle": ["title"],
   "footer.registration": ["value"],
-  "theme.toggle": ["mode"],
   "admin.dashboard.welcome": ["name"],
   "admin.leads.removeTag": ["tag"],
   "admin.novidades.editTitle": ["title"],

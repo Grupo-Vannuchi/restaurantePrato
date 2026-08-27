@@ -18,12 +18,12 @@ import pt from "@/messages/pt.json";
  *
  * - o texto vem do `pt.json`, o mesmo catálogo do resto do site, importado
  *   direto porque `getTranslations()` precisa de um locale que aqui não existe;
- * - as cores vêm de `siteConfig.theme.dark`, então a troca de paleta do PR 2
+ * - as cores vêm de `siteConfig.theme`, então a troca de paleta do PR 2
  *   chega aqui sozinha, em vez de deixar para trás uma página fora da marca.
  */
 export default function GlobalNotFound() {
   const { background, foreground, brand, brandForeground } =
-    siteConfig.theme.dark;
+    siteConfig.theme;
 
   return (
     <html lang="pt-BR">

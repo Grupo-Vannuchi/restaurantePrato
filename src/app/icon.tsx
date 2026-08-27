@@ -12,7 +12,9 @@ export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
 export default function Icon() {
-  const { background, brand } = siteConfig.theme.dark;
+  // Fundo da marca com a marca em off white: um ícone chapado de branco
+  // some na tela inicial do telefone.
+  const { brand: background, brandForeground: brand } = siteConfig.theme;
 
   return new ImageResponse(
     (

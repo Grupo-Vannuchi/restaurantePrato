@@ -2,7 +2,10 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const fieldStyles =
-  "w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm transition-colors placeholder:text-muted-foreground focus-visible:border-brand aria-[invalid=true]:border-danger";
+  // `border-field`, não `border`: a borda decorativa de cartão tem contraste
+  // baixo de propósito, e num CAMPO isso apaga o limite do componente. A
+  // norma pede 3:1 para limite de componente, e é o que `--border-field` dá.
+  "w-full rounded-lg border border-border-field bg-card px-4 py-2.5 text-sm transition-colors placeholder:text-muted-foreground focus-visible:border-brand aria-[invalid=true]:border-danger";
 
 /**
  * Dica e erro entram POR PROP, não como elementos soltos ao lado do campo.

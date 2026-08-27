@@ -57,7 +57,7 @@ export default async function AdminInformationsPage({
                          estrela. */
                       <Star
                         role="img"
-                        className="size-4 fill-accent text-accent"
+                        className="size-4 fill-brand text-brand"
                         aria-label={t("featured")}
                       />
                     ) : null}

@@ -32,7 +32,7 @@ export async function Testimonials({ locale }: { locale: Locale }) {
               {Array.from({ length: item.rating }).map((_, i) => (
                 <Star
                   key={i}
-                  className="size-4 fill-accent text-accent"
+                  className="size-4 fill-brand text-brand"
                   aria-hidden
                 />
               ))}
