@@ -42,7 +42,9 @@
           "title": "A sua melhor e mais saborosa pausa do dia.",
           "subtitle": "Um buffet completo, sempre quentinho, com aquele tempero caseiro inconfundível, e o autêntico churrasco na brasa fatiado na hora para recarregar a energia pro expediente."
         }
-      ]
+      ],
+      "pauseSlides": "Pausar a troca automática de slides",
+      "playSlides": "Retomar a troca automática de slides"
     },
     "gastronomia": {
       "eyebrow": "Nossa comida",

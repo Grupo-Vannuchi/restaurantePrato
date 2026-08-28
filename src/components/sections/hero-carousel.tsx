@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
@@ -25,6 +25,8 @@ export type HeroCarouselLabels = {
   next: string;
   /** One "Go to slide N" label per slide. */
   goTo: string[];
+  pause: string;
+  play: string;
 };
 
 /**
@@ -49,6 +51,20 @@ export function HeroCarousel({
   const count = slides.length;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  /*
+   * Pausa PEDIDA pela pessoa, separada da pausa por `hover`/`focus`.
+   *
+   * A pausa antiga era só `onMouseEnter`/`onFocusCapture`, e isso não é o
+   * "mecanismo de pausar" que a WCAG 2.2.2 (nível A) exige: **toque não tem
+   * hover**. No celular o carrossel trocava debaixo do dedo de quem estava
+   * lendo, sem saída nenhuma. Quem usa leitor de tela sem foco dentro da região
+   * também não pausava.
+   *
+   * Qualquer interação com as setas ou os indicadores também para o giro: é a
+   * recomendação do padrão APG, e é o que faz a troca poder ser anunciada sem
+   * interromper a leitura a cada seis segundos.
+   */
+  const [pausadoPelaPessoa, setPausadoPelaPessoa] = useState(false);
   // Only the first slide's image (the LCP element) is rendered server-side; the
   // rest mount after first paint so they don't compete for bandwidth with the
   // LCP image during the critical initial load. Flipped on right after mount —
@@ -56,7 +72,10 @@ export function HeroCarousel({
   const [deferredReady, setDeferredReady] = useState(false);
 
   const go = useCallback(
-    (n: number) => setIndex((n + count) % count),
+    (n: number) => {
+      setPausadoPelaPessoa(true);
+      setIndex((n + count) % count);
+    },
     [count],
   );
 
@@ -67,11 +86,11 @@ export function HeroCarousel({
 
   // Autoplay (skipped when paused, single-slide, or reduced-motion is on).
   useEffect(() => {
-    if (paused || count <= 1) return;
+    if (paused || pausadoPelaPessoa || count <= 1) return;
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     const id = window.setInterval(() => setIndex((i) => (i + 1) % count), 6000);
     return () => window.clearInterval(id);
-  }, [paused, count]);
+  }, [paused, pausadoPelaPessoa, count]);
 
   return (
     <section
@@ -83,11 +102,33 @@ export function HeroCarousel({
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div className="relative h-[34rem] sm:h-[42rem]">
+      {/*
+        * `off` enquanto gira sozinho, `polite` quando a pessoa assume o
+        * controle. Anunciar cada troca automática interromperia a leitura da
+        * página a cada seis segundos; não anunciar a troca que a pessoa pediu
+        * deixa quem apertou "Próximo slide" sem resposta nenhuma. É o padrão
+        * APG para carrossel.
+        */}
+      <div
+        aria-live={pausadoPelaPessoa ? "polite" : "off"}
+        className="relative h-[34rem] sm:h-[42rem]"
+      >
         {slides.map((slide, i) => {
           const active = i === index;
-          // One real <h1> for the page (first slide); the rest are <h2>.
-          const Heading = i === 0 ? "h1" : "h2";
+          /*
+           * O `<h1>` acompanha o slide ATIVO, e não o primeiro.
+           *
+           * Ele morava dentro do slide 0 (`i === 0 ? "h1" : "h2"`), e no
+           * primeiro tique do autoplay aquele slide recebia `aria-hidden` — a
+           * home ficava, aos seis segundos, sem título nenhum para tecnologia
+           * assistiva, com o topo da lista de cabeçalhos virando um `h2` de
+           * seção. Como os slides inativos saem da árvore de acessibilidade,
+           * existe sempre exatamente um `h1` anunciável.
+           *
+           * No servidor o índice é 0, então o HTML entregue já traz o `h1` —
+           * é o que `test/topo-visivel-sem-javascript.test.tsx` cobra.
+           */
+          const Heading = active ? "h1" : "h2";
           return (
             <div
               key={i}
@@ -158,6 +199,18 @@ export function HeroCarousel({
             {/* Bottom-right, not vertically centred: the copy is left-aligned and
                 full-height arrows sat on top of the subtitle at desktop widths. */}
             <div className="absolute bottom-2.5 right-3 z-10 flex gap-2 sm:right-5">
+              <button
+                type="button"
+                onClick={() => setPausadoPelaPessoa((v) => !v)}
+                aria-label={pausadoPelaPessoa ? labels.play : labels.pause}
+                className="inline-flex size-11 items-center justify-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur transition-colors hover:bg-background"
+              >
+                {pausadoPelaPessoa ? (
+                  <Play className="size-5" />
+                ) : (
+                  <Pause className="size-5" />
+                )}
+              </button>
               <button
                 type="button"
                 onClick={() => go(index - 1)}
