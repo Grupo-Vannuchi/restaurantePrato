@@ -117,6 +117,40 @@ describe("as cores translúcidas alcançam contraste de elemento gráfico", () =
     ).toBeGreaterThanOrEqual(MINIMO);
   });
 
+  it("o texto do card de novidades sobre a foto do cliente", () => {
+    /*
+     * O pior ponto possível, e ele é composto de quatro camadas:
+     * foto totalmente clara → tingimento da marca na ponta MAIS CLARA do
+     * degradê (`to-brand/60`) → o `group-hover:opacity-90` baixando esse
+     * tingimento → o véu escuro, que o mesmo hover também baixa.
+     *
+     * Sem foto o card fica sobre a marca opaca e passa: o defeito nasce
+     * exatamente quando o cliente publica as imagens.
+     */
+    const card = fonte("src/components/information-card.tsx");
+    const css = fonte("src/app/globals.css");
+
+    const veuClaro = Number(card.match(/to-brand\/([0-9]{1,3})/)![1]) / 100;
+    const hover = Number(card.match(/group-hover:opacity-([0-9]{1,3})/)![1]) / 100;
+    const escuro = Number(css.match(/--veu:\s*([0-9]{1,3})%/)![1]) / 100;
+
+    const marcaSobreFoto = achatar(siteConfig.theme.brand, "#FFFFFF", veuClaro * hover);
+    const comVeu = achatar(siteConfig.theme.foreground, marcaSobreFoto, escuro * hover);
+
+    const titulo = contraste("#FFFFFF", comVeu);
+    expect(
+      titulo,
+      `título branco dá ${titulo.toFixed(2)}:1 no ponto mais claro do card`,
+    ).toBeGreaterThanOrEqual(4.5);
+
+    const borda = Number(card.match(/border-white\/([0-9]{1,3})/)![1]) / 100;
+    const razaoBorda = contraste(achatar("#FFFFFF", comVeu, borda), comVeu);
+    expect(
+      razaoBorda,
+      `a borda dos botões dá ${razaoBorda.toFixed(2)}:1 no mesmo ponto`,
+    ).toBeGreaterThanOrEqual(MINIMO);
+  });
+
   it("nenhum anel de foco pinta da mesma cor do que está atrás dele", () => {
     // `focus-visible:ring-[#25D366]` desenhava um anel da MESMA cor do fundo do
     // botão: um anel que não anela. Não causava dano (o contorno global aparece

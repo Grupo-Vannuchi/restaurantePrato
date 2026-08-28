@@ -115,6 +115,46 @@
 }
 
 /*
+ * Véu de legibilidade para texto sobre foto.
+ *
+ * O card de novidades põe título branco e dois botões vazados por cima de uma
+ * foto tingida com a cor da marca. Medido no pior ponto do degradê (a ponta
+ * clara, com o `hover` ainda baixando tudo), o título dava **2,15:1** contra o
+ * mínimo de 4,5 — e a foto do cliente é justamente o que faz o defeito
+ * aparecer: sem foto o card fica sobre a marca opaca e passa.
+ *
+ * ⚠️ O tingimento da marca NÃO resolve sozinho, por mais opaco que fique:
+ * branco sobre a marca cheia dá 4,98:1, e qualquer transparência derruba
+ * abaixo do mínimo. Precisa de escuro.
+ *
+ * A opacidade é CONSTANTE nas faixas onde há texto e cai a zero só no meio,
+ * onde a foto aparece. Um degradê que desvanece desde a borda pareceria mais
+ * elegante e falharia: o título quebra em duas ou três linhas e a terceira
+ * cairia justo onde o véu já é fraco demais.
+ *
+ * 45%: 5,12:1 no título e 3,96:1 na borda dos botões, no pior ponto.
+ * Guardado por `test/contraste-de-cor-translucida.test.ts`.
+ *
+ * O `color-mix` mantém a cor vindo do token em vez de repetir o hexadecimal —
+ * que é o tipo de cópia que envelhece e mente. O compilador gera junto um
+ * fallback sem `color-mix`, e ele sai OPACO: navegador antigo mostra o cartão
+ * escuro sem a foto. Fica legível e perde o enfeite, que é a direção certa
+ * para um fallback. Verificado no navegador: resolve para o token a 45%.
+ */
+.veu-de-legibilidade {
+  --veu: 45%;
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-foreground) var(--veu), transparent) 0%,
+    color-mix(in srgb, var(--color-foreground) var(--veu), transparent) 48%,
+    transparent 60%,
+    transparent 68%,
+    color-mix(in srgb, var(--color-foreground) var(--veu), transparent) 80%,
+    color-mix(in srgb, var(--color-foreground) var(--veu), transparent) 100%
+  );
+}
+
+/*
  * Scroll-reveal animation, driven by the <Reveal /> client component. Elements
  * start faded + nudged down and ease into place when they enter the viewport
  * (data-visible flips to "true"). A per-element transition-delay (set inline)

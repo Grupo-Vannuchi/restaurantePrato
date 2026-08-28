@@ -48,11 +48,19 @@ export function InformationCard({
         />
       ) : null}
 
-      {/* Brand tint over the photo (keeps the title legible). */}
+      {/* Tingimento da marca sobre a foto: identidade, não legibilidade. */}
       <div
         aria-hidden
         className="absolute inset-0 bg-gradient-to-br from-brand/90 to-brand/60 transition-opacity duration-300 group-hover:opacity-90"
       />
+
+      {/*
+        * O que de fato torna o texto legível. O tingimento acima sozinho dava
+        * 2,15:1 no pior ponto do degradê — e o defeito só aparece quando o
+        * cliente publica as fotos, porque sem foto o card fica sobre a marca
+        * opaca e passa. Ver a nota em `globals.css`.
+        */}
+      <div aria-hidden className="veu-de-legibilidade absolute inset-0" />
 
       <h3 className="absolute inset-x-0 top-0 max-w-[88%] text-balance p-5 text-lg font-bold leading-snug text-white">
         {information.title}
