@@ -21,6 +21,29 @@ import { restaurantDateFormat } from "@/lib/dates";
  * roda o teste — ela fixa um instante conhecido e cobra o dia de Santos.
  */
 const RAIZ_SRC = join(process.cwd(), "src");
+
+/**
+ * As DUAS formas de formatar data herdando o fuso do processo em silêncio.
+ *
+ * ⚠️ Esta guarda nasceu cobrindo só `new Intl.DateTimeFormat`, e isso era um
+ * buraco. Em 28/08, ao transplantá-la para o projeto irmão, apareceu lá um
+ * consumidor que chegou por `toLocaleDateString` — escrito no dia anterior,
+ * depois da guarda existir. Uma guarda que fecha só a porta pela qual o defeito
+ * entrou da primeira vez não impede a segunda.
+ *
+ * `Number.prototype.toLocaleString` tem o mesmo nome e não é data. Nenhuma
+ * análise estática distingue os dois, então um caso legítimo entra em
+ * `ISENTOS`, com a razão escrita, em vez de afrouxar o padrão.
+ */
+const FORMATADORES_SOLTOS =
+  /new\s+Intl\.DateTimeFormat\s*\(|\.toLocale(?:Date|Time)?String\s*\(/;
+
+/** Isenções, cada uma justificada. Vazia hoje: não há formatação de número. */
+const ISENTOS: Record<string, string> = {};
+
+/** Sem comentários: uma API citada numa explicação não é uma chamada. */
+const semComentarios = (texto: string) =>
+  texto.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 const CAMINHO_DO_AJUDANTE = join("src", "lib", "dates.ts");
 
 /** Todo arquivo de código sob `src/`. */
@@ -60,16 +83,19 @@ describe("o fuso do restaurante", () => {
     expect(rotulo).not.toContain("22");
   });
 
-  it("é o único lugar em src/ que instancia Intl.DateTimeFormat", () => {
+  it("é o único lugar em src/ que formata data por conta própria", () => {
     // A guarda que impede o defeito de voltar: um terceiro consumidor que
     // formate data por conta própria herda o fuso do servidor em silêncio —
     // build verde, teste verde, e a data errada só na produção.
     const infratores = arquivosDeCodigo(RAIZ_SRC)
       .filter((caminho) => relative(process.cwd(), caminho) !== CAMINHO_DO_AJUDANTE)
-      .filter((caminho) => /new\s+Intl\.DateTimeFormat\s*\(/.test(readFileSync(caminho, "utf8")))
-      .map((caminho) => relative(process.cwd(), caminho).split(sep).join("/"));
+      .filter((caminho) =>
+        FORMATADORES_SOLTOS.test(semComentarios(readFileSync(caminho, "utf8"))),
+      )
+      .map((caminho) => relative(process.cwd(), caminho).split(sep).join("/"))
+      .filter((caminho) => !(caminho in ISENTOS));
 
-    expect(infratores).toEqual([]);
+    expect(infratores, infratores.join(" | ")).toEqual([]);
   });
 
   it("continua havendo código em src/ para varrer — senão a guarda não guarda", () => {
