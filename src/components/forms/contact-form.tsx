@@ -115,6 +115,13 @@ export function ContactForm() {
           noValidate
           aria-busy={isSubmitting}
         >
+          {/*
+           * A legenda existe porque um asterisco sozinho não se explica. Fica
+           * ANTES dos campos: depois deles, quem lê em ordem já passou por
+           * todas as marcas sem saber o que significavam.
+           */}
+          <p className="text-xs text-muted-foreground">{t("requiredLegend")}</p>
+
           {/* Honeypot — hidden from humans; bots fill it and get dropped server-side. */}
           <input
             type="text"
@@ -126,18 +133,24 @@ export function ContactForm() {
           />
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <Label htmlFor="name">{t("name")}</Label>
+              <Label htmlFor="name" required>
+                {t("name")}
+              </Label>
               <Input
                 id="name"
+                required
                 autoComplete="name"
                 {...register("name")}
                 error={errors.name?.message}
               />
             </div>
             <div>
-              <Label htmlFor="email">{t("email")}</Label>
+              <Label htmlFor="email" required>
+                {t("email")}
+              </Label>
               <Input
                 id="email"
+                required
                 type="email"
                 autoComplete="email"
                 {...register("email")}
@@ -164,9 +177,12 @@ export function ContactForm() {
           </div>
 
           <div>
-            <Label htmlFor="message">{t("message")}</Label>
+            <Label htmlFor="message" required>
+              {t("message")}
+            </Label>
             <Textarea
               id="message"
+              required
               placeholder={t("messagePlaceholder")}
               {...register("message")}
               error={errors.message?.message}

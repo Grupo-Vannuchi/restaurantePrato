@@ -168,7 +168,8 @@
       "submit": "Enviar mensagem",
       "submitting": "Enviando…",
       "success": "Mensagem enviada! Em breve entramos em contato.",
-      "error": "Não foi possível enviar agora. Tente novamente ou ligue para a gente."
+      "error": "Não foi possível enviar agora. Tente novamente ou ligue para a gente.",
+      "requiredLegend": "Os campos marcados com * são obrigatórios."
     },
     "metaDescription": "Onde fica e como falar com o Restaurante Prato: R. Augusto Severo, 25, Centro de Santos. Reserva pelo WhatsApp, de segunda a sexta, das 11h às 15h."
   },

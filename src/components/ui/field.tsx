@@ -64,11 +64,16 @@ function Auxiliares({
   return (
     <>
       {hint ? (
-        <p id={hintId ?? undefined} className="mt-1 text-xs text-muted-foreground">
+        <p
+          id={hintId ?? undefined}
+          className="mt-1 text-xs text-muted-foreground"
+        >
           {hint}
         </p>
       ) : null}
-      {error ? <FieldError id={errorId ?? undefined}>{error}</FieldError> : null}
+      {error ? (
+        <FieldError id={errorId ?? undefined}>{error}</FieldError>
+      ) : null}
     </>
   );
 }
@@ -76,7 +81,18 @@ function Auxiliares({
 export const Input = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement> & ExtrasDoCampo
->(function Input({ className, hint, error, id, "aria-describedby": descrito, "aria-invalid": invalido, ...props }, ref) {
+>(function Input(
+  {
+    className,
+    hint,
+    error,
+    id,
+    "aria-describedby": descrito,
+    "aria-invalid": invalido,
+    ...props
+  },
+  ref,
+) {
   const { base, hintId, errorId, describedBy } = useDescricao(
     id,
     hint,
@@ -101,7 +117,18 @@ export const Input = React.forwardRef<
 export const Textarea = React.forwardRef<
   HTMLTextAreaElement,
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & ExtrasDoCampo
->(function Textarea({ className, hint, error, id, "aria-describedby": descrito, "aria-invalid": invalido, ...props }, ref) {
+>(function Textarea(
+  {
+    className,
+    hint,
+    error,
+    id,
+    "aria-describedby": descrito,
+    "aria-invalid": invalido,
+    ...props
+  },
+  ref,
+) {
   const { base, hintId, errorId, describedBy } = useDescricao(
     id,
     hint,
@@ -133,7 +160,19 @@ export const Textarea = React.forwardRef<
 export const Select = React.forwardRef<
   HTMLSelectElement,
   React.SelectHTMLAttributes<HTMLSelectElement> & ExtrasDoCampo
->(function Select({ className, hint, error, id, "aria-describedby": descrito, "aria-invalid": invalido, children, ...props }, ref) {
+>(function Select(
+  {
+    className,
+    hint,
+    error,
+    id,
+    "aria-describedby": descrito,
+    "aria-invalid": invalido,
+    children,
+    ...props
+  },
+  ref,
+) {
   const { base, hintId, errorId, describedBy } = useDescricao(
     id,
     hint,
@@ -157,15 +196,35 @@ export const Select = React.forwardRef<
   );
 });
 
+/**
+ * Rótulo do campo. Com `required`, ganha a marca visual.
+ *
+ * A marca fica FORA da árvore de acessibilidade de propósito: quem usa leitor
+ * de tela já ouve "obrigatório" do próprio `required` do campo, no momento em
+ * que o foco chega. Deixar a estrela anunciável faria a pessoa ouvir
+ * "asterisco" — o mesmo recado, duas vezes, uma delas sem sentido.
+ *
+ * E ela não substitui o `required` no campo: uma estrela sozinha no rótulo é
+ * informação só para quem enxerga. Os dois andam juntos.
+ */
 export function Label({
   className,
+  required = false,
+  children,
   ...props
-}: React.LabelHTMLAttributes<HTMLLabelElement>) {
+}: React.LabelHTMLAttributes<HTMLLabelElement> & { required?: boolean }) {
   return (
     <label
       className={cn("mb-1.5 block text-sm font-medium", className)}
       {...props}
-    />
+    >
+      {children}
+      {required ? (
+        <span aria-hidden="true" className="ml-0.5 text-danger">
+          *
+        </span>
+      ) : null}
+    </label>
   );
 }
 
