@@ -70,6 +70,17 @@ export type MenuItemView = {
   descriptionLong: string;
 };
 
+/**
+ * Um prato como o cardápio digital precisa dele: com o texto longo da linha e a
+ * categoria a que pertence.
+ *
+ * A categoria vem junto porque o cardápio agrupa por ela dentro do dia — sem
+ * isso a página faria uma consulta por prato só para descobrir o nome do grupo.
+ */
+export type DishView = MenuItemView & {
+  category: { slug: string; name: string };
+};
+
 export type MenuCategoryView = {
   id: string;
   slug: string;
@@ -216,6 +227,67 @@ export const getMenu = unstable_cache(
     }));
   },
   ["menu"],
+  { tags: [tags.menu], revalidate },
+);
+
+/**
+ * Mapeia uma linha de `menu_items` (com a categoria incluída) para `DishView`.
+ * Existe para as consultas do cardápio não repetirem o mesmo `localize`.
+ */
+function toDish(
+  row: {
+    id: string;
+    slug: string;
+    name: unknown;
+    description: unknown;
+    descriptionLong: unknown;
+    image: string;
+    tags: string[];
+    weekdays: number[];
+    kind: MenuItemKind;
+    category: { slug: string; name: unknown };
+  },
+  locale: Locale,
+): DishView {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: localize(row.name, locale),
+    description: localize(row.description, locale),
+    descriptionLong: localize(row.descriptionLong, locale),
+    image: row.image,
+    tags: row.tags,
+    weekdays: row.weekdays,
+    kind: row.kind,
+    category: { slug: row.category.slug, name: localize(row.category.name, locale) },
+  };
+}
+
+/** Os pratos do buffet, que é o cardápio da semana. */
+export const getBuffetDishes = unstable_cache(
+  async (locale: Locale): Promise<DishView[]> => {
+    const rows = await prisma.menuItem.findMany({
+      where: { available: true, kind: "BUFFET" },
+      orderBy: [{ order: "asc" }, { slug: "asc" }],
+      include: { category: { select: { slug: true, name: true } } },
+    });
+    return rows.map((r) => toDish(r, locale));
+  },
+  ["menu", "buffet"],
+  { tags: [tags.menu], revalidate },
+);
+
+/** As massas, que têm preço próprio e não pertencem ao buffet. */
+export const getPastaDishes = unstable_cache(
+  async (locale: Locale): Promise<DishView[]> => {
+    const rows = await prisma.menuItem.findMany({
+      where: { available: true, kind: "PASTA" },
+      orderBy: [{ order: "asc" }, { slug: "asc" }],
+      include: { category: { select: { slug: true, name: true } } },
+    });
+    return rows.map((r) => toDish(r, locale));
+  },
+  ["menu", "pasta"],
   { tags: [tags.menu], revalidate },
 );
 
