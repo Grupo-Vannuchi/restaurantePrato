@@ -28,7 +28,13 @@ porta fechada, e um CNPJ errado em documento de LGPD é problema jurídico.
 Uma guarda de regressão em Vitest (`test/brand-hygiene.test.ts`) varre `src/`,
 `public/`, `prisma/` e os documentos de instrução da raiz atrás de qualquer
 vestígio do cliente anterior — inclusive os fatos que ele afirmava sem citar a
-marca ("180 lugares", "por quilo", "Bolsa do Café"). `docs/` fica fora de
+marca ("180 lugares", "Bolsa do Café").
+
+⚠️ **"por quilo" saiu dessa lista em 31/08**, e é o único item que já saiu. Ele
+estava lá por ser um fato do Fogão de Ouro afirmado sem prova; nessa data o
+cliente confirmou que o Prato também cobra o buffet por peso, então virou dado
+confirmado. Nenhum outro item sai sem confirmação explícita — "Centro Histórico"
+segue bloqueado justamente por ser o caso ainda em aberto. `docs/` fica fora de
 propósito: veja [`superpowers/README.md`](superpowers/README.md).
 
 ---
@@ -48,6 +54,8 @@ propósito: veja [`superpowers/README.md`](superpowers/README.md).
 | Horário | Segunda a sexta, das 11h às 15h *(19/08/2026)* |
 | Instagram | [@restaurante.prato](https://instagram.com/restaurante.prato) *(19/08/2026)* |
 | Cozinha | Brasileira, churrasco *(19/08/2026)* |
+| Cobrança | Buffet **por quilo**, cobrado pelo peso do prato montado *(31/08/2026)*. Os valores ainda não vieram |
+| Ilha de massas | Existe, e tem **preço próprio**, à parte do buffet *(31/08/2026)*. O valor ainda não veio |
 
 Esses valores vivem em dois arquivos que precisam concordar:
 [`src/config/site.ts`](../src/config/site.ts) (marca, contato, structured data)

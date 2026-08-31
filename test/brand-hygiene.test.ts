@@ -6,9 +6,19 @@ import { describe, expect, it } from "vitest";
  * Guarda de regressão do rebrand Fogão de Ouro → Restaurante Prato.
  *
  * Este repositório é um fork do site pronto do Fogão de Ouro, e a copy herdada
- * afirmava fatos daquele restaurante sem citar a marca ("180 lugares", "por
- * quilo", "Bolsa do Café"). Um grep pelo nome da marca não pega isso — daí a
- * lista abaixo.
+ * afirmava fatos daquele restaurante sem citar a marca ("180 lugares", "Bolsa
+ * do Café"). Um grep pelo nome da marca não pega isso — daí a lista abaixo.
+ *
+ * ⚠️ **A cobrança por quilo SAIU da lista em 31/08, e a saída é a exceção que
+ * confirma a regra.** Ela entrou aqui porque era um fato do Fogão de Ouro que a
+ * copy herdada afirmava sem provar. Nesta data o dono do projeto confirmou que
+ * o Prato também cobra o buffet por peso — então deixou de ser vestígio e virou
+ * dado do cliente, registrado em `docs/WHITELABEL-RESTAURANTE-PRATO.md`.
+ *
+ * O que NÃO mudou: nenhum outro item sai daqui sem confirmação explícita, e
+ * "Centro Histórico" continua bloqueado justamente por ser o caso ainda em
+ * aberto. Tirar um item desta lista porque ele atrapalhou uma tarefa é o
+ * caminho pelo qual o dado do cliente anterior volta.
  *
  * `docs/` NÃO é varrido de propósito: os specs e planos do rebrand anterior
  * ficam no repo justamente por explicarem por que o código tem a forma que tem,
@@ -25,8 +35,6 @@ const FORBIDDEN = [
   "Centro Histórico",
   "180 lugares",
   "1.200 avaliações",
-  "por quilo",
-  "por Quilo",
   "11010-090",
   "3219-1552",
   "99163-2985",
