@@ -24,12 +24,24 @@ import type { InformationView } from "@/lib/queries";
 export function InformationCard({
   information,
   priority = false,
+  headingLevel = 3,
 }: {
   information: InformationView;
   /** Só a primeira da grade — ver a nota acima. */
   priority?: boolean;
+  /**
+   * Nível do título do card. O padrão 3 vale onde ele fica sob uma seção — é o
+   * caso da lista de relacionadas do artigo, que tem um `<h2>` em cima.
+   *
+   * ⚠️ O índice `/novidades` precisa de 2: lá a grade vem direto abaixo do
+   * `<h1>` da página, e o `<h3>` fixo produzia um salto h1 → h3. O nível não é
+   * propriedade do card, é de onde ele foi colocado.
+   */
+  headingLevel?: 2 | 3;
 }) {
   const t = useTranslations("novidades");
+  // A classe fica no elemento, então trocar a tag não muda um pixel.
+  const Titulo = headingLevel === 2 ? "h2" : "h3";
   const gallery = useInformationGallery();
 
   const actionClass =
@@ -62,9 +74,9 @@ export function InformationCard({
         */}
       <div aria-hidden className="veu-de-legibilidade absolute inset-0" />
 
-      <h3 className="absolute inset-x-0 top-0 max-w-[88%] text-balance p-5 text-lg font-bold leading-snug text-white">
+      <Titulo className="absolute inset-x-0 top-0 max-w-[88%] text-balance p-5 text-lg font-bold leading-snug text-white">
         {information.title}
-      </h3>
+      </Titulo>
 
       <div className="absolute bottom-0 left-0 flex items-center gap-2 p-5">
         <Link

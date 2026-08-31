@@ -48,11 +48,11 @@ export default async function InformationsPage({
                 // a prioridade dada à imagem.
                 i === 0 ? (
                   <div key={information.id} className="h-full">
-                    <InformationCard information={information} priority />
+                    <InformationCard information={information} priority headingLevel={2} />
                   </div>
                 ) : (
                   <Reveal key={information.id} delay={(i % 4) * 80} className="h-full">
-                    <InformationCard information={information} />
+                    <InformationCard information={information} headingLevel={2} />
                   </Reveal>
                 ),
               )}
