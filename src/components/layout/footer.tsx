@@ -4,7 +4,7 @@ import { Instagram, Linkedin, Facebook } from "@/components/ui/brand-icons";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/logo";
 import { Container } from "@/components/ui/container";
-import { MapEmbed } from "@/components/layout/map-embed";
+import { FooterMap } from "@/components/layout/footer-map";
 import { siteConfig, fullAddress, mapEmbedUrl } from "@/config/site";
 
 const socialIcons = {
@@ -106,11 +106,9 @@ export async function Footer() {
         </div>
       </Container>
 
-      <div className="border-t border-border">
-        <Container className="py-10">
-          <MapEmbed src={mapSrc} title={t("mapTitle")} />
-        </Container>
-      </div>
+      {/* Some na pagina de contato, onde o mapa aparece acima do formulario —
+          ver `footer-map.tsx`. */}
+      <FooterMap src={mapSrc} title={t("mapTitle")} />
 
       <div className="border-t border-border">
         <Container className="flex flex-col gap-3 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
