@@ -50,7 +50,7 @@ export function DeleteButtonBase({
         onClick={onClick}
         disabled={pending}
         aria-label={label}
-        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-red-500/10 hover:text-red-600 disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger disabled:opacity-60"
       >
         <Trash2 className="size-4" />
         {label}

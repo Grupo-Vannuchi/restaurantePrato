@@ -286,7 +286,7 @@ export function WhatsappManager({
                     onClick={() => onDelete(inst.name)}
                     disabled={busy === inst.name}
                     aria-label={t("delete")}
-                    className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-red-500/10 hover:text-red-600 disabled:opacity-50"
+                    className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger disabled:opacity-50"
                   >
                     <Trash2 className="size-4" />
                   </button>
