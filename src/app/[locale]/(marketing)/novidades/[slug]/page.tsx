@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { Icon } from "@/components/ui/icon";
 import { RichText } from "@/components/rich-text";
+import { VisitBlock } from "@/components/visit-block";
 import { InformationCard } from "@/components/information-card";
 import { InformationGallery } from "@/components/information-gallery";
 import { getInformationBySlug, getInformations } from "@/lib/queries";
@@ -182,6 +183,9 @@ export default async function InformationPage({
           </section>
         ) : null}
 
+        {/* Fecha o artigo com onde fica e que horas abre. Ficou vazio quando
+            a tabela falsa de "regiões que atendemos" saiu, em 27/08. */}
+        <VisitBlock />
       </Container>
     </article>
   );

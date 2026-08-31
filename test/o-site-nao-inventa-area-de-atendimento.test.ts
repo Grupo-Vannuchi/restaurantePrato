@@ -63,6 +63,24 @@ function arquivos(dir: string): string[] {
   return saida;
 }
 
+/**
+ * A fonte SEM comentários.
+ *
+ * ⚠️ Esta guarda falhou em 31/08 casando com um COMENTÁRIO que explicava a
+ * remoção da tabela falsa — ele cita a frase proibida justamente para dizer que
+ * ela saiu. É a quarta guarda deste projeto a cair nisso: a do `<aside>`, a do
+ * modal, a do `startTransition` e agora esta. Comentário descreve o defeito;
+ * código é que o comete.
+ *
+ * A varredura continua olhando literais de string e JSX, que é onde uma
+ * afirmação falsa de fato moraria.
+ */
+const semComentarios = (texto: string) =>
+  texto
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
+    .replace(/\/\/.*$/gm, "");
+
 describe("o site não inventa área de atendimento", () => {
   // `src/` e `prisma/`. `docs/` fica de fora pelo mesmo motivo do
   // `brand-hygiene.test.ts`: planos e specs são registro histórico.
@@ -77,7 +95,7 @@ describe("o site não inventa área de atendimento", () => {
   it("não lista bairros da capital paulista", () => {
     const achados: string[] = [];
     for (const caminho of alvos) {
-      const texto = readFileSync(caminho, "utf8");
+      const texto = semComentarios(readFileSync(caminho, "utf8"));
       for (const bairro of BAIRROS_DA_CAPITAL) {
         if (texto.includes(bairro)) achados.push(`${caminho}: "${bairro}"`);
       }
@@ -88,7 +106,7 @@ describe("o site não inventa área de atendimento", () => {
   it("não promete atender regiões", () => {
     const achados: string[] = [];
     for (const caminho of alvos) {
-      const texto = readFileSync(caminho, "utf8");
+      const texto = semComentarios(readFileSync(caminho, "utf8"));
       for (const promessa of PROMESSAS) {
         const casou = texto.match(promessa);
         if (casou) achados.push(`${caminho}: "${casou[0]}"`);
