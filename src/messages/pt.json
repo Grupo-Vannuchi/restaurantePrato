@@ -357,7 +357,16 @@
       "deleteCategorySuccess": "Categoria excluída.",
       "deleteItemSuccess": "Item excluído.",
       "errorDuplicate": "Já existe um item com esse identificador na URL.",
-      "errorUnknown": "Não foi possível salvar. Tente de novo."
+      "errorUnknown": "Não foi possível salvar. Tente de novo.",
+      "itemKind": "Onde este prato aparece",
+      "itemKindHint": "O buffet sai no cardápio da semana; a ilha de massas tem preço próprio; a vitrine é a seleção com foto que aparece na página inicial.",
+      "kindBuffet": "Buffet da semana",
+      "kindPasta": "Ilha de massas",
+      "kindShowcase": "Vitrine da página inicial",
+      "itemWeekdays": "Dias em que sai",
+      "itemWeekdaysHint": "Marque os dias. Nenhum marcado quer dizer que o prato sai todos os dias.",
+      "itemDescriptionLong": "Descrição no cardápio",
+      "itemDescriptionLongHint": "O texto que aparece na linha do cardápio digital. A descrição curta acima é a do card."
     },
     "galeria": {
       "title": "Galeria",

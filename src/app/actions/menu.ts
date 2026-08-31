@@ -51,7 +51,9 @@ function itemData(input: MenuItemInput) {
     available: input.available,
     order: input.order,
     tags: input.tags,
-    weekday: input.weekday,
+    descriptionLong: input.descriptionLong,
+    kind: input.kind,
+    weekdays: input.weekdays,
   };
 }
 

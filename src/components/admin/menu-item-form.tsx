@@ -103,25 +103,58 @@ export function MenuItemForm({
               hint={t("itemSlugHint")}
             />
           </div>
+          <div className="sm:col-span-2">
+            <Label htmlFor="descriptionLong">{t("itemDescriptionLong")}</Label>
+            <Textarea
+              id="descriptionLong"
+              rows={3}
+              hint={t("itemDescriptionLongHint")}
+              {...register("descriptionLong.pt")}
+            />
+          </div>
           <div>
             <Label htmlFor="tags">{t("itemTags")}</Label>
             <Input id="tags" {...register("tags")} hint={t("itemTagsHint")} />
           </div>
           <div>
-            <Label htmlFor="weekday">{t("itemWeekday")}</Label>
-            <Select
-              id="weekday"
-              hint={t("itemWeekdayHint")}
-              {...register("weekday")}
-            >
-              <option value="">{t("weekdayNone")}</option>
-              {weekdays.map((n) => (
-                <option key={n} value={n}>
-                  {t(`weekday${n}`)}
-                </option>
-              ))}
+            <Label htmlFor="kind">{t("itemKind")}</Label>
+            <Select id="kind" hint={t("itemKindHint")} {...register("kind")}>
+              <option value="BUFFET">{t("kindBuffet")}</option>
+              <option value="PASTA">{t("kindPasta")}</option>
+              <option value="SHOWCASE">{t("kindShowcase")}</option>
             </Select>
           </div>
+
+          {/*
+            Caixas de seleção, e não uma lista suspensa: o prato sai em mais de
+            um dia, e o `<select>` de antes só comportava um. Um `<fieldset>`
+            com legenda porque o rótulo aqui é do GRUPO — sem ele, quem usa
+            leitor de tela ouve "Segunda, caixa de seleção" sem saber do quê.
+          */}
+          <fieldset className="sm:col-span-2">
+            <legend className="mb-1 block text-sm font-medium">
+              {t("itemWeekdays")}
+            </legend>
+            <p className="mb-2 text-xs text-muted-foreground" id="dias-dica">
+              {t("itemWeekdaysHint")}
+            </p>
+            <div
+              className="flex flex-wrap gap-x-5 gap-y-2"
+              aria-describedby="dias-dica"
+            >
+              {weekdays.map((n) => (
+                <label key={n} className="inline-flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    value={n}
+                    className="size-4 rounded border-border-field"
+                    {...register("weekdays")}
+                  />
+                  {t(`weekday${n}`)}
+                </label>
+              ))}
+            </div>
+          </fieldset>
           <div>
             <Label htmlFor="order">{t("order")}</Label>
             <Input id="order" type="number" inputMode="numeric" {...register("order")} />

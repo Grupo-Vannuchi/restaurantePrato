@@ -23,10 +23,15 @@ export async function MenuItemCard({
   const t = await getTranslations("gastronomia");
   return (
     <article className="flex h-full flex-col gap-3 rounded-xl border border-border bg-card p-5">
-      {item.weekday !== null ? (
+      {/* Lista vazia = prato permanente, e aí a etiqueta não aparece. Com dias,
+          eles saem em ordem: o cadastro pode vir em qualquer uma. */}
+      {item.weekdays.length > 0 ? (
         <span className="inline-flex w-fit items-center gap-1 rounded-full bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">
           <span className="sr-only">{t("weekOfTitle")}: </span>
-          {t(weekdayKeys[item.weekday - 1])}
+          {[...item.weekdays]
+            .sort((a, b) => a - b)
+            .map((dia) => t(weekdayKeys[dia - 1]))
+            .join(", ")}
         </span>
       ) : null}
       {item.image ? (

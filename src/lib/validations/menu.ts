@@ -63,8 +63,18 @@ export const menuItemSchema = z.object({
   available: z.boolean(),
   order: z.coerce.number().int().min(0).max(9999),
   tags: z.array(z.string().trim().min(1).max(40)).max(10),
-  /// 1 = segunda … 5 = sexta. O restaurante não abre no fim de semana.
-  weekday: z.union([z.coerce.number().int().min(1).max(5), z.null()]),
+  descriptionLong: optionalLocalizedText(2000),
+  /// Em que seção do cardápio o prato entra.
+  kind: z.enum(["BUFFET", "PASTA", "SHOWCASE"]),
+  /**
+   * 1 = segunda … 5 = sexta. O restaurante não abre no fim de semana, então
+   * não existe 6 nem 7 — e a validação recusa em vez de aceitar um dia que a
+   * casa nunca vai servir.
+   *
+   * Lista vazia = prato permanente. `max(5)` porque cinco dias é o teto: uma
+   * lista maior só pode ter repetido.
+   */
+  weekdays: z.array(z.coerce.number().int().min(1).max(5)).max(5),
 });
 
 export type MenuCategoryInput = z.infer<typeof menuCategorySchema>;

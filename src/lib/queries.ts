@@ -1,5 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
+import type { MenuItemKind } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { localize, localizeRich } from "@/lib/content";
 import { tags, CONTENT_REVALIDATE_SECONDS } from "@/lib/cache";
@@ -57,8 +58,16 @@ export type MenuItemView = {
   description: string;
   image: string;
   tags: string[];
-  /** 1 (segunda) a 5 (sexta); null = prato permanente. */
-  weekday: number | null;
+  /**
+   * Dias em que o prato sai: 1 (segunda) a 5 (sexta). **Lista vazia = prato
+   * permanente**, servido todos os dias — antes isso era um `null`, e o `null`
+   * exigia que cada consumidor lembrasse do caso especial.
+   */
+  weekdays: number[];
+  /** Em que seção do cardápio o prato entra. */
+  kind: MenuItemKind;
+  /** Texto longo da linha do cardápio; vazio quando não foi preenchido. */
+  descriptionLong: string;
 };
 
 export type MenuCategoryView = {
@@ -200,7 +209,9 @@ export const getMenu = unstable_cache(
         description: localize(i.description, locale),
         image: i.image,
         tags: i.tags,
-        weekday: i.weekday,
+        weekdays: i.weekdays,
+        kind: i.kind,
+        descriptionLong: localize(i.descriptionLong, locale),
       })),
     }));
   },

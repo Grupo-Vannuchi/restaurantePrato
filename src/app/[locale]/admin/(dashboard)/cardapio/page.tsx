@@ -105,9 +105,12 @@ export default async function AdminCardapioPage({
                           >
                             {item.available ? t("statusAvailable") : t("statusUnavailable")}
                           </span>
-                          {item.weekday !== null ? (
+                          {item.weekdays.length > 0 ? (
                             <span className="rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
-                              {t(weekdayKeys[item.weekday - 1])}
+                              {[...item.weekdays]
+                                .sort((a, b) => a - b)
+                                .map((dia) => t(weekdayKeys[dia - 1]))
+                                .join(", ")}
                             </span>
                           ) : null}
                         </div>
