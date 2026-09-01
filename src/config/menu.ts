@@ -69,27 +69,20 @@ export function precoDaMassa(
 /**
  * Os dias úteis, 1 (segunda) a 5 (sexta) — o restaurante não abre no fim de
  * semana, e o horário publicado diz isso. O número é o que vai para o banco
- * (`MenuItem.weekdays`); o `slug` serve para link direto
- * (`/cardapio?dia=terca`), e o rótulo visível vem do catálogo de traduções,
- * nunca daqui.
+ * (`MenuItem.weekdays`); o rótulo visível vem do catálogo de traduções, nunca
+ * daqui.
+ *
+ * ⚠️ Não há link direto por dia (`/cardapio?dia=terca`). Os ajudantes para isso
+ * vieram junto quando esta configuração foi trazida do projeto irmão, e ficaram
+ * sem uso: nem lá nem aqui alguma página os chamava. Saíram em 31/08 porque
+ * ajudante sem consumidor é peso morto — e este projeto tem guarda contra isso.
+ * Se o link direto for pedido um dia, eles voltam junto com a página que os usa.
  */
 export const WEEKDAYS = [1, 2, 3, 4, 5] as const;
 
 export type Weekday = (typeof WEEKDAYS)[number];
 
-export const weekdaySlugs: Record<Weekday, string> = {
-  1: "segunda",
-  2: "terca",
-  3: "quarta",
-  4: "quinta",
-  5: "sexta",
-};
 
-/** Converte o slug da URL de volta para o número do dia. */
-export function weekdayFromSlug(slug: string | undefined): Weekday | null {
-  const entrada = Object.entries(weekdaySlugs).find(([, s]) => s === slug);
-  return entrada ? (Number(entrada[0]) as Weekday) : null;
-}
 
 /**
  * Estreita um número vindo do banco, que o Prisma tipa como `number` solto.

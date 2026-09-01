@@ -6,8 +6,6 @@ import {
   isWeekday,
   precoDaMassa,
   precoDoBuffet,
-  weekdayFromSlug,
-  weekdaySlugs,
 } from "@/config/menu";
 
 /**
@@ -73,19 +71,15 @@ describe("os preços do cardápio", () => {
 });
 
 describe("os dias do cardápio", () => {
+  /*
+   * ⚠️ Não há mais teste de slug de dia. Os ajudantes de link direto
+   * (`/cardapio?dia=terca`) vieram junto quando a configuração foi trazida do
+   * projeto irmão e ficaram sem consumidor nenhum — nem lá nem aqui. Saíram em
+   * 31/08, e os testes deles com eles: teste de código que não existe mais dá
+   * a impressão de cobertura que não há.
+   */
   it("são de segunda a sexta, porque a casa não abre no fim de semana", () => {
     expect([...WEEKDAYS]).toEqual([1, 2, 3, 4, 5]);
-  });
-
-  it("cada dia tem um slug, para o link direto do cardápio", () => {
-    expect(Object.keys(weekdaySlugs)).toHaveLength(WEEKDAYS.length);
-    expect(weekdaySlugs[3]).toBe("quarta");
-  });
-
-  it("o slug volta a ser o número, e um slug inventado devolve null", () => {
-    expect(weekdayFromSlug("quinta")).toBe(4);
-    expect(weekdayFromSlug("sabado")).toBeNull();
-    expect(weekdayFromSlug(undefined)).toBeNull();
   });
 
   it("recusa dia que a casa nunca vai servir", () => {
