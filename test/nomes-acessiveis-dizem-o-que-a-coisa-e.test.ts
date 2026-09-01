@@ -93,6 +93,9 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
   "src/components/information-card.tsx": ['""'], // foto sob véu, com o <h3> por cima
   "src/components/information-gallery.tsx": ['""'], // a <figcaption> descreve a imagem
   "src/components/sections/hero-carousel.tsx": ['""'], // fundo, com o texto sobreposto
+  // Foto de fundo da abertura do cardápio, com a marca sobreposta. Decorativa
+  // pelo mesmo motivo do topo da home: o texto por cima é que informa.
+  "src/components/cardapio/menu-hero.tsx": ['""'],
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.
   "src/components/gallery-photo-card.tsx": ['photo.caption ? "" : t("photoAlt")'],

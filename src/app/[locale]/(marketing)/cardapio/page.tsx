@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { MenuHero } from "@/components/cardapio/menu-hero";
 import { PageHeader } from "@/components/page-header";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { DayTabs } from "@/components/cardapio/day-tabs";
@@ -56,6 +57,9 @@ export default async function CardapioPage({
 
   return (
     <>
+      {/* A identidade antes da lista: quem chega aqui pode ter escaneado um
+          código na mesa e nunca ter visto o site. */}
+      <MenuHero />
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       {/* Coluna estreita: um cardápio é lido de cima a baixo, não varrido em
