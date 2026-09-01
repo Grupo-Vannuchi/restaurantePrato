@@ -26,6 +26,7 @@ import { expect, test } from "@playwright/test";
  */
 const PAGES = [
   "/",
+  "/cardapio",
   "/experiencia",
   "/gastronomia",
   "/galeria",

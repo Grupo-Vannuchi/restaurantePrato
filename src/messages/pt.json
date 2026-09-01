@@ -514,5 +514,24 @@
       "disconnected": "desconectada",
       "instanceDisconnected": "Instância desconectada. Conecte-a no painel de WhatsApp e tente de novo."
     }
+  },
+  "cardapio": {
+    "title": "Cardápio da semana",
+    "subtitle": "O que sai em cada dia, de segunda a sexta.",
+    "metaDescription": "O cardápio da semana do Restaurante Prato: buffet por quilo e ilha de massas, de segunda a sexta, no Centro de Santos.",
+    "daySelectorLabel": "Escolha o dia",
+    "today": "Hoje",
+    "everyday": "Todos os dias",
+    "empty": "O cardápio da semana ainda não foi publicado.",
+    "emptyDay": "Ainda não há pratos cadastrados para este dia.",
+    "buffetLabel": "Buffet por quilo",
+    "buffetNote": "O valor é calculado pelo peso do prato que você montar, não pelo que você escolher.",
+    "pastaLabel": "Ilha de massas",
+    "pastaNote": "Preço fechado por porção, à parte do buffet.",
+    "weekday1": "Segunda",
+    "weekday2": "Terça",
+    "weekday3": "Quarta",
+    "weekday4": "Quinta",
+    "weekday5": "Sexta"
   }
 }
