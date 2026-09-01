@@ -32,7 +32,7 @@ export async function GET(): Promise<Response> {
 
   const core = [
     line("A Experiência", "/experiencia", "A casa e o que esperar de uma visita"),
-    line("Nossa Gastronomia", "/gastronomia", "O cardápio da casa"),
+    line("Cardápio", "/cardapio", "O cardápio da semana, o buffet e a ilha de massas"),
     line("Galeria", "/galeria", "Fotos do ambiente e dos pratos"),
     line("Horários", "/reservas", "Horário de funcionamento e informações práticas"),
     line("Contato", "/contato", "Endereço e como chegar"),
@@ -41,9 +41,13 @@ export async function GET(): Promise<Response> {
   let menu: string[] = [];
   try {
     const categories = await getMenu(defaultLocale);
-    menu = categories.map((c) =>
-      line(c.name, `/gastronomia#${c.slug}`, c.description),
-    );
+    /*
+     * A categoria aponta para `/cardapio`, e não para uma âncora dela.
+     * Em `/cardapio` as categorias vivem dentro das abas de dia — há uma cópia
+     * de cada por dia útil —, então não existe âncora única para onde apontar.
+     * Um link que não leva a lugar nenhum é pior que um link a mais.
+     */
+    menu = categories.map((c) => line(c.name, "/cardapio", c.description));
   } catch {
     // Database unavailable — ship the core pages only.
   }
@@ -62,7 +66,7 @@ export async function GET(): Promise<Response> {
     ...core,
   ];
 
-  if (menu.length) sections.push("", "## Nossa gastronomia", ...menu);
+  if (menu.length) sections.push("", "## Cardápio", ...menu);
 
   return new Response(`${sections.join("\n")}\n`, {
     headers: { "Content-Type": "text/plain; charset=utf-8" },

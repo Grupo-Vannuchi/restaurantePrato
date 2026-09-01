@@ -8,7 +8,7 @@ import { describe, expect, it } from "vitest";
  * `[data-reveal]` declarava `will-change: opacity, transform` e nada removia a
  * declaração depois que o elemento aparecia. Cada elemento revelado mantinha
  * uma camada de composição própria pelo resto da vida da página — e em
- * `/gastronomia` e `/galeria` são dezenas de cards, todos já parados.
+ * `/cardapio` e `/galeria` são dezenas de linhas e cards, todos já parados.
  *
  * O custo não é teórico: camada de composição é memória de vídeo, e o aparelho
  * que sofre com isso é justamente o celular modesto de quem procura almoço no

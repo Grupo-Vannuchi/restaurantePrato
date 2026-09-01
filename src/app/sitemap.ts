@@ -20,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: Entry[] = [
     "",
     "/experiencia",
-    "/gastronomia",
+    "/cardapio",
     "/novidades",
     "/galeria",
     "/reservas",

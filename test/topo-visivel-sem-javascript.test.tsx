@@ -20,7 +20,7 @@ import { renderWithIntl, screen } from "./test-utils";
  *
  *   /              588 ms   (a home não usa Reveal no topo)
  *   /experiencia  2739 ms
- *   /gastronomia  2715 ms
+ *   /gastronomia  2715 ms  (rota removida em 31/08)
  *   /galeria      2837 ms
  *   /reservas     2764 ms
  *   /contato      2877 ms

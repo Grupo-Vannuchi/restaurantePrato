@@ -12,7 +12,7 @@ empty.
 avaliações and novidades are the restaurant's real content and are entered
 through the admin panel at `/admin`. Seeded demo rows would be invented content
 on a real client's site, so there are none. Restore this dump, start the app,
-and the public pages render their empty-state messages (`gastronomia.empty`,
+and the public pages render their empty-state messages (`cardapio.empty`,
 `galeria.empty`, `novidades.empty`) — that is the expected result.
 
 The dump carries the full schema: **9 tables** — the 8 Prisma models

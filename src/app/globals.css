@@ -93,7 +93,7 @@
    * Anel de foco do teclado.
    *
    * ⚠️ A cor é `--foreground`, e NÃO a da marca. O contorno era `--color-brand`
-   * e o cartão de fechamento de `/`, `/experiencia` e `/gastronomia` pinta o
+   * e o cartão de fechamento de `/` e `/experiencia` pinta o
    * fundo com essa mesma cor: marca sobre marca dá 1,00:1. O contorno existia,
    * e quem navega por teclado não via onde estava — em três botões de
    * conversão. Critério WCAG 1.4.11 (nível AA) pede 3:1 contra o que está atrás.
@@ -181,7 +181,7 @@
     /*
      * ⚠️ Devolve a camada de composição. `will-change` é para o instante ANTES
      * da animação: sem esta linha, cada elemento revelado guardava uma camada
-     * própria pelo resto da vida da página, e em `/gastronomia` e `/galeria`
+     * própria pelo resto da vida da página, e em `/cardapio` e `/galeria`
      * são dezenas de cards, todos já parados. Camada é memória de vídeo, e
      * quem paga é o celular modesto de quem procura almoço no Centro.
      */

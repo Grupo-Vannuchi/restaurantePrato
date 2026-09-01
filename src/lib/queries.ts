@@ -291,20 +291,6 @@ export const getPastaDishes = unstable_cache(
   { tags: [tags.menu], revalidate },
 );
 
-/** Só o que o dropdown de "Nossa Gastronomia" precisa. */
-export const getMenuCategoryLinks = unstable_cache(
-  async (locale: Locale): Promise<{ slug: string; name: string }[]> => {
-    const rows = await prisma.menuCategory.findMany({
-      where: { published: true },
-      orderBy: { order: "asc" },
-      select: { slug: true, name: true },
-    });
-    return rows.map((c) => ({ slug: c.slug, name: localize(c.name, locale) }));
-  },
-  ["menu", "links"],
-  { tags: [tags.menu], revalidate },
-);
-
 /** As fotos publicadas da galeria, na ordem definida no admin. */
 export const getGalleryPhotos = unstable_cache(
   async (locale: Locale): Promise<GalleryPhotoView[]> => {

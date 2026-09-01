@@ -174,7 +174,7 @@ export function HeroCarousel({
                 </p>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Link
-                    href="/gastronomia"
+                    href="/cardapio"
                     tabIndex={active ? undefined : -1}
                     className={buttonVariants({ size: "lg", className: "group" })}
                   >

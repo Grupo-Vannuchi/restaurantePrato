@@ -6,7 +6,7 @@ import { Reveal } from "@/components/ui/reveal";
  * O card de fechamento na cor da marca: título, corpo e uma fileira de ações.
  *
  * Existe porque o mesmo bloco estava copiado em `sections/cta.tsx` e em
- * `/experiencia`, e `/gastronomia` seria a terceira cópia. O motivo prático de
+ * `/experiencia`, e a página do cardápio seria a terceira cópia. O motivo de
  * unificar agora é o PR 2: a paleta do cliente ainda não chegou, e quando
  * chegar a troca precisa acontecer num lugar só.
  *

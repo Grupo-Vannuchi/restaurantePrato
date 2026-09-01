@@ -1,9 +1,8 @@
 import "server-only";
-import { getInformations, getMenuCategoryLinks } from "@/lib/queries";
+import { getInformations } from "@/lib/queries";
 import type { Locale } from "@/i18n/routing";
 
 export type HeaderLinks = {
-  categoryLinks: { slug: string; title: string }[];
   informationLinks: { slug: string; title: string; icon: string }[];
 };
 
@@ -27,12 +26,15 @@ export type HeaderLinks = {
  */
 export async function getHeaderLinks(locale: Locale): Promise<HeaderLinks> {
   try {
-    const [categories, informations] = await Promise.all([
-      getMenuCategoryLinks(locale),
-      getInformations(locale),
-    ]);
+    /*
+     * Uma consulta só. A das categorias do cardápio saiu em 31/08 junto com o
+     * menu suspenso que ela alimentava: em `/cardapio` as categorias vivem
+     * dentro das abas de dia, e não há âncora para onde apontar. Manter a busca
+     * seria uma ida ao banco em TODA página do site para preencher uma lista
+     * que ninguém lê.
+     */
+    const informations = await getInformations(locale);
     return {
-      categoryLinks: categories.map((c) => ({ slug: c.slug, title: c.name })),
       informationLinks: informations.map((i) => ({
         slug: i.slug,
         title: i.title,
@@ -44,6 +46,6 @@ export async function getHeaderLinks(locale: Locale): Promise<HeaderLinks> {
       "Menu do cabeçalho: banco indisponível, seguindo sem os links dele.",
       erro instanceof Error ? erro.message : erro,
     );
-    return { categoryLinks: [], informationLinks: [] };
+    return { informationLinks: [] };
   }
 }

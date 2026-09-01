@@ -20,7 +20,7 @@ export async function MenuItemCard({
   /** Só a primeira da grade — ver a nota acima. */
   priority?: boolean;
 }) {
-  const t = await getTranslations("gastronomia");
+  const t = await getTranslations("cardapio");
   return (
     <article className="flex h-full flex-col gap-3 rounded-xl border border-border bg-card p-5">
       {/* Lista vazia = prato permanente, e aí a etiqueta não aparece. Com dias,

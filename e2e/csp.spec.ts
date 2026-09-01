@@ -14,7 +14,7 @@ import { expect, test } from "@playwright/test";
  *   E2E_BASE_URL=https://… npx playwright test e2e/csp.spec.ts
  */
 
-const PAGES = ["/", "/cardapio", "/gastronomia", "/galeria", "/reservas", "/contato"];
+const PAGES = ["/", "/cardapio", "/galeria", "/reservas", "/contato"];
 
 for (const path of PAGES) {
   test(`${path} carrega sem violar a própria CSP`, async ({ page }) => {

@@ -13,7 +13,7 @@ import { expect, test } from "@playwright/test";
  * isso a guarda lê a **saída publicada** em vez da fonte — não importa por
  * qual caminho o dado chegue lá, ele não pode estar lá.
  */
-const PAGINAS = ["/", "/gastronomia", "/experiencia", "/reservas"];
+const PAGINAS = ["/", "/cardapio", "/experiencia", "/reservas"];
 
 /** Todo bloco de dado estruturado da página, já convertido em objeto. */
 async function blocosJsonLd(page: import("@playwright/test").Page) {

@@ -23,7 +23,7 @@ const MAXIMO = 170;
 const PAGINAS: Record<string, string> = {
   "/": pt.metadata.description,
   "/experiencia": pt.experiencia.metaDescription,
-  "/gastronomia": pt.gastronomia.metaDescription,
+  "/cardapio": pt.cardapio.metaDescription,
   "/galeria": pt.galeria.metaDescription,
   "/reservas": pt.reservas.metaDescription,
   "/contato": pt.contact.metaDescription,

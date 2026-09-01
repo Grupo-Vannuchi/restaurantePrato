@@ -10,7 +10,7 @@ import { pratosDaVitrine } from "@/lib/menu-showcase";
 import type { Locale } from "@/i18n/routing";
 
 export async function MenuPreview({ locale }: { locale: Locale }) {
-  const t = await getTranslations("home.gastronomia");
+  const t = await getTranslations("home.cardapio");
   const tc = await getTranslations("common");
   const categories = await getMenu(locale);
   // Um de cada categoria por vez — ver `menu-showcase.ts`. Concatenar e cortar
@@ -20,7 +20,7 @@ export async function MenuPreview({ locale }: { locale: Locale }) {
   if (items.length === 0) return null;
 
   return (
-    <Section id="gastronomia" className="bg-muted/30">
+    <Section id="cardapio" className="bg-muted/30">
       <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
         <SectionHeader
           eyebrow={t("eyebrow")}
@@ -29,7 +29,7 @@ export async function MenuPreview({ locale }: { locale: Locale }) {
           align="left"
         />
         <Link
-          href="/gastronomia"
+          href="/cardapio"
           className={buttonVariants({ variant: "outline", size: "sm" })}
         >
           {tc("viewAllMenu")}

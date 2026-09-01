@@ -25,7 +25,7 @@ export default async function MarketingLayout({
   // buscas ficavam aqui sem tratamento, e uma falha delas derrubava o site
   // inteiro com erro 500 — sendo que endereço, horário e reservas não vêm do
   // banco. Ver a nota em `lib/header-links.ts`.
-  const { categoryLinks, informationLinks } = await getHeaderLinks(locale);
+  const { informationLinks } = await getHeaderLinks(locale);
 
   return (
     <>
@@ -48,7 +48,7 @@ export default async function MarketingLayout({
       >
         {t("skipToContent")}
       </a>
-      <Header serviceLinks={categoryLinks} informationLinks={informationLinks} />
+      <Header informationLinks={informationLinks} />
       {/* `tabIndex={-1}` deixa o alvo receber foco por programa (o salto do
           link acima) sem entrar na ordem de tabulação. */}
       <main id="conteudo" tabIndex={-1} className="flex-1">

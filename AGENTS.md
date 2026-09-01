@@ -51,7 +51,7 @@ bugs they prevent. Follow them.
 
 ```
 src/
-  app/[locale]/(marketing)/   public site: / · /experiencia · /gastronomia ·
+  app/[locale]/(marketing)/   public site: / · /experiencia · /cardapio ·
                               /galeria · /reservas · /contato · /novidades ·
                               /privacy · /terms
   app/[locale]/admin/         login + (dashboard) session-guarded admin
@@ -66,6 +66,18 @@ prisma/                       schema.prisma + migrations + seed.ts (admin only)
                               + backups/snapshot.sql
 docs/                         ARCHITECTURE, RUNBOOK, ADRs, SEO audit, superpowers/specs
 ```
+
+⚠️ **`/gastronomia` foi removida em 31/08.** Ela era a vitrine do cardápio
+herdada do fork — uma grade de cards com foto —, e `/cardapio` a substitui com o
+cardápio digital de verdade: dias da semana, buffet e ilha de massas. Manter as
+duas seria duas páginas contando a mesma coisa de jeitos diferentes.
+
+Saiu junto **o menu suspenso de categorias do cabeçalho**, e isso é decisão, não
+esquecimento: em `/cardapio` as categorias vivem dentro das abas de dia, então
+existe uma cópia de cada por dia útil e não há âncora única para onde apontar.
+Com ele saiu a consulta que o alimentava, que era uma ida ao banco em toda
+página do site. `test/so-existe-uma-rota-de-cardapio.test.ts` guarda o estado
+final e varre as sete superfícies que a rota toca.
 
 **Routes are renamed, and the rename is three coupled edits.** The `NavKey` type
 in `config/site.ts`, the `nav` keys in `messages/pt.json` and the folder names
@@ -86,7 +98,7 @@ anchor ids) and the i18n catalog (`pt.json`) are Portuguese; Prisma models,
 file names, functions, cache tags and Storage folders stay English. This is
 why `Information`, `Testimonial`, `MenuCategory` and `GalleryPhoto` keep
 their English model names forever, even though they back `/novidades`,
-`/admin/testimonials` (label "Depoimentos"), `/gastronomia` and `/galeria`
+`/admin/testimonials` (label "Depoimentos"), `/cardapio` and `/galeria`
 respectively — renaming the models would cost a table migration, a mass
 cache invalidation and Storage folders pointing nowhere, for zero
 user-visible change. Don't "finish the job" later.
@@ -232,7 +244,7 @@ null by hardcoding a number.
   the colours from `siteConfig` and names the failing pair. There is also
   `node docs/superpowers/specs/2026-08-07-palette-contrast.mjs`, which did this
   once by hand with the hexes written inside it. The
-  brand-coloured closing card on `/`, `/experiencia` and `/gastronomia` now
+  brand-coloured closing card on `/` and `/experiencia` now
   renders from one shared component (`components/sections/closing-cta.tsx`), so
   that swap touches one place instead of three.
 - ⚠️ **The logo has not arrived either.** The mark is typographic

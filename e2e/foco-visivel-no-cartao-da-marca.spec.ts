@@ -17,7 +17,9 @@ import { expect, test } from "@playwright/test";
  * precisa de 3:1 contra o que está atrás dele.
  */
 
-const PAGINAS = ["/", "/experiencia", "/gastronomia"];
+// `/cardapio` fica de fora: ela não tem o cartão de fechamento na cor da
+// marca, que é o que este teste mede.
+const PAGINAS = ["/", "/experiencia"];
 const MINIMO = 3;
 
 function luminancia([r, g, b]: number[]): number {

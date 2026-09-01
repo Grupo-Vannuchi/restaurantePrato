@@ -42,7 +42,9 @@ function menuCategoryBlock(category: MenuCategoryView): string {
   );
   return block(
     category.name,
-    `/gastronomia#${category.slug}`,
+    // Sem âncora por categoria: em `/cardapio` elas vivem dentro das abas de
+    // dia, e cada uma existe uma vez por dia útil.
+    "/cardapio",
     category.description,
     dishes,
   );

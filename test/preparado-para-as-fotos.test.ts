@@ -46,7 +46,7 @@ describe("a primeira imagem de cada listagem", () => {
   it.each([
     ["gallery-photo-card.tsx", "galeria"],
     ["information-card.tsx", "novidades"],
-    ["menu-item-card.tsx", "gastronomia"],
+    ["menu-item-card.tsx", "vitrine da home"],
   ])("%s aceita ser marcada como prioritária", (arquivo) => {
     // Sem `priority`, `next/image` marca tudo como preguiçoso: o navegador só
     // descobre a imagem depois de baixar e aplicar o CSS. Na primeira foto de
@@ -60,7 +60,7 @@ describe("a primeira imagem de cada listagem", () => {
       "utf8",
     );
 
-  it.each(["galeria", "novidades", "gastronomia"])(
+  it.each(["galeria", "novidades"])(
     "a página de %s trata a primeira à parte, e só ela",
     (nome) => {
       const fonte = pagina(nome);
@@ -86,7 +86,7 @@ describe("a primeira imagem de cada listagem", () => {
     },
   );
 
-  it.each(["galeria", "novidades", "gastronomia"])(
+  it.each(["galeria", "novidades"])(
     "a página de %s não esconde a primeira atrás da hidratação",
     (nome) => {
       // Marcar como prioritária e deixar dentro de `Reveal` seria meia

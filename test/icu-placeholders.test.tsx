@@ -98,9 +98,6 @@ const ALLOWED: Record<string, string[]> = {
   "home.testimonials.ratingLabel": ["rating"],
   // O link de rede social do rodape, que anunciava a chave crua do objeto.
   "footer.socialLink": ["brand", "network"],
-  // O botão que abre o submenu no painel do celular. Ele tinha o mesmo nome
-  // acessível do link ao lado; agora se apresenta pelo que faz.
-  "nav.openSubmenu": ["label"],
   "experiencia.lead": ["foundedYear"],
   "novidades.imageCaption": ["title"],
   "footer.registration": ["value"],

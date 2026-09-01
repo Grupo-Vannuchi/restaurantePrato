@@ -8,15 +8,14 @@
   "nav": {
     "inicio": "Início",
     "experiencia": "A Experiência",
-    "gastronomia": "Nossa Gastronomia",
+    "cardapio": "Cardápio",
     "reservas": "Horários",
     "contato": "Contato",
     "novidades": "Novidades",
     "openMenu": "Abrir menu",
     "closeMenu": "Fechar menu",
     "skipToContent": "Pular para o conteúdo",
-    "primaryNav": "Navegação principal",
-    "openSubmenu": "Abrir submenu de {label}"
+    "primaryNav": "Navegação principal"
   },
   "common": {
     "talkToUs": "Falar com o restaurante",
@@ -46,7 +45,7 @@
       "pauseSlides": "Pausar a troca automática de slides",
       "playSlides": "Retomar a troca automática de slides"
     },
-    "gastronomia": {
+    "cardapio": {
       "eyebrow": "Nossa comida",
       "title": "Fartura, sabor e agilidade pro seu dia a dia.",
       "subtitle": "Sua pausa é sagrada. Por isso o buffet é completo, fresquinho e com bastante proteína. É o almoço de responsa no Centro, sem frescura e com muito sabor."
@@ -98,21 +97,6 @@
     "empty": "Em breve, novas fotos por aqui.",
     "photoAlt": "Foto do restaurante",
     "metaDescription": "Fotos do salão, do buffet e dos pratos do Restaurante Prato, na R. Augusto Severo, 25, Centro de Santos. Veja o ambiente antes de vir almoçar."
-  },
-  "gastronomia": {
-    "title": "Nossa Gastronomia",
-    "subtitle": "Comida de verdade, churrasco na brasa e tempero caseiro.",
-    "empty": "Em breve, o cardápio completo por aqui.",
-    "ctaTitle": "Qualidade, fartura e agilidade para a sua pausa.",
-    "ctaSubtitle": "O buffet já está servido a partir das 11h. Chegue cedo e aproveite.",
-    "ctaButton": "Ver os horários",
-    "weekOfTitle": "Pratos da semana",
-    "weekday1": "Segunda",
-    "weekday2": "Terça",
-    "weekday3": "Quarta",
-    "weekday4": "Quinta",
-    "weekday5": "Sexta",
-    "metaDescription": "Comida de verdade no Centro de Santos: buffet fresco, churrasco na brasa e o tempero de casa. Almoço de segunda a sexta, das 11h às 15h, desde 1998."
   },
   "novidades": {
     "title": "Novidades",
@@ -518,7 +502,7 @@
   "cardapio": {
     "title": "Cardápio da semana",
     "subtitle": "O que sai em cada dia, de segunda a sexta.",
-    "metaDescription": "O cardápio da semana do Restaurante Prato: buffet por quilo e ilha de massas, de segunda a sexta, no Centro de Santos.",
+    "metaDescription": "O cardápio da semana do Restaurante Prato: buffet por quilo e ilha de massas, de segunda a sexta, no Centro de Santos. Veja o que sai em cada dia.",
     "daySelectorLabel": "Escolha o dia",
     "today": "Hoje",
     "everyday": "Todos os dias",
@@ -532,6 +516,7 @@
     "weekday2": "Terça",
     "weekday3": "Quarta",
     "weekday4": "Quinta",
-    "weekday5": "Sexta"
+    "weekday5": "Sexta",
+    "weekOfTitle": "Pratos da semana"
   }
 }

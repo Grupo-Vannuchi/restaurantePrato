@@ -15,10 +15,16 @@ import { describe, expect, it } from "vitest";
  * carregam `group-focus-within:text-foreground`, ou seja, alguém pensou no
  * foco de teclado e mudou a cor do gatilho — mas o painel ficou de fora.
  *
- * **Por que um teste de código e não só de navegador.** O menu de
- * `gastronomia` só é renderizado quando existem categorias de cardápio, e hoje
- * não existe nenhuma. Um teste de navegador não o veria; este vê, porque lê a
- * fonte em vez do resultado.
+ * **Por que um teste de código e não só de navegador.** Ele varre a fonte
+ * inteira atrás do PADRÃO, não de um menu específico: qualquer painel novo que
+ * apareça no `hover` passa a ser cobrado aqui no dia em que for escrito, antes
+ * de existir rota para um teste de navegador visitar.
+ *
+ * ⚠️ A justificativa original era outra, e caducou em 31/08: o menu de
+ * categorias do cardápio só renderizava quando havia categorias cadastradas, e
+ * um teste de navegador não o veria. Aquele menu foi removido junto com a rota
+ * `/gastronomia` — as categorias passaram a viver dentro das abas de dia, e não
+ * há mais âncora para onde apontar. O teste continua valendo pela varredura.
  */
 function arquivosDeComponente(pasta: string): string[] {
   return readdirSync(pasta).flatMap((nome) => {

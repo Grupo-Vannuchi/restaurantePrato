@@ -28,7 +28,6 @@ const PAGES = [
   "/",
   "/cardapio",
   "/experiencia",
-  "/gastronomia",
   "/galeria",
   "/reservas",
   "/contato",

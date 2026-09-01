@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/logo";
 import {
@@ -12,7 +12,7 @@ import {
 import { Icon } from "@/components/ui/icon";
 import { buttonVariants } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { siteConfig, type NavKey } from "@/config/site";
+import { siteConfig } from "@/config/site";
 
 /**
  * Id do painel do celular — o botão o declara em `aria-controls`.
@@ -24,22 +24,14 @@ import { siteConfig, type NavKey } from "@/config/site";
  */
 export const PAINEL_DO_CELULAR = "menu-do-celular";
 
-export type DropdownLink = {
-  slug: string;
-  title: string;
-};
-
 export function Header({
-  serviceLinks = [],
   informationLinks = [],
 }: {
-  serviceLinks?: DropdownLink[];
   informationLinks?: InformationLink[];
 }) {
   const t = useTranslations("nav");
   const tc = useTranslations("common");
   const [open, setOpen] = useState(false);
-  const [openKey, setOpenKey] = useState<NavKey | null>(null);
   const alternadorRef = useRef<HTMLButtonElement | null>(null);
 
   /*
@@ -62,14 +54,18 @@ export function Header({
     return () => document.removeEventListener("keydown", aoTeclar);
   }, [open]);
 
-  /**
-   * Per-nav-key child links that turn an item into a dropdown. Only
-   * "Nossa Gastronomia" has children; the gallery lives inside "A Experiência"
-   * and is not a top-level menu item, per the client's navigation.
+  /*
+   * ⚠️ Não existe mais menu suspenso de categorias, e isso é decisão, não
+   * esquecimento. Ele listava as categorias do cardápio, cada uma levando a uma
+   * âncora dentro de `/gastronomia`. Em `/cardapio` as categorias vivem dentro
+   * das abas de dia — há cinco cópias de "Guarnições", uma por dia —, então não
+   * existe âncora única para onde apontar. Um menu suspenso cujos itens levam
+   * todos ao mesmo lugar é pior que nenhum.
+   *
+   * Saiu junto a canalização que o alimentava: a consulta de categorias, a prop
+   * do cabeçalho e o submenu do celular. Mecanismo que nunca pode ser ativado é
+   * peso morto, e este projeto tem guarda contra isso.
    */
-  const dropdowns: Partial<Record<NavKey, DropdownLink[]>> = {
-    gastronomia: serviceLinks,
-  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -82,47 +78,15 @@ export function Header({
           className="hidden items-center gap-8 md:flex"
           aria-label={t("primaryNav")}
         >
-          {siteConfig.nav.map((item) => {
-            const links = dropdowns[item.key] ?? [];
-
-            if (links.length === 0) {
-              return (
-                <Link
-                  key={item.key}
-                  href={item.href}
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {t(item.key)}
-                </Link>
-              );
-            }
-
-            return (
-              <div key={item.key} className="group relative">
-                <Link
-                  href={item.href}
-                  className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground group-focus-within:text-foreground"
-                >
-                  {t(item.key)}
-                  <ChevronDown className="size-4 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" />
-                </Link>
-                <div className="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                  <ul className="min-w-56 max-w-72 rounded-md border border-border bg-background p-1 shadow-lg">
-                    {links.map((link) => (
-                      <li key={link.slug}>
-                        <Link
-                          href={`${item.href}#${link.slug}`}
-                          className="block truncate rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          {link.title}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            );
-          })}
+          {siteConfig.nav.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {t(item.key)}
+            </Link>
+          ))}
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -155,76 +119,16 @@ export function Header({
           className="border-t border-border bg-background md:hidden"
         >
           <Container className="flex flex-col gap-1 py-4">
-            {siteConfig.nav.map((item) => {
-              const links = dropdowns[item.key] ?? [];
-
-              if (links.length === 0) {
-                return (
-                  <Link
-                    key={item.key}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="rounded-md px-2 py-2.5 text-base font-medium hover:bg-muted"
-                  >
-                    {t(item.key)}
-                  </Link>
-                );
-              }
-
-              const expanded = openKey === item.key;
-
-              return (
-                <div key={item.key}>
-                  <div className="flex items-center">
-                    <Link
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className="flex-1 rounded-md px-2 py-2.5 text-base font-medium hover:bg-muted"
-                    >
-                      {t(item.key)}
-                    </Link>
-                    {/* O nome não pode ser o mesmo do link ao lado: o leitor
-                        anunciava "Nossa Gastronomia, link" e logo depois
-                        "Nossa Gastronomia, botão, recolhido" — dois controles,
-                        nomes idênticos, destinos diferentes. */}
-                    <button
-                      type="button"
-                      aria-expanded={expanded}
-                      aria-controls={`submenu-${item.key}`}
-                      aria-label={t("openSubmenu", { label: t(item.key) })}
-                      onClick={() =>
-                        setOpenKey((k) => (k === item.key ? null : item.key))
-                      }
-                      className="inline-flex size-10 items-center justify-center rounded-md hover:bg-muted"
-                    >
-                      <ChevronDown
-                        className={`size-5 transition-transform ${
-                          expanded ? "rotate-180" : ""
-                        }`}
-                      />
-                    </button>
-                  </div>
-                  {expanded ? (
-                    <ul
-                      id={`submenu-${item.key}`}
-                      className="ml-2 flex flex-col gap-0.5 border-l border-border pl-2"
-                    >
-                      {links.map((link) => (
-                        <li key={link.slug}>
-                          <Link
-                            href={`${item.href}#${link.slug}`}
-                            onClick={() => setOpen(false)}
-                            className="block truncate rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                          >
-                            {link.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-              );
-            })}
+            {siteConfig.nav.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="rounded-md px-2 py-2.5 text-base font-medium hover:bg-muted"
+              >
+                {t(item.key)}
+              </Link>
+            ))}
             {informationLinks.length > 0 ? (
               <div className="mt-2 border-t border-border pt-2">
                 <p className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">

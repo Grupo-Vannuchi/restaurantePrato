@@ -52,7 +52,7 @@ How the n8x system fits together. For coding conventions see
 - **Naming convention:** these model names are deliberately English while the
   routes they back are Portuguese — `Information` serves `/novidades`,
   `Testimonial` serves `/admin/testimonials` (label "Depoimentos"),
-  `GalleryPhoto`/`MenuCategory`/`MenuItem` serve `/galeria`/`/gastronomia`.
+  `GalleryPhoto`/`MenuCategory`/`MenuItem` serve `/galeria`/`/cardapio`.
   Public surface and the i18n catalog (`pt.json`) are Portuguese; models,
   file names, functions, cache tags and Storage folders stay English. See
   `AGENTS.md` for the rationale.
