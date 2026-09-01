@@ -518,5 +518,8 @@
     "weekday4": "Quinta",
     "weekday5": "Sexta",
     "weekOfTitle": "Pratos da semana"
+  },
+  "instagram": {
+    "follow": "Seguir no Instagram"
   }
 }

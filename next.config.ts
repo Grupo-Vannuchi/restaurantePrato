@@ -113,6 +113,11 @@ const nextConfig: NextConfig = {
     // só WebP, então isto não vinha de graça.
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
+      // CDN de mídia do Instagram. Só os dois hosts que a Graph API devolve em
+      // `media_url`/`thumbnail_url` — liberar `*.fbcdn.net` inteiro abriria a
+      // otimização de imagem para qualquer conteúdo hospedado pela Meta.
+      { protocol: "https", hostname: "*.cdninstagram.com" },
+      { protocol: "https", hostname: "scontent.cdninstagram.com" },
       // Google Drive images: use the lh3.googleusercontent.com/d/<FILE_ID> form,
       // NOT the drive.google.com/file/d/<ID>/view share link.
       { protocol: "https", hostname: "lh3.googleusercontent.com" },

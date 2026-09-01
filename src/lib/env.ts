@@ -76,6 +76,43 @@ const serverSchema = z.object({
 });
 
 const clientSchema = z.object({
+  /*
+   * ───────────────────────────────────────────────────────────────────────
+   *  INSTAGRAM — Instagram API with Instagram Login
+   * ───────────────────────────────────────────────────────────────────────
+   * Sem `NEXT_PUBLIC_`, e isso é o ponto: `NEXT_PUBLIC_*` vai para o
+   * navegador, e um token de leitura publicado é um token vazado. Toda chamada
+   * à Meta acontece no servidor.
+   *
+   * Ausente = integração desligada. O site continua funcionando e a seção
+   * simplesmente não aparece — é o estado em que o Prato nasce, porque as
+   * credenciais ainda não vieram.
+   */
+  INSTAGRAM_ACCESS_TOKEN: z.string().min(1).optional(),
+  /** ID numérico da conta profissional, de `GET /me?fields=id`. */
+  INSTAGRAM_USER_ID: z.string().min(1).optional(),
+  /**
+   * Versão da Graph API. Fixada em vez de "a mais recente" porque a Meta
+   * descontinua versões em janela conhecida: subir a versão passa a ser uma
+   * mudança deliberada, com teste, e não uma quebra numa terça-feira.
+   */
+  INSTAGRAM_API_VERSION: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => value || "v25.0"),
+  /** Quantos posts exibir. Quatro cabem numa linha no desktop. */
+  INSTAGRAM_POST_LIMIT: z.coerce.number().int().min(1).max(24).default(4),
+  /**
+   * Mostra quadros vazios no lugar do feed, para conferir o layout enquanto as
+   * credenciais não existem. Só tem efeito fora de produção — **nunca** desenha
+   * post falso no site publicado.
+   */
+  INSTAGRAM_PREVIEW: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true"),
+
   NEXT_PUBLIC_SITE_URL: z
     .string()
     .url("NEXT_PUBLIC_SITE_URL must be an absolute URL")

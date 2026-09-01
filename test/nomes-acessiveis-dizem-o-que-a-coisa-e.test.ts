@@ -99,6 +99,13 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.
   "src/components/gallery-photo-card.tsx": ['photo.caption ? "" : t("photoAlt")'],
+  /*
+   * Informativo POR CONDIÇÃO: a primeira linha da legenda do post descreve a
+   * foto melhor que qualquer rótulo genérico. Sem legenda o `alt` fica vazio e
+   * a imagem vira decorativa — o link para o post já se anuncia sozinho, e um
+   * "publicação do Instagram" repetido quatro vezes seria ruído.
+   */
+  "src/components/sections/instagram-feed.tsx": ["alt"],
   // Painel. A auditoria olhou so o site publico; a mesma repeticao estava aqui.
   "src/app/[locale]/admin/(dashboard)/galeria/page.tsx": ['""'], // legenda logo abaixo
   "src/components/admin/image-upload-field.tsx": ['""'], // miniatura de previa
