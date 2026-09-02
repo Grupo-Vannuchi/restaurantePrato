@@ -18,6 +18,19 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./e2e",
+  /*
+   * Semeia o cardápio ANTES do servidor subir, e limpa no fim.
+   *
+   * ⚠️ A ordem é o ponto. No CI o `webServer` faz `npm run build`, que
+   * PRÉ-RENDERIZA `/cardapio`: se a semeadura acontecesse dentro do teste, o
+   * build já teria congelado a página com o banco vazio e a suíte exercitaria
+   * um estado vazio achando que exercitava conteúdo. `globalSetup` corre antes
+   * do `webServer`; um `beforeAll` de spec, não.
+   *
+   * A semeadura só age contra servidor local — ver `e2e/semeia-cardapio.ts`.
+   */
+  globalSetup: "./e2e/semeia-cardapio.ts",
+  globalTeardown: "./e2e/limpa-cardapio.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
