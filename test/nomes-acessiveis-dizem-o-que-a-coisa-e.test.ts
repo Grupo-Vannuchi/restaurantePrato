@@ -98,6 +98,15 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
   "src/components/cardapio/menu-hero.tsx": ['""'],
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.
+  /*
+   * Informativo: a foto da sobremesa é a única imagem da linha, e o nome ao
+   * lado dela é o próprio conteúdo — quem usa leitor de tela ouviria "imagem"
+   * e o nome duas vezes se o `alt` repetisse o rótulo genérico. Por isso ele
+   * nomeia a sobremesa: "Foto de Torta holandesa".
+   */
+  "src/components/cardapio/dessert-list.tsx": [
+    't("dishImageAlt", { name: sobremesa.name })',
+  ],
   "src/components/gallery-photo-card.tsx": ['photo.caption ? "" : t("photoAlt")'],
   /*
    * Informativo POR CONDIÇÃO: a primeira linha da legenda do post descreve a

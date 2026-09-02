@@ -6,8 +6,17 @@ import { Section, SectionHeader } from "@/components/ui/section";
 import { DayTabs } from "@/components/cardapio/day-tabs";
 import { DishRow } from "@/components/cardapio/dish-row";
 import { PriceCallout } from "@/components/cardapio/price-callout";
+import { DessertList } from "@/components/cardapio/dessert-list";
+import { DrinkList } from "@/components/cardapio/drink-list";
 import { agrupadosPorCategoria, pratosDoDia } from "@/lib/cardapio";
-import { WEEKDAYS, isWeekday, precoDaMassa, precoDoBuffet } from "@/config/menu";
+import {
+  WEEKDAYS,
+  desserts,
+  drinkGroups,
+  isWeekday,
+  precoDaMassa,
+  precoDoBuffet,
+} from "@/config/menu";
 import { weekdayNoRestaurante } from "@/lib/dates";
 import { getBuffetDishes, getPastaDishes } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
@@ -134,6 +143,38 @@ export default async function CardapioPage({
               <DishRow key={prato.id} dish={prato} />
             ))}
           </ul>
+        </Section>
+      ) : null}
+
+      {/* Sobremesas: não pertencem a um dia — saem todo dia, do mesmo balcão.
+          Some inteira enquanto a lista estiver vazia: uma vitrine de sobremesas
+          sem sobremesa nenhuma promete o que a página não tem. */}
+      {desserts.length > 0 ? (
+        <Section containerClassName="max-w-3xl">
+          <SectionHeader
+            title={t("dessertsLabel")}
+            subtitle={t("dessertsNote")}
+            align="left"
+          />
+          <DessertList />
+        </Section>
+      ) : null}
+
+      {/* Bebidas: fecha a página porque é o que se pede por último. Segunda
+          seção com preço por linha, pela mesma razão da sobremesa — nenhuma
+          das duas entra no valor por quilo. */}
+      {drinkGroups.length > 0 ? (
+        <Section
+          id="bebidas"
+          className="border-t border-border bg-muted/30"
+          containerClassName="max-w-3xl"
+        >
+          <SectionHeader
+            title={t("drinksLabel")}
+            subtitle={t("drinksNote")}
+            align="left"
+          />
+          <DrinkList />
         </Section>
       ) : null}
     </>

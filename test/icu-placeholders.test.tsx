@@ -100,6 +100,7 @@ const ALLOWED: Record<string, string[]> = {
   "footer.socialLink": ["brand", "network"],
   "experiencia.lead": ["foundedYear"],
   "novidades.imageCaption": ["title"],
+  "cardapio.dishImageAlt": ["name"],
   "footer.registration": ["value"],
   "admin.dashboard.welcome": ["name"],
   "admin.leads.removeTag": ["tag"],
