@@ -359,6 +359,119 @@ código para inspecionar, a Vercel registra o preset como *Other*, que serve
 `public/` como site estático. Por isso o `vercel.json` declara
 `"framework": "nextjs"` — o valor do arquivo tem precedência sobre o painel.
 
+## Instagram — ligar o feed da home
+
+A seção existe no código e **nasce desligada**: sem as variáveis ela não
+renderiza, e o site funciona igual. Ligar é preencher variáveis, sem tocar em
+código.
+
+### Qual API, e por quê
+
+**Instagram API with Instagram Login** (`graph.instagram.com`). A Basic Display
+API, que a maioria dos tutoriais ainda ensina, foi **descontinuada pela Meta em
+dezembro de 2024**. Das duas modalidades que restaram, esta é a que **não exige
+Página do Facebook** vinculada — a outra (`Instagram API with Facebook Login`,
+em `graph.facebook.com`) exige. O Prato quer mostrar os próprios posts; amarrar
+isso a uma Página seria uma dependência que o restaurante não tem, e mais uma
+coisa para quebrar quando alguém desvincular.
+
+Exige **conta profissional** (Business ou Creator). Conta pessoal não é
+suportada, e a conversão é gratuita, pelo app do Instagram.
+
+### Passo a passo na Meta
+
+1. **developers.facebook.com** → *My Apps* → *Create App* → caso de uso
+   **"Other"** → tipo **Business**.
+2. No painel do app, adicione o produto **Instagram** → *API setup with
+   Instagram login*.
+3. Em **Business login settings**, cadastre uma *OAuth redirect URI*.
+
+   ⚠️ **O domínio final do Prato ainda é `«PENDENTE»`.** Use por enquanto
+   `https://restaurante-prato.vercel.app/`. A URI só precisa bater com a que
+   você usar na URL de autorização, e o fluxo é feito uma vez, à mão — então
+   trocar depois é refazer o passo 4, não uma migração.
+
+4. Ainda em *API setup*, seção **Generate access tokens**: adicione a conta
+   **@restaurante.prato** e clique em *Generate token*. A Meta abre o login do
+   Instagram e devolve um **token de curta duração (1 hora)**.
+
+   Peça **apenas** `instagram_business_basic`. Publicar, comentar e responder
+   mensagem não são necessários para exibir post, e permissão a mais é
+   superfície a mais.
+
+5. **Troque por um token longo (60 dias)** — uma vez, no terminal:
+
+   ```
+   curl -s "https://graph.instagram.com/access_token   ?grant_type=ig_exchange_token   &client_secret=SEU_APP_SECRET   &access_token=TOKEN_CURTO"
+   ```
+
+   ⚠️ O **App Secret** é usado só aqui, no terminal, uma vez. Ele **não** entra
+   nas variáveis do site: o código nunca o lê, e um segredo guardado sem
+   consumidor é superfície de vazamento sem contrapartida.
+
+6. **Pegue o ID da conta** com o token longo:
+
+   ```
+   curl -s "https://graph.instagram.com/v25.0/me?fields=id,username   &access_token=TOKEN_LONGO"
+   ```
+
+### Variáveis na Vercel
+
+*Settings → Environments → Production*. **Nenhuma leva `NEXT_PUBLIC_`** — esse
+prefixo embute o valor no pacote que vai para o navegador, e um token de leitura
+publicado é um token vazado.
+
+| Variável | Valor |
+| --- | --- |
+| `INSTAGRAM_ACCESS_TOKEN` | o token longo do passo 5 |
+| `INSTAGRAM_USER_ID` | o `id` do passo 6 |
+| `INSTAGRAM_API_VERSION` | `v25.0` (opcional — é o padrão) |
+| `INSTAGRAM_POST_LIMIT` | `4` (opcional — é o padrão) |
+
+Depois de salvar, **refaça o deploy**: variável nova não entra num build já
+feito.
+
+### ⚠️ O token expira em 60 dias
+
+Este é o modo de falhar que morde meses depois, quando ninguém lembra da
+integração: o feed some sozinho e o site continua verde em tudo que se mede.
+
+Renove com o próprio token, sem App Secret e sem refazer o login:
+
+```
+curl -s "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=TOKEN_ATUAL"
+```
+
+O token só pode ser renovado **depois de 24 horas de vida** e **antes de
+expirar**. Se expirar, é refazer os passos 4 a 6.
+
+**Ponha um lembrete no calendário para 50 dias.** É a única proteção que existe
+hoje: não há renovação automática, e o site não avisa.
+
+### Conferir se funcionou
+
+Sem rota de diagnóstico neste projeto — a verificação é a própria home:
+
+1. Abra a home publicada e role até depois da galeria. Quatro quadrados devem
+   aparecer, com o botão "Seguir no Instagram" embaixo.
+2. Se a seção **não** aparecer, o motivo está nos *Runtime Logs* da Vercel: as
+   linhas começam com `[instagram]` e dizem a causa **sem expor o token**.
+   Código `190` é token inválido ou expirado; `4` e `17` são limite de
+   requisições.
+3. O feed fica em cache de dez minutos. Depois de trocar o token, espere esse
+   tempo ou refaça o deploy.
+
+### Conferir o layout sem credenciais
+
+```
+INSTAGRAM_PREVIEW=true npm run dev
+```
+
+Desenha quadros vazios no lugar dos posts, só fora de produção. Serve para
+validar espaçamento e responsividade enquanto as credenciais não chegam.
+
+---
+
 ## CSP (pending)
 
 Content-Security-Policy is **not** set yet. Adding it requires a nonce middleware
