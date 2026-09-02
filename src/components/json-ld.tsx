@@ -78,7 +78,7 @@ export function OrganizationJsonLd() {
     foundingDate: String(foundedYear),
     ...(servesCuisine?.length ? { servesCuisine } : {}),
     acceptsReservations: true,
-    menu: `${url}/gastronomia`,
+    menu: `${url}/cardapio`,
     address: {
       "@type": "PostalAddress",
       streetAddress: contact.address.street,

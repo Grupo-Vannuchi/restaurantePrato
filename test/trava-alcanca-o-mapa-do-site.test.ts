@@ -87,7 +87,18 @@ describe("com o site aberto aos buscadores", () => {
 
     // Sentinela: se a trava passar a fechar sempre, o teste acima passaria
     // vacuamente e ninguém notaria que o sitemap morreu no dia do lançamento.
-    expect((await sitemap()).length).toBeGreaterThan(5);
+    const rotas = (await sitemap()) as { url: string }[];
+    expect(rotas.length).toBeGreaterThan(5);
+
+    /*
+     * ⚠️ E as rotas certas. Com o site fechado, o mapa vem VAZIO no ambiente
+     * local — não dá para conferir a lista abrindo a página. Este é o único
+     * lugar onde ela é verificada de fato, e foi por isso que a rota antiga
+     * ficou aqui até 31/08 sem ninguém ver.
+     */
+    const caminhos = rotas.map((r) => new URL(r.url).pathname);
+    expect(caminhos).toContain("/cardapio");
+    expect(caminhos).not.toContain("/gastronomia");
   });
 
   it("o /llms.txt volta a responder", async () => {

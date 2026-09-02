@@ -52,7 +52,7 @@
   --card: #fafbf7;
   --card-foreground: #0c0c0c; /* 18,44:1 sobre o cartão */
   --muted: #f2f5eb;
-  --muted-foreground: #565c4e; /* 6,92 / 6,52 / 6,08 nas três superfícies */
+  --muted-foreground: #565c4e; /* 6,92 / 6,65 / 6,27 nas três superfícies */
 
   /* Borda decorativa de cartão: separa sem pesar. */
   --border: #dae1cc;
@@ -89,11 +89,69 @@
     font-family: var(--font-serif);
   }
 
-  /* Visible, brand-coloured focus ring for keyboard users. */
+  /*
+   * Anel de foco do teclado.
+   *
+   * ⚠️ A cor é `--foreground`, e NÃO a da marca. O contorno era `--color-brand`
+   * e o cartão de fechamento de `/` e `/experiencia` pinta o
+   * fundo com essa mesma cor: marca sobre marca dá 1,00:1. O contorno existia,
+   * e quem navega por teclado não via onde estava — em três botões de
+   * conversão. Critério WCAG 1.4.11 (nível AA) pede 3:1 contra o que está atrás.
+   *
+   * `--foreground` não é uma cor escolhida por gosto: é, por definição, a cor
+   * que contrasta com a superfície do tema. Medido contra as seis superfícies
+   * que o site tem hoje, o pior caso é 3,92:1 (sobre a marca) e o melhor
+   * 19,56:1. Um anel duplo mantendo o verde foi medido também e reprova sobre
+   * o accent (2,60:1) e sobre o verde do WhatsApp (2,51:1).
+   *
+   * Guardado por `e2e/foco-visivel-no-cartao-da-marca.spec.ts`, que mede
+   * contraste de verdade — a checagem antiga só perguntava se o contorno
+   * existia, e passava verde com o defeito no ar.
+   */
   :focus-visible {
-    outline: 2px solid var(--color-brand);
+    outline: 2px solid var(--color-foreground);
     outline-offset: 2px;
   }
+}
+
+/*
+ * Véu de legibilidade para texto sobre foto.
+ *
+ * O card de novidades põe título branco e dois botões vazados por cima de uma
+ * foto tingida com a cor da marca. Medido no pior ponto do degradê (a ponta
+ * clara, com o `hover` ainda baixando tudo), o título dava **2,15:1** contra o
+ * mínimo de 4,5 — e a foto do cliente é justamente o que faz o defeito
+ * aparecer: sem foto o card fica sobre a marca opaca e passa.
+ *
+ * ⚠️ O tingimento da marca NÃO resolve sozinho, por mais opaco que fique:
+ * branco sobre a marca cheia dá 4,98:1, e qualquer transparência derruba
+ * abaixo do mínimo. Precisa de escuro.
+ *
+ * A opacidade é CONSTANTE nas faixas onde há texto e cai a zero só no meio,
+ * onde a foto aparece. Um degradê que desvanece desde a borda pareceria mais
+ * elegante e falharia: o título quebra em duas ou três linhas e a terceira
+ * cairia justo onde o véu já é fraco demais.
+ *
+ * 45%: 5,12:1 no título e 3,96:1 na borda dos botões, no pior ponto.
+ * Guardado por `test/contraste-de-cor-translucida.test.ts`.
+ *
+ * O `color-mix` mantém a cor vindo do token em vez de repetir o hexadecimal —
+ * que é o tipo de cópia que envelhece e mente. O compilador gera junto um
+ * fallback sem `color-mix`, e ele sai OPACO: navegador antigo mostra o cartão
+ * escuro sem a foto. Fica legível e perde o enfeite, que é a direção certa
+ * para um fallback. Verificado no navegador: resolve para o token a 45%.
+ */
+.veu-de-legibilidade {
+  --veu: 45%;
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-foreground) var(--veu), transparent) 0%,
+    color-mix(in srgb, var(--color-foreground) var(--veu), transparent) 48%,
+    transparent 60%,
+    transparent 68%,
+    color-mix(in srgb, var(--color-foreground) var(--veu), transparent) 80%,
+    color-mix(in srgb, var(--color-foreground) var(--veu), transparent) 100%
+  );
 }
 
 /*
@@ -120,6 +178,14 @@
   [data-reveal][data-visible="true"] {
     opacity: 1;
     transform: none;
+    /*
+     * ⚠️ Devolve a camada de composição. `will-change` é para o instante ANTES
+     * da animação: sem esta linha, cada elemento revelado guardava uma camada
+     * própria pelo resto da vida da página, e em `/cardapio` e `/galeria`
+     * são dezenas de cards, todos já parados. Camada é memória de vídeo, e
+     * quem paga é o celular modesto de quem procura almoço no Centro.
+     */
+    will-change: auto;
   }
 }
 

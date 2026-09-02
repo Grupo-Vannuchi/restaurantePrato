@@ -95,12 +95,35 @@ function renderInline(text: string): React.ReactNode[] {
 export function RichText({
   blocks,
   className,
+  nivelAcima = 1,
 }: {
   blocks: string[];
   className?: string;
+  /**
+   * Nível do título mais profundo que a PÁGINA já colocou acima deste texto.
+   * `/novidades/[slug]` renderiza o corpo logo abaixo do `<h1>` do artigo, daí
+   * o padrão 1.
+   */
+  nivelAcima?: number;
 }) {
   const out: React.ReactNode[] = [];
   let list: string[] = [];
+
+  /*
+   * ⚠️ O nível do título vem de dado editável, e por isso é normalizado aqui.
+   *
+   * `## ` vira `<h2>` e `### ` vira `<h3>`. Se o texto cadastrado no painel
+   * começar com `### `, a página sai com h1 → h3: o leitor de tela anuncia um
+   * nível que não existe e quem navega por títulos perde a estrutura. Nada em
+   * `typecheck`, `lint` ou `build` vê isso, porque depende do conteúdo.
+   *
+   * A correção fica no renderizador, e não numa validação na hora de salvar,
+   * por um motivo prático: quem escreve é o dono do restaurante, não um editor
+   * de HTML. Recusar o texto dele por causa de um `#` a mais seria transferir
+   * um problema nosso para ele. Aqui o título desce no máximo um degrau por
+   * vez, e a página sai correta escreva ele o que escrever.
+   */
+  let ultimoNivel = nivelAcima;
 
   const flushList = () => {
     if (list.length === 0) return;
@@ -128,17 +151,25 @@ export function RichText({
     }
     flushList();
 
-    if (block.startsWith("### ")) {
+    if (block.startsWith("### ") || block.startsWith("## ")) {
+      const pedido = block.startsWith("### ") ? 3 : 2;
+      // Desce no máximo um degrau por vez. Em linha, e não num ajudante: um
+      // fechamento que reatribui a variável pode sobreviver ao render, e a
+      // regra de pureza do React proíbe — aqui o laço é código de render
+      // direto, igual ao `out.push` logo abaixo.
+      const nivel = Math.min(pedido, ultimoNivel + 1);
+      ultimoNivel = nivel;
+      const Titulo = (nivel === 3 ? "h3" : "h2") as "h2" | "h3";
+      // O peso visual acompanha o nível de fato emitido: um título que virou
+      // `h2` não pode continuar parecendo um `h3`.
+      const estilo =
+        nivel === 3
+          ? "text-xl font-semibold tracking-tight"
+          : "text-2xl font-bold tracking-tight sm:text-3xl";
       out.push(
-        <h3 key={`h3-${out.length}`} className="text-xl font-semibold tracking-tight">
-          {renderInline(block.slice(4))}
-        </h3>,
-      );
-    } else if (block.startsWith("## ")) {
-      out.push(
-        <h2 key={`h2-${out.length}`} className="text-2xl font-bold tracking-tight sm:text-3xl">
-          {renderInline(block.slice(3))}
-        </h2>,
+        <Titulo key={`h${nivel}-${out.length}`} className={estilo}>
+          {renderInline(block.slice(pedido === 3 ? 4 : 3))}
+        </Titulo>,
       );
     } else {
       out.push(

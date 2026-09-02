@@ -7,6 +7,18 @@ import { whatsappLink } from "@/config/site";
  *
  * Renders nothing until a number is configured: a floating WhatsApp badge that
  * doesn't open WhatsApp is worse than no badge at all.
+ *
+ * ⚠️ O verde é `#128C7E`, e NÃO o `#25D366` que estava aqui. O ícone branco
+ * sobre o verde-claro dava **1,98:1** — e o ícone é o conteúdo inteiro do
+ * botão, não decoração: sem ele o botão não diz o que faz. Critério WCAG 1.4.11
+ * pede 3:1 para elemento gráfico.
+ *
+ * `#128C7E` é o verde escuro da própria paleta da WhatsApp, então a correção
+ * não inventa cor nem trai a marca: com o ícone branco por cima dá 4,14:1.
+ *
+ * O anel de foco próprio (`focus-visible:ring-[#25D366]`) saiu junto: ele era
+ * da mesma cor do fundo do botão, um anel que não anela. Quem desenha o foco é
+ * `globals.css`, com o contorno em `--foreground`, que passa sobre este verde.
  */
 export async function WhatsappButton() {
   const href = whatsappLink();
@@ -22,7 +34,7 @@ export async function WhatsappButton() {
       rel="noopener noreferrer"
       aria-label={label}
       title={label}
-      className="fixed bottom-5 right-5 z-50 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2"
+      className="fixed bottom-5 right-5 z-50 flex size-14 items-center justify-center rounded-full bg-[#128C7E] text-white shadow-lg transition-transform hover:scale-105"
     >
       <svg
         viewBox="0 0 24 24"

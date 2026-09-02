@@ -27,14 +27,14 @@ export type ThemePalette = {
 export type NavKey =
   | "inicio"
   | "experiencia"
-  | "gastronomia"
+  | "cardapio"
   | "reservas"
   | "contato";
 
 export type NavItem = {
   /** Translation key under the `nav` namespace. */
   key: NavKey;
-  /** Route relative to the locale root, e.g. "/gastronomia". */
+  /** Route relative to the locale root, e.g. "/cardapio". */
   href: string;
 };
 
@@ -185,7 +185,7 @@ export const siteConfig: SiteConfig = {
   nav: [
     { key: "inicio", href: "/" },
     { key: "experiencia", href: "/experiencia" },
-    { key: "gastronomia", href: "/gastronomia" },
+    { key: "cardapio", href: "/cardapio" },
     { key: "reservas", href: "/reservas" },
     { key: "contato", href: "/contato" },
   ],
@@ -228,15 +228,15 @@ export const siteConfig: SiteConfig = {
   //
   // `accent` é o #A5C842 do cliente, intacto — mas ele é COR DE SUPERFÍCIE, não
   // de traço: 1,92:1 sobre o branco, o que o torna invisível como texto ou linha
-  // fina. Com texto quase-preto por cima dá 10,19:1, e é assim que ele aparece
+  // fina. Com texto quase-preto por cima dá 10,31:1, e é assim que ele aparece
   // (o botão `accent` já usa texto escuro). Ícone e detalhe gráfico usam
   // `brand`, que se distingue do fundo.
   //
   // Conferíveis por `test/palette-contrast.test.ts`.
   theme: {
     brand: "#607827", // 4,98 sobre o fundo · 4,80 no cartão · 4,52 no muted
-    brandForeground: "#FFFFFF", // 4,66:1 sobre o brand
-    accent: "#A5C842", // superfície: 10,19:1 com texto escuro por cima
+    brandForeground: "#FFFFFF", // 4,98:1 sobre o brand
+    accent: "#A5C842", // superfície: 10,31:1 com texto escuro por cima
     background: "#FFFFFF",
     foreground: "#0C0C0C", // 19,56:1
   },

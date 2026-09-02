@@ -94,9 +94,12 @@ const ALLOWED: Record<string, string[]> = {
   "common.callUs": ["phone"],
   "home.hero.eyebrow": ["years"],
   "home.hero.goToSlide": ["n"],
+  // A nota do depoimento, anunciada por extenso: "5/5" nao se le bem em voz alta.
+  "home.testimonials.ratingLabel": ["rating"],
+  // O link de rede social do rodape, que anunciava a chave crua do objeto.
+  "footer.socialLink": ["brand", "network"],
   "experiencia.lead": ["foundedYear"],
   "novidades.imageCaption": ["title"],
-  "novidades.regionsTitle": ["title"],
   "footer.registration": ["value"],
   "admin.dashboard.welcome": ["name"],
   "admin.leads.removeTag": ["tag"],

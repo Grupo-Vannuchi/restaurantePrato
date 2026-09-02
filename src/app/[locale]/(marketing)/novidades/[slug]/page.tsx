@@ -7,9 +7,9 @@ import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { Icon } from "@/components/ui/icon";
 import { RichText } from "@/components/rich-text";
+import { VisitBlock } from "@/components/visit-block";
 import { InformationCard } from "@/components/information-card";
 import { InformationGallery } from "@/components/information-gallery";
-import { ServiceRegions } from "@/components/service-regions";
 import { getInformationBySlug, getInformations } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata, localizedUrl, absoluteUrl } from "@/lib/seo";
@@ -183,9 +183,9 @@ export default async function InformationPage({
           </section>
         ) : null}
 
-        <ServiceRegions
-          heading={t("regionsTitle", { title: information.title })}
-        />
+        {/* Fecha o artigo com onde fica e que horas abre. Ficou vazio quando
+            a tabela falsa de "regiões que atendemos" saiu, em 27/08. */}
+        <VisitBlock />
       </Container>
     </article>
   );

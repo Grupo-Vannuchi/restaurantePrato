@@ -7,8 +7,8 @@ type Size = "sm" | "md" | "lg";
 /**
  * ⚠️ Sem `focus-visible:outline-none` aqui, e de propósito.
  *
- * `globals.css` desenha um contorno na cor da marca em `:focus-visible`, para
- * quem navega por teclado. Uma classe de utilitário apagando o contorno vence
+ * `globals.css` desenha um contorno em `:focus-visible` para quem navega por
+ * teclado. Uma classe de utilitário apagando o contorno vence
  * essa regra por precedência de camada — e o botão do site inteiro passou a
  * receber foco de forma invisível, sem nada no lugar. Critério WCAG 2.4.7.
  *

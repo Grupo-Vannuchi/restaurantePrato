@@ -45,6 +45,8 @@ export async function Hero() {
         prev: t("prevSlide"),
         next: t("nextSlide"),
         goTo: slides.map((_, i) => t("goToSlide", { n: i + 1 })),
+        pause: t("pauseSlides"),
+        play: t("playSlides"),
       }}
     />
   );

@@ -1,5 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
+import type { MenuItemKind } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { localize, localizeRich } from "@/lib/content";
 import { tags, CONTENT_REVALIDATE_SECONDS } from "@/lib/cache";
@@ -57,8 +58,27 @@ export type MenuItemView = {
   description: string;
   image: string;
   tags: string[];
-  /** 1 (segunda) a 5 (sexta); null = prato permanente. */
-  weekday: number | null;
+  /**
+   * Dias em que o prato sai: 1 (segunda) a 5 (sexta). **Lista vazia = prato
+   * permanente**, servido todos os dias — antes isso era um `null`, e o `null`
+   * exigia que cada consumidor lembrasse do caso especial.
+   */
+  weekdays: number[];
+  /** Em que seção do cardápio o prato entra. */
+  kind: MenuItemKind;
+  /** Texto longo da linha do cardápio; vazio quando não foi preenchido. */
+  descriptionLong: string;
+};
+
+/**
+ * Um prato como o cardápio digital precisa dele: com o texto longo da linha e a
+ * categoria a que pertence.
+ *
+ * A categoria vem junto porque o cardápio agrupa por ela dentro do dia — sem
+ * isso a página faria uma consulta por prato só para descobrir o nome do grupo.
+ */
+export type DishView = MenuItemView & {
+  category: { slug: string; name: string };
 };
 
 export type MenuCategoryView = {
@@ -200,7 +220,9 @@ export const getMenu = unstable_cache(
         description: localize(i.description, locale),
         image: i.image,
         tags: i.tags,
-        weekday: i.weekday,
+        weekdays: i.weekdays,
+        kind: i.kind,
+        descriptionLong: localize(i.descriptionLong, locale),
       })),
     }));
   },
@@ -208,17 +230,64 @@ export const getMenu = unstable_cache(
   { tags: [tags.menu], revalidate },
 );
 
-/** Só o que o dropdown de "Nossa Gastronomia" precisa. */
-export const getMenuCategoryLinks = unstable_cache(
-  async (locale: Locale): Promise<{ slug: string; name: string }[]> => {
-    const rows = await prisma.menuCategory.findMany({
-      where: { published: true },
-      orderBy: { order: "asc" },
-      select: { slug: true, name: true },
-    });
-    return rows.map((c) => ({ slug: c.slug, name: localize(c.name, locale) }));
+/**
+ * Mapeia uma linha de `menu_items` (com a categoria incluída) para `DishView`.
+ * Existe para as consultas do cardápio não repetirem o mesmo `localize`.
+ */
+function toDish(
+  row: {
+    id: string;
+    slug: string;
+    name: unknown;
+    description: unknown;
+    descriptionLong: unknown;
+    image: string;
+    tags: string[];
+    weekdays: number[];
+    kind: MenuItemKind;
+    category: { slug: string; name: unknown };
   },
-  ["menu", "links"],
+  locale: Locale,
+): DishView {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: localize(row.name, locale),
+    description: localize(row.description, locale),
+    descriptionLong: localize(row.descriptionLong, locale),
+    image: row.image,
+    tags: row.tags,
+    weekdays: row.weekdays,
+    kind: row.kind,
+    category: { slug: row.category.slug, name: localize(row.category.name, locale) },
+  };
+}
+
+/** Os pratos do buffet, que é o cardápio da semana. */
+export const getBuffetDishes = unstable_cache(
+  async (locale: Locale): Promise<DishView[]> => {
+    const rows = await prisma.menuItem.findMany({
+      where: { available: true, kind: "BUFFET" },
+      orderBy: [{ order: "asc" }, { slug: "asc" }],
+      include: { category: { select: { slug: true, name: true } } },
+    });
+    return rows.map((r) => toDish(r, locale));
+  },
+  ["menu", "buffet"],
+  { tags: [tags.menu], revalidate },
+);
+
+/** As massas, que têm preço próprio e não pertencem ao buffet. */
+export const getPastaDishes = unstable_cache(
+  async (locale: Locale): Promise<DishView[]> => {
+    const rows = await prisma.menuItem.findMany({
+      where: { available: true, kind: "PASTA" },
+      orderBy: [{ order: "asc" }, { slug: "asc" }],
+      include: { category: { select: { slug: true, name: true } } },
+    });
+    return rows.map((r) => toDish(r, locale));
+  },
+  ["menu", "pasta"],
   { tags: [tags.menu], revalidate },
 );
 

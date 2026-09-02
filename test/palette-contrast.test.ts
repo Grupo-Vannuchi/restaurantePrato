@@ -112,3 +112,67 @@ describe("a paleta do restaurante", () => {
     expect(comoTexto).toEqual([]);
   });
 });
+
+/**
+ * Os números escritos nos comentários precisam ser os números medidos.
+ *
+ * Três estavam defasados desde a chegada da paleta em 26/08: o `brandForeground`
+ * dizia 4,66:1 quando o valor é 4,98; o `accent` dizia 10,19 quando é 10,31; e o
+ * `muted-foreground` dizia "6,92 / 6,52 / 6,08" quando é "6,92 / 6,65 / 6,27".
+ *
+ * Nenhum deles reprovava — todos passam, e passam com folga MAIOR do que o
+ * comentário prometia. Mas comentário de contraste é o que a próxima pessoa lê
+ * antes de decidir se pode mexer numa cor, e um número defasado convida a uma
+ * decisão errada. Mesma família do "400+ páginas estáticas" e do React Compiler
+ * que nunca esteve ligado: a regra estava certa, a justificativa é que tinha
+ * inflado.
+ */
+describe("os comentários de contraste dizem o que a medição diz", () => {
+  const virgula = (n: number) => n.toFixed(2).replace(".", ",");
+
+  const site = readFileSync(join(process.cwd(), "src/config/site.ts"), "utf8");
+  const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
+
+  /** Lê um token de cor direto do CSS, para o teste não guardar cópia dele. */
+  const token = (nome: string): string => {
+    // O padrão evita classes de espaço de propósito: a barra invertida
+    // atravessa camadas de escape demais até chegar aqui, e `[^#]*` diz a
+    // mesma coisa sem depender de nenhuma.
+    const achado = css.match(new RegExp("--" + nome + ":[^#]*(#[0-9a-fA-F]{3,8})"));
+    expect(achado, `token --${nome} não encontrado em globals.css`).not.toBeNull();
+    return achado![1];
+  };
+
+  const documentados: { onde: string; texto: string; esperado: () => string }[] = [
+    {
+      onde: "src/config/site.ts · brandForeground",
+      texto: site,
+      esperado: () =>
+        `${virgula(contraste(paleta.brandForeground, paleta.brand))}:1 sobre o brand`,
+    },
+    {
+      onde: "src/config/site.ts · accent como superfície",
+      texto: site,
+      esperado: () => `${virgula(contraste(TEXTO_SOBRE_ACENTO, paleta.accent))}:1 com texto escuro`,
+    },
+    {
+      onde: "src/app/globals.css · muted-foreground",
+      texto: css,
+      esperado: () =>
+        [paleta.background, token("card"), token("muted")]
+          .map((fundo) => virgula(contraste(token("muted-foreground"), fundo)))
+          .join(" / "),
+    },
+  ];
+
+  for (const { onde, texto, esperado } of documentados) {
+    it(`${onde} anota o valor medido`, () => {
+      const valor = esperado();
+      expect(
+        texto.includes(valor),
+        `o comentário não contém "${valor}" — o número medido mudou e a ` +
+          "documentação ao lado da cor ficou para trás",
+      ).toBe(true);
+    });
+  }
+});

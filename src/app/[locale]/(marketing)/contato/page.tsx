@@ -9,8 +9,15 @@ import { Instagram } from "@/components/ui/brand-icons";
 import { PageHeader } from "@/components/page-header";
 import { Section } from "@/components/ui/section";
 import { ContactForm } from "@/components/forms/contact-form";
+import { MapEmbed } from "@/components/layout/map-embed";
 import { ReserveButton } from "@/components/reserve-button";
-import { fullAddress, phoneLink, siteConfig, whatsappLink } from "@/config/site";
+import {
+  fullAddress,
+  mapEmbedUrl,
+  phoneLink,
+  siteConfig,
+  whatsappLink,
+} from "@/config/site";
 
 export async function generateMetadata({
   params,
@@ -34,6 +41,7 @@ export default async function ContactPage({
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
   const t = await getTranslations("contact");
+  const tRodape = await getTranslations("footer");
   const { contact } = siteConfig;
 
   const whatsapp = whatsappLink();
@@ -91,6 +99,17 @@ export default async function ContactPage({
   return (
     <>
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
+
+      {/* O mapa antes do formulario: quem abre esta pagina quer saber onde fica
+          antes de escrever. Ele some do rodape aqui, para nao repetir — ver
+          `footer-map.tsx`. O titulo vem do namespace do rodape de proposito:
+          e a mesma frase, e duplica-la criaria dois lugares para manter. */}
+      <Section className="pb-0 sm:pb-0">
+        <div className="mx-auto max-w-3xl">
+          <MapEmbed src={mapEmbedUrl()} title={tRodape("mapTitle")} />
+        </div>
+      </Section>
+
       <Section>
         <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
           <ContactForm />

@@ -8,13 +8,14 @@
   "nav": {
     "inicio": "Início",
     "experiencia": "A Experiência",
-    "gastronomia": "Nossa Gastronomia",
+    "cardapio": "Cardápio",
     "reservas": "Horários",
     "contato": "Contato",
     "novidades": "Novidades",
     "openMenu": "Abrir menu",
     "closeMenu": "Fechar menu",
-    "skipToContent": "Pular para o conteúdo"
+    "skipToContent": "Pular para o conteúdo",
+    "primaryNav": "Navegação principal"
   },
   "common": {
     "talkToUs": "Falar com o restaurante",
@@ -40,9 +41,11 @@
           "title": "A sua melhor e mais saborosa pausa do dia.",
           "subtitle": "Um buffet completo, sempre quentinho, com aquele tempero caseiro inconfundível, e o autêntico churrasco na brasa fatiado na hora para recarregar a energia pro expediente."
         }
-      ]
+      ],
+      "pauseSlides": "Pausar a troca automática de slides",
+      "playSlides": "Retomar a troca automática de slides"
     },
-    "gastronomia": {
+    "cardapio": {
       "eyebrow": "Nossa comida",
       "title": "Fartura, sabor e agilidade pro seu dia a dia.",
       "subtitle": "Sua pausa é sagrada. Por isso o buffet é completo, fresquinho e com bastante proteína. É o almoço de responsa no Centro, sem frescura e com muito sabor."
@@ -55,7 +58,8 @@
     "testimonials": {
       "eyebrow": "Avaliações do Google",
       "title": "O que dizem por aqui",
-      "subtitle": "Quem experimenta, não troca."
+      "subtitle": "Quem experimenta, não troca.",
+      "ratingLabel": "Nota {rating} de 5 estrelas"
     },
     "cta": {
       "title": "11h da manhã: o buffet já está servido.",
@@ -94,21 +98,6 @@
     "photoAlt": "Foto do restaurante",
     "metaDescription": "Fotos do salão, do buffet e dos pratos do Restaurante Prato, na R. Augusto Severo, 25, Centro de Santos. Veja o ambiente antes de vir almoçar."
   },
-  "gastronomia": {
-    "title": "Nossa Gastronomia",
-    "subtitle": "Comida de verdade, churrasco na brasa e tempero caseiro.",
-    "empty": "Em breve, o cardápio completo por aqui.",
-    "ctaTitle": "Qualidade, fartura e agilidade para a sua pausa.",
-    "ctaSubtitle": "O buffet já está servido a partir das 11h. Chegue cedo e aproveite.",
-    "ctaButton": "Ver os horários",
-    "weekOfTitle": "Pratos da semana",
-    "weekday1": "Segunda",
-    "weekday2": "Terça",
-    "weekday3": "Quarta",
-    "weekday4": "Quinta",
-    "weekday5": "Sexta",
-    "metaDescription": "Comida de verdade no Centro de Santos: buffet fresco, churrasco na brasa e o tempero de casa. Almoço de segunda a sexta, das 11h às 15h, desde 1998."
-  },
   "novidades": {
     "title": "Novidades",
     "subtitle": "Novidades e informações do restaurante.",
@@ -120,10 +109,10 @@
     "nextImage": "Próxima imagem",
     "imageCaption": "Imagem ilustrativa de {title}",
     "relatedTitle": "Páginas relacionadas",
-    "regionsTitle": "Regiões que atendemos com {title}:",
-    "menuLabel": "Abrir novidades",
+    "menuLabel": "Novidades",
     "menuClose": "Fechar",
-    "metaDescription": "Avisos de funcionamento, feriados e novidades do Restaurante Prato, no Centro de Santos. Confira antes de vir almoçar, de segunda a sexta."
+    "metaDescription": "Avisos de funcionamento, feriados e novidades do Restaurante Prato, no Centro de Santos. Confira antes de vir almoçar, de segunda a sexta.",
+    "visitTitle": "Venha almoçar com a gente"
   },
   "reservas": {
     "title": "Horários",
@@ -164,7 +153,8 @@
       "submit": "Enviar mensagem",
       "submitting": "Enviando…",
       "success": "Mensagem enviada! Em breve entramos em contato.",
-      "error": "Não foi possível enviar agora. Tente novamente ou ligue para a gente."
+      "error": "Não foi possível enviar agora. Tente novamente ou ligue para a gente.",
+      "requiredLegend": "Os campos marcados com * são obrigatórios."
     },
     "metaDescription": "Onde fica e como falar com o Restaurante Prato: R. Augusto Severo, 25, Centro de Santos. Reserva pelo WhatsApp, de segunda a sexta, das 11h às 15h."
   },
@@ -183,7 +173,8 @@
     "registration": "CNPJ {value}",
     "mapTitle": "Nossa localização no mapa",
     "terms": "Termos de Uso",
-    "privacy": "Política de Privacidade"
+    "privacy": "Política de Privacidade",
+    "socialLink": "{network} de {brand}, abre em nova aba"
   },
   "notFound": {
     "title": "Página não encontrada",
@@ -350,7 +341,16 @@
       "deleteCategorySuccess": "Categoria excluída.",
       "deleteItemSuccess": "Item excluído.",
       "errorDuplicate": "Já existe um item com esse identificador na URL.",
-      "errorUnknown": "Não foi possível salvar. Tente de novo."
+      "errorUnknown": "Não foi possível salvar. Tente de novo.",
+      "itemKind": "Onde este prato entra no cardápio",
+      "itemKindHint": "Esta escolha decide o lugar do prato no cardápio. A vitrine da página inicial mostra uma seleção de todos os pratos, seja qual for a opção marcada aqui.",
+      "kindBuffet": "No buffet da semana",
+      "kindPasta": "Na ilha de massas",
+      "kindShowcase": "Fora do cardápio, só na página inicial",
+      "itemWeekdays": "Dias em que sai",
+      "itemWeekdaysHint": "Marque os dias. Nenhum marcado quer dizer que o prato sai todos os dias.",
+      "itemDescriptionLong": "Descrição no cardápio",
+      "itemDescriptionLongHint": "O texto que aparece na linha do cardápio digital. A descrição curta acima é a do card."
     },
     "galeria": {
       "title": "Galeria",
@@ -498,5 +498,28 @@
       "disconnected": "desconectada",
       "instanceDisconnected": "Instância desconectada. Conecte-a no painel de WhatsApp e tente de novo."
     }
+  },
+  "cardapio": {
+    "title": "Cardápio da semana",
+    "subtitle": "O que sai em cada dia, de segunda a sexta.",
+    "metaDescription": "O cardápio da semana do Restaurante Prato: buffet por quilo e ilha de massas, de segunda a sexta, no Centro de Santos. Veja o que sai em cada dia.",
+    "daySelectorLabel": "Escolha o dia",
+    "today": "Hoje",
+    "everyday": "Todos os dias",
+    "empty": "O cardápio da semana ainda não foi publicado.",
+    "emptyDay": "Ainda não há pratos cadastrados para este dia.",
+    "buffetLabel": "Buffet por quilo",
+    "buffetNote": "O valor é calculado pelo peso do prato que você montar, não pelo que você escolher.",
+    "pastaLabel": "Ilha de massas",
+    "pastaNote": "Preço fechado por porção, à parte do buffet.",
+    "weekday1": "Segunda",
+    "weekday2": "Terça",
+    "weekday3": "Quarta",
+    "weekday4": "Quinta",
+    "weekday5": "Sexta",
+    "weekOfTitle": "Pratos da semana"
+  },
+  "instagram": {
+    "follow": "Seguir no Instagram"
   }
 }

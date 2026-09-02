@@ -41,7 +41,10 @@ export default async function AdminGaleriaPage({
               <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
                 <Image
                   src={photo.image}
-                  alt={localize(photo.caption, locale)}
+                  // Mesma repetição do site público: a legenda aparece como
+                  // texto logo abaixo, na linha do `noCaption`. Repetir aqui faz
+                  // o leitor anunciar a mesma frase duas vezes seguidas.
+                  alt=""
                   width={400}
                   height={225}
                   className="size-full object-cover"

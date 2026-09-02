@@ -15,7 +15,7 @@ const SECTION_LABELS: Record<Locale, Record<string, string>> = {
   pt: {
     "": "Início",
     experiencia: "A Experiência",
-    gastronomia: "Nossa Gastronomia",
+    cardapio: "Cardápio",
     galeria: "Galeria",
     reservas: "Horários & Reservas",
     novidades: "Novidades",

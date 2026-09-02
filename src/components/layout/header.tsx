@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/logo";
 import {
@@ -12,84 +12,81 @@ import {
 import { Icon } from "@/components/ui/icon";
 import { buttonVariants } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { siteConfig, type NavKey } from "@/config/site";
+import { siteConfig } from "@/config/site";
 
-export type DropdownLink = {
-  slug: string;
-  title: string;
-};
+/**
+ * Id do painel do celular — o botão o declara em `aria-controls`.
+ *
+ * Exportado porque é contrato, e `test/menu-do-celular.test.tsx` se ancora
+ * nele: no jsdom não há CSS, então o `<nav>` do desktop e o do celular
+ * coexistem com o mesmo nome. No navegador só um dos dois chega à árvore de
+ * acessibilidade, porque o outro está em `display: none`.
+ */
+export const PAINEL_DO_CELULAR = "menu-do-celular";
 
 export function Header({
-  serviceLinks = [],
   informationLinks = [],
 }: {
-  serviceLinks?: DropdownLink[];
   informationLinks?: InformationLink[];
 }) {
   const t = useTranslations("nav");
   const tc = useTranslations("common");
   const [open, setOpen] = useState(false);
-  const [openKey, setOpenKey] = useState<NavKey | null>(null);
+  const alternadorRef = useRef<HTMLButtonElement | null>(null);
 
-  /**
-   * Per-nav-key child links that turn an item into a dropdown. Only
-   * "Nossa Gastronomia" has children; the gallery lives inside "A Experiência"
-   * and is not a top-level menu item, per the client's navigation.
+  /*
+   * Escape fecha o menu do celular e devolve o foco ao botão.
+   *
+   * Não é armadilha de foco, e não deve ser: o painel é uma revelação
+   * (disclosure), não um diálogo modal — ele é irmão seguinte do botão no DOM,
+   * então o Tab entra nele naturalmente. O que faltava era só a saída pelo
+   * teclado, e devolver o foco a quem abriu: fechar sem devolver deixa a pessoa
+   * no `<body>`, sem pista de onde estava.
    */
-  const dropdowns: Partial<Record<NavKey, DropdownLink[]>> = {
-    gastronomia: serviceLinks,
-  };
+  useEffect(() => {
+    if (!open) return;
+    const aoTeclar = (evento: KeyboardEvent) => {
+      if (evento.key !== "Escape") return;
+      setOpen(false);
+      alternadorRef.current?.focus();
+    };
+    document.addEventListener("keydown", aoTeclar);
+    return () => document.removeEventListener("keydown", aoTeclar);
+  }, [open]);
+
+  /*
+   * ⚠️ Não existe mais menu suspenso de categorias, e isso é decisão, não
+   * esquecimento. Ele listava as categorias do cardápio, cada uma levando a uma
+   * âncora dentro de `/gastronomia`. Em `/cardapio` as categorias vivem dentro
+   * das abas de dia — há cinco cópias de "Guarnições", uma por dia —, então não
+   * existe âncora única para onde apontar. Um menu suspenso cujos itens levam
+   * todos ao mesmo lugar é pior que nenhum.
+   *
+   * Saiu junto a canalização que o alimentava: a consulta de categorias, a prop
+   * do cabeçalho e o submenu do celular. Mecanismo que nunca pode ser ativado é
+   * peso morto, e este projeto tem guarda contra isso.
+   */
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <Container className="flex h-16 items-center justify-between">
         <Logo />
 
+        {/* O rótulo vem do catálogo: era a string crua "Primary", em inglês,
+            num site que é PT-only por decisão de projeto. */}
         <nav
           className="hidden items-center gap-8 md:flex"
-          aria-label="Primary"
+          aria-label={t("primaryNav")}
         >
-          {siteConfig.nav.map((item) => {
-            const links = dropdowns[item.key] ?? [];
-
-            if (links.length === 0) {
-              return (
-                <Link
-                  key={item.key}
-                  href={item.href}
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {t(item.key)}
-                </Link>
-              );
-            }
-
-            return (
-              <div key={item.key} className="group relative">
-                <Link
-                  href={item.href}
-                  className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground group-focus-within:text-foreground"
-                >
-                  {t(item.key)}
-                  <ChevronDown className="size-4 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" />
-                </Link>
-                <div className="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                  <ul className="min-w-56 max-w-72 rounded-md border border-border bg-background p-1 shadow-lg">
-                    {links.map((link) => (
-                      <li key={link.slug}>
-                        <Link
-                          href={`${item.href}#${link.slug}`}
-                          className="block truncate rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          {link.title}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            );
-          })}
+          {siteConfig.nav.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {t(item.key)}
+            </Link>
+          ))}
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -101,8 +98,10 @@ export function Header({
 
         <button
           type="button"
+          ref={alternadorRef}
           className="inline-flex size-10 items-center justify-center rounded-md md:hidden"
           aria-expanded={open}
+          aria-controls={PAINEL_DO_CELULAR}
           aria-label={open ? t("closeMenu") : t("openMenu")}
           onClick={() => setOpen((v) => !v)}
         >
@@ -111,70 +110,25 @@ export function Header({
       </Container>
 
       {open ? (
-        <div className="border-t border-border bg-background md:hidden">
+        /* `<nav>`, e não `<div>`: no desktop existe um marco de navegação e no
+           celular eram `<Link>` soltos. Quem navega por marcos perdia a
+           navegação inteira justamente no aparelho por onde a maioria chega. */
+        <nav
+          id={PAINEL_DO_CELULAR}
+          aria-label={t("primaryNav")}
+          className="border-t border-border bg-background md:hidden"
+        >
           <Container className="flex flex-col gap-1 py-4">
-            {siteConfig.nav.map((item) => {
-              const links = dropdowns[item.key] ?? [];
-
-              if (links.length === 0) {
-                return (
-                  <Link
-                    key={item.key}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="rounded-md px-2 py-2.5 text-base font-medium hover:bg-muted"
-                  >
-                    {t(item.key)}
-                  </Link>
-                );
-              }
-
-              const expanded = openKey === item.key;
-
-              return (
-                <div key={item.key}>
-                  <div className="flex items-center">
-                    <Link
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className="flex-1 rounded-md px-2 py-2.5 text-base font-medium hover:bg-muted"
-                    >
-                      {t(item.key)}
-                    </Link>
-                    <button
-                      type="button"
-                      aria-expanded={expanded}
-                      aria-label={t(item.key)}
-                      onClick={() =>
-                        setOpenKey((k) => (k === item.key ? null : item.key))
-                      }
-                      className="inline-flex size-10 items-center justify-center rounded-md hover:bg-muted"
-                    >
-                      <ChevronDown
-                        className={`size-5 transition-transform ${
-                          expanded ? "rotate-180" : ""
-                        }`}
-                      />
-                    </button>
-                  </div>
-                  {expanded ? (
-                    <ul className="ml-2 flex flex-col gap-0.5 border-l border-border pl-2">
-                      {links.map((link) => (
-                        <li key={link.slug}>
-                          <Link
-                            href={`${item.href}#${link.slug}`}
-                            onClick={() => setOpen(false)}
-                            className="block truncate rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                          >
-                            {link.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-              );
-            })}
+            {siteConfig.nav.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="rounded-md px-2 py-2.5 text-base font-medium hover:bg-muted"
+              >
+                {t(item.key)}
+              </Link>
+            ))}
             {informationLinks.length > 0 ? (
               <div className="mt-2 border-t border-border pt-2">
                 <p className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -207,7 +161,7 @@ export function Header({
               </Link>
             </div>
           </Container>
-        </div>
+        </nav>
       ) : null}
     </header>
   );

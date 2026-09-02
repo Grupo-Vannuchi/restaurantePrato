@@ -133,7 +133,9 @@ export function InformationGallery({
             <div className="relative aspect-[3/2] max-h-[80vh] w-full overflow-hidden rounded-lg bg-white">
               <Image
                 src={current.image}
-                alt={current.title}
+                // Decorativo: a `<figcaption>` abaixo descreve a imagem, e o
+                // título já é o nome do próprio diálogo.
+                alt=""
                 fill
                 sizes="90vw"
                 className="object-contain"

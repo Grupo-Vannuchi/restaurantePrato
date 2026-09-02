@@ -58,7 +58,11 @@ describe("ContactForm", () => {
       }),
       "pt",
     );
-    expect(await screen.findByRole("status")).toBeInTheDocument();
+    // O painel de confirmação, e não `getByRole("status")`: a região viva
+    // agora existe DESDE SEMPRE, vazia, então perguntar por ela passaria verde
+    // mesmo se o sucesso nunca aparecesse. Ver
+    // `formulario-publico-anuncia-o-resultado.test.tsx`.
+    expect(await screen.findByTestId("confirmacao-de-envio")).toBeInTheDocument();
   });
 
   /**
@@ -91,7 +95,10 @@ describe("ContactForm", () => {
     await user.click(screen.getByRole("button"));
 
     expect(await screen.findByRole("alert")).toBeInTheDocument();
-    expect(screen.queryByRole("status")).toBeNull();
+    // A região viva continua no DOM (é o desenho), mas calada — e nenhuma
+    // confirmação de envio aparece.
+    expect(screen.getByRole("status")).toHaveTextContent("");
+    expect(screen.queryByTestId("confirmacao-de-envio")).toBeNull();
   });
 
   it("continua avisando quando a acao responde que nao deu", async () => {

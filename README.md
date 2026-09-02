@@ -4,7 +4,7 @@
 
 Site institucional do **Restaurante Prato**, restaurante de almoço no Centro de
 Santos/SP, construído com Next.js 16 (App Router), TypeScript, Tailwind CSS v4,
-Prisma e PostgreSQL: hero, a experiência da casa, a gastronomia, galeria,
+Prisma e PostgreSQL: hero, a experiência da casa, o cardápio, galeria,
 horários & reservas, contato, avaliações — mais um admin autenticado.
 
 O projeto é um **fork do site pronto de outro restaurante**, re-skinado para o
@@ -53,7 +53,7 @@ editável pelo admin.
 src/
   app/
     [locale]/
-      (marketing)/        # público: home, experiencia, gastronomia, galeria,
+      (marketing)/        # público: home, experiencia, cardapio, galeria,
                           #          reservas, contato, informations, privacy, terms
       admin/
         login/            # public login screen

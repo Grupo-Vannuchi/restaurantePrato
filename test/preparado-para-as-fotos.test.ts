@@ -46,7 +46,7 @@ describe("a primeira imagem de cada listagem", () => {
   it.each([
     ["gallery-photo-card.tsx", "galeria"],
     ["information-card.tsx", "novidades"],
-    ["menu-item-card.tsx", "gastronomia"],
+    ["menu-item-card.tsx", "vitrine da home"],
   ])("%s aceita ser marcada como prioritária", (arquivo) => {
     // Sem `priority`, `next/image` marca tudo como preguiçoso: o navegador só
     // descobre a imagem depois de baixar e aplicar o CSS. Na primeira foto de
@@ -60,18 +60,33 @@ describe("a primeira imagem de cada listagem", () => {
       "utf8",
     );
 
-  it.each(["galeria", "novidades", "gastronomia"])(
+  it.each(["galeria", "novidades"])(
     "a página de %s trata a primeira à parte, e só ela",
     (nome) => {
       const fonte = pagina(nome);
       // A primeira sai da revelação E ganha prioridade. O `i === 0` é o que
       // garante "só a primeira": marcar todas faria as fotos disputarem banda.
       expect(fonte).toMatch(/i === 0 \? \(/);
-      expect(fonte).toMatch(/priority\s*\/?>/);
+      // `priority` em qualquer posição da tag, e não como último atributo: o
+      // padrão antigo (`priority\s*\/?>`) quebrou em 31/08 quando o card de
+      // novidades ganhou um `headingLevel` depois dele. A guarda cobra que a
+      // prioridade EXISTA, não a ordem em que foi escrita.
+      expect(fonte).toMatch(/\bpriority\b/);
+      // E que seja só uma: marcar todas faria as fotos disputarem banda.
+      //
+      // ⚠️ Sem comentários na contagem: `galeria/page.tsx` explica a decisão
+      // numa linha logo acima da tag, e a primeira versão desta contagem achou
+      // dois. É a quinta guarda deste projeto a tropeçar na própria
+      // documentação — comentário descreve o padrão, código é que o aplica.
+      const codigo = fonte
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
+        .replace(/\/\/.*$/gm, "");
+      expect(codigo.match(/\bpriority\b/g)).toHaveLength(1);
     },
   );
 
-  it.each(["galeria", "novidades", "gastronomia"])(
+  it.each(["galeria", "novidades"])(
     "a página de %s não esconde a primeira atrás da hidratação",
     (nome) => {
       // Marcar como prioritária e deixar dentro de `Reveal` seria meia
