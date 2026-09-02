@@ -18,6 +18,51 @@ const upstashConfigured = Boolean(
   env.KV_REST_API_URL && env.KV_REST_API_TOKEN,
 );
 
+/**
+ * A mensagem de aviso quando o freio está fraco — ou `null` quando não está.
+ *
+ * ⚠️ **A degradação era silenciosa, e silêncio aqui imita proteção.** Sem
+ * Upstash o limitador cai para uma janela em MEMÓRIA, por instância. Em
+ * desenvolvimento isso basta: há uma instância só, e ela vive enquanto o
+ * servidor viver.
+ *
+ * Em produção na Vercel é outra coisa. Cada requisição pode cair numa instância
+ * diferente, e elas são recicladas o tempo todo — cada uma começando com o
+ * contador zerado. O freio existe no código e quase não existe na prática.
+ *
+ * É o padrão que o AGENTS.md proíbe: falhar em silêncio de um jeito que imite
+ * um resultado diferente. A ausência de proteção tinha a mesma aparência da
+ * proteção funcionando, no build, nos testes e na tela.
+ *
+ * Função pura para ser exercitável nos quatro cruzamentos. Lendo `env` direto,
+ * o teste só conseguiria exercitar o ambiente em que ele mesmo roda.
+ */
+export function avisoDeFreioFraco({
+  configurado,
+  producao,
+}: {
+  configurado: boolean;
+  producao: boolean;
+}): string | null {
+  if (configurado || !producao) return null;
+  return (
+    "[rate-limit] Upstash não está configurado: o freio por IP está usando uma " +
+    "janela em memória, por instância. Na Vercel cada instância tem o próprio " +
+    "contador e elas são recicladas, então a proteção é quase nula. " +
+    "Provisione o Upstash — os passos estão em docs/RUNBOOK.md."
+  );
+}
+
+/*
+ * Avisa UMA vez, na carga do módulo. Não dentro do limitador: ali sairia a cada
+ * envio de formulário, e registro repetido treina quem lê a ignorá-lo.
+ */
+const aviso = avisoDeFreioFraco({
+  configurado: upstashConfigured,
+  producao: process.env.NODE_ENV === "production",
+});
+if (aviso) console.warn(aviso);
+
 let redis: Redis | null = null;
 const limiters = new Map<string, Ratelimit>();
 

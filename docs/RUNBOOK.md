@@ -96,6 +96,21 @@ Admin → `Contatos → Instâncias do WhatsApp` (`/admin/leads/whatsapp`):
 - Limits (per IP, sliding window): `submitContactLead` (the contact form) 5/min.
   Adjust in `src/lib/rate-limit.ts` call sites. The limiter **fails open**.
 
+⚠️ **O que acontece se você NÃO provisionar, em produção.** O freio cai para uma
+janela em memória, por instância. Na Vercel cada requisição pode cair numa
+instância diferente, e elas são recicladas o tempo todo — cada uma começa com o
+contador zerado. Ou seja: **o freio existe no código e quase não existe na
+prática**, e quem quisesse inundar o formulário de contato conseguiria.
+
+Isso degradava em silêncio até 02/09. Agora o servidor registra, uma vez na
+carga do módulo, uma linha começando com `[rate-limit]` explicando o estado e
+apontando para cá. Procure por ela nos *Runtime Logs* da Vercel: se ela estiver
+lá, a proteção do formulário não é o que parece.
+
+O aviso sai **só em produção**. Localmente a memória basta — há uma instância só
+e ela vive enquanto o servidor viver —, e avisar a cada `npm run dev` treinaria
+quem lê a ignorar o aviso.
+
 ## Deploy
 
 1. Merge `Development → main`. Vercel builds from `main` (region `gru1`):
