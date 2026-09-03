@@ -66,10 +66,23 @@ export function MenuHero({ photo = FOTO_DE_FUNDO }: { photo?: string } = {}) {
       )}
 
       {/* Véu de leitura. Claro nos dois casos: o texto é escuro, e com foto ele
-          continua sendo — mesmo tratamento do topo da home. */}
+          continua sendo — mesmo tratamento do topo da home.
+
+          ⚠️ **Os números vieram de medição, não de gosto.** Enquanto não havia
+          foto, o véu cobria um degradê claro da marca e qualquer opacidade
+          servia. Com a foto do churrasco, que é escura, o `via-background/85`
+          original punha a linha do horário em 4,27:1 no desktop e 4,13:1 no
+          celular — abaixo dos 4,5:1 da WCAG AA nas DUAS larguras. Nada
+          acusava: a página desenhava e o teste de paleta seguia verde, porque
+          ele mede pares de token e não o pixel composto sobre uma fotografia.
+
+          `via/90 to/82` mede 5,15:1 e 5,08:1. Foi escolhido por ser o mais
+          fraco dos que passam com folga: reforçar mais apagaria a foto sem
+          ganhar legibilidade que já existe. Ao mexer aqui, medir de novo —
+          `e2e/o-texto-sobre-a-foto-continua-legivel.spec.ts` cobre esta página. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background/70"
+        className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background/82"
       />
 
       <Container className="relative flex flex-col items-center gap-4 py-12 text-center sm:py-16">

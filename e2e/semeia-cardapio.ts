@@ -16,6 +16,22 @@ import { PrismaClient } from "@prisma/client";
  *
  * A limpeza apaga por PREFIXO, nunca `deleteMany({})`: o banco local pode ter o
  * cardápio que alguém cadastrou à mão para conferir outra coisa.
+ *
+ * ⚠️ **Os nomes precisam ser impossíveis de confundir com comida de verdade, e
+ * isso não é preciosismo.** As fixtures nasceram chamadas "Arroz branco",
+ * "Peixe grelhado", "Talharim" e a categoria "Carnes", num banco vazio, onde
+ * nada podia colidir. Em 03/09 o cardápio real entrou com 82 pratos e três
+ * delas viraram ambíguas de uma vez: "Peixe grelhado" existe na segunda-feira,
+ * o que derrubou a asserção de que ele só sai na sexta; "Talharim" existe como
+ * formato da ilha e como "Talharim com brócolis" na quarta; e "Carnes" passou a
+ * render dois títulos iguais na mesma aba.
+ *
+ * Nenhuma das três era defeito do site. Eram fixtures escolhidas com nome de
+ * prato, num mundo onde prato de verdade ainda não existia.
+ *
+ * Por isso o nome agora diz o PAPEL da fixture no teste, e não um prato. Além
+ * de não colidir, ele explica a asserção para quem for depurar: "prato de
+ * segunda e quinta" some da aba de terça porque é o que o nome promete.
  */
 const alvo = process.env.E2E_BASE_URL ?? "http://localhost:3000";
 
@@ -27,19 +43,32 @@ export const rodaContraLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.te
 export const PREFIXO = "e2e-cardapio-";
 
 export const CATEGORIAS = [
-  { slug: `${PREFIXO}carnes`, nome: "Carnes" },
-  { slug: `${PREFIXO}guarnicoes`, nome: "Guarnições" },
+  { slug: `${PREFIXO}categoria-a`, nome: "Teste E2E · categoria A" },
+  { slug: `${PREFIXO}categoria-b`, nome: "Teste E2E · categoria B" },
 ];
 
+/**
+ * Os nomes das fixtures, exportados para o spec não os repetir por escrito.
+ * Repetidos, um renomear aqui deixaria o teste procurando um prato que já não
+ * existe — e ele falharia com "elemento não encontrado", que manda quem depura
+ * para o lugar errado.
+ */
+export const NOMES = {
+  permanente: "Teste E2E · prato permanente",
+  segundaEQuinta: "Teste E2E · prato de segunda e quinta",
+  sexta: "Teste E2E · prato de sexta",
+  massa: "Teste E2E · massa da ilha",
+} as const;
+
 export const PRATOS = [
-  /** Sem dia marcado: sai em todas as abas. */
-  { slug: `${PREFIXO}arroz`, nome: "Arroz branco", cat: 1, dias: [] as number[], kind: "BUFFET" as const },
-  /** Só segunda e quinta. */
-  { slug: `${PREFIXO}assado`, nome: "Assado de panela", cat: 0, dias: [1, 4], kind: "BUFFET" as const },
-  /** Só sexta. */
-  { slug: `${PREFIXO}peixe`, nome: "Peixe grelhado", cat: 0, dias: [5], kind: "BUFFET" as const },
-  /** Seção própria, com preço à parte. */
-  { slug: `${PREFIXO}talharim`, nome: "Talharim", cat: 1, dias: [], kind: "PASTA" as const },
+  /** Sem dia marcado: tem de sair em todas as abas. */
+  { slug: `${PREFIXO}permanente`, nome: NOMES.permanente, cat: 1, dias: [] as number[], kind: "BUFFET" as const },
+  /** Só segunda e quinta: prova que a aba filtra. */
+  { slug: `${PREFIXO}seg-qui`, nome: NOMES.segundaEQuinta, cat: 0, dias: [1, 4], kind: "BUFFET" as const },
+  /** Só sexta: o par do de cima, para a troca de aba ser verificável nos dois sentidos. */
+  { slug: `${PREFIXO}sexta`, nome: NOMES.sexta, cat: 0, dias: [5], kind: "BUFFET" as const },
+  /** Seção própria, com preço à parte: não pode aparecer dentro de aba de dia. */
+  { slug: `${PREFIXO}massa`, nome: NOMES.massa, cat: 1, dias: [], kind: "PASTA" as const },
 ];
 
 export default async function semear() {

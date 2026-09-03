@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { rodaContraLocal } from "./semeia-cardapio";
+import { NOMES, rodaContraLocal } from "./semeia-cardapio";
 
 /**
  * O cardápio no navegador, com pratos de verdade no banco.
@@ -21,11 +21,11 @@ import { rodaContraLocal } from "./semeia-cardapio";
  * verificação é código, não comentário: apontar a suíte para o site publicado e
  * semear cardápio escreveria no Supabase de produção.
  *
- * ⚠️ **Localmente, com um servidor já quente, os dados podem não aparecer.** As
- * consultas do cardápio passam por `unstable_cache`, e semear pelo Prisma não
- * invalida a etiqueta como uma edição pelo painel invalidaria. Foi assim que a
- * primeira execução deste spec falhou. O primeiro teste abaixo reconhece esse
- * caso e diz o que fazer, em vez de acusar "elemento não encontrado".
+ * ⚠️ **As fixtures convivem com o cardápio real desde 03/09.** Localmente o
+ * banco tem 82 pratos de verdade; no CI, nenhum. Por isso os nomes semeados
+ * dizem o PAPEL da fixture e não um prato — ver a explicação em
+ * `semeia-cardapio.ts`. Buscar por nome de comida aqui voltaria a colidir na
+ * primeira vez que o restaurante servisse aquele prato.
  */
 test.describe.configure({ mode: "serial" });
 
@@ -34,22 +34,34 @@ test.skip(
   "este spec escreve no banco: só roda contra servidor local, nunca contra o site publicado",
 );
 
+/**
+ * A mensagem do caso que mais confunde quem depura: o servidor já estava de pé
+ * quando a semeadura rodou, então as consultas do cardápio servem a versão
+ * anterior de `unstable_cache` — semear pelo Prisma não invalida a etiqueta
+ * como uma edição pelo painel invalidaria.
+ *
+ * ⚠️ Este diagnóstico **olhava para a existência de abas**, e parou de
+ * funcionar em 03/09. Com o banco vazio, cache velho significava zero abas e a
+ * checagem acertava. Com 82 pratos reais, há abas de qualquer jeito: o cache
+ * velho passou a se manifestar apenas na ausência das FIXTURES, e o teste
+ * falhava com "elemento não encontrado" — que manda quem lê para o lugar
+ * errado. Agora ele pergunta pela fixture, que é o que o cache esconde.
+ */
+const DICA_DE_CACHE =
+  "O prato semeado não apareceu. Se o servidor já estava rodando antes da " +
+  "semeadura, ele está servindo o cardápio anterior do cache: reinicie-o. " +
+  "(O `globalSetup` semeia antes do servidor subir, e é assim que o CI roda.)";
+
 test("a página mostra o cardápio, agrupado por categoria", async ({ page }) => {
   await page.goto("/cardapio", { waitUntil: "networkidle" });
 
-  // Diagnóstico antes da asserção: sem abas, a causa quase certa é cache velho,
-  // e "elemento não encontrado" manda quem for depurar para o lugar errado.
-  const temAbas = (await page.getByRole("tablist").count()) > 0;
-  expect(
-    temAbas,
-    "A página veio sem abas. Se o servidor já estava rodando antes da semeadura, " +
-      "ele está servindo o cardápio vazio do cache: reinicie-o (o `globalSetup` " +
-      "semeia antes do servidor subir, e é assim que o CI roda).",
-  ).toBe(true);
-
   await expect(page.getByRole("tablist")).toBeVisible();
-  // O prato permanente aparece em qualquer aba que esteja aberta.
-  await expect(page.getByRole("tabpanel").getByText("Arroz branco")).toBeVisible();
+
+  // Diagnóstico antes da asserção: a causa quase certa de a fixture sumir é
+  // cache velho, e a mensagem padrão não diz isso.
+  const permanente = page.getByRole("tabpanel").getByText(NOMES.permanente);
+  expect(await permanente.count(), DICA_DE_CACHE).toBeGreaterThan(0);
+  await expect(permanente).toBeVisible();
 });
 
 test("não pula nível de título com conteúdo na tela", async ({ page }) => {
@@ -81,15 +93,15 @@ test("a aba escolhida troca os pratos do dia", async ({ page }) => {
 
   const painel = page.getByRole("tabpanel");
   await page.getByRole("tab").nth(0).click(); // segunda
-  await expect(painel.getByText("Assado de panela")).toBeVisible();
-  await expect(painel.getByText("Peixe grelhado")).toBeHidden();
+  await expect(painel.getByText(NOMES.segundaEQuinta)).toBeVisible();
+  await expect(painel.getByText(NOMES.sexta)).toBeHidden();
 
   await page.getByRole("tab").nth(4).click(); // sexta
-  await expect(painel.getByText("Peixe grelhado")).toBeVisible();
-  await expect(painel.getByText("Assado de panela")).toBeHidden();
+  await expect(painel.getByText(NOMES.sexta)).toBeVisible();
+  await expect(painel.getByText(NOMES.segundaEQuinta)).toBeHidden();
 
   // E o permanente segue nas duas.
-  await expect(painel.getByText("Arroz branco")).toBeVisible();
+  await expect(painel.getByText(NOMES.permanente)).toBeVisible();
 });
 
 test("as setas do teclado andam entre as abas, no navegador de verdade", async ({ page }) => {
@@ -103,12 +115,12 @@ test("as setas do teclado andam entre as abas, no navegador de verdade", async (
   await expect(page.getByRole("tab").nth(1)).toHaveAttribute("aria-selected", "true");
 });
 
-test("a ilha de massas aparece em seção própria, fora das abas", async ({ page }) => {
-  // Preço diferente, seção diferente. Se o talharim aparecesse dentro de uma
-  // aba de dia, quem lê na mesa concluiria que ele entra no preço do buffet.
+test("a massa da ilha aparece em seção própria, fora das abas", async ({ page }) => {
+  // Preço diferente, seção diferente. Se ela aparecesse dentro de uma aba de
+  // dia, quem lê na mesa concluiria que entra no preço do buffet.
   await page.goto("/cardapio", { waitUntil: "networkidle" });
   const massas = page.locator("#massas");
   await expect(massas).toBeVisible();
-  await expect(massas.getByText("Talharim")).toBeVisible();
-  await expect(page.getByRole("tabpanel").getByText("Talharim")).toBeHidden();
+  await expect(massas.getByText(NOMES.massa)).toBeVisible();
+  await expect(page.getByRole("tabpanel").getByText(NOMES.massa)).toBeHidden();
 });

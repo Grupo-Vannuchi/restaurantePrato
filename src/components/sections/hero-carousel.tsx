@@ -158,8 +158,23 @@ export function HeroCarousel({
                   className="absolute inset-0 bg-[radial-gradient(120%_100%_at_80%_20%,var(--color-accent)_0%,transparent_55%),radial-gradient(90%_90%_at_20%_90%,var(--color-brand)_0%,transparent_60%)] opacity-30"
                 />
               )}
-              {/* Readability overlay — strong on the left where the text sits. */}
-              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/30" />
+              {/* Véu de leitura.
+                  ⚠️ **Ele precisa de dois desenhos, e o motivo é geométrico.**
+                  No desktop o texto ocupa a metade esquerda, então um degradê
+                  HORIZONTAL cobre onde ele está e deixa a foto aparecer à
+                  direita. No celular o mesmo bloco atravessa a largura toda e
+                  entra na ponta translúcida: com a foto que chegou em 03/09, o
+                  subtítulo caiu para 1,20:1, contra o mínimo de 4,5:1.
+
+                  Nada acusava. A página desenhava, o teste de paleta seguia
+                  verde porque mede tokens e não pixels, e a versão de desktop
+                  media 4,68:1 — o defeito existia só na largura em que ninguém
+                  estava olhando. `e2e/o-texto-sobre-a-foto-continua-legivel.spec.ts`
+                  roda nos dois tamanhos por isso.
+
+                  Abaixo de `sm`, então, véu chapado e forte; de `sm` para cima,
+                  o degradê que preserva a foto. */}
+              <div className="absolute inset-0 bg-background/90 sm:bg-transparent sm:bg-gradient-to-r sm:from-background sm:via-background/80 sm:to-background/30" />
 
               <Container className="relative flex h-full max-w-none flex-col items-start justify-center gap-6 text-left">
                 <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur">
