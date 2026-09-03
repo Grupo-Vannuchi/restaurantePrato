@@ -27,7 +27,7 @@ const COM_PRECO = [
 describe("o passo a passo da ilha de massas", () => {
   it("aparece mesmo sem nenhuma massa cadastrada no banco", () => {
     // O ponto da mudança: o conteúdo vem do cardápio da casa, não do banco.
-    renderWithIntl(<PastaBuilder extras={[]} />);
+    renderWithIntl(<PastaBuilder extras={[]} photos={[]} />);
 
     expect(screen.getByText(pastaChoices.shapes[0]!)).toBeInTheDocument();
     expect(
@@ -36,7 +36,7 @@ describe("o passo a passo da ilha de massas", () => {
   });
 
   it("lista todos os formatos e todos os molhos", () => {
-    renderWithIntl(<PastaBuilder extras={[]} />);
+    renderWithIntl(<PastaBuilder extras={[]} photos={[]} />);
 
     for (const forma of pastaChoices.shapes) {
       expect(screen.getByText(forma)).toBeInTheDocument();
@@ -56,7 +56,7 @@ describe("o passo a passo da ilha de massas", () => {
      * lista; o de ingredientes rende um parágrafo. Se alguém "completar" a seção
      * com os nomes, nasce uma quarta lista e este teste cai.
      */
-    renderWithIntl(<PastaBuilder extras={[]} />);
+    renderWithIntl(<PastaBuilder extras={[]} photos={[]} />);
 
     const passos = screen.getAllByRole("listitem");
     const comLista = passos.filter((p) => within(p).queryAllByRole("list").length > 0);
@@ -68,12 +68,41 @@ describe("o passo a passo da ilha de massas", () => {
   it("mantém a ordem em que o cliente escolhe, de pé na frente do cozinheiro", () => {
     // A ordem é a informação: massa, depois preparo, depois molho, depois os
     // ingredientes. Embaralhada, a seção deixa de descrever o serviço.
-    const { container } = renderWithIntl(<PastaBuilder extras={[]} />);
+    const { container } = renderWithIntl(<PastaBuilder extras={[]} photos={[]} />);
     const titulos = [...container.querySelectorAll("h4")].map((h) =>
       (h.textContent ?? "").replace(/^\d+/, "").trim(),
     );
 
     expect(titulos).toEqual(["Escolha a massa", "Escolha o preparo", "Escolha o molho", "Escolha os ingredientes"]);
+  });
+});
+
+describe("as fotos da ilha", () => {
+  const FOTOS = [
+    { photo: "/massas/fettuccine-ao-pesto.webp", name: "Fettuccine ao pesto" },
+    { photo: "/massas/nhoque-ao-sugo.webp", name: "Nhoque ao sugo" },
+  ];
+
+  it("cada foto tem texto alternativo que a distingue das outras", () => {
+    /*
+     * Três fotos de massa lidas como "Foto do prato, Foto do prato, Foto do
+     * prato" descrevem uma massa só repetida. O nome é o que separa uma da
+     * outra para quem usa leitor de tela, e é o mesmo motivo pelo qual as
+     * fotos escolhidas são de massas visivelmente diferentes entre si.
+     */
+    renderWithIntl(<PastaBuilder extras={[]} photos={FOTOS} />);
+
+    const alts = screen.getAllByRole("img").map((i) => i.getAttribute("alt"));
+    expect(alts).toHaveLength(2);
+    expect(new Set(alts).size).toBe(2);
+    expect(alts[0]).toMatch(/Fettuccine ao pesto/);
+  });
+
+  it("sem foto, a seção não reserva espaço vazio", () => {
+    // O estado em que a seção nasceu, e que volta se alguém apagar os arquivos.
+    renderWithIntl(<PastaBuilder extras={[]} photos={[]} />);
+
+    expect(screen.queryAllByRole("img")).toHaveLength(0);
   });
 });
 
@@ -85,7 +114,7 @@ describe("os adicionais da ilha", () => {
      * incluso, e o cliente descobre o contrário na conta. Mesma decisão das
      * sobremesas: fora da lista, não dentro com zero.
      */
-    renderWithIntl(<PastaBuilder extras={[]} />);
+    renderWithIntl(<PastaBuilder extras={[]} photos={[]} />);
 
     expect(screen.queryByText("Adicionais")).not.toBeInTheDocument();
     expect(screen.queryByText("Filé de frango")).not.toBeInTheDocument();
@@ -94,7 +123,7 @@ describe("os adicionais da ilha", () => {
   it("aparecem com o preço na linha quando os valores existirem", () => {
     // O caminho que ainda não existe em produção. Sem este teste ele estrearia
     // sem nunca ter rodado.
-    renderWithIntl(<PastaBuilder extras={COM_PRECO} />);
+    renderWithIntl(<PastaBuilder extras={COM_PRECO} photos={[]} />);
 
     expect(screen.getByText("Adicionais")).toBeInTheDocument();
     expect(screen.getByText("Filé de frango")).toBeInTheDocument();

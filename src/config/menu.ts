@@ -151,6 +151,27 @@ export const pastaChoices = {
   sauces: ["Sugo", "Branco", "Bolonhesa", "4 queijos", "Funghi", "Pesto"],
 } as const;
 
+/**
+ * As fotos que abrem a ilha de massas.
+ *
+ * São arquivos em `public/massas`, não slugs de prato cadastrado. Amarrar a
+ * foto ao catálogo obrigaria a existir um prato "nhoque ao sugo" com aquele dia
+ * da semana só para a imagem aparecer — e a faixa ilustra a ILHA, não a lista
+ * de terça-feira.
+ *
+ * A escolha é por massas visivelmente diferentes entre si: pesto verde, nhoque
+ * ao sugo vermelho e a travessa com três pratos. Três fotos do mesmo penne
+ * venderiam a ilha como se ela tivesse uma opção só.
+ *
+ * `name` alimenta o texto alternativo. Sem ele as três leriam igual para quem
+ * usa leitor de tela — "foto do prato" três vezes descreve uma massa repetida.
+ */
+export const pastaPhotos = [
+  { photo: "/massas/fettuccine-ao-pesto.webp", name: "Fettuccine ao pesto" },
+  { photo: "/massas/nhoque-ao-sugo.webp", name: "Nhoque ao sugo" },
+  { photo: "/massas/tres-massas.webp", name: "Massas da ilha" },
+] as const;
+
 /** Adicionais com preço próprio. Vazio até os valores chegarem — veja acima. */
 export const pastaExtras: readonly PastaExtra[] = [];
 
@@ -173,13 +194,17 @@ export const pastaExtras: readonly PastaExtra[] = [];
  * e de 350 ml são itens diferentes, com preços diferentes. Perder o volume de
  * uma delas colapsa as duas numa linha só.
  *
- * ⚠️ **PENDENTE — três linhas do quadro não entraram, e nenhuma por descuido:**
+ * ⚠️ **PENDENTE — a Cerveja Heineken (330 ml) não entrou, e o motivo está no
+ * próprio quadro: a linha pontilhada dela termina sem etiqueta de preço.** Não
+ * é corte de foto nem falta de nitidez — o adesivo não está lá. Enquanto o
+ * valor não vier, ela fica fora.
  *
- * - **Schweppes Citrus** — li o preço como R$ 10,80 e o volume como 355 ml, mas
- *   é o único valor da coluna que foge dos 8,60 repetidos, então é justamente o
- *   que eu menos posso chutar. Falta confirmar.
- * - **Itubaína Retrô (355 ml)** e **Cerveja Heineken (330 ml)** — os nomes se
- *   leem, os preços ficaram fora do enquadramento da foto.
+ * ⚠️ **Duas leituras minhas de 02/09 estavam erradas e foram corrigidas em
+ * 03/09, com a foto em alta:** o Sprite Lemon Fresh é de **510 ml** (eu havia
+ * lido 350) e o Schweppes Citrus custa **8,60** — o 10,80 que eu tinha atribuído
+ * a ele é da **Itubaína Retrô**. As etiquetas ficam acima da linha a que
+ * pertencem, e num quadro fotografado de lado isso desloca a leitura em uma
+ * posição. Conferir seguindo a linha pontilhada, não a altura.
  *
  * Elas ficam de fora da lista em vez de entrar com zero ou com o valor do
  * projeto irmão: `formatBRL(0)` devolve "R$ 0,00", que é uma linha bem formatada
@@ -200,7 +225,9 @@ export const drinkGroups = [
       { name: "Chá Mate Leão", volume: "450 ml", price: 8.6 },
       { name: "H2O", volume: "500 ml", price: 8.6 },
       { name: "H2O Limoneto", volume: "500 ml", price: 8.6 },
-      { name: "Sprite Lemon Fresh", volume: "350 ml", price: 8.6 },
+      { name: "Sprite Lemon Fresh", volume: "510 ml", price: 8.6 },
+      { name: "Schweppes Citrus", volume: "350 ml", price: 8.6 },
+      { name: "Itubaína Retrô", volume: "355 ml", price: 10.8 },
     ],
   },
 ] as const satisfies readonly {
@@ -213,26 +240,27 @@ export const drinkGroups = [
  *  SOBREMESAS
  * ─────────────────────────────────────────────────────────────────────────
  *
- * **A lista está vazia, e isso é o estado correto hoje.** Os onze nomes se leem
- * na foto do quadro; os preços, não — a coluna de valores é uma fileira de
- * etiquetas escuras que não abrem na imagem enviada em 02/09/2026.
+ * Transcritas do quadro do salão, fotografado pelo cliente. Os nomes já se liam
+ * na foto de 02/09; os preços só abriram na versão em alta, de 03/09.
  *
- * Os nomes lidos, à espera dos valores:
+ * **Cada uma tem preço próprio**, como as bebidas: sobremesa não entra no valor
+ * por quilo. Dizer que está inclusa quando não está é o erro que o cliente
+ * descobre na conta.
  *
- *   Salada de frutas (220 g) · ½ porção de salada de frutas · Gelatina (120 ml,
- *   limão/morango/uva) · Gelatina zero (morango/uva) · Mousse de chocolate
- *   (meio amargo) · Creme de papaia com cassis · Petit gateau com sorvete
- *   (creme ou flocos) · Brownie com sorvete (creme ou flocos) · Pudim (pedaço) ·
- *   Torta holandesa · Torta de limão
+ * A taxa de embalagem para viagem NÃO é uma nota única de seção: o quadro traz
+ * um valor para a salada de frutas (R$ 8,50) e outro para a meia porção
+ * (R$ 13,00). Ela vive na observação de cada linha, sob o nome, e não ao lado do
+ * preço — ali virariam dois "R$" na mesma linha, um deles não sendo o que a
+ * sobremesa custa.
  *
- * O quadro também traz, em corpo miúdo sob as duas saladas de frutas, uma taxa
- * de embalagem para viagem. Ela é nota da seção, dita uma vez — ao lado do preço
- * da sobremesa virariam dois "R$" na mesma linha, um deles não sendo o que a
- * sobremesa custa. O valor dessa taxa também não se lê.
+ * ⚠️ **CONFERIR COM O CLIENTE: a meia porção custa MAIS que a inteira** — R$ 11,00
+ * contra R$ 8,00, e para viagem R$ 13,00 contra R$ 8,50. Está assim no quadro, e
+ * transcrevi o que está escrito. Ou "1/2 porção" é uma porção maior que os 220 g
+ * (meio quilo, por exemplo), ou o quadro tem um erro. Não dá para decidir pela
+ * foto, e inverter por conta própria seria inventar preço.
  *
- * ⚠️ Enquanto vazia, a seção inteira **não é desenhada** — a página não anuncia
- * uma vitrine de sobremesas sem sobremesa nenhuma. É a mesma degradação da ilha
- * de massas e do aviso de preço: sumir é honesto, listar vazio não é.
+ * Sem foto: o cliente não mandou imagem de sobremesa. O campo `photo` é opcional
+ * e a linha ocupa a largura toda sem ele, em vez de reservar um quadrado vazio.
  */
 export type Dessert = {
   name: string;
@@ -243,7 +271,19 @@ export type Dessert = {
   photo?: string;
 };
 
-export const desserts: readonly Dessert[] = [];
+export const desserts: readonly Dessert[] = [
+  { name: "Salada de frutas", note: "220 g · para viagem R$ 8,50", price: 8.0 },
+  { name: "Meia porção de salada de frutas", note: "Para viagem R$ 13,00", price: 11.0 },
+  { name: "Gelatina", note: "120 ml · limão, morango ou uva", price: 3.5 },
+  { name: "Gelatina zero", note: "Morango ou uva", price: 4.0 },
+  { name: "Mousse de chocolate", note: "Chocolate meio amargo", price: 16.0 },
+  { name: "Creme de papaia com cassis", price: 18.0 },
+  { name: "Petit gateau com sorvete", note: "Sorvete de creme ou flocos", price: 20.0 },
+  { name: "Brownie com sorvete", note: "Sorvete de creme ou flocos", price: 20.0 },
+  { name: "Pudim", note: "Pedaço", price: 16.0 },
+  { name: "Torta holandesa", price: 16.0 },
+  { name: "Torta de limão", price: 16.0 },
+];
 
 /**
  * ─────────────────────────────────────────────────────────────────────────

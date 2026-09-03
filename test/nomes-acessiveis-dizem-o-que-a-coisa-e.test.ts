@@ -99,6 +99,15 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.
   /*
+   * Informativo: as três fotos abrem a ilha de massas, e o nome do prato é o
+   * que separa uma da outra. Sem ele as três leriam "foto do prato" e
+   * descreveriam uma massa repetida — que é o oposto do que a faixa diz, já
+   * que ela existe para mostrar que a ilha tem opções diferentes.
+   */
+  "src/components/cardapio/pasta-builder.tsx": [
+    't("dishImageAlt", { name: foto.name })',
+  ],
+  /*
    * Informativo: a foto da sobremesa é a única imagem da linha, e o nome ao
    * lado dela é o próprio conteúdo — quem usa leitor de tela ouviria "imagem"
    * e o nome duas vezes se o `alt` repetisse o rótulo genérico. Por isso ele

@@ -16,6 +16,7 @@ import {
   desserts,
   drinkGroups,
   pastaExtras,
+  pastaPhotos,
   wines,
   isWeekday,
   precoDaMassa,
@@ -164,7 +165,7 @@ export default async function CardapioPage({
           </ul>
         ) : null}
 
-        <PastaBuilder extras={pastaExtras} />
+        <PastaBuilder extras={pastaExtras} photos={pastaPhotos} />
       </Section>
 
       {/* Sobremesas: não pertencem a um dia — saem todo dia, do mesmo balcão.

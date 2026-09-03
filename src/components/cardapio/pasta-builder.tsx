@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 import { formatBRL, pastaChoices, type PastaExtra } from "@/config/menu";
@@ -36,11 +37,20 @@ import { formatBRL, pastaChoices, type PastaExtra } from "@/config/menu";
  * caminho com preço estrearia sem nunca ter rodado, no dia em que ninguém
  * estiver olhando. Mesma decisão do `PriceCallout`.
  *
- * ⚠️ **Sem carrossel de fotos, por ora.** O projeto irmão abre a seção com uma
- * faixa de fotos das massas; o Prato não tem nenhuma foto ainda. Um carrossel
- * que não pode desenhar nada é peso morto, então ele entra junto com as fotos.
+ * ⚠️ **Faixa de fotos, e não carrossel.** O projeto irmão abre a seção com um
+ * carrossel; aqui as três aparecem de uma vez. Um carrossel mostra uma massa e
+ * esconde duas, e cobra por isso autoplay com pausa (WCAG 2.2.2), setas,
+ * marcadores e foco — a mesma maquinaria cujos defeitos latentes custaram uma
+ * manhã no carrossel da home. Para três fotos, a grade mostra mais e não tem
+ * como travar.
  */
-export function PastaBuilder({ extras }: { extras: readonly PastaExtra[] }) {
+export function PastaBuilder({
+  extras,
+  photos,
+}: {
+  extras: readonly PastaExtra[];
+  photos: readonly { photo: string; name: string }[];
+}) {
   const t = useTranslations("cardapio");
 
   /** Cada passo traz opções **ou** uma nota — nunca os dois. */
@@ -56,6 +66,27 @@ export function PastaBuilder({ extras }: { extras: readonly PastaExtra[] }) {
 
   return (
     <div className="mt-10">
+      {/* Sem foto a faixa inteira some, em vez de reservar três quadrados
+          vazios — foi assim que a seção nasceu, e é para onde ela volta se
+          alguém apagar os arquivos. */}
+      {photos.length > 0 ? (
+        <ul className="mb-12 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {photos.map((foto) => (
+            <li key={foto.photo} className="overflow-hidden rounded-2xl">
+              <Image
+                src={foto.photo}
+                alt={t("dishImageAlt", { name: foto.name })}
+                width={1100}
+                height={619}
+                loading="lazy"
+                sizes="(min-width: 640px) 33vw, 100vw"
+                className="aspect-[4/3] w-full object-cover"
+              />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
       <h3 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
         {t("pastaBuild")}
       </h3>

@@ -35,7 +35,7 @@ import { openingHoursLabel } from "@/config/site";
  * representaria mal o restaurante. Para publicar: ponha o arquivo em
  * `public/ambiente/` e o caminho aqui.
  */
-const FOTO_DE_FUNDO = "";
+const FOTO_DE_FUNDO = "/hero/churrasco-na-brasa.webp";
 
 /*
  * Síncrono de propósito: ele não busca nada. O equivalente do projeto irmão é
@@ -44,14 +44,14 @@ const FOTO_DE_FUNDO = "";
  * este setup de teste não consegue renderizar, e a abertura ficaria sem
  * cobertura por um `async` que não faz nada.
  */
-export function MenuHero() {
+export function MenuHero({ photo = FOTO_DE_FUNDO }: { photo?: string } = {}) {
   const horario = openingHoursLabel();
 
   return (
     <section className="relative isolate overflow-hidden border-b border-border">
-      {FOTO_DE_FUNDO ? (
+      {photo ? (
         <Image
-          src={FOTO_DE_FUNDO}
+          src={photo}
           alt=""
           fill
           priority
