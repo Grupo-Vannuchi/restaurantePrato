@@ -8,6 +8,7 @@ import { DishRow } from "@/components/cardapio/dish-row";
 import { PriceCallout } from "@/components/cardapio/price-callout";
 import { DessertList } from "@/components/cardapio/dessert-list";
 import { PastaBuilder } from "@/components/cardapio/pasta-builder";
+import { WineList } from "@/components/cardapio/wine-list";
 import { DrinkList } from "@/components/cardapio/drink-list";
 import { agrupadosPorCategoria, pratosDoDia } from "@/lib/cardapio";
 import {
@@ -15,6 +16,7 @@ import {
   desserts,
   drinkGroups,
   pastaExtras,
+  wines,
   isWeekday,
   precoDaMassa,
   precoDoBuffet,
@@ -196,6 +198,23 @@ export default async function CardapioPage({
           <DrinkList />
         </Section>
       ) : null}
+
+      {/* Carta de vinhos: seção própria porque o vinho não é bebida de balcão.
+          Tem rótulo, procedência e uma escolha por trás, e sai em três doses —
+          então um rótulo tem vários preços, o que não cabe no formato de uma
+          linha por preço das bebidas.
+
+          Ela aparece mesmo sem rótulo cadastrado: nesse caso o componente
+          escreve a linha de apoio, que diz que a carta existe e ainda não foi
+          digitada. Sumir aqui esconderia do visitante que a casa serve vinho. */}
+      <Section containerClassName="max-w-3xl">
+        <SectionHeader
+          title={t("winesLabel")}
+          subtitle={t("winesNote")}
+          align="left"
+        />
+        <WineList wines={wines} />
+      </Section>
     </>
   );
 }

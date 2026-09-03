@@ -244,3 +244,72 @@ export type Dessert = {
 };
 
 export const desserts: readonly Dessert[] = [];
+
+/**
+ * ─────────────────────────────────────────────────────────────────────────
+ *  CARTA DE VINHOS
+ * ─────────────────────────────────────────────────────────────────────────
+ *
+ * A casa serve **duas linhas** — uma nacional e uma importada —, e cada uma sai
+ * em mais de uma dose. Por isso o vinho não cabe no formato das bebidas, de um
+ * nome para um preço: aqui um rótulo tem vários preços, e é a dose que os
+ * separa. Taça, meia taça e garrafa são o mesmo vinho.
+ *
+ * ⚠️ **CONFIRMAR COM O CLIENTE — estes rótulos e preços vieram do projeto
+ * irmão, por instrução direta em 03/09 ("as mesmas opções de vinho").** Não
+ * foram lidos de nenhuma carta do Prato, porque nenhuma foi fotografada.
+ *
+ * Há uma evidência específica contra: a foto do quadro do salão, enviada em
+ * 02/09, traz uma garrafa de **Pérgola, vinho de mesa tinto suave do Rio Grande
+ * do Sul, 1 litro** em primeiro plano. Pérgola não é Del Grano nem Block, e é
+ * um vinho de outra faixa. Uma carta que não inclui o vinho que está na mesa
+ * provavelmente não é a carta daquela casa.
+ *
+ * Isso não bloqueia a estrutura, que é o que foi pedido e está correta de todo
+ * jeito. Bloqueia a publicação com confiança: preço de garrafa errado o cliente
+ * descobre na conta. Ao confirmar, apagar este aviso; ao desmentir, trocar os
+ * dados e manter a estrutura.
+ */
+export type WineServing = {
+  /** A dose, como se lê na carta: "Taça", "½ Taça", "Garrafa". */
+  label: string;
+  /** Volume da dose, quando a carta traz. Fica sob o nome, como nas bebidas. */
+  volume?: string;
+  price: number;
+};
+
+export type Wine = {
+  name: string;
+  /** Nacional ou importado — o que a carta destaca. */
+  note?: string;
+  /** Os rótulos servidos sob esta linha, quando são mais de um. */
+  labels?: readonly string[];
+  servings: readonly WineServing[];
+};
+
+export const wines: readonly Wine[] = [
+  {
+    name: "Del Grano",
+    note: "Nacional",
+    servings: [
+      { label: "Taça", volume: "175 ml", price: 17.5 },
+      { label: "½ Taça", volume: "87,5 ml", price: 14.0 },
+      { label: "Garrafa", price: 60.0 },
+    ],
+  },
+  {
+    name: "Block",
+    note: "Importado",
+    labels: [
+      "Segredo do Abade",
+      "Carménère",
+      "Cabernet Sauvignon",
+      "Sauvignon Blanc 3 Medalhas",
+    ],
+    servings: [
+      { label: "Taça", volume: "175 ml", price: 19.5 },
+      { label: "½ Taça", volume: "87,5 ml", price: 16.0 },
+      { label: "Garrafa", price: 75.0 },
+    ],
+  },
+];
