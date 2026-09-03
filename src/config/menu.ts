@@ -96,6 +96,66 @@ export function isWeekday(value: number): value is Weekday {
 
 /**
  * ─────────────────────────────────────────────────────────────────────────
+ *  ILHA DE MASSAS — COMO SE MONTA UM PRATO
+ * ─────────────────────────────────────────────────────────────────────────
+ *
+ * O cliente confirmou em 03/09/2026 que a ilha do Prato é a mesma do projeto
+ * irmão: mesmos formatos, mesmo preparo, mesmos molhos, mesma porção.
+ *
+ * **A sequência é a informação.** O cliente escolhe nessa ordem, de pé na frente
+ * do cozinheiro — massa, preparo, molho, ingredientes. Embaralhar os passos não
+ * é reordenar uma lista, é descrever outro serviço.
+ *
+ * **Os ingredientes não entram aqui, de propósito.** Eles mudam toda semana,
+ * conforme o que chega. Uma lista publicada no site vira promessa que a cozinha
+ * não consegue cumprir num dia de entrega ruim. O cardápio informa QUANTOS o
+ * cliente escolhe, nunca QUAIS — que é exatamente o que o cardápio de papel faz.
+ * `test/como-se-monta-um-prato-na-ilha.test.tsx` verifica isso pela estrutura:
+ * três passos rendem lista, o de ingredientes rende parágrafo.
+ *
+ * Nenhum destes textos está escrito dentro de componente: mexer aqui muda a
+ * página.
+ *
+ * ⚠️ **PENDENTE — os adicionais existem e estão sem preço.** O cardápio lista
+ * filé de frango (110 g) e bife de alcatra (120 g), cobrados por unidade. É a
+ * exceção à regra de que o preço é da seção, e por isso mesmo eles não podem
+ * entrar sem valor: uma linha "Filé de frango" solta no meio do cardápio lê como
+ * incluso, e o cliente descobre o contrário na conta. Ficam fora até os valores
+ * chegarem — mesma decisão das sobremesas.
+ *
+ * ⚠️ **PENDENTE — o preço da porção.** `menuPricing.pasta` segue indefinido, e
+ * enquanto estiver o título da seção sai sem valor em vez de sair com um vazio.
+ */
+export type PastaExtra = { name: string; weight: string; price: number };
+
+export const pastaChoices = {
+  /** Porção única — não há meia nem dobrada. */
+  portion: "190 gramas",
+  /** Os formatos disponíveis, na ordem do cardápio. */
+  shapes: [
+    "Nhoque de mandioquinha",
+    "Nhoque de batata",
+    "Gravata",
+    "Cappelletti de carne ou frango",
+    "Penne integral",
+    "Espaguete",
+    "Ravioli verde de quatro queijos",
+    "Ravioli de queijo",
+    "Talharim",
+    "Penne",
+  ],
+  /** Base do preparo, escolhida na hora. */
+  preparation: ["Azeite ou manteiga", "Cebola e alho"],
+  /** Quantos ingredientes entram — nunca quais. */
+  ingredientLimit: 5,
+  sauces: ["Sugo", "Branco", "Bolonhesa", "4 queijos", "Funghi", "Pesto"],
+} as const;
+
+/** Adicionais com preço próprio. Vazio até os valores chegarem — veja acima. */
+export const pastaExtras: readonly PastaExtra[] = [];
+
+/**
+ * ─────────────────────────────────────────────────────────────────────────
  *  BEBIDAS
  * ─────────────────────────────────────────────────────────────────────────
  *

@@ -7,12 +7,14 @@ import { DayTabs } from "@/components/cardapio/day-tabs";
 import { DishRow } from "@/components/cardapio/dish-row";
 import { PriceCallout } from "@/components/cardapio/price-callout";
 import { DessertList } from "@/components/cardapio/dessert-list";
+import { PastaBuilder } from "@/components/cardapio/pasta-builder";
 import { DrinkList } from "@/components/cardapio/drink-list";
 import { agrupadosPorCategoria, pratosDoDia } from "@/lib/cardapio";
 import {
   WEEKDAYS,
   desserts,
   drinkGroups,
+  pastaExtras,
   isWeekday,
   precoDaMassa,
   precoDoBuffet,
@@ -50,6 +52,9 @@ export default async function CardapioPage({
     getBuffetDishes(locale),
     getPastaDishes(locale),
   ]);
+
+  /** `null` enquanto o valor da porção não vier do cliente. */
+  const precoMassa = precoDaMassa();
 
   const rotulos = Object.fromEntries(
     WEEKDAYS.map((d) => [d, t(`weekday${d}` as "weekday1")]),
@@ -125,26 +130,40 @@ export default async function CardapioPage({
         )}
       </Section>
 
-      {/* Massas: seção própria porque o preço é outro. Ela some quando não há
-          massa cadastrada, em vez de anunciar uma ilha vazia. */}
-      {massas.length > 0 ? (
-        <Section
-          id="massas"
-          className="border-t border-border bg-muted/30"
-          containerClassName="max-w-3xl"
-        >
-          <SectionHeader
-            title={t("pastaLabel")}
-            subtitle={t("pastaNote")}
-            align="left"
-          />
+      {/* Massas: seção própria porque o preço é outro.
+
+          ⚠️ Ela NÃO depende mais de haver massa cadastrada. Dependia, e com o
+          banco vazio nunca era desenhada — quem lia o cardápio não descobria
+          que a ilha existe, que é justamente o que faria alguém atravessar o
+          salão até ela. O passo a passo vem do cardápio da casa, que é código.
+
+          O preço vai no próprio título: quem rolou até aqui não deveria
+          precisar voltar ao topo para lembrar quanto custa. Sem preço
+          configurado, o título sai só com o rótulo em vez de sair com um vazio
+          pendurado num travessão. */}
+      <Section
+        id="massas"
+        className="border-t border-border bg-muted/30"
+        containerClassName="max-w-3xl"
+      >
+        <SectionHeader
+          title={precoMassa ? `${t("pastaLabel")} — ${precoMassa}` : t("pastaLabel")}
+          subtitle={t("pastaNote")}
+          align="left"
+        />
+
+        {/* Massas cadastradas no painel, quando houver. O passo a passo abaixo
+            é o serviço da ilha e independe delas. */}
+        {massas.length > 0 ? (
           <ul className="mt-10 overflow-hidden rounded-2xl border border-border bg-card">
             {massas.map((prato) => (
               <DishRow key={prato.id} dish={prato} />
             ))}
           </ul>
-        </Section>
-      ) : null}
+        ) : null}
+
+        <PastaBuilder extras={pastaExtras} />
+      </Section>
 
       {/* Sobremesas: não pertencem a um dia — saem todo dia, do mesmo balcão.
           Some inteira enquanto a lista estiver vazia: uma vitrine de sobremesas

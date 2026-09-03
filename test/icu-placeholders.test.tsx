@@ -101,6 +101,8 @@ const ALLOWED: Record<string, string[]> = {
   "experiencia.lead": ["foundedYear"],
   "novidades.imageCaption": ["title"],
   "cardapio.dishImageAlt": ["name"],
+  "cardapio.pastaPortionNote": ["portion"],
+  "cardapio.pastaIngredientsNote": ["n"],
   "footer.registration": ["value"],
   "admin.dashboard.welcome": ["name"],
   "admin.leads.removeTag": ["tag"],
