@@ -56,8 +56,33 @@ export default defineConfig({
    * `e2e/menu-do-celular.spec.ts`.
    */
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "celular", use: { ...devices["Pixel 7"] } },
+    /*
+     * Aquecimento: roda ANTES dos dois navegadores, depois de o servidor subir.
+     *
+     * ⚠️ Ele existe porque o servidor de desenvolvimento compila cada rota na
+     * primeira visita — a home levava 9,78 s medidos, contra 5 s de tempo
+     * padrão de asserção. O primeiro teste a tocar cada rota pagava essa conta
+     * e falhava, num teste diferente a cada execução. Os números e o
+     * diagnóstico estão em `e2e/aquece.setup.ts`.
+     *
+     * `dependencies` é o que garante a ordem: `globalSetup` corre antes do
+     * `webServer` e portanto não poderia aquecer nada (não há servidor ainda).
+     * Um projeto de dependência corre depois.
+     *
+     * Ele não é apanhado pelos projetos de navegador porque o `testMatch`
+     * padrão do Playwright só casa `*.spec.ts` e `*.test.ts`.
+     */
+    { name: "aquecimento", testMatch: /aquece\.setup\.ts$/ },
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+      dependencies: ["aquecimento"],
+    },
+    {
+      name: "celular",
+      use: { ...devices["Pixel 7"] },
+      dependencies: ["aquecimento"],
+    },
   ],
   // Sem servidor local quando a suíte mira um site publicado: subir um seria
   // desperdício e, pior, mascararia uma falha do deploy com um build local que
