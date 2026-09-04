@@ -170,6 +170,16 @@ null by hardcoding a number.
   `unstable_cache` + `tags`; invalidate with `updateTag(tags.<x>)` on writes.
 - **Before coding Next APIs**, read `node_modules/next/dist/docs/` — this is
   Next 16 + Turbopack, not your training data.
+  ⚠️ **`quality` on `next/image` is ignored unless the value is in
+  `images.qualities`.** Next 16 made that allowlist mandatory and it defaults to
+  `[75]`: a `quality={50}` in a component is not a build error, not a warning,
+  not a console message — the URL just goes out as `q=75`. It cost two full
+  build-and-measure rounds on 04/09 saying "quality doesn't change the weight",
+  because the value never reached the optimizer. Declared, the home's hero went
+  from 141 KB to 49 and its LCP on a throttled phone from 3288 ms to 1628.
+  `test/qualidade-de-imagem-declarada.test.ts` fails on a value that isn't in
+  the list. This is the same silent-degradation shape the optional-integration
+  inventory guards — a setting accepted, doing nothing, saying nothing.
 
 ## Security — skill: `security-review`
 

@@ -56,6 +56,7 @@ export function MenuHero({ photo = FOTO_DE_FUNDO }: { photo?: string } = {}) {
           fill
           priority
           sizes="100vw"
+          quality={50}
           className="object-cover"
         />
       ) : (

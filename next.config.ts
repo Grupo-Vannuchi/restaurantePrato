@@ -112,6 +112,15 @@ const nextConfig: NextConfig = {
     // justamente em foto de comida, que tem gradação suave. O padrão do Next é
     // só WebP, então isto não vinha de graça.
     formats: ["image/avif", "image/webp"],
+    // ⚠️ **No Next 16 esta lista é obrigatória, e o que ficar fora dela é
+    // ignorado EM SILÊNCIO.** O padrão é `[75]`: um `quality={50}` num
+    // componente não vira erro nem aviso, a imagem sai em 75 e o autor conclui
+    // que a qualidade não muda o peso. Foi exatamente o que aconteceu ao medir
+    // o hero em 04/09 — o número não mexia porque o valor nunca chegava ao
+    // otimizador. O campo virou obrigatório por segurança: sem lista, alguém de
+    // fora pediria mil qualidades diferentes e cada uma viraria um arquivo novo
+    // no cache.
+    qualities: [50, 75],
     remotePatterns: [
       // CDN de mídia do Instagram. Só os dois hosts que a Graph API devolve em
       // `media_url`/`thumbnail_url` — liberar `*.fbcdn.net` inteiro abriria a

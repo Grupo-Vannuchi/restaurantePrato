@@ -131,13 +131,15 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  *
  * ⚠️ **A regressão que isto pega tem nome.** As fotos entraram em 03/09 e a
  * home passou de zero para QUATRO imagens: o hero mais três da prévia da
- * galeria. Medindo em 04/09 num Pixel 7 com 4G lento, as três da prévia
- * custavam 732 ms do LCP só disputando banda com o hero — verificado
- * bloqueando-as e medindo de novo. Ninguém decidiu isso; foi consequência de
- * publicar fotos na galeria, porque a home mostra uma prévia dela.
+ * galeria. Acrescentar foto na galeria pelo painel deixa a HOME mais pesada, e
+ * quem acrescenta não está olhando para a home.
  *
- * É exatamente esse o formato: acrescentar foto na galeria pelo painel deixa a
- * HOME mais pesada, e quem acrescenta não está olhando para a home.
+ * Os números caíram em 04/09, depois de as duas aberturas passarem a
+ * `quality={50}`: elas são fotografias sob véu de leitura, e a de 50 é
+ * indistinguível da de 75 lado a lado — conferido em captura. O hero da home
+ * foi de 141 para 49 KB e o LCP no celular, de 3288 para 1628 ms. Os limites
+ * abaixo já refletem isso, e é por isso que são apertados: afrouxá-los
+ * devolveria em silêncio o que essa medição comprou.
  *
  * Os limites saem do CELULAR, que é o pior caso em todas as páginas: ali as
  * fotos ocupam a largura toda e o navegador pede o arquivo maior. A home dá
@@ -150,8 +152,8 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  * mostrar menos fotos na prévia — nunca subir o número sem medir.
  */
 const ORCAMENTO_DE_IMAGEM_KB: Record<string, number> = {
-  "/": 460, // celular: medido 381 KB · 4 imagens (hero + 3 da prévia da galeria)
-  "/cardapio": 340, // celular: medido 281 KB · abertura + 3 da ilha de massas
+  "/": 350, // celular: medido 290 KB · 4 imagens (hero + 3 da prévia da galeria)
+  "/cardapio": 310, // celular: medido 257 KB · abertura + 3 da ilha de massas
   "/galeria": 580, // celular: medido 483 KB · as 6 da galeria. É uma galeria: pesa mesmo
 };
 
