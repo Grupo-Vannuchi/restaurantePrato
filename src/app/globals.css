@@ -112,6 +112,33 @@
     outline: 2px solid var(--color-foreground);
     outline-offset: 2px;
   }
+
+  /*
+   * O foco precisa ficar VISÍVEL, e não só existir.
+   *
+   * O cabeçalho é fixo (`sticky top-0 z-50`), 64 px mais a borda. Quando o
+   * navegador rola até um elemento focado, ele o alinha ao topo da janela —
+   * exatamente onde o cabeçalho está. O elemento fica focado, o anel acima é
+   * desenhado, e o cabeçalho cobre os dois.
+   *
+   * ⚠️ Medido em 04/09: percorrendo de volta com Shift+Tab no celular, os links
+   * "Contato", "Horários", "Fazer minha reserva" e "Como chegar" davam ZERO de
+   * 25 pontos amostrados visíveis, e o botão "Enviar mensagem" do formulário de
+   * contato, o mesmo. Dezesseis paradas do teclado completamente encobertas.
+   *
+   * `scroll-padding-top` diz ao navegador para parar a rolagem antes do topo.
+   * 5rem = 80 px, com folga sobre os 65 do cabeçalho, e o mesmo valor serve nos
+   * dois tamanhos porque o cabeçalho não muda de altura. De brinde, o link de
+   * pular para o conteúdo passa a pousar abaixo dele em vez de atrás.
+   *
+   * É a WCAG 2.4.11 (Foco Não Obscurecido). A guarda antiga media se o anel
+   * EXISTIA, olhando o estilo do elemento — um anel perfeito debaixo de um
+   * cabeçalho opaco passava nela. `e2e/o-foco-nao-fica-embaixo-do-cabecalho.spec.ts`
+   * pergunta ao navegador quem está no pixel.
+   */
+  html {
+    scroll-padding-top: 5rem;
+  }
 }
 
 /*
