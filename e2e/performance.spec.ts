@@ -111,3 +111,89 @@ for (const path of ["/", "/cardapio", "/contato"]) {
     expect(html).not.toContain("Não foi possível criar a instância");
   });
 }
+
+/**
+ * ─────────────────────────────────────────────────────────────────────────
+ *  ORÇAMENTO DE IMAGEM
+ * ─────────────────────────────────────────────────────────────────────────
+ *
+ * Quanto de fotografia cada página manda para o celular de quem chega.
+ *
+ * **Por que peso, e não milissegundos.** O teste de LCP acima mede tempo, e
+ * tempo não é portátil: medi a home em 3404 ms com 4G lento e CPU quatro vezes
+ * mais lenta, mas contra `next start` em HTTP/1.1 numa máquina local. A Vercel
+ * serve HTTP/2 atrás de CDN, onde a multiplexação muda o quadro inteiro. Levar
+ * aquele número para um teste seria transformar uma medição de bancada em
+ * afirmação sobre o visitante.
+ *
+ * Bytes de imagem, ao contrário, atravessam qualquer transporte: 381 KB são
+ * 381 KB no HTTP/1.1, no HTTP/2 e no 5G. É o que dá para guardar honestamente.
+ *
+ * ⚠️ **A regressão que isto pega tem nome.** As fotos entraram em 03/09 e a
+ * home passou de zero para QUATRO imagens: o hero mais três da prévia da
+ * galeria. Medindo em 04/09 num Pixel 7 com 4G lento, as três da prévia
+ * custavam 732 ms do LCP só disputando banda com o hero — verificado
+ * bloqueando-as e medindo de novo. Ninguém decidiu isso; foi consequência de
+ * publicar fotos na galeria, porque a home mostra uma prévia dela.
+ *
+ * É exatamente esse o formato: acrescentar foto na galeria pelo painel deixa a
+ * HOME mais pesada, e quem acrescenta não está olhando para a home.
+ *
+ * Os limites saem do CELULAR, que é o pior caso em todas as páginas: ali as
+ * fotos ocupam a largura toda e o navegador pede o arquivo maior. A home dá
+ * 328 KB no desktop contra 381 no celular; a galeria, 217 contra 483. Medir
+ * pelo desktop deixaria passar mais de o dobro sem ninguém notar.
+ *
+ * São esses valores mais folga de um quinto. Apertados o
+ * bastante para uma foto grande nova cair, folgados o bastante para não falhar
+ * por recompressão. Ao estourar: reduzir a qualidade, reduzir o `sizes`, ou
+ * mostrar menos fotos na prévia — nunca subir o número sem medir.
+ */
+const ORCAMENTO_DE_IMAGEM_KB: Record<string, number> = {
+  "/": 460, // celular: medido 381 KB · 4 imagens (hero + 3 da prévia da galeria)
+  "/cardapio": 340, // celular: medido 281 KB · abertura + 3 da ilha de massas
+  "/galeria": 580, // celular: medido 483 KB · as 6 da galeria. É uma galeria: pesa mesmo
+};
+
+for (const [path, limite] of Object.entries(ORCAMENTO_DE_IMAGEM_KB)) {
+  test(`${path} não passa de ${limite} KB de imagem`, async ({ page }) => {
+    const bytesPorUrl = new Map<string, number>();
+    page.on("response", (r) => {
+      if (r.request().resourceType() !== "image") return;
+      // Só o quadro principal, pela mesma razão que o teste de terceiros acima:
+      // o mapa do rodapé é um iframe e carrega no contexto dele. Contá-lo aqui
+      // misturaria 196 KB de blocos do Google — que variam com o zoom e o
+      // recorte — no orçamento das NOSSAS fotos, e o limite passaria a falhar
+      // por motivo que ninguém controla.
+      if (r.request().frame() !== page.mainFrame()) return;
+      // Conta cada URL uma vez: a mesma foto pedida duas vezes é desperdício,
+      // mas não é peso novo na conta do visitante.
+      bytesPorUrl.set(r.url(), Number(r.headers()["content-length"] ?? 0));
+    });
+
+    await page.goto(path, { waitUntil: "load" });
+    // As de baixo da dobra: sem isto o orçamento mediria meia página.
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForLoadState("networkidle");
+
+    const total = [...bytesPorUrl.values()].reduce((s, n) => s + n, 0);
+    const kb = Math.round(total / 1024);
+
+    // Sentinela: uma página que não baixou imagem nenhuma passaria por
+    // vacuidade, e é justamente o estado em que este teste não verifica nada.
+    expect(bytesPorUrl.size, `${path} não carregou imagem nenhuma`).toBeGreaterThan(0);
+
+    const maiores = [...bytesPorUrl.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([u, b]) => `${Math.round(b / 1024)} KB ${decodeURIComponent(u).split("/").pop()?.slice(0, 40)}`)
+      .join(" · ");
+
+    expect(
+      kb,
+      `${path} manda ${kb} KB de imagem (limite ${limite}). As maiores: ${maiores}. ` +
+        `Saídas, em ordem: baixar a qualidade, corrigir o \`sizes\` para o celular ` +
+        `não pedir o arquivo de desktop, ou mostrar menos fotos na prévia.`,
+    ).toBeLessThanOrEqual(limite);
+  });
+}
