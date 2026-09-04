@@ -112,9 +112,10 @@ novo.
    copy definitiva, tom de voz, horário, Instagram e tipo de cozinha.
    As **fotos** entraram em 03/09 e o **cardápio** também — buffet, ilha de
    massas, sobremesas, bebidas e carta de vinhos. **Falta:** os depoimentos, os
-   preços que ainda não vieram do cliente, e a confirmação da carta de vinhos
-   (os rótulos vieram do projeto irmão por instrução, mas a garrafa que aparece
-   na foto do salão é outra — está marcado `CONFIRMAR` em `config/menu.ts`).
+   preços que ainda não vieram do cliente. A **carta de vinhos foi confirmada
+   em 04/09**: é a mesma do projeto irmão, reafirmada depois de eu apontar que a
+   garrafa da foto do salão é outra — o registro dessa troca está em
+   `config/menu.ts`, para a foto não reabrir a pergunta.
 
 ## Infra — no ar desde 20/08/2026
 

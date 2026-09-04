@@ -295,20 +295,20 @@ export const desserts: readonly Dessert[] = [
  * nome para um preço: aqui um rótulo tem vários preços, e é a dose que os
  * separa. Taça, meia taça e garrafa são o mesmo vinho.
  *
- * ⚠️ **CONFIRMAR COM O CLIENTE — estes rótulos e preços vieram do projeto
- * irmão, por instrução direta em 03/09 ("as mesmas opções de vinho").** Não
- * foram lidos de nenhuma carta do Prato, porque nenhuma foi fotografada.
+ * **Confirmado em 04/09/2026.** Os rótulos e preços são os mesmos do projeto
+ * irmão. Vieram por instrução em 03/09 e foram reafirmados depois de eu
+ * levantar a evidência abaixo — não estão aqui por suposição.
  *
- * Há uma evidência específica contra: a foto do quadro do salão, enviada em
- * 02/09, traz uma garrafa de **Pérgola, vinho de mesa tinto suave do Rio Grande
- * do Sul, 1 litro** em primeiro plano. Pérgola não é Del Grano nem Block, e é
- * um vinho de outra faixa. Uma carta que não inclui o vinho que está na mesa
- * provavelmente não é a carta daquela casa.
+ * ⚠️ A evidência que levantei e que o cliente respondeu, guardada porque ela
+ * volta a aparecer: a foto do salão traz uma garrafa de **Pérgola, vinho de
+ * mesa tinto suave do Rio Grande do Sul, 1 litro** em primeiro plano, e há
+ * outras nas mesas ao fundo. Pérgola não é Del Grano nem Block, e é de outra
+ * faixa de preço. Quem abrir aquela foto vai fazer a mesma pergunta.
  *
- * Isso não bloqueia a estrutura, que é o que foi pedido e está correta de todo
- * jeito. Bloqueia a publicação com confiança: preço de garrafa errado o cliente
- * descobre na conta. Ao confirmar, apagar este aviso; ao desmentir, trocar os
- * dados e manter a estrutura.
+ * A resposta é esta linha: a carta é a do projeto irmão, e o Pérgola nas mesas
+ * não a contradiz — pode ser vinho de mesa servido à parte, decoração ou item
+ * fora de carta. Se um dia entrar na carta, entra como rótulo novo; o formato
+ * de um rótulo com várias doses já comporta isso sem mudar código.
  */
 export type WineServing = {
   /** A dose, como se lê na carta: "Taça", "½ Taça", "Garrafa". */
