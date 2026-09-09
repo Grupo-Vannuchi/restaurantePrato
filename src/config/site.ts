@@ -106,6 +106,20 @@ export type SiteConfig = {
     };
   };
 
+  /**
+   * Link público para avaliar o restaurante no Google.
+   *
+   * Fica FORA de `social` de propósito: o rodapé percorre aquele objeto para
+   * montar os ícones das redes, e uma chave a mais ali viraria um ícone de uma
+   * rede que não existe.
+   *
+   * ⚠️ Opcional, e ausente hoje — o cliente ainda não passou a página do
+   * restaurante no Google. Sem ela, `reviewLink()` devolve `null` e o convite
+   * some dos dois lugares onde apareceria. Mesmo contrato do telefone fixo,
+   * que também não existe e cujos botões de ligar somem sozinhos.
+   */
+  reviewUrl?: string;
+
   social: {
     instagram?: string;
     tiktok?: string;
@@ -343,6 +357,34 @@ export function whatsappLink(message?: string): string | null {
   const base = `https://wa.me/${siteConfig.contact.whatsapp.number}`;
   const text = message ?? siteConfig.contact.whatsapp.defaultMessage;
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+}
+
+/**
+ * A URL de avaliação no Google, ou `null` quando não há link configurado.
+ *
+ * Recebe a URL por PARÂMETRO, com a da configuração como padrão. Não é
+ * preferência: lendo `siteConfig` direto, o teste só conseguiria exercitar o
+ * estado de hoje — sem link — e o caminho com botão estrearia no dia em que
+ * ninguém nunca o viu funcionar.
+ *
+ * Recusa três coisas além do ausente: cadeia vazia ou só espaços (o jeito mais
+ * provável de "configurar" sem configurar), e qualquer coisa que não seja
+ * `http`/`https` — um `javascript:` num campo que vira `href` é execução de
+ * código na página, e este campo existe para ser editado por quem não escreve
+ * código.
+ */
+export function reviewLink(
+  url: string | undefined = siteConfig.reviewUrl,
+): string | null {
+  const limpo = url?.trim();
+  if (!limpo) return null;
+  try {
+    const { protocol } = new URL(limpo);
+    if (protocol !== "http:" && protocol !== "https:") return null;
+  } catch {
+    return null; // não é URL absoluta
+  }
+  return limpo;
 }
 
 /**

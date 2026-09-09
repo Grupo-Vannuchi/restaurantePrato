@@ -37,6 +37,18 @@ const facebookNode: IconNode = [
   ],
 ];
 
+/*
+ * O "G" do Google, desenhado com o mesmo traço dos outros — arco aberto mais a
+ * barra horizontal. Não é a marca colorida oficial, e isso é escolha: no rodapé
+ * ele divide a linha com o Instagram, e um ícone colorido ao lado de um
+ * monocromático destoaria mais do que a diferença de forma.
+ */
+const googleNode: IconNode = [
+  ["path", { d: "M20 12a8 8 0 1 1-2.34-5.66", key: "g-arc" }],
+  ["path", { d: "M20 12h-8", key: "g-bar" }],
+];
+
 export const Instagram = createLucideIcon("Instagram", instagramNode);
+export const Google = createLucideIcon("Google", googleNode);
 export const Linkedin = createLucideIcon("Linkedin", linkedinNode);
 export const Facebook = createLucideIcon("Facebook", facebookNode);
