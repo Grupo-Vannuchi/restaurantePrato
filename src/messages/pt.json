@@ -41,6 +41,14 @@
         {
           "title": "A sua melhor e mais saborosa pausa do dia.",
           "subtitle": "Um buffet completo, sempre quentinho, com aquele tempero caseiro inconfundível, e o autêntico churrasco na brasa fatiado na hora para recarregar a energia pro expediente."
+        },
+        {
+          "title": "Churrasco na brasa, fatiado na hora.",
+          "subtitle": "A carne sai do espeto direto no seu prato, no ritmo do almoço de quem tem hora para voltar."
+        },
+        {
+          "title": "A ilha de massas, montada do seu jeito.",
+          "subtitle": "Você escolhe a massa, o preparo, o molho e os ingredientes do dia. Preço próprio, à parte do buffet."
         }
       ],
       "pauseSlides": "Pausar a troca automática de slides",

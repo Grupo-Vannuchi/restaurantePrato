@@ -134,6 +134,17 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  * galeria. Acrescentar foto na galeria pelo painel deixa a HOME mais pesada, e
  * quem acrescenta não está olhando para a home.
  *
+ * ⚠️ **O limite da home subiu de 350 para 430 KB em 09/09**, quando o topo
+ * passou de um slide para três. Subir limite é o movimento suspeito por
+ * excelência — o normal é ele estar frouxo escondendo desperdício —, então o
+ * que justifica está medido: o LCP no celular ficou em 1660 ms contra 1628
+ * antes, ou seja, não mudou. Os dois slides novos carregam DEPOIS da primeira
+ * pintura, e o peso a mais não é pago por quem só olha a primeira tela.
+ *
+ * As três fotos mais pesadas da home continuam sendo as da prévia da galeria,
+ * a 75 de qualidade, e não as do topo, que estão a 50 sob véu. Elas ficam onde
+ * estão de propósito: foto de galeria aparece inteira, sem véu, e é conteúdo.
+ *
  * Os números caíram em 04/09, depois de as duas aberturas passarem a
  * `quality={50}`: elas são fotografias sob véu de leitura, e a de 50 é
  * indistinguível da de 75 lado a lado — conferido em captura. O hero da home
@@ -152,7 +163,7 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  * mostrar menos fotos na prévia — nunca subir o número sem medir.
  */
 const ORCAMENTO_DE_IMAGEM_KB: Record<string, number> = {
-  "/": 350, // celular: medido 290 KB · 4 imagens (hero + 3 da prévia da galeria)
+  "/": 430, // celular: medido 358 KB · 3 slides do topo + 3 da prévia da galeria
   "/cardapio": 310, // celular: medido 257 KB · abertura + 3 da ilha de massas
   "/galeria": 580, // celular: medido 483 KB · as 6 da galeria. É uma galeria: pesa mesmo
 };

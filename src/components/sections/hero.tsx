@@ -12,15 +12,19 @@ import { HeroCarousel, type HeroSlide } from "@/components/sections/hero-carouse
  * salão, no balcão e na fachada do proprio Prato. Nada de banco de imagens —
  * foto genérica de buffet descreveria outro restaurante.
  *
- * Hoje a copy tem UM slide, então há uma imagem só. O buffet quente foi a
- * escolhida porque é o que a frase promete primeiro: "um buffet completo,
- * sempre quentinho". Ela é o LCP da home, e por isso está em 1600 px e ~180 KB
- * — mais que isso atrasa a primeira pintura no celular do Centro.
+ * São três, uma por slide da copy, e cada uma ilustra o que a sua frase
+ * promete: o buffet quente, o churrasco na brasa e a ilha de massas. A
+ * primeira é o LCP da home, e por isso está em 1600 px com qualidade 50 —
+ * ~50 KB depois da otimização. As outras duas só carregam quando o slide vira.
  *
  * Para acrescentar slides: solte o WebP aqui, mantenha o peso na mesma faixa
  * (~100–230 KB) e liste abaixo, na ordem da copy em `home.hero.slides`.
  */
-const slideImages: string[] = ["/hero/buffet-quente.webp"];
+const slideImages: string[] = [
+  "/hero/buffet-quente.webp",
+  "/hero/churrasco-na-brasa.webp",
+  "/hero/ilha-de-massas.webp",
+];
 
 export async function Hero() {
   const t = await getTranslations("home.hero");

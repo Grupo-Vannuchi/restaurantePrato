@@ -107,6 +107,13 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
    * A frase é montada no `PastaBuilder`, que roda no servidor e tem o catálogo,
    * e chega aqui pronta: o carrossel é componente de cliente e não traduz nada.
    */
+  /*
+   * Decorativo POR REDUNDÂNCIA: a logo é imagem desde 09/09, e o link que a
+   * envolve já carrega `aria-label` com o nome do restaurante. Um `alt`
+   * preenchido faria o leitor de tela dizer "Restaurante Prato" duas vezes
+   * seguidas — uma pelo rótulo do link, outra pela imagem dentro dele.
+   */
+  "src/components/layout/logo.tsx": ['""'],
   "src/components/cardapio/pasta-carousel.tsx": ["foto.alt"],
   /*
    * Informativo: a foto da sobremesa é a única imagem da linha, e o nome ao
