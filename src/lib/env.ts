@@ -73,9 +73,7 @@ const serverSchema = z.object({
     .trim()
     .optional()
     .transform((value) => value || "media"),
-});
 
-const clientSchema = z.object({
   /*
    * ───────────────────────────────────────────────────────────────────────
    *  INSTAGRAM — Instagram API with Instagram Login
@@ -112,7 +110,9 @@ const clientSchema = z.object({
     .enum(["true", "false"])
     .default("false")
     .transform((value) => value === "true"),
+});
 
+const clientSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z
     .string()
     .url("NEXT_PUBLIC_SITE_URL must be an absolute URL")

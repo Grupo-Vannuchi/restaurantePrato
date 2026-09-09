@@ -1,11 +1,16 @@
 import { getTranslations } from "next-intl/server";
 import { Music2 } from "lucide-react";
-import { Instagram, Linkedin, Facebook } from "@/components/ui/brand-icons";
+import { Instagram, Linkedin, Facebook, Google } from "@/components/ui/brand-icons";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/logo";
 import { Container } from "@/components/ui/container";
 import { FooterMap } from "@/components/layout/footer-map";
-import { siteConfig, fullAddress, mapEmbedUrl } from "@/config/site";
+import {
+  siteConfig,
+  fullAddress,
+  mapEmbedUrl,
+  reviewLink,
+} from "@/config/site";
 
 const socialIcons = {
   instagram: Instagram,
@@ -17,12 +22,14 @@ const socialIcons = {
 export async function Footer() {
   const t = await getTranslations("footer");
   const tn = await getTranslations("nav");
+  const tc = await getTranslations("common");
   const year = new Date().getFullYear();
 
   const socials = Object.entries(siteConfig.social).filter(([, url]) =>
     Boolean(url),
   ) as [keyof typeof socialIcons, string][];
 
+  const avaliar = reviewLink();
   const address = fullAddress();
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
   const mapSrc = mapEmbedUrl();
@@ -102,6 +109,21 @@ export async function Footer() {
                 </a>
               );
             })}
+            {/* O convite para avaliar no Google divide a linha com as redes,
+                mas fica FORA de `socials`: aquele objeto vira ícone de rede
+                social, e o Google não é uma. Some inteiro sem link — botão que
+                leva a lugar nenhum é pior que botão nenhum. */}
+            {avaliar ? (
+              <a
+                href={avaliar}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={tc("reviewCta")}
+                className="inline-flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-brand hover:text-brand"
+              >
+                <Google className="size-4" />
+              </a>
+            ) : null}
           </div>
         </div>
       </Container>

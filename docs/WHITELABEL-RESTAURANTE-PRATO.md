@@ -46,7 +46,7 @@ propósito: veja [`superpowers/README.md`](superpowers/README.md).
 | Nome fantasia | Restaurante Prato |
 | Razão social | PRATO COFFEE SHOP REFEICOES LTDA |
 | CNPJ | 03.354.096/0001-84 |
-| Endereço | R. Augusto Severo, 25 — Centro, Santos/SP, CEP 11010-050 |
+| Endereço | R. Augusto Severo, 25 — Centro, Santos/SP, CEP 11010-050. O número **25** foi confirmado por fotografia da fachada em 03/09/2026: a placa está no pilar entre as duas entradas, sob os toldos do Prato *(ver a nota abaixo da tabela de pendências)* |
 | E-mail | pratocoffee@gmail.com |
 | WhatsApp | 5513978208568 · exibido `+55 (13) 97820-8568` |
 | Fundação | 1998 |
@@ -55,7 +55,9 @@ propósito: veja [`superpowers/README.md`](superpowers/README.md).
 | Instagram | [@restaurante.prato](https://instagram.com/restaurante.prato) *(19/08/2026)* |
 | Cozinha | Brasileira, churrasco *(19/08/2026)* |
 | Cobrança | Buffet **por quilo**, cobrado pelo peso do prato montado *(31/08/2026)*. Os valores ainda não vieram |
-| Ilha de massas | Existe, e tem **preço próprio**, à parte do buffet *(31/08/2026)*. O valor ainda não veio |
+| Ilha de massas | Existe, e tem **preço próprio**, à parte do buffet *(31/08/2026)*. A composição — dez formatos, dois preparos, seis molhos, porção de 190 g e até cinco ingredientes — foi confirmada em 03/09/2026 como a mesma do projeto irmão. O valor da porção e o dos dois adicionais ainda não vieram |
+| Sobremesas e bebidas | Onze sobremesas e onze bebidas, transcritas do quadro do salão fotografado em 02–03/09/2026, **com preço por item** — elas não entram no valor por quilo. Falta o preço da Heineken, que não tem etiqueta no quadro |
+| Cardápio do buffet | 82 pratos em cinco listas por dia útil *(03/09/2026)*. Entram por `scripts/importa-cardapio.mjs`, que recusa a carga se algum dia não fechar com a lista do cliente |
 
 Esses valores vivem em dois arquivos que precisam concordar:
 [`src/config/site.ts`](../src/config/site.ts) (marca, contato, structured data)
@@ -66,13 +68,31 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
 | Pendência | O que trava hoje |
 |---|---|
 | Logo | A marca é **tipográfica** (`src/components/layout/logo.tsx`, `icon.tsx`, `apple-icon.tsx`, `opengraph-image.tsx`). Ver [`public/brand/README.md`](../public/brand/README.md) |
-| Copy definitiva | ✅ Entregue em 19/08 e aplicada. O documento diverge do endereço confirmado (diz 09, o confirmado é 25) — ver a linha abaixo |
-| **Número do endereço** | O documento de copy diz "Rua Augusto Severo, 09"; o dado confirmado em 17/08 e o CNPJ dizem **25**. Mantido 25 até o cliente responder. Acoplado a quatro lugares: `src/config/site.ts`, `src/content/legal.ts`, `metadata.description` e `experiencia.disclaimer` |
+| Copy definitiva | ✅ Entregue em 19/08 e aplicada |
 | Facebook | `social` só tem Instagram; o `sameAs` sai com um item |
-| Fotos (hero e galeria) | O hero tem um slide e `slideImages` está vazio |
+| Fotos | ✅ Dez fotos autorais entraram em 03/09/2026 — topo da home, abertura do cardápio, três na ilha de massas e seis na galeria. **Falta** foto de sobremesa: a linha da sobremesa tem campo de imagem e hoje ocupa a largura toda sem ele |
 | Domínio final | `«PENDENTE»` em `src/content/legal.ts`; **enquanto existir, `SITE_INDEXABLE` fica `false`** |
 | Telefone fixo | Não existe: `contact.phone` é opcional e cada CTA de ligar some sozinho |
-| Cardápio | Categorias, itens e fotos entram pelo admin, não pelo código |
+| Cardápio | ✅ Buffet, ilha de massas, sobremesas, bebidas e carta de vinhos estão no ar. **Falta** o preço do quilo, o da porção de massa e o dos adicionais — sem eles o aviso de preço some sozinho. Os pratos do buffet vivem no banco e entram por script versionado; sobremesas, bebidas e vinhos vivem no código |
+
+⚠️ **O número do endereço saiu desta lista em 03/09/2026, e o motivo precisa
+sobreviver ao apagamento.** O documento de copy entregue pelo cliente escrevia
+"Rua Augusto Severo, 09" em dois lugares; o dado confirmado em 17/08 e o CNPJ
+diziam 25. O projeto manteve 25 e deixou a divergência aberta. Ela fechou
+quando chegou a fotografia da fachada: a placa diz **25**.
+
+Guardar isso escrito não é zelo excessivo. Quem abrir o documento de copy daqui
+a seis meses vai ler 09 e reabrir a discussão, e o registro é o que responde
+antes de alguém trocar o número no código.
+
+O endereço aparece em **sete** lugares em `src/`, e não nos quatro que a
+pendência antiga listava: `config/site.ts`, `content/legal.ts` e cinco strings
+em `messages/pt.json` — a descrição de metadados da home, o aviso da
+experiência, as descrições da galeria e do contato, e o subtítulo do contato.
+Todos já dizem 25; uma varredura por "09" em `src/` não encontra nada. A lista
+de quatro envelheceu porque páginas novas foram acrescentando o endereço à
+copy, e é por isso que a nota acima não repete uma lista: ela envelheceria de
+novo.
 
 ## Sequência de PRs
 
@@ -90,7 +110,12 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
    [`superpowers/plans/2026-08-19-copy-e-tom-de-voz-prato.md`](superpowers/plans/2026-08-19-copy-e-tom-de-voz-prato.md),
    spec [`superpowers/specs/2026-08-19-copy-e-tom-de-voz-prato-design.md`](superpowers/specs/2026-08-19-copy-e-tom-de-voz-prato-design.md)):
    copy definitiva, tom de voz, horário, Instagram e tipo de cozinha.
-   **Falta:** fotos do hero e da galeria, cardápio e depoimentos pelo admin.
+   As **fotos** entraram em 03/09 e o **cardápio** também — buffet, ilha de
+   massas, sobremesas, bebidas e carta de vinhos. **Falta:** os depoimentos, os
+   preços que ainda não vieram do cliente. A **carta de vinhos foi confirmada
+   em 04/09**: é a mesma do projeto irmão, reafirmada depois de eu apontar que a
+   garrafa da foto do salão é outra — o registro dessa troca está em
+   `config/menu.ts`, para a foto não reabrir a pergunta.
 
 ## Infra — no ar desde 20/08/2026
 

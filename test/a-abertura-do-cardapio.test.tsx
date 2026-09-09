@@ -19,16 +19,18 @@ import { renderWithIntl, screen } from "./test-utils";
  * visto o site: este é o primeiro contato com a marca, e por isso a identidade
  * vem antes da lista.
  *
- * ⚠️ **O equivalente do projeto irmão depende de duas coisas que este projeto
- * não tem.** Lá a abertura põe uma foto do buffet ao fundo e o SVG do logo por
- * cima, num véu escuro. Aqui não há foto nenhuma no banco, a marca ainda é
- * tipográfica (`public/brand/README.md`), e o horário não pode sair de uma
- * string do catálogo. Copiar renderia uma faixa preta com um buraco no meio.
+ * ⚠️ **A foto chegou em 03/09; a marca, não.** Até então a abertura não tinha
+ * imagem nenhuma, e o projeto irmão punha o SVG do logo sobre um véu escuro.
+ * Aqui a marca ainda é tipográfica (`public/brand/README.md`), então a abertura
+ * segue o padrão do topo da home: com foto ou sem, o texto fica escuro sobre um
+ * véu claro. **Um caminho visual só**, e não dois modos em que só um pode ser
+ * visto — o outro entraria sem ninguém nunca ter olhado para ele.
  *
- * Então a abertura segue o padrão que o topo da home já usa neste site: com
- * foto ou sem, o texto fica escuro sobre um véu claro. **Um caminho só**, e não
- * dois modos visuais em que só um pode ser visto hoje — o outro entraria sem
- * ninguém nunca ter olhado para ele.
+ * ⚠️ **A foto entra por parâmetro, com a do módulo como padrão.** Lendo a
+ * constante direto, este teste só conseguiria exercitar o estado de HOJE (com
+ * foto), e o caminho sem imagem — para onde a página volta se alguém apagar o
+ * arquivo — ficaria sem cobertura. Mesma decisão do `PriceCallout` e do
+ * `PastaBuilder`, pelo mesmo motivo.
  */
 describe("a abertura do cardápio", () => {
   it("mostra a marca, que hoje é tipográfica", () => {
@@ -36,10 +38,20 @@ describe("a abertura do cardápio", () => {
     expect(screen.getByText(siteConfig.name)).toBeInTheDocument();
   });
 
-  it("não quebra sem foto de fundo, que é o estado de hoje", () => {
-    // O banco está vazio e não há imagem em `public/`. Sem o degradê de
-    // reserva, a faixa sairia como um retângulo vazio.
-    const { container } = renderWithIntl(<MenuHero />);
+  it("desenha a foto de fundo quando existe, que é o estado de hoje", () => {
+    const { container } = renderWithIntl(
+      <MenuHero photo="/hero/churrasco-na-brasa.webp" />,
+    );
+    const img = container.querySelector("img");
+    expect(img).not.toBeNull();
+    // Decorativa: o texto por cima é que informa, e a foto repetida em voz alta
+    // atrasaria quem usa leitor de tela sem acrescentar nada.
+    expect(img?.getAttribute("alt")).toBe("");
+  });
+
+  it("não quebra sem foto, para onde a página volta se o arquivo sumir", () => {
+    // Sem o véu de reserva, a faixa sairia como um retângulo vazio.
+    const { container } = renderWithIntl(<MenuHero photo="" />);
     expect(container.querySelector("img")).toBeNull();
     expect(container.querySelector("[aria-hidden]")).not.toBeNull();
   });

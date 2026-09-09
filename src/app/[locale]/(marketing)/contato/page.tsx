@@ -15,6 +15,7 @@ import {
   fullAddress,
   mapEmbedUrl,
   phoneLink,
+  reviewLink,
   siteConfig,
   whatsappLink,
 } from "@/config/site";
@@ -42,6 +43,8 @@ export default async function ContactPage({
   setRequestLocale(locale);
   const t = await getTranslations("contact");
   const tRodape = await getTranslations("footer");
+  const tComum = await getTranslations("common");
+  const avaliar = reviewLink();
   const { contact } = siteConfig;
 
   const whatsapp = whatsappLink();
@@ -152,6 +155,20 @@ export default async function ContactPage({
               >
                 {t("route")}
               </a>
+              {/* Convite para avaliar no Google. Sai da configuração, nunca
+                  escrito aqui, e só aparece quando há URL — sem página no
+                  Google, sem botão. Mesmo contrato dos botões de ligar, que
+                  somem porque o restaurante não tem telefone fixo. */}
+              {avaliar ? (
+                <a
+                  href={avaliar}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-brand underline-offset-4 hover:underline"
+                >
+                  {tComum("reviewCta")}
+                </a>
+              ) : null}
             </div>
           </aside>
         </div>

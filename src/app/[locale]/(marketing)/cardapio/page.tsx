@@ -6,8 +6,22 @@ import { Section, SectionHeader } from "@/components/ui/section";
 import { DayTabs } from "@/components/cardapio/day-tabs";
 import { DishRow } from "@/components/cardapio/dish-row";
 import { PriceCallout } from "@/components/cardapio/price-callout";
+import { DessertList } from "@/components/cardapio/dessert-list";
+import { PastaBuilder } from "@/components/cardapio/pasta-builder";
+import { WineList } from "@/components/cardapio/wine-list";
+import { DrinkList } from "@/components/cardapio/drink-list";
 import { agrupadosPorCategoria, pratosDoDia } from "@/lib/cardapio";
-import { WEEKDAYS, isWeekday, precoDaMassa, precoDoBuffet } from "@/config/menu";
+import {
+  WEEKDAYS,
+  desserts,
+  drinkGroups,
+  pastaExtras,
+  pastaPhotos,
+  wines,
+  isWeekday,
+  precoDaMassa,
+  precoDoBuffet,
+} from "@/config/menu";
 import { weekdayNoRestaurante } from "@/lib/dates";
 import { getBuffetDishes, getPastaDishes } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
@@ -41,6 +55,9 @@ export default async function CardapioPage({
     getBuffetDishes(locale),
     getPastaDishes(locale),
   ]);
+
+  /** `null` enquanto o valor da porção não vier do cliente. */
+  const precoMassa = precoDaMassa();
 
   const rotulos = Object.fromEntries(
     WEEKDAYS.map((d) => [d, t(`weekday${d}` as "weekday1")]),
@@ -116,26 +133,89 @@ export default async function CardapioPage({
         )}
       </Section>
 
-      {/* Massas: seção própria porque o preço é outro. Ela some quando não há
-          massa cadastrada, em vez de anunciar uma ilha vazia. */}
-      {massas.length > 0 ? (
-        <Section
-          id="massas"
-          className="border-t border-border bg-muted/30"
-          containerClassName="max-w-3xl"
-        >
-          <SectionHeader
-            title={t("pastaLabel")}
-            subtitle={t("pastaNote")}
-            align="left"
-          />
+      {/* Massas: seção própria porque o preço é outro.
+
+          ⚠️ Ela NÃO depende mais de haver massa cadastrada. Dependia, e com o
+          banco vazio nunca era desenhada — quem lia o cardápio não descobria
+          que a ilha existe, que é justamente o que faria alguém atravessar o
+          salão até ela. O passo a passo vem do cardápio da casa, que é código.
+
+          O preço vai no próprio título: quem rolou até aqui não deveria
+          precisar voltar ao topo para lembrar quanto custa. Sem preço
+          configurado, o título sai só com o rótulo em vez de sair com um vazio
+          pendurado num travessão. */}
+      <Section
+        id="massas"
+        className="border-t border-border bg-muted/30"
+        containerClassName="max-w-3xl"
+      >
+        <SectionHeader
+          title={precoMassa ? `${t("pastaLabel")} — ${precoMassa}` : t("pastaLabel")}
+          subtitle={t("pastaNote")}
+          align="left"
+        />
+
+        {/* Massas cadastradas no painel, quando houver. O passo a passo abaixo
+            é o serviço da ilha e independe delas. */}
+        {massas.length > 0 ? (
           <ul className="mt-10 overflow-hidden rounded-2xl border border-border bg-card">
             {massas.map((prato) => (
               <DishRow key={prato.id} dish={prato} />
             ))}
           </ul>
+        ) : null}
+
+        <PastaBuilder extras={pastaExtras} photos={pastaPhotos} />
+      </Section>
+
+      {/* Sobremesas: não pertencem a um dia — saem todo dia, do mesmo balcão.
+          Some inteira enquanto a lista estiver vazia: uma vitrine de sobremesas
+          sem sobremesa nenhuma promete o que a página não tem. */}
+      {desserts.length > 0 ? (
+        <Section containerClassName="max-w-3xl">
+          <SectionHeader
+            title={t("dessertsLabel")}
+            subtitle={t("dessertsNote")}
+            align="left"
+          />
+          <DessertList />
         </Section>
       ) : null}
+
+      {/* Bebidas: fecha a página porque é o que se pede por último. Segunda
+          seção com preço por linha, pela mesma razão da sobremesa — nenhuma
+          das duas entra no valor por quilo. */}
+      {drinkGroups.length > 0 ? (
+        <Section
+          id="bebidas"
+          className="border-t border-border bg-muted/30"
+          containerClassName="max-w-3xl"
+        >
+          <SectionHeader
+            title={t("drinksLabel")}
+            subtitle={t("drinksNote")}
+            align="left"
+          />
+          <DrinkList />
+        </Section>
+      ) : null}
+
+      {/* Carta de vinhos: seção própria porque o vinho não é bebida de balcão.
+          Tem rótulo, procedência e uma escolha por trás, e sai em três doses —
+          então um rótulo tem vários preços, o que não cabe no formato de uma
+          linha por preço das bebidas.
+
+          Ela aparece mesmo sem rótulo cadastrado: nesse caso o componente
+          escreve a linha de apoio, que diz que a carta existe e ainda não foi
+          digitada. Sumir aqui esconderia do visitante que a casa serve vinho. */}
+      <Section containerClassName="max-w-3xl">
+        <SectionHeader
+          title={t("winesLabel")}
+          subtitle={t("winesNote")}
+          align="left"
+        />
+        <WineList wines={wines} />
+      </Section>
     </>
   );
 }

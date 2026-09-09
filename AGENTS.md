@@ -170,6 +170,16 @@ null by hardcoding a number.
   `unstable_cache` + `tags`; invalidate with `updateTag(tags.<x>)` on writes.
 - **Before coding Next APIs**, read `node_modules/next/dist/docs/` — this is
   Next 16 + Turbopack, not your training data.
+  ⚠️ **`quality` on `next/image` is ignored unless the value is in
+  `images.qualities`.** Next 16 made that allowlist mandatory and it defaults to
+  `[75]`: a `quality={50}` in a component is not a build error, not a warning,
+  not a console message — the URL just goes out as `q=75`. It cost two full
+  build-and-measure rounds on 04/09 saying "quality doesn't change the weight",
+  because the value never reached the optimizer. Declared, the home's hero went
+  from 141 KB to 49 and its LCP on a throttled phone from 3288 ms to 1628.
+  `test/qualidade-de-imagem-declarada.test.ts` fails on a value that isn't in
+  the list. This is the same silent-degradation shape the optional-integration
+  inventory guards — a setting accepted, doing nothing, saying nothing.
 
 ## Security — skill: `security-review`
 
@@ -182,6 +192,19 @@ null by hardcoding a number.
 - **Integration state can go stale** — detect and surface it (the Evolution
   instance connection state feeds the admin WhatsApp panel). Never fail
   silently in a way that mimics a different outcome.
+  ⚠️ **An optional integration that degrades has to say so.** Two broke this on
+  the same day: the Instagram vars sat in the *client* schema, so the token
+  would always be `undefined` and the feed would never render; and the rate
+  limiter fell back to an in-memory window with no warning, which on Vercel —
+  where instances are recycled and each keeps its own counter — is almost no
+  protection wearing the shape of protection. Neither failed anything: build
+  green, tests green, page rendered. `test/nenhuma-integracao-degrada-calada.test.ts`
+  now reads the optional vars straight out of `serverSchema` and demands each
+  one be declared in one of two inventories — *this is how its absence shows*,
+  naming the file and symbol that surface it, or *this has a safe default /
+  fails loudly*, with the reason. A new optional var breaks the test until
+  someone writes down which it is. The point is that the choice becomes
+  deliberate rather than an omission.
 - **Headers** are set in `next.config.ts`, CSP included. It is **partial by
   decision, not by omission**: `script-src` keeps `'unsafe-inline'` because Next
   inlines the RSC payload as 23 `<script>` blocks per page — only a per-request

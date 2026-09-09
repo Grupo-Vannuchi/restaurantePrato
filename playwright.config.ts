@@ -18,6 +18,19 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./e2e",
+  /*
+   * Semeia o cardápio ANTES do servidor subir, e limpa no fim.
+   *
+   * ⚠️ A ordem é o ponto. No CI o `webServer` faz `npm run build`, que
+   * PRÉ-RENDERIZA `/cardapio`: se a semeadura acontecesse dentro do teste, o
+   * build já teria congelado a página com o banco vazio e a suíte exercitaria
+   * um estado vazio achando que exercitava conteúdo. `globalSetup` corre antes
+   * do `webServer`; um `beforeAll` de spec, não.
+   *
+   * A semeadura só age contra servidor local — ver `e2e/semeia-cardapio.ts`.
+   */
+  globalSetup: "./e2e/semeia-cardapio.ts",
+  globalTeardown: "./e2e/limpa-cardapio.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -43,8 +56,33 @@ export default defineConfig({
    * `e2e/menu-do-celular.spec.ts`.
    */
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "celular", use: { ...devices["Pixel 7"] } },
+    /*
+     * Aquecimento: roda ANTES dos dois navegadores, depois de o servidor subir.
+     *
+     * ⚠️ Ele existe porque o servidor de desenvolvimento compila cada rota na
+     * primeira visita — a home levava 9,78 s medidos, contra 5 s de tempo
+     * padrão de asserção. O primeiro teste a tocar cada rota pagava essa conta
+     * e falhava, num teste diferente a cada execução. Os números e o
+     * diagnóstico estão em `e2e/aquece.setup.ts`.
+     *
+     * `dependencies` é o que garante a ordem: `globalSetup` corre antes do
+     * `webServer` e portanto não poderia aquecer nada (não há servidor ainda).
+     * Um projeto de dependência corre depois.
+     *
+     * Ele não é apanhado pelos projetos de navegador porque o `testMatch`
+     * padrão do Playwright só casa `*.spec.ts` e `*.test.ts`.
+     */
+    { name: "aquecimento", testMatch: /aquece\.setup\.ts$/ },
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+      dependencies: ["aquecimento"],
+    },
+    {
+      name: "celular",
+      use: { ...devices["Pixel 7"] },
+      dependencies: ["aquecimento"],
+    },
   ],
   // Sem servidor local quando a suíte mira um site publicado: subir um seria
   // desperdício e, pior, mascararia uma falha do deploy com um build local que

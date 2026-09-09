@@ -8,16 +8,19 @@ import { HeroCarousel, type HeroSlide } from "@/components/sections/hero-carouse
  * fetching from a remote host). One per slide, matched by index to the copy in
  * `home.hero.slides`.
  *
- * ⚠️ EMPTY ON PURPOSE. The client's brief requires 100% authorial photography
- * (close-ups of food on the brasa, the renovated dining room) and none has been
- * delivered yet. Until then the carousel falls back to a brand gradient — stock
- * imagery would misrepresent the restaurant, and the previous brand's photos
- * literally carried its logo in frame.
+ * As fotos do cliente chegaram em 03/09/2026 e são autorais: fotografadas no
+ * salão, no balcão e na fachada do proprio Prato. Nada de banco de imagens —
+ * foto genérica de buffet descreveria outro restaurante.
  *
- * To ship the real photos: drop three WebP files here, keep them roughly the
- * same weight (~100–230 KB), and list them below. Slide 1 is the home page LCP.
+ * Hoje a copy tem UM slide, então há uma imagem só. O buffet quente foi a
+ * escolhida porque é o que a frase promete primeiro: "um buffet completo,
+ * sempre quentinho". Ela é o LCP da home, e por isso está em 1600 px e ~180 KB
+ * — mais que isso atrasa a primeira pintura no celular do Centro.
+ *
+ * Para acrescentar slides: solte o WebP aqui, mantenha o peso na mesma faixa
+ * (~100–230 KB) e liste abaixo, na ordem da copy em `home.hero.slides`.
  */
-const slideImages: string[] = [];
+const slideImages: string[] = ["/hero/buffet-quente.webp"];
 
 export async function Hero() {
   const t = await getTranslations("home.hero");
