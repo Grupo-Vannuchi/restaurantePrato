@@ -67,6 +67,21 @@
   --warning: #8a4b00; /* 6,80 / 6,41 / 5,98 */
 }
 
+/*
+ * Esconde a barra de rolagem sem tirar a rolagem.
+ *
+ * Usado só no carrossel das massas: ali a faixa desliza com `scroll-snap`, e a
+ * barra do navegador apareceria como um risco cinza colado na borda de baixo
+ * das fotos. O conteúdo continua rolável por dedo, roda e teclado — o que sai é
+ * o desenho da barra, não o comportamento.
+ */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @layer base {
   * {
     border-color: var(--color-border);

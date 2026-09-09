@@ -103,6 +103,7 @@ const ALLOWED: Record<string, string[]> = {
   "cardapio.dishImageAlt": ["name"],
   "cardapio.pastaPortionNote": ["portion"],
   "cardapio.pastaIngredientsNote": ["n"],
+  "cardapio.pastaGoToPhoto": ["n"],
   "footer.registration": ["value"],
   "admin.dashboard.welcome": ["name"],
   "admin.leads.removeTag": ["tag"],

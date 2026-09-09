@@ -101,12 +101,13 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
   /*
    * Informativo: as três fotos abrem a ilha de massas, e o nome do prato é o
    * que separa uma da outra. Sem ele as três leriam "foto do prato" e
-   * descreveriam uma massa repetida — que é o oposto do que a faixa diz, já
-   * que ela existe para mostrar que a ilha tem opções diferentes.
+   * descreveriam uma massa repetida — que é o oposto do que o carrossel diz, já
+   * que ele existe para mostrar que a ilha tem opções diferentes.
+   *
+   * A frase é montada no `PastaBuilder`, que roda no servidor e tem o catálogo,
+   * e chega aqui pronta: o carrossel é componente de cliente e não traduz nada.
    */
-  "src/components/cardapio/pasta-builder.tsx": [
-    't("dishImageAlt", { name: foto.name })',
-  ],
+  "src/components/cardapio/pasta-carousel.tsx": ["foto.alt"],
   /*
    * Informativo: a foto da sobremesa é a única imagem da linha, e o nome ao
    * lado dela é o próprio conteúdo — quem usa leitor de tela ouviria "imagem"
