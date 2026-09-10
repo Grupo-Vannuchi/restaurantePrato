@@ -141,7 +141,11 @@ export function PastaBuilder({
                         key={opcao}
                         className="border-b border-border px-4 py-4 last:border-b-0 sm:px-6"
                       >
-                        <p className="font-serif text-base font-bold leading-snug sm:text-lg">
+                        {/* Acompanha o `DishRow`: as duas listas caem uma sob
+                            a outra na mesma página, e tamanhos diferentes
+                            fariam a ilha parecer menos importante que o
+                            buffet. Se um mudar, o outro muda junto. */}
+                        <p className="font-serif text-lg font-bold leading-snug sm:text-xl">
                           {opcao}
                         </p>
                       </li>

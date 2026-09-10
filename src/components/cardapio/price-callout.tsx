@@ -83,6 +83,13 @@ export function PriceCallout({
               {cartao.rotulo}
             </p>
             <p className="mt-0.5 font-serif text-xl font-bold">{cartao.preco}</p>
+            {/* Colada no número, e não no pé do bloco: aqui a ressalva fica
+                onde ela vale, e o olho que leu o valor lê a condição no mesmo
+                movimento. Repetida nos dois cartões porque são duas contas
+                diferentes — o quilo e a porção fechada. */}
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {t("subjectToChange")}
+            </p>
             <p className="mt-1 text-pretty text-sm text-muted-foreground">
               {cartao.nota}
             </p>

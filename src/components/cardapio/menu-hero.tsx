@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/layout/logo";
+import { useTranslations } from "next-intl";
+
 import { openingHoursLabel } from "@/config/site";
 
 /**
@@ -51,6 +53,7 @@ const FOTO_DE_FUNDO = "/hero/churrasco-na-brasa.webp";
  * cobertura por um `async` que não faz nada.
  */
 export function MenuHero({ photo = FOTO_DE_FUNDO }: { photo?: string } = {}) {
+  const t = useTranslations("cardapio");
   const horario = openingHoursLabel();
 
   return (
@@ -102,6 +105,13 @@ export function MenuHero({ photo = FOTO_DE_FUNDO }: { photo?: string } = {}) {
             {horario}
           </p>
         ) : null}
+        {/* A ressalva mora aqui em cima porque é onde ela ainda é AVISO: dita
+            depois da lista, viraria desculpa. Fica um degrau abaixo do horário
+            em corpo e em opacidade — quem procura o cardápio passa direto, e
+            quem estranhar um prato encontra a explicação já lida. */}
+        <p className="text-xs tracking-wide text-background/70">
+          {t("subjectToChange")}
+        </p>
       </Container>
     </section>
   );

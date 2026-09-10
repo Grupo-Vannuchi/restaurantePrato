@@ -58,7 +58,12 @@ export default async function ReservasPage({
 
   return (
     <>
-      <PageHeader title={t("title")} subtitle={t("subtitle")} />
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        image="/ambiente/salao.webp"
+        imageAlt="O salão do Restaurante Prato, com as mesas postas"
+      />
 
       {/* Como está o salão ao longo do serviço — vem antes da seção de
          grupos porque a página passou a liderar com o horário, não com o
