@@ -95,18 +95,32 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
   "src/components/sections/hero-carousel.tsx": ['""'], // fundo, com o texto sobreposto
   // Foto de fundo da abertura do cardápio, com a marca sobreposta. Decorativa
   // pelo mesmo motivo do topo da home: o texto por cima é que informa.
+  /*
+   * Decorativa: a garrafa abre a carta de vinhos, e a lista de rótulos e doses
+   * logo abaixo é que informa. Um `alt` preenchido faria o leitor de tela
+   * anunciar uma fotografia antes de chegar ao que a pessoa foi ler.
+   */
+  "src/app/[locale]/(marketing)/cardapio/page.tsx": ['""'],
   "src/components/cardapio/menu-hero.tsx": ['""'],
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.
   /*
    * Informativo: as três fotos abrem a ilha de massas, e o nome do prato é o
    * que separa uma da outra. Sem ele as três leriam "foto do prato" e
-   * descreveriam uma massa repetida — que é o oposto do que a faixa diz, já
-   * que ela existe para mostrar que a ilha tem opções diferentes.
+   * descreveriam uma massa repetida — que é o oposto do que o carrossel diz, já
+   * que ele existe para mostrar que a ilha tem opções diferentes.
+   *
+   * A frase é montada no `PastaBuilder`, que roda no servidor e tem o catálogo,
+   * e chega aqui pronta: o carrossel é componente de cliente e não traduz nada.
    */
-  "src/components/cardapio/pasta-builder.tsx": [
-    't("dishImageAlt", { name: foto.name })',
-  ],
+  /*
+   * Decorativo POR REDUNDÂNCIA: a logo é imagem desde 09/09, e o link que a
+   * envolve já carrega `aria-label` com o nome do restaurante. Um `alt`
+   * preenchido faria o leitor de tela dizer "Restaurante Prato" duas vezes
+   * seguidas — uma pelo rótulo do link, outra pela imagem dentro dele.
+   */
+  "src/components/layout/logo.tsx": ['""'],
+  "src/components/cardapio/pasta-carousel.tsx": ["foto.alt"],
   /*
    * Informativo: a foto da sobremesa é a única imagem da linha, e o nome ao
    * lado dela é o próprio conteúdo — quem usa leitor de tela ouviria "imagem"

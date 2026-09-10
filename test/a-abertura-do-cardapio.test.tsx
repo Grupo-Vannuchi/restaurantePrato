@@ -21,10 +21,9 @@ import { renderWithIntl, screen } from "./test-utils";
  *
  * ⚠️ **A foto chegou em 03/09; a marca, não.** Até então a abertura não tinha
  * imagem nenhuma, e o projeto irmão punha o SVG do logo sobre um véu escuro.
- * Aqui a marca ainda é tipográfica (`public/brand/README.md`), então a abertura
- * segue o padrão do topo da home: com foto ou sem, o texto fica escuro sobre um
- * véu claro. **Um caminho visual só**, e não dois modos em que só um pode ser
- * visto — o outro entraria sem ninguém nunca ter olhado para ele.
+ * A marca é imagem desde 09/09 e a abertura passou a véu ESCURO com a marca
+ * clara em 10/09, alinhando com o topo da home — que havia invertido um dia
+ * antes e deixado as duas aberturas do site sem conversar entre si.
  *
  * ⚠️ **A foto entra por parâmetro, com a do módulo como padrão.** Lendo a
  * constante direto, este teste só conseguiria exercitar o estado de HOJE (com
@@ -33,16 +32,29 @@ import { renderWithIntl, screen } from "./test-utils";
  * `PastaBuilder`, pelo mesmo motivo.
  */
 describe("a abertura do cardápio", () => {
-  it("mostra a marca, que hoje é tipográfica", () => {
+  it("mostra a marca, e ela é nomeada para quem não a vê", () => {
+    /*
+     * A marca virou IMAGEM em 09/09, quando a logo chegou — antes era o nome
+     * escrito na serifada. A asserção mudou junto: procurar o texto do nome
+     * deixaria de encontrar qualquer coisa, e trocar por "existe uma imagem"
+     * não verificaria o que importa.
+     *
+     * O que importa é o nome ACESSÍVEL: quem não vê a logo precisa ouvir
+     * "Restaurante Prato", e isso vem do `aria-label` do link. O `alt` da
+     * imagem fica vazio de propósito — com os dois, o leitor diria o nome duas
+     * vezes seguidas.
+     */
     renderWithIntl(<MenuHero />);
-    expect(screen.getByText(siteConfig.name)).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: siteConfig.name }),
+    ).toBeInTheDocument();
   });
 
   it("desenha a foto de fundo quando existe, que é o estado de hoje", () => {
     const { container } = renderWithIntl(
       <MenuHero photo="/hero/churrasco-na-brasa.webp" />,
     );
-    const img = container.querySelector("img");
+    const img = container.querySelector('img[src*="churrasco"]');
     expect(img).not.toBeNull();
     // Decorativa: o texto por cima é que informa, e a foto repetida em voz alta
     // atrasaria quem usa leitor de tela sem acrescentar nada.
@@ -51,8 +63,13 @@ describe("a abertura do cardápio", () => {
 
   it("não quebra sem foto, para onde a página volta se o arquivo sumir", () => {
     // Sem o véu de reserva, a faixa sairia como um retângulo vazio.
+    //
+    // ⚠️ A busca é pela imagem de FUNDO, não por qualquer `<img>`: desde
+    // 09/09 a marca também é imagem e vive dentro desta faixa. Perguntar
+    // "existe alguma imagem?" passaria a encontrar a logo e o teste deixaria
+    // de verificar o que nomeia.
     const { container } = renderWithIntl(<MenuHero photo="" />);
-    expect(container.querySelector("img")).toBeNull();
+    expect(container.querySelector('img[alt=""]:not([src*="brand"])')).toBeNull();
     expect(container.querySelector("[aria-hidden]")).not.toBeNull();
   });
 

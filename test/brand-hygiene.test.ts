@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -81,12 +81,47 @@ describe("nenhum vestígio do cliente anterior", () => {
   });
 
   it("nos componentes e rotas que desenham a marca", () => {
+    /*
+     * ⚠️ **As superfícies de ícone são resolvidas por NOME-BASE, não por nome
+     * de arquivo, e isso é correção de um defeito real.**
+     *
+     * A lista trazia `src/app/icon.tsx`, `apple-icon.tsx` e
+     * `[locale]/opengraph-image.tsx` escritos por extensão. Em 10/09, quando a
+     * logo chegou, os três deixaram de ser rota gerada e viraram arquivo
+     * estático — `.png`, `.png` e `.jpg`. O teste quebrou com ENOENT, não com
+     * uma asserção: ele parou de VIGIAR a superfície e passou a reclamar do
+     * caminho, que é a pior forma de falhar, porque some a informação de que a
+     * marca deixou de ser vigiada.
+     *
+     * O Next aceita as duas formas para as três, então a extensão é uma escolha
+     * que pode mudar de novo. O nome-base, não.
+     */
+    const SUPERFICIES_DE_ICONE = [
+      "src/app/icon",
+      "src/app/apple-icon",
+      "src/app/[locale]/opengraph-image",
+    ];
+    const EXTENSOES = [".tsx", ".ts", ".png", ".jpg", ".jpeg", ".svg", ".ico", ".gif"];
+
+    const resolvidas = SUPERFICIES_DE_ICONE.map((base) => {
+      const achada = EXTENSOES.map((e) => base + e).find((c) =>
+        existsSync(join(process.cwd(), c)),
+      );
+      // Sentinela: uma superfície que ninguém encontra é uma superfície que
+      // ninguém está vigiando, e o teste tem de dizer isso em vez de estourar.
+      expect(
+        achada,
+        `A superfície de marca "${base}" não existe em nenhuma extensão conhecida. ` +
+          `Se ela foi renomeada, atualize esta lista; se foi removida de propósito, ` +
+          `tire-a daqui — mas não a deixe silenciosamente sem varredura.`,
+      ).toBeDefined();
+      return achada!;
+    });
+
     expect(
       offenders([
         "src/components/layout/logo.tsx",
-        "src/app/icon.tsx",
-        "src/app/apple-icon.tsx",
-        "src/app/[locale]/opengraph-image.tsx",
+        ...resolvidas,
         "src/app/globals.css",
         "public",
       ]),

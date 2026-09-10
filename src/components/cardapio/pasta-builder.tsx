@@ -1,5 +1,9 @@
-import Image from "next/image";
 import { useTranslations } from "next-intl";
+
+import {
+  PastaCarousel,
+  type PastaPhoto,
+} from "@/components/cardapio/pasta-carousel";
 
 import { formatBRL, pastaChoices, type PastaExtra } from "@/config/menu";
 
@@ -37,12 +41,17 @@ import { formatBRL, pastaChoices, type PastaExtra } from "@/config/menu";
  * caminho com preço estrearia sem nunca ter rodado, no dia em que ninguém
  * estiver olhando. Mesma decisão do `PriceCallout`.
  *
- * ⚠️ **Faixa de fotos, e não carrossel.** O projeto irmão abre a seção com um
- * carrossel; aqui as três aparecem de uma vez. Um carrossel mostra uma massa e
- * esconde duas, e cobra por isso autoplay com pausa (WCAG 2.2.2), setas,
- * marcadores e foco — a mesma maquinaria cujos defeitos latentes custaram uma
- * manhã no carrossel da home. Para três fotos, a grade mostra mais e não tem
- * como travar.
+ * ⚠️ **Carrossel, e não grade — a seção mudou em 09/09, a pedido.** Ela nasceu
+ * como faixa de três fotos lado a lado, e eu havia argumentado contra o
+ * carrossel: ele mostra uma massa e esconde duas, e cobra a maquinaria cujos
+ * defeitos latentes custaram uma manhã no carrossel da home.
+ *
+ * Metade do argumento estava errada, e o registro importa mais que o acerto.
+ * Este carrossel **não tem autoplay**: o deslize é `scroll-snap` nativo, o dedo
+ * funciona sem JavaScript, e o script só acrescenta setas e marcadores. Sem
+ * movimento automático não existe a exigência de pausa da WCAG 2.2.2, que era o
+ * custo que eu tinha citado. Eu havia assumido autoplay por analogia com o da
+ * home, sem ler o do projeto irmão.
  */
 export function PastaBuilder({
   extras,
@@ -52,6 +61,13 @@ export function PastaBuilder({
   photos: readonly { photo: string; name: string }[];
 }) {
   const t = useTranslations("cardapio");
+
+  /* O texto alternativo é montado aqui, no servidor, porque é ele que tem o
+     catálogo — o carrossel é componente de cliente e recebe a frase pronta. */
+  const slides: PastaPhoto[] = photos.map((f) => ({
+    image: f.photo,
+    alt: t("dishImageAlt", { name: f.name }),
+  }));
 
   /** Cada passo traz opções **ou** uma nota — nunca os dois. */
   const passos: { titulo: string; opcoes?: readonly string[]; nota?: string }[] = [
@@ -66,25 +82,23 @@ export function PastaBuilder({
 
   return (
     <div className="mt-10">
-      {/* Sem foto a faixa inteira some, em vez de reservar três quadrados
-          vazios — foi assim que a seção nasceu, e é para onde ela volta se
+      {/* Sem foto o carrossel inteiro some, em vez de reservar um quadro
+          vazio — foi assim que a seção nasceu, e é para onde ela volta se
           alguém apagar os arquivos. */}
-      {photos.length > 0 ? (
-        <ul className="mb-12 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {photos.map((foto) => (
-            <li key={foto.photo} className="overflow-hidden rounded-2xl">
-              <Image
-                src={foto.photo}
-                alt={t("dishImageAlt", { name: foto.name })}
-                width={1100}
-                height={619}
-                loading="lazy"
-                sizes="(min-width: 640px) 33vw, 100vw"
-                className="aspect-[4/3] w-full object-cover"
-              />
-            </li>
-          ))}
-        </ul>
+      {slides.length > 0 ? (
+        <div className="mb-12">
+          <PastaCarousel
+            photos={slides}
+            labels={{
+              carousel: t("pastaCarousel"),
+              prev: t("pastaPrevPhoto"),
+              next: t("pastaNextPhoto"),
+              // O rótulo de cada marcador é montado no cliente, que não tem o
+              // catálogo: mandamos o molde e ele troca o {n}.
+              goTo: t("pastaGoToPhoto", { n: "{n}" }),
+            }}
+          />
+        </div>
       ) : null}
 
       <h3 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">

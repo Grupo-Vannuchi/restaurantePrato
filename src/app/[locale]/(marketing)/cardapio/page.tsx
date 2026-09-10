@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MenuHero } from "@/components/cardapio/menu-hero";
 import { PageHeader } from "@/components/page-header";
@@ -213,6 +214,19 @@ export default async function CardapioPage({
           title={t("winesLabel")}
           subtitle={t("winesNote")}
           align="left"
+        />
+        {/* A foto abre a seção, como no projeto irmão: vinho é escolha, e uma
+            garrafa na mesa do salão diz isso melhor que uma lista de preços.
+            Decorativa — a carta abaixo é que informa, e o `alt` preenchido
+            faria o leitor de tela anunciar uma imagem antes dos rótulos. */}
+        <Image
+          src="/bebidas/vinho-na-mesa.webp"
+          alt=""
+          width={1400}
+          height={933}
+          loading="lazy"
+          sizes="(min-width: 1280px) 768px, 100vw"
+          className="mt-8 aspect-[16/9] w-full rounded-2xl object-cover"
         />
         <WineList wines={wines} />
       </Section>

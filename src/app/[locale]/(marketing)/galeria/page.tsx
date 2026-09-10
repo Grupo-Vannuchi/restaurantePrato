@@ -39,7 +39,20 @@ export default async function PortfolioPage({
         {photos.length === 0 ? (
           <p className="text-center text-muted-foreground">{t("empty")}</p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          /*
+           * ⚠️ DUAS colunas no celular, e a razão é peso, não gosto.
+           *
+           * A galeria foi de 6 para 25 fotos em 10/09. Com uma coluna cada foto
+           * pede a largura inteira da tela — 412 CSS px vezes a densidade do
+           * aparelho dá 1070, e o navegador baixa o arquivo de 1200. Em duas
+           * colunas ele pede metade disso, e o arquivo cai a cerca de um terço
+           * dos bytes. O `sizes` do cartão acompanha, senão a promessa de
+           * largura inteira faz o navegador baixar o grande de todo jeito.
+           *
+           * De quebra a galeria fica percorrível: vinte e cinco fotos
+           * empilhadas numa coluna são vinte e cinco telas de rolagem.
+           */
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
             {photos.map((photo, i) =>
               // A primeira foto fica FORA da revelação, pelo mesmo motivo que o
               // título das páginas internas saiu dela: `Reveal` nasce com

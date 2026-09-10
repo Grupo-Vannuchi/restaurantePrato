@@ -13,3 +13,25 @@ afterEach(() => cleanup());
 if (typeof Element !== "undefined" && !Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
 }
+
+/*
+ * O jsdom também não implementa `matchMedia`, e componentes que perguntam ao
+ * sistema por `prefers-reduced-motion` quebram sem ele — o carrossel das massas
+ * foi o primeiro.
+ *
+ * O padrão devolvido é `matches: false`, que significa "pode animar": é o
+ * estado da maioria dos visitantes, e o que o componente assume enquanto não
+ * consegue perguntar. Um teste que precise do outro caso substitui isto.
+ */
+if (typeof window !== "undefined" && !window.matchMedia) {
+  window.matchMedia = ((query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    addListener: () => {},
+    removeListener: () => {},
+    dispatchEvent: () => false,
+  })) as typeof window.matchMedia;
+}

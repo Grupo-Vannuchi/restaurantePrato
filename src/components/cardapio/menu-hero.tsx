@@ -11,10 +11,16 @@ import { openingHoursLabel } from "@/config/site";
  * antes da lista. Estático, e não carrossel: o topo da home tem slides porque
  * conta uma história; aqui o objetivo é a pessoa reconhecer onde está e descer.
  *
- * ⚠️ **Um caminho visual só, com foto ou sem.** O equivalente do projeto irmão
- * põe uma foto do buffet ao fundo com véu ESCURO e a marca clara por cima.
- * Copiar aqui renderia uma faixa preta com um buraco no meio: não há foto
- * nenhuma, e a marca ainda é tipográfica (ver `public/brand/README.md`).
+ * ⚠️ **Passou a ser véu ESCURO com marca clara em 10/09, e os dois
+ * impedimentos que seguravam isso acabaram.** Este comentário dizia que copiar
+ * o projeto irmão renderia "uma faixa preta com um buraco no meio", porque não
+ * havia foto nenhuma e a marca era tipográfica. A foto entrou em 03/09 e a logo
+ * em 09/09.
+ *
+ * O que forçou a troca agora foi uma inconsistência que eu mesmo criei: em
+ * 09/09 o topo da home passou a véu escuro com texto claro, a pedido, e esta
+ * abertura ficou clara com texto escuro. As duas aberturas do site deixaram de
+ * conversar.
  *
  * Fazer os dois modos — claro sem foto, escuro com foto — significaria embarcar
  * um caminho que ninguém consegue ver hoje, para ele estrear no dia em que a
@@ -83,16 +89,16 @@ export function MenuHero({ photo = FOTO_DE_FUNDO }: { photo?: string } = {}) {
           `e2e/o-texto-sobre-a-foto-continua-legivel.spec.ts` cobre esta página. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background/82"
+        className="absolute inset-0 bg-gradient-to-b from-foreground/88 via-foreground/78 to-foreground/70"
       />
 
       <Container className="relative flex flex-col items-center gap-4 py-12 text-center sm:py-16">
-        {/* `lockup` é a variante com espaço, e aqui há. Enquanto a marca for
-            tipográfica isto é o nome na serifada; quando o arquivo chegar, vira
-            imagem sem tocar nesta página. */}
-        <Logo variant="lockup" className="text-3xl sm:text-4xl" />
+        {/* A variante clara: sobre véu escuro o nome verde apagaria. Só o
+            nome é tingido — o cozinheiro fica nas cores dele, porque tingir o
+            conjunto o transforma em silhueta sem rosto. */}
+        <Logo variant="lockup-claro" />
         {horario ? (
-          <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+          <p className="text-sm font-medium uppercase tracking-widest text-background">
             {horario}
           </p>
         ) : null}

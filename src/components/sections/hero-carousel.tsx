@@ -159,7 +159,13 @@ export function HeroCarousel({
                   className="absolute inset-0 bg-[radial-gradient(120%_100%_at_80%_20%,var(--color-accent)_0%,transparent_55%),radial-gradient(90%_90%_at_20%_90%,var(--color-brand)_0%,transparent_60%)] opacity-30"
                 />
               )}
-              {/* Véu de leitura.
+              {/* Véu de leitura, ESCURO desde 09/09/2026.
+                  Ele era claro, com texto escuro por cima, e o cliente pediu a
+                  troca. Não é uma mudança só: inverter o véu obriga a inverter
+                  título, subtítulo, etiqueta e o botão vazado — que eram
+                  escuros e sumiriam. E invalida as medições de contraste
+                  anteriores, refeitas depois da troca.
+
                   ⚠️ **Ele precisa de dois desenhos, e o motivo é geométrico.**
                   No desktop o texto ocupa a metade esquerda, então um degradê
                   HORIZONTAL cobre onde ele está e deixa a foto aparecer à
@@ -175,17 +181,17 @@ export function HeroCarousel({
 
                   Abaixo de `sm`, então, véu chapado e forte; de `sm` para cima,
                   o degradê que preserva a foto. */}
-              <div className="absolute inset-0 bg-background/90 sm:bg-transparent sm:bg-gradient-to-r sm:from-background sm:via-background/80 sm:to-background/30" />
+              <div className="absolute inset-0 bg-foreground/75 sm:bg-transparent sm:bg-gradient-to-r sm:from-foreground/90 sm:via-foreground/78 sm:to-foreground/35" />
 
               <Container className="relative flex h-full max-w-none flex-col items-start justify-center gap-6 text-left">
-                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur">
+                <span className="inline-flex items-center gap-2 rounded-full border border-background/30 bg-background/10 px-4 py-1.5 text-sm font-medium text-background backdrop-blur">
                   <span className="size-2 animate-pulse rounded-full bg-brand" aria-hidden />
                   {eyebrow}
                 </span>
-                <Heading className="max-w-3xl text-balance text-4xl font-bold tracking-tight sm:text-6xl">
+                <Heading className="max-w-3xl text-balance text-4xl font-bold tracking-tight text-background sm:text-6xl">
                   {slide.title}
                 </Heading>
-                <p className="max-w-xl text-pretty text-lg text-muted-foreground">
+                <p className="max-w-xl text-pretty text-lg text-background">
                   {slide.subtitle}
                 </p>
                 <div className="flex flex-col gap-3 sm:flex-row">
@@ -200,7 +206,13 @@ export function HeroCarousel({
                   <Link
                     href="/contato"
                     tabIndex={active ? undefined : -1}
-                    className={buttonVariants({ variant: "outline", size: "lg" })}
+                    className={buttonVariants({
+                      variant: "outline",
+                      size: "lg",
+                      // Sobre o véu escuro, a borda e o texto do vazado padrão
+                      // — que são escuros — sumiriam. Aqui ele inverte.
+                      className: "border-background/60 text-background hover:bg-background/15",
+                    })}
                   >
                     {secondaryCta}
                   </Link>

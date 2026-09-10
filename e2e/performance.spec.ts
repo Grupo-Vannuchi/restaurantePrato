@@ -129,10 +129,33 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  * Bytes de imagem, ao contrário, atravessam qualquer transporte: 381 KB são
  * 381 KB no HTTP/1.1, no HTTP/2 e no 5G. É o que dá para guardar honestamente.
  *
+ * ⚠️ **Esta guarda já passou verde medindo o passado, e a causa não estava
+ * nela.** Em 10/09 a galeria foi de 6 para 12 fotos e o orçamento seguiu
+ * verde. A página servia OITO — o build reaproveitou o resultado em cache de
+ * `unstable_cache`, e o roteiro de medição limpava só `.next/cache/images`, não
+ * `.next/cache`. Medido com o cache inteiro apagado, a galeria pesava 1311 KB
+ * no celular, contra um limite de 580 que ela dizia respeitar.
+ *
+ * A lição não é sobre esta guarda: **cache de consulta desatualizado faz toda
+ * guarda dependente de conteúdo medir o passado**, e nenhuma delas tem como
+ * saber. Ao medir peso ou contraste depois de mexer no banco, apagar `.next`
+ * inteiro — não só as imagens.
+ *
  * ⚠️ **A regressão que isto pega tem nome.** As fotos entraram em 03/09 e a
  * home passou de zero para QUATRO imagens: o hero mais três da prévia da
  * galeria. Acrescentar foto na galeria pelo painel deixa a HOME mais pesada, e
  * quem acrescenta não está olhando para a home.
+ *
+ * ⚠️ **O limite da home subiu de 350 para 430 KB em 09/09**, quando o topo
+ * passou de um slide para três. Subir limite é o movimento suspeito por
+ * excelência — o normal é ele estar frouxo escondendo desperdício —, então o
+ * que justifica está medido: o LCP no celular ficou em 1660 ms contra 1628
+ * antes, ou seja, não mudou. Os dois slides novos carregam DEPOIS da primeira
+ * pintura, e o peso a mais não é pago por quem só olha a primeira tela.
+ *
+ * As três fotos mais pesadas da home continuam sendo as da prévia da galeria,
+ * a 75 de qualidade, e não as do topo, que estão a 50 sob véu. Elas ficam onde
+ * estão de propósito: foto de galeria aparece inteira, sem véu, e é conteúdo.
  *
  * Os números caíram em 04/09, depois de as duas aberturas passarem a
  * `quality={50}`: elas são fotografias sob véu de leitura, e a de 50 é
@@ -141,8 +164,14 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  * abaixo já refletem isso, e é por isso que são apertados: afrouxá-los
  * devolveria em silêncio o que essa medição comprou.
  *
- * Os limites saem do CELULAR, que é o pior caso em todas as páginas: ali as
- * fotos ocupam a largura toda e o navegador pede o arquivo maior. A home dá
+ * ⚠️ **A home deixou de ter o celular como pior caso em 10/09**, e vale
+ * entender por quê antes de mexer: a grade da galeria passou a duas colunas no
+ * telefone, então a prévia da home pede meia largura ali e a largura inteira no
+ * desktop de três colunas. O limite dela agora sai do desktop. Nas outras duas
+ * o celular continua governando.
+ *
+ * Os limites saíam do CELULAR por padrão: ali as fotos costumam ocupar a
+ * largura toda e o navegador pede o arquivo maior. A home dá
  * 328 KB no desktop contra 381 no celular; a galeria, 217 contra 483. Medir
  * pelo desktop deixaria passar mais de o dobro sem ninguém notar.
  *
@@ -152,9 +181,9 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  * mostrar menos fotos na prévia — nunca subir o número sem medir.
  */
 const ORCAMENTO_DE_IMAGEM_KB: Record<string, number> = {
-  "/": 350, // celular: medido 290 KB · 4 imagens (hero + 3 da prévia da galeria)
-  "/cardapio": 310, // celular: medido 257 KB · abertura + 3 da ilha de massas
-  "/galeria": 580, // celular: medido 483 KB · as 6 da galeria. É uma galeria: pesa mesmo
+  "/": 320, // pior caso desktop: medido 258 KB · 3 slides do topo + 3 da prévia
+  "/cardapio": 390, // celular: medido 318 KB · abertura + 8 no carrossel da ilha
+  "/galeria": 600, // celular: medido 497 KB com VINTE E CINCO fotos
 };
 
 for (const [path, limite] of Object.entries(ORCAMENTO_DE_IMAGEM_KB)) {
