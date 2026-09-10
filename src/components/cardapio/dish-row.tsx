@@ -23,11 +23,14 @@ export function DishRow({ dish }: { dish: DishView }) {
 
   return (
     <li className="border-b border-border px-5 py-4 last:border-b-0 sm:px-6">
-      <h3 className="font-serif text-base font-bold leading-snug sm:text-lg">
+      {/* Um degrau acima do que era (`base`/`lg`), alinhando com o projeto
+          irmão: este cardápio é lido EM PÉ, no celular, com o código escaneado
+          na mesa. O nome do prato precisa sair de relance. */}
+      <h3 className="font-serif text-lg font-bold leading-snug sm:text-xl">
         {dish.name}
       </h3>
       {texto ? (
-        <p className="mt-1 text-pretty text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-1 text-pretty text-base leading-relaxed text-muted-foreground">
           {texto}
         </p>
       ) : null}

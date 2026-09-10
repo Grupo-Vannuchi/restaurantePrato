@@ -70,6 +70,8 @@ export default async function AboutPage({
       <PageHeader
         title={t("title")}
         subtitle={t("subtitle")}
+        image="/ambiente/balcao-e-salao.webp"
+        imageAlt="O balcão do Restaurante Prato visto do salão"
       />
 
       <Section>

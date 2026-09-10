@@ -64,16 +64,46 @@ const ABERTURAS = [
   {
     rota: "/",
     nome: "o topo da home",
+    seletor: "section p",
     onde: "src/components/sections/hero-carousel.tsx",
   },
   {
     rota: "/cardapio",
     nome: "a abertura do cardápio",
+    seletor: "section p",
     onde: "src/components/cardapio/menu-hero.tsx",
+  },
+  /*
+   * As faixas de título com foto, que entraram em 10/09 quando a galeria passou
+   * a mostrar só comida e o ambiente mudou de lugar. São três superfícies novas
+   * de texto sobre fotografia, e o seletor é outro: `PageHeader` é um `div`, não
+   * um `section`, e o texto medido é o subtítulo logo depois do `h1`.
+   *
+   * Medidas ao entrar, com o véu atual: a pior das três dá 8,12:1. A folga é
+   * grande de propósito — a foto de ambiente pode ser trocada por uma mais
+   * clara sem aviso, e é a foto que manda aqui.
+   */
+  {
+    rota: "/reservas",
+    nome: "a faixa de Horários",
+    seletor: "h1 + p",
+    onde: "src/components/page-header.tsx",
+  },
+  {
+    rota: "/experiencia",
+    nome: "a faixa da Experiência",
+    seletor: "h1 + p",
+    onde: "src/components/page-header.tsx",
+  },
+  {
+    rota: "/contato",
+    nome: "a faixa de Contato",
+    seletor: "h1 + p",
+    onde: "src/components/page-header.tsx",
   },
 ];
 
-for (const { rota, nome, onde } of ABERTURAS) {
+for (const { rota, nome, seletor, onde } of ABERTURAS) {
   test(`${nome} se lê sobre o fundo composto`, async ({ page }) => {
     /*
      * ⚠️ **Movimento reduzido, e não é preferência estética: sem isto a guarda
@@ -92,7 +122,7 @@ for (const { rota, nome, onde } of ABERTURAS) {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(rota, { waitUntil: "networkidle" });
 
-    const texto = page.locator("section p").first();
+    const texto = page.locator(seletor).first();
     await expect(texto).toBeVisible();
 
     const caixa = await texto.boundingBox();

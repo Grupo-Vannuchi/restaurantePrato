@@ -183,7 +183,15 @@ for (const path of ["/", "/cardapio", "/contato"]) {
 const ORCAMENTO_DE_IMAGEM_KB: Record<string, number> = {
   "/": 320, // pior caso desktop: medido 258 KB · 3 slides do topo + 3 da prévia
   "/cardapio": 390, // celular: medido 318 KB · abertura + 8 no carrossel da ilha
-  "/galeria": 600, // celular: medido 497 KB com VINTE E CINCO fotos
+  "/galeria": 600, // celular: medido 458 KB com vinte e duas fotos de comida
+  /*
+   * As três faixas de título que ganharam foto em 10/09, quando o ambiente saiu
+   * da galeria. Entram aqui porque foto nova sem orçamento é peso que cresce
+   * sem ninguém olhar — foi o que aconteceu com a home em 03/09.
+   */
+  "/reservas": 130, // celular: medido 98 KB
+  "/experiencia": 220, // celular: medido 173 KB
+  "/contato": 120, // celular: medido 90 KB
 };
 
 for (const [path, limite] of Object.entries(ORCAMENTO_DE_IMAGEM_KB)) {

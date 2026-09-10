@@ -101,6 +101,18 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
    * anunciar uma fotografia antes de chegar ao que a pessoa foi ler.
    */
   "src/app/[locale]/(marketing)/cardapio/page.tsx": ['""'],
+  /*
+   * Informativa POR EXCEÇÃO, e ela é a única foto de fundo do projeto com `alt`
+   * preenchido. As outras faixas com imagem são decorativas — o texto por cima
+   * informa. Aqui a foto é do AMBIENTE, que é o assunto da faixa: quem não vê
+   * a fachada ou o salão perde a informação de como é o lugar, e o título
+   * ("Horários", "Contato") não a repõe.
+   *
+   * A descrição carrega o número da rua de propósito: `test/o-endereco-e-o-mesmo-em-todo-lugar.test.ts`
+   * exige que toda menção ao logradouro traga o mesmo número, e ela pegou esta
+   * linha escrita sem ele.
+   */
+  "src/components/page-header.tsx": ["imageAlt"],
   "src/components/cardapio/menu-hero.tsx": ['""'],
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.

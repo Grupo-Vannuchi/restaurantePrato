@@ -46,11 +46,15 @@ export async function DessertList() {
             />
           ) : null}
           <div className="min-w-0 flex-1">
-            <h3 className="font-serif text-base font-bold leading-snug sm:text-lg">
+            {/* Consequência dos dois acima, não escolha isolada: a sobremesa
+                cai na mesma página, logo abaixo do cardápio da semana e da
+                ilha. Uma seção menor que as vizinhas não lê como desenho, lê
+                como esquecimento. */}
+            <h3 className="font-serif text-lg font-bold leading-snug sm:text-xl">
               {sobremesa.name}
             </h3>
             {sobremesa.note ? (
-              <p className="mt-1 text-pretty text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-1 text-pretty text-base leading-relaxed text-muted-foreground">
                 {sobremesa.note}
               </p>
             ) : null}

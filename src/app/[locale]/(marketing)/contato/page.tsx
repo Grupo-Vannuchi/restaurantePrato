@@ -101,7 +101,12 @@ export default async function ContactPage({
 
   return (
     <>
-      <PageHeader title={t("title")} subtitle={t("subtitle")} />
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        image="/ambiente/fachada.webp"
+        imageAlt="A fachada do Restaurante Prato na Rua Augusto Severo, 25"
+      />
 
       {/* O mapa antes do formulario: quem abre esta pagina quer saber onde fica
           antes de escrever. Ele some do rodape aqui, para nao repetir — ver

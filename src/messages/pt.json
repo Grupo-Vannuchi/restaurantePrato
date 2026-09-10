@@ -521,6 +521,7 @@
     "buffetNote": "O valor é calculado pelo peso do prato que você montar, não pelo que você escolher.",
     "pastaLabel": "Ilha de massas",
     "pastaNote": "Preço fechado por porção, à parte do buffet.",
+    "subjectToChange": "Sujeito a alterações.",
     "pastaBuild": "Monte seu prato",
     "pastaPortionNote": "Porção de {portion}, montada e servida na hora.",
     "pastaShapes": "Escolha a massa",
