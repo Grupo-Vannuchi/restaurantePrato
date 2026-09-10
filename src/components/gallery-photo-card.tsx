@@ -32,9 +32,12 @@ export async function GalleryPhotoCard({
         alt={photo.caption ? "" : t("photoAlt")}
         width={640}
         height={480}
-        // Grade de 1 / 2 / 3 colunas: sem isto o navegador pede o arquivo do
+        // Grade de 2 / 2 / 3 colunas: sem isto o navegador pede o arquivo do
         // tamanho da janela inteira e joga fora dois terços dos bytes.
-        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+        // ⚠️ Deixou de ter `100vw` em 10/09, quando a grade do celular passou a
+        // duas colunas — um `sizes` que promete largura inteira faz o navegador
+        // baixar o arquivo grande mesmo que o cartão ocupe metade da tela.
+        sizes="(min-width: 1024px) 33vw, 50vw"
         priority={priority}
         quality={50}
         className="aspect-[4/3] w-full rounded-xl object-cover"

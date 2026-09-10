@@ -175,6 +175,11 @@ export const pastaPhotos = [
   { photo: "/massas/fettuccine-ao-pesto.webp", name: "Fettuccine ao pesto" },
   { photo: "/massas/nhoque-ao-sugo.webp", name: "Nhoque ao sugo" },
   { photo: "/massas/massa-ao-molho-branco.webp", name: "Massa ao molho branco" },
+  { photo: "/massas/cappelletti-ao-sugo.webp", name: "Cappelletti ao sugo" },
+  { photo: "/massas/massa-a-bolonhesa.webp", name: "Massa à bolonhesa" },
+  { photo: "/massas/nhoque-ao-sugo-com-pao.webp", name: "Nhoque ao sugo com pão" },
+  { photo: "/massas/fettuccine-ao-pesto-com-vinho.webp", name: "Fettuccine ao pesto com vinho" },
+  { photo: "/massas/tres-massas-emplatadas.webp", name: "Três massas da ilha" },
 ] as const;
 
 /** Adicionais com preço próprio. Vazio até os valores chegarem — veja acima. */

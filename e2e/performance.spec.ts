@@ -164,8 +164,14 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  * abaixo já refletem isso, e é por isso que são apertados: afrouxá-los
  * devolveria em silêncio o que essa medição comprou.
  *
- * Os limites saem do CELULAR, que é o pior caso em todas as páginas: ali as
- * fotos ocupam a largura toda e o navegador pede o arquivo maior. A home dá
+ * ⚠️ **A home deixou de ter o celular como pior caso em 10/09**, e vale
+ * entender por quê antes de mexer: a grade da galeria passou a duas colunas no
+ * telefone, então a prévia da home pede meia largura ali e a largura inteira no
+ * desktop de três colunas. O limite dela agora sai do desktop. Nas outras duas
+ * o celular continua governando.
+ *
+ * Os limites saíam do CELULAR por padrão: ali as fotos costumam ocupar a
+ * largura toda e o navegador pede o arquivo maior. A home dá
  * 328 KB no desktop contra 381 no celular; a galeria, 217 contra 483. Medir
  * pelo desktop deixaria passar mais de o dobro sem ninguém notar.
  *
@@ -175,9 +181,9 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  * mostrar menos fotos na prévia — nunca subir o número sem medir.
  */
 const ORCAMENTO_DE_IMAGEM_KB: Record<string, number> = {
-  "/": 430, // celular: medido 358 KB · 3 slides do topo + 3 da prévia da galeria
-  "/cardapio": 310, // celular: medido 257 KB · abertura + 3 da ilha de massas
-  "/galeria": 580, // celular: medido 483 KB · as 6 da galeria. É uma galeria: pesa mesmo
+  "/": 320, // pior caso desktop: medido 258 KB · 3 slides do topo + 3 da prévia
+  "/cardapio": 390, // celular: medido 318 KB · abertura + 8 no carrossel da ilha
+  "/galeria": 600, // celular: medido 497 KB com VINTE E CINCO fotos
 };
 
 for (const [path, limite] of Object.entries(ORCAMENTO_DE_IMAGEM_KB)) {

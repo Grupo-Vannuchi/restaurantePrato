@@ -61,18 +61,36 @@ function carregaEnv() {
  * cumpre esse papel e repetir faria o leitor de tela dizer tudo duas vezes.
  */
 const FOTOS = [
+  // A rua e o salão: onde a pessoa chega.
   ["fachada.webp", "A fachada na Rua Augusto Severo, 25"],
   ["salao.webp", "O salão, com a ilha de massas ao fundo"],
+  ["balcao-e-salao.webp", "O balcão visto do salão"],
+  // Os frios, que é por onde o balcão começa.
   ["buffet-de-saladas.webp", "A ilha de saladas, montada no começo do almoço"],
+  ["ilha-de-saladas-com-frutas.webp", "A ilha de saladas, com as frutas do dia"],
   ["frios-e-palmito.webp", "Os frios, com palmito e couve-flor"],
+  ["frios-do-balcao.webp", "As conservas e os grãos"],
+  ["legumes-e-conservas.webp", "Legumes e conservas"],
+  ["cenoura-ervilha-e-batata.webp", "Cenoura, ervilha e batata"],
+  ["palmito-e-beterraba.webp", "Palmito e beterraba"],
+  ["ovo-cenoura-e-batata-palha.webp", "Ovo, cenoura e batata palha"],
   ["servindo-no-balcao.webp", "Montando o prato no balcão"],
+  // O balcão quente.
   ["buffet-quente.webp", "O buffet quente, com risoto, lasanha e batatas"],
   ["arroz-farofa-feijao.webp", "Arroz, farofa e feijão, sempre no balcão quente"],
+  ["arroz-farofa-e-ensopado.webp", "Arroz, farofa e o ensopado do dia"],
   ["buffet-quente-ensopados.webp", "Os ensopados do dia"],
+  ["assados-e-batatas.webp", "Assados e batatas"],
+  ["batatas-feijao-e-couve-flor.webp", "Batatas, feijão e couve-flor"],
   ["pernil-assado.webp", "O pernil assado, inteiro na travessa"],
   ["churrasco.webp", "O churrasco na brasa, fatiado na hora"],
-  ["salgados-fritos.webp", "Os salgados, fritos na hora"],
+  // Os fritos, que fecham o balcão.
+  ["salgados-fritos.webp", "Os bolinhos, fritos na hora"],
+  ["salgados-variados.webp", "Os salgados do balcão"],
   ["pasteis.webp", "Os pastéis, fritos na hora"],
+  ["pasteis-no-prato.webp", "Pastéis servidos no prato"],
+  // Um prato montado, que é o resultado de tudo acima.
+  ["prato-servido.webp", "Um prato montado, com salada e batata"],
 ];
 
 async function main() {
