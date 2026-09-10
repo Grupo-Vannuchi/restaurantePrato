@@ -95,6 +95,12 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
   "src/components/sections/hero-carousel.tsx": ['""'], // fundo, com o texto sobreposto
   // Foto de fundo da abertura do cardápio, com a marca sobreposta. Decorativa
   // pelo mesmo motivo do topo da home: o texto por cima é que informa.
+  /*
+   * Decorativa: a garrafa abre a carta de vinhos, e a lista de rótulos e doses
+   * logo abaixo é que informa. Um `alt` preenchido faria o leitor de tela
+   * anunciar uma fotografia antes de chegar ao que a pessoa foi ler.
+   */
+  "src/app/[locale]/(marketing)/cardapio/page.tsx": ['""'],
   "src/components/cardapio/menu-hero.tsx": ['""'],
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.

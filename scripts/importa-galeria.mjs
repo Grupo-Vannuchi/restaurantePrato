@@ -37,8 +37,23 @@ function carregaEnv() {
 
 /**
  * A ordem é a de uma visita: chega-se pela rua, entra-se no salão, e só então
- * se vê a comida. Abrir pela travessa de pastéis mostraria o prato antes do
- * lugar, e a galeria existe para dizer como é estar lá.
+ * se vê a comida — primeiro os frios, depois o quente, e os fritos por último,
+ * que é a ordem do próprio balcão. Abrir pela travessa de pastéis mostraria o
+ * prato antes do lugar, e a galeria existe para dizer como é estar lá.
+ *
+ * ⚠️ **Seis fotos entraram em 10/09, escolhidas de dezessete, e a curadoria é
+ * a parte que importa.** O cliente mandou vinte e cinco arquivos; sete eram
+ * repetição exata do que já estava no projeto, e uma era o mesmo quadro da
+ * ilha de saladas com recorte levemente diferente — essa passou pela
+ * comparação automática por um fio, com distância 9 contra o limite de 8, e só
+ * caiu ao ser olhada lado a lado.
+ *
+ * Das dezessete inéditas, ONZE eram bandejas de frios quase iguais entre si:
+ * beterraba, batata e ovo de ângulos diferentes. Pixel a pixel não repetem;
+ * como assunto, repetem. Publicar as onze faria uma galeria monótona e pesada,
+ * então entrou a melhor de cada grupo — frios, quente, ensopado, assado,
+ * fritos e uma com pessoa montando o prato, que é a única que mostra gente
+ * usando o lugar.
  *
  * A legenda é texto VISÍVEL ao lado da foto, não texto alternativo. É por isso
  * que ela descreve o que se vê em vez de rotular ("Foto 3"): quando existe
@@ -49,8 +64,14 @@ const FOTOS = [
   ["fachada.webp", "A fachada na Rua Augusto Severo, 25"],
   ["salao.webp", "O salão, com a ilha de massas ao fundo"],
   ["buffet-de-saladas.webp", "A ilha de saladas, montada no começo do almoço"],
+  ["frios-e-palmito.webp", "Os frios, com palmito e couve-flor"],
+  ["servindo-no-balcao.webp", "Montando o prato no balcão"],
   ["buffet-quente.webp", "O buffet quente, com risoto, lasanha e batatas"],
+  ["arroz-farofa-feijao.webp", "Arroz, farofa e feijão, sempre no balcão quente"],
+  ["buffet-quente-ensopados.webp", "Os ensopados do dia"],
+  ["pernil-assado.webp", "O pernil assado, inteiro na travessa"],
   ["churrasco.webp", "O churrasco na brasa, fatiado na hora"],
+  ["salgados-fritos.webp", "Os salgados, fritos na hora"],
   ["pasteis.webp", "Os pastéis, fritos na hora"],
 ];
 

@@ -36,6 +36,7 @@ export async function GalleryPhotoCard({
         // tamanho da janela inteira e joga fora dois terços dos bytes.
         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
         priority={priority}
+        quality={50}
         className="aspect-[4/3] w-full rounded-xl object-cover"
       />
       {photo.caption ? (

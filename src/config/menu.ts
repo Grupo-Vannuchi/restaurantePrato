@@ -159,9 +159,14 @@ export const pastaChoices = {
  * da semana só para a imagem aparecer — e a faixa ilustra a ILHA, não a lista
  * de terça-feira.
  *
- * A escolha é por massas visivelmente diferentes entre si: pesto verde, nhoque
- * ao sugo vermelho e a travessa com três pratos. Três fotos do mesmo penne
- * venderiam a ilha como se ela tivesse uma opção só.
+ * A escolha é por **molhos visivelmente diferentes**: pesto verde, sugo
+ * vermelho e molho branco. Três fotos do mesmo penne venderiam a ilha como se
+ * ela tivesse uma opção só, e três fotos de molho vermelho fariam o mesmo.
+ *
+ * As três foram trocadas em 10/09 por fotografia profissional de prato, que o
+ * cliente mandou. A anterior de "três pratos numa travessa" saiu: numa faixa de
+ * três quadros, uma foto que já mostra três pratos compete com as vizinhas em
+ * vez de somar.
  *
  * `name` alimenta o texto alternativo. Sem ele as três leriam igual para quem
  * usa leitor de tela — "foto do prato" três vezes descreve uma massa repetida.
@@ -169,7 +174,7 @@ export const pastaChoices = {
 export const pastaPhotos = [
   { photo: "/massas/fettuccine-ao-pesto.webp", name: "Fettuccine ao pesto" },
   { photo: "/massas/nhoque-ao-sugo.webp", name: "Nhoque ao sugo" },
-  { photo: "/massas/tres-massas.webp", name: "Massas da ilha" },
+  { photo: "/massas/massa-ao-molho-branco.webp", name: "Massa ao molho branco" },
 ] as const;
 
 /** Adicionais com preço próprio. Vazio até os valores chegarem — veja acima. */

@@ -129,6 +129,18 @@ for (const path of ["/", "/cardapio", "/contato"]) {
  * Bytes de imagem, ao contrário, atravessam qualquer transporte: 381 KB são
  * 381 KB no HTTP/1.1, no HTTP/2 e no 5G. É o que dá para guardar honestamente.
  *
+ * ⚠️ **Esta guarda já passou verde medindo o passado, e a causa não estava
+ * nela.** Em 10/09 a galeria foi de 6 para 12 fotos e o orçamento seguiu
+ * verde. A página servia OITO — o build reaproveitou o resultado em cache de
+ * `unstable_cache`, e o roteiro de medição limpava só `.next/cache/images`, não
+ * `.next/cache`. Medido com o cache inteiro apagado, a galeria pesava 1311 KB
+ * no celular, contra um limite de 580 que ela dizia respeitar.
+ *
+ * A lição não é sobre esta guarda: **cache de consulta desatualizado faz toda
+ * guarda dependente de conteúdo medir o passado**, e nenhuma delas tem como
+ * saber. Ao medir peso ou contraste depois de mexer no banco, apagar `.next`
+ * inteiro — não só as imagens.
+ *
  * ⚠️ **A regressão que isto pega tem nome.** As fotos entraram em 03/09 e a
  * home passou de zero para QUATRO imagens: o hero mais três da prévia da
  * galeria. Acrescentar foto na galeria pelo painel deixa a HOME mais pesada, e
