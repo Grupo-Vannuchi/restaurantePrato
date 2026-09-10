@@ -270,10 +270,23 @@ null by hardcoding a number.
   brand-coloured closing card on `/` and `/experiencia` now
   renders from one shared component (`components/sections/closing-cta.tsx`), so
   that swap touches one place instead of three.
-- ⚠️ **The logo has not arrived either.** The mark is typographic
-  (`components/layout/logo.tsx`, `app/icon.tsx`, `apple-icon.tsx`,
-  `[locale]/opengraph-image.tsx`); the previous client's files were removed. See
+- **The logo arrived on 09/09/2026** and the typographic mark is gone.
+  `components/layout/logo.tsx` serves three pieces from `public/brand`, and the
+  three image routes became static files: `app/icon.png` (the cloche — the full
+  chef is a smudge at 16-32 px, measured), `app/apple-icon.png` (the chef, which
+  reads at 180) and `[locale]/opengraph-image.jpg` (the buffet photo under a dark
+  veil with the mark on top, which is what that file's own docblock had asked for
+  once photos existed).
+  ⚠️ **Two rules turn the source's white into transparency, and the difference is
+  the artwork's.** In the chef, white IS art — hat, jacket, dome highlight — so
+  only border-reachable white was removed by flood fill. In the wordmark there is
+  no deliberate white: the counters of "o" and "a" are background that a border
+  flood never reaches, because the letter encloses them. One rule alone either
+  hollows the chef's hat or leaves white blobs inside the letters on a coloured
+  footer. The light variant tints ONLY the wordmark, never the whole lockup —
+  tinting everything makes the chef a faceless blob. All of it in
   [`public/brand/README.md`](public/brand/README.md).
+  **Still missing:** the vector original, for print and lossless scaling.
 - Headings are a display serif (Playfair), body is the sans. Set in
   `globals.css` under `@layer base`, scoped to `h1`–`h3`.
 - **No prices anywhere — inherited, not settled.** There is no price field in

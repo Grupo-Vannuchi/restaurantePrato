@@ -21,10 +21,9 @@ import { renderWithIntl, screen } from "./test-utils";
  *
  * ⚠️ **A foto chegou em 03/09; a marca, não.** Até então a abertura não tinha
  * imagem nenhuma, e o projeto irmão punha o SVG do logo sobre um véu escuro.
- * Aqui a marca ainda é tipográfica (`public/brand/README.md`), então a abertura
- * segue o padrão do topo da home: com foto ou sem, o texto fica escuro sobre um
- * véu claro. **Um caminho visual só**, e não dois modos em que só um pode ser
- * visto — o outro entraria sem ninguém nunca ter olhado para ele.
+ * A marca é imagem desde 09/09 e a abertura passou a véu ESCURO com a marca
+ * clara em 10/09, alinhando com o topo da home — que havia invertido um dia
+ * antes e deixado as duas aberturas do site sem conversar entre si.
  *
  * ⚠️ **A foto entra por parâmetro, com a do módulo como padrão.** Lendo a
  * constante direto, este teste só conseguiria exercitar o estado de HOJE (com

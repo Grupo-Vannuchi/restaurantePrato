@@ -67,7 +67,7 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
 
 | Pendência | O que trava hoje |
 |---|---|
-| Logo | A marca é **tipográfica** (`src/components/layout/logo.tsx`, `icon.tsx`, `apple-icon.tsx`, `opengraph-image.tsx`). Ver [`public/brand/README.md`](../public/brand/README.md) |
+| Logo | ✅ Entregue em 09/09/2026 e aplicada em toda superfície: marca, favicon, ícone do iPhone e cartão de compartilhamento. **Falta o vetor** — o que chegou é PNG, e material impresso pede `.ai`/`.eps`/`.svg`. Ver [`public/brand/README.md`](../public/brand/README.md) |
 | Copy definitiva | ✅ Entregue em 19/08 e aplicada |
 | Facebook | `social` só tem Instagram; o `sameAs` sai com um item |
 | Fotos | ✅ Dez fotos autorais entraram em 03/09/2026 — topo da home, abertura do cardápio, três na ilha de massas e seis na galeria. **Falta** foto de sobremesa: a linha da sobremesa tem campo de imagem e hoje ocupa a largura toda sem ele |
@@ -105,7 +105,10 @@ novo.
    tema). Ver a seção *Brand & theme* do [`AGENTS.md`](../AGENTS.md) para as
    duas cores que precisaram de regra de uso, e `test/palette-contrast.test.ts`
    para a verificação. **Falta:** logo, ícones e imagem OG voltando a ser
-   imagem — a marca segue tipográfica.
+   imagem — **fechado em 09/09/2026**: a logo chegou e entrou na marca, no
+   favicon, no ícone do iPhone e no cartão de compartilhamento, que deixou de
+   ser um cartão de texto e passou a ser a foto do buffet com a marca por cima.
+   Falta só o vetor, para impressão.
 3. **PR 3 — copy e conteúdo** ✅ parcialmente (este plano:
    [`superpowers/plans/2026-08-19-copy-e-tom-de-voz-prato.md`](superpowers/plans/2026-08-19-copy-e-tom-de-voz-prato.md),
    spec [`superpowers/specs/2026-08-19-copy-e-tom-de-voz-prato-design.md`](superpowers/specs/2026-08-19-copy-e-tom-de-voz-prato-design.md)):

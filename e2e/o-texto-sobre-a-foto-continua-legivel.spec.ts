@@ -75,6 +75,21 @@ const ABERTURAS = [
 
 for (const { rota, nome, onde } of ABERTURAS) {
   test(`${nome} se lê sobre o fundo composto`, async ({ page }) => {
+    /*
+     * ⚠️ **Movimento reduzido, e não é preferência estética: sem isto a guarda
+     * mede um carrossel que se move por baixo dela.**
+     *
+     * O topo da home ganhou autoplay de três slides em 09/09. Antes havia um
+     * slide e nada mexia. Com três, entre `boundingBox()` e a captura o
+     * carrossel troca de slide, e a medição sai de um quadro que já não existe
+     * — deu 1,00:1 numa execução e 11:1 na seguinte, com o mesmo código.
+     *
+     * O componente desliga o autoplay sob `prefers-reduced-motion`, então
+     * emular a preferência congela o primeiro slide. A medição fica MAIS
+     * fiel, não menos: o primeiro quadro é o que o visitante vê ao chegar, e é
+     * o único que todo mundo vê.
+     */
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(rota, { waitUntil: "networkidle" });
 
     const texto = page.locator("section p").first();

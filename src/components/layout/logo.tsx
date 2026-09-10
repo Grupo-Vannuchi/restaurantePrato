@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
  *  - `wordmark` (padrão) — só o nome, sem o cozinheiro. Proporção 2,6:1, que é
  *    o que cabe numa faixa baixa. Vai no cabeçalho.
  *  - `lockup` — a marca inteira, onde há altura para ela. Vai no rodapé.
+ *  - `lockup-claro` — a mesma, para fundo escuro. Vai na abertura do cardápio.
  *
  * ⚠️ **O fundo branco do arquivo virou transparência com duas regras
  * diferentes, e a diferença é do desenho.** No cozinheiro há branco que é
@@ -37,6 +38,19 @@ import { cn } from "@/lib/utils";
 const MARCAS = {
   wordmark: { src: "/brand/wordmark.png", width: 720, height: 280 },
   lockup: { src: "/brand/logo.png", width: 520, height: 499 },
+  /**
+   * Para fundo escuro. O nome vem tingido de branco; **o cozinheiro fica nas
+   * cores dele**, e essa parte é decisão medida, não descuido.
+   *
+   * Tingir o conjunto todo de branco transforma o cozinheiro num borrão sem
+   * rosto — some o sorriso, o polegar, a gola. Conferi lado a lado sobre fundo
+   * escuro antes de escolher. O chapéu e o jaleco já são claros, então ele lê
+   * sobre escuro sem ajuste nenhum; quem precisava de tintura era só o nome,
+   * que é verde maciço.
+   *
+   * Mesmas dimensões do `lockup` para a troca não pular layout.
+   */
+  "lockup-claro": { src: "/brand/logo-claro.png", width: 520, height: 499 },
 } as const;
 
 export function Logo({
@@ -44,7 +58,7 @@ export function Logo({
   variant = "wordmark",
 }: {
   className?: string;
-  variant?: "wordmark" | "lockup";
+  variant?: "wordmark" | "lockup" | "lockup-claro";
 }) {
   const marca = MARCAS[variant];
 
@@ -65,7 +79,7 @@ export function Logo({
         priority
         className={cn(
           "w-auto object-contain",
-          variant === "lockup" ? "h-24" : "h-10 sm:h-11",
+          variant === "wordmark" ? "h-10 sm:h-11" : "h-24",
         )}
       />
     </Link>
