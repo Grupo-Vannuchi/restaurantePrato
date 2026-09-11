@@ -71,7 +71,7 @@ export default async function ReservasPage({
          /reservas passa a liderar com o horario"). */}
       <Section>
         <SectionHeader title={t("practicalTitle")} align="left" />
-        <div className="mt-10 grid gap-8 sm:grid-cols-2">
+        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
           {/* `openingHoursLabel` já inclui os dias — ver o aviso na função. */}
           {hours ? (
             <Fact icon={Clock} label={t("hoursLabel")} value={hours} />

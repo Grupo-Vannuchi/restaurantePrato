@@ -134,12 +134,22 @@ export function HeroCarousel({
         * sobreposição em `absolute` também dava, e que é a razão de a grade
         * substituí-la em vez de simplesmente virar `min-h` com `absolute`.
         *
+        * ⚠️ **`grid-cols-1` não é redundante com uma célula só.** Sem ele a
+        * coluna é implícita e portanto `auto`, que se dimensiona pelo conteúdo:
+        * medido a 320 px de largura com o texto em 200%, o slide saía com 416 px
+        * — a foto e o véu junto com ele. `grid-cols-1` é
+        * `minmax(0, 1fr)` no Tailwind, e o `0` é a parte que importa: ele
+        * autoriza a coluna a encolher abaixo do conteúdo em vez de empurrar a
+        * caixa. O `overflow-hidden` da seção escondia o efeito, então isto não
+        * aparecia como transbordo de página — aparecia como imagem renderizada
+        * mais larga do que a tela, de graça.
+        *
         * `e2e/os-botoes-do-topo-continuam-clicaveis.spec.ts` mede as três
         * invariantes em cinco escalas de fonte.
         */}
       <div
         aria-live={pausadoPelaPessoa ? "polite" : "off"}
-        className="relative grid min-h-[34rem] sm:min-h-[42rem]"
+        className="relative grid grid-cols-1 min-h-[34rem] sm:min-h-[42rem]"
       >
         {slides.map((slide, i) => {
           const active = i === index;

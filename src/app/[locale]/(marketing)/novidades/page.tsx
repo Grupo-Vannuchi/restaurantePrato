@@ -41,7 +41,7 @@ export default async function InformationsPage({
           <p className="text-center text-muted-foreground">{t("empty")}</p>
         ) : (
           <InformationGallery items={informations}>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {informations.map((information, i) =>
                 // A primeira fica fora da revelação — ver a nota em
                 // `galeria/page.tsx`: esconder o LCP atrás da hidratação anula

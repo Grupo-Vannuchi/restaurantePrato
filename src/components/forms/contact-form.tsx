@@ -131,7 +131,7 @@ export function ContactForm() {
             className="absolute left-[-9999px] size-0 opacity-0"
             {...register("hp")}
           />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <Label htmlFor="name" required>
                 {t("name")}

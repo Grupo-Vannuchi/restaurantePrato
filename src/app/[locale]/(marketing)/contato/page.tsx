@@ -119,7 +119,7 @@ export default async function ContactPage({
       </Section>
 
       <Section>
-        <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_340px]">
           <ContactForm />
 
           <aside className="flex flex-col gap-6">
@@ -130,7 +130,12 @@ export default async function ContactPage({
                   <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
                     <channel.icon className="size-5" />
                   </span>
-                  <div>
+                  {/* `min-w-0` autoriza esta coluna a encolher abaixo do
+                      conteúdo dela; sem isso o e-mail, que é uma palavra só,
+                      define a largura mínima da linha e empurra a página. O
+                      `break-words` nos valores é o outro lado do mesmo par —
+                      um sem o outro não resolve. */}
+                  <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       {channel.label}
                     </p>
@@ -139,7 +144,7 @@ export default async function ContactPage({
                         href={channel.href}
                         target={channel.href.startsWith("http") ? "_blank" : undefined}
                         rel="noopener noreferrer"
-                        className="text-sm transition-colors hover:text-brand"
+                        className="break-words text-sm transition-colors hover:text-brand"
                       >
                         {channel.value}
                       </a>

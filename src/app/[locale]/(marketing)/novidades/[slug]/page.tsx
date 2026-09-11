@@ -103,7 +103,7 @@ export default async function InformationPage({
           {t("title")}
         </Link>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12">
           {/* Article */}
           <div className="min-w-0">
             {information.image ? (
@@ -181,7 +181,7 @@ export default async function InformationPage({
               {t("relatedTitle")}
             </h2>
             <InformationGallery items={informations}>
-              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {related.map((item) => (
                   <InformationCard key={item.id} information={item} />
                 ))}

@@ -36,7 +36,7 @@ export async function Footer() {
 
   return (
     <footer className="mt-auto border-t border-border bg-muted/30">
-      <Container className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
+      <Container className="grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-3">
           {/* The footer has the vertical room the header doesn't, so it carries
               the complete mark — stove and all. */}
@@ -61,9 +61,16 @@ export async function Footer() {
 
         <div className="flex flex-col gap-3">
           <h2 className="text-sm font-semibold">{t("contactTitle")}</h2>
+          {/* `break-words` porque o e-mail é uma palavra só de 21 caracteres: com
+              o texto em 200% ele mede ~300 px, e o rodapé só tem 240 px de
+              largura útil numa tela de 320 — o recuo do container é em `rem` e
+              dobra junto com a fonte, então sobra menos, não mais. Sem
+              autorização para quebrar, ele empurrava a página inteira para o
+              lado, nas SEIS páginas do site. É o critério de refluxo (WCAG
+              1.4.10), e a guarda é `e2e/a-pagina-nao-rola-para-o-lado.spec.ts`. */}
           <a
             href={`mailto:${siteConfig.contact.email}`}
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="break-words text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             {siteConfig.contact.email}
           </a>
