@@ -109,9 +109,37 @@ export function HeroCarousel({
         * deixa quem apertou "Próximo slide" sem resposta nenhuma. É o padrão
         * APG para carrossel.
         */}
+      {/*
+        * ⚠️ **Altura MÍNIMA em grade, e não altura fixa — corrigido em 11/09.**
+        *
+        * Era `h-[34rem] sm:h-[42rem]` com os slides em `absolute inset-0`, que
+        * não empurram caixa nenhuma. Quem aumenta o corpo do texto no navegador
+        * via o bloco descer dentro de uma moldura que não acompanha, encontrar a
+        * faixa de controles — que é `z-10` e fica por cima — e, mais adiante,
+        * sair inteiro da caixa e parar sobre a seção de baixo.
+        *
+        * Medido no celular, botão "reservar" contra os marcadores: em 100% havia
+        * 29 px de folga; em **125%** os marcadores já entravam 24 px dentro do
+        * botão; em **150%** cobriam o centro dele, e o toque parava num marcador
+        * de 10 px; em **175%** o coberto passava a ser o PRIMEIRO botão; em
+        * **200%** os dois saíam da caixa, que acabava 245 px acima deles.
+        *
+        * Não é um layout em `rem` que devia se salvar sozinho: a altura em `rem`
+        * cresce com a fonte, mas a LARGURA DA TELA não. Com o corpo no dobro, o
+        * título quebra em mais que o dobro de linhas nos mesmos 412 px, e o
+        * texto cresce mais rápido que a moldura.
+        *
+        * Os três slides ocupam a MESMA célula (`col-start-1 row-start-1`), então
+        * a caixa fica com a altura do mais alto e não pula na troca — o que a
+        * sobreposição em `absolute` também dava, e que é a razão de a grade
+        * substituí-la em vez de simplesmente virar `min-h` com `absolute`.
+        *
+        * `e2e/os-botoes-do-topo-continuam-clicaveis.spec.ts` mede as três
+        * invariantes em cinco escalas de fonte.
+        */}
       <div
         aria-live={pausadoPelaPessoa ? "polite" : "off"}
-        className="relative h-[34rem] sm:h-[42rem]"
+        className="relative grid min-h-[34rem] sm:min-h-[42rem]"
       >
         {slides.map((slide, i) => {
           const active = i === index;
@@ -137,7 +165,11 @@ export function HeroCarousel({
               aria-label={`${i + 1} / ${count}`}
               aria-hidden={!active}
               className={cn(
-                "absolute inset-0 transition-opacity duration-700 ease-out",
+                // `relative` na mesma célula da grade: o slide entra no cálculo
+                // da altura em vez de flutuar sobre uma moldura fixa. Continua
+                // sendo o ancestral posicionado de que a foto `fill` e o véu
+                // precisam.
+                "relative col-start-1 row-start-1 flex flex-col justify-center transition-opacity duration-700 ease-out",
                 active ? "opacity-100" : "pointer-events-none opacity-0",
               )}
             >
@@ -183,7 +215,15 @@ export function HeroCarousel({
                   o degradê que preserva a foto. */}
               <div className="absolute inset-0 bg-foreground/75 sm:bg-transparent sm:bg-gradient-to-r sm:from-foreground/90 sm:via-foreground/78 sm:to-foreground/35" />
 
-              <Container className="relative flex h-full max-w-none flex-col items-start justify-center gap-6 text-left">
+              {/* O recuo vertical não é respiro: ele RESERVA a faixa onde
+                  moram os controles. A mais alta delas são as setas — `bottom-2.5`
+                  mais `size-11`, ou 3,375rem contados da borda de baixo —, e
+                  4rem deixa 10 px de folga. Simétrico de propósito: com
+                  `justify-center`, recuo igual em cima e embaixo deixa o
+                  conteúdo exatamente onde ele estava antes desta correção, então
+                  a tela em 100% não mudou de desenho. Só cresce a caixa quando o
+                  texto realmente precisa. */}
+              <Container className="relative flex max-w-none flex-col items-start gap-6 py-16 text-left">
                 <span className="inline-flex items-center gap-2 rounded-full border border-background/30 bg-background/10 px-4 py-1.5 text-sm font-medium text-background backdrop-blur">
                   <span className="size-2 animate-pulse rounded-full bg-brand" aria-hidden />
                   {eyebrow}
