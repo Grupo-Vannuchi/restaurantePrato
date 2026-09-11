@@ -30,7 +30,7 @@ export default async function AdminTestimonialsPage({
       {testimonials.length === 0 ? (
         <p className="text-muted-foreground">{t("empty")}</p>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul role="list" className="flex flex-col gap-3">
           {testimonials.map((item) => (
             <li
               key={item.id}

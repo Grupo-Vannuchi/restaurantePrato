@@ -28,7 +28,7 @@ export async function DessertList() {
   const t = await getTranslations("cardapio");
 
   return (
-    <ul className="mt-8 overflow-hidden rounded-2xl border border-border bg-card">
+    <ul role="list" className="mt-8 overflow-hidden rounded-2xl border border-border bg-card">
       {desserts.map((sobremesa) => (
         <li
           key={sobremesa.name}

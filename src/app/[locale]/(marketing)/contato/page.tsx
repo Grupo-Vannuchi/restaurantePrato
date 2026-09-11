@@ -124,7 +124,7 @@ export default async function ContactPage({
 
           <aside className="flex flex-col gap-6">
             <h2 className="text-lg font-semibold">{t("infoTitle")}</h2>
-            <ul className="flex flex-col gap-5">
+            <ul role="list" className="flex flex-col gap-5">
               {channels.map((channel) => (
                 <li key={channel.label} className="flex gap-3">
                   <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">

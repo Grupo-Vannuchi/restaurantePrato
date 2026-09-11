@@ -5,14 +5,14 @@ import { ehLinkSeguro } from "@/lib/safe-link";
 /**
  * Lightweight, dependency-free renderer for the lightly-marked-up text stored in
  * `LocalizedRichText` content fields (one block per array element / per line in
- * the admin editor). It renders semantic HTML — `<h2>`/`<h3>`, `<ul>`, `<strong>`,
+ * the admin editor). It renders semantic HTML — `<h2>`/`<h3>`, `<ul role="list">`, `<strong>`,
  * `<em>`, `<a>` — which is what search engines read, so emphasis written by
  * editors becomes real SEO signal rather than decorative styling.
  *
  * Supported per-block syntax:
  *   `## Heading`         → <h2>
  *   `### Heading`        → <h3>
- *   `- item` / `* item`  → grouped into a single <ul>
+ *   `- item` / `* item`  → grouped into a single <ul role="list">
  *   anything else        → <p>
  *
  * Supported inline syntax (inside any block):
@@ -130,7 +130,7 @@ export function RichText({
     const items = list;
     list = [];
     out.push(
-      <ul
+      <ul role="list"
         key={`ul-${out.length}`}
         className="flex list-disc flex-col gap-2 pl-6 text-base text-muted-foreground sm:text-lg"
       >

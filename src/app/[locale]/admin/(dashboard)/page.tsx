@@ -62,7 +62,7 @@ export default async function DashboardPage({
         <h2 className="border-b border-border px-5 py-4 font-semibold">
           {t("recentLeads")}
         </h2>
-        <ul className="divide-y divide-border">
+        <ul role="list" className="divide-y divide-border">
           {recentLeads.map((lead) => (
             <li
               key={lead.id}

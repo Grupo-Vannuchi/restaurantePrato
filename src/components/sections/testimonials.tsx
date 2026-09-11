@@ -20,7 +20,7 @@ export async function Testimonials({ locale }: { locale: Locale }) {
         subtitle={t("subtitle")}
         className="mx-auto"
       />
-      <ul className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <ul role="list" className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {testimonials.map((item, i) => (
           <Reveal
             as="li"

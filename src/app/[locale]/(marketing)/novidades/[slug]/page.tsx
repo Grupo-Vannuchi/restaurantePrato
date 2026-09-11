@@ -142,7 +142,7 @@ export default async function InformationPage({
               <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("listTitle")}
               </h2>
-              <ul className="flex max-h-[26rem] flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-card p-2">
+              <ul role="list" className="flex max-h-[26rem] flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-card p-2">
                 {informations.map((item) => {
                   const active = item.slug === slug;
                   return (

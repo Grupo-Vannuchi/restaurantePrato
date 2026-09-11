@@ -105,7 +105,7 @@ export default async function LeadsPage({
           {type || status || tag ? t("emptyFiltered") : t("empty")}
         </p>
       ) : (
-        <ul className="flex flex-col gap-4">
+        <ul role="list" className="flex flex-col gap-4">
           {leads.map((lead) => (
             <li
               key={lead.id}

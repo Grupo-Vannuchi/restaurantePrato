@@ -134,7 +134,7 @@ export function Header({
                 <p className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("novidades")}
                 </p>
-                <ul className="flex flex-col gap-0.5">
+                <ul role="list" className="flex flex-col gap-0.5">
                   {informationLinks.map((link) => (
                     <li key={link.slug}>
                       <Link

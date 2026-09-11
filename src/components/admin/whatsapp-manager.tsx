@@ -204,7 +204,7 @@ export function WhatsappManager({
         {status === "loading" ? (
           <>
             <span className="sr-only">{t("loadingInstances")}</span>
-            <ul
+            <ul role="list"
               aria-hidden
               className="flex flex-col divide-y divide-border"
             >
@@ -227,7 +227,7 @@ export function WhatsappManager({
         ) : instances.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("empty")}</p>
         ) : (
-          <ul className="flex flex-col divide-y divide-border">
+          <ul role="list" className="flex flex-col divide-y divide-border">
             {instances.map((inst) => {
               const state = STATE_STYLES[inst.state] ? inst.state : "close";
               return (

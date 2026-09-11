@@ -119,7 +119,7 @@ export default async function CardapioPage({
                         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                           {grupo.categoria.name}
                         </h2>
-                        <ul className="overflow-hidden rounded-2xl border border-border bg-card">
+                        <ul role="list" className="overflow-hidden rounded-2xl border border-border bg-card">
                           {grupo.pratos.map((prato) => (
                             <DishRow key={prato.id} dish={prato} />
                           ))}
@@ -159,7 +159,7 @@ export default async function CardapioPage({
         {/* Massas cadastradas no painel, quando houver. O passo a passo abaixo
             é o serviço da ilha e independe delas. */}
         {massas.length > 0 ? (
-          <ul className="mt-10 overflow-hidden rounded-2xl border border-border bg-card">
+          <ul role="list" className="mt-10 overflow-hidden rounded-2xl border border-border bg-card">
             {massas.map((prato) => (
               <DishRow key={prato.id} dish={prato} />
             ))}

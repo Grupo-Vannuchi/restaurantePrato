@@ -38,7 +38,7 @@ export default async function AdminCardapioPage({
       {categories.length === 0 ? (
         <p className="text-muted-foreground">{t("empty")}</p>
       ) : (
-        <ul className="flex flex-col gap-4">
+        <ul role="list" className="flex flex-col gap-4">
           {categories.map((category) => (
             <li
               key={category.id}
@@ -85,7 +85,7 @@ export default async function AdminCardapioPage({
                 {category.items.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t("emptyItems")}</p>
                 ) : (
-                  <ul className="flex flex-col gap-2">
+                  <ul role="list" className="flex flex-col gap-2">
                     {category.items.map((item) => (
                       <li
                         key={item.id}

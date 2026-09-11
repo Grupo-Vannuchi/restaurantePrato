@@ -88,7 +88,7 @@ export function PastaCarousel({
       aria-roledescription="carousel"
       aria-label={labels.carousel}
     >
-      <ul
+      <ul role="list"
         ref={trilhoRef}
         onScroll={aoRolar}
         /* `snap-x` mais `overflow-x-auto` fazem o deslize; `scrollbar-none` tira

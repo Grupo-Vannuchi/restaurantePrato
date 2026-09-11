@@ -55,7 +55,7 @@ export async function MenuItemCard({
         ) : null}
       </div>
       {item.tags.length > 0 ? (
-        <ul className="mt-auto flex flex-wrap gap-1.5">
+        <ul role="list" className="mt-auto flex flex-wrap gap-1.5">
           {item.tags.map((tag) => (
             <li
               key={tag}

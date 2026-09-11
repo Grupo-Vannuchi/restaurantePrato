@@ -31,7 +31,7 @@ export async function generateMetadata({
 /** Brand-checkmarked list used to render the bullet groups on this page. */
 function CheckList({ items }: { items: string[] }) {
   return (
-    <ul className="mt-5 flex flex-col gap-3">
+    <ul role="list" className="mt-5 flex flex-col gap-3">
       {items.map((item, i) => (
         <Reveal as="li" key={item} delay={(i % 6) * 60} className="flex gap-3">
           <span className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
