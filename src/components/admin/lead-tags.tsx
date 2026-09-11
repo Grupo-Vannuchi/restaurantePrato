@@ -37,7 +37,7 @@ export function LeadTags({ id, tags }: { id: string; tags: string[] }) {
       {tags.map((tag) => (
         <span
           key={tag}
-          className="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-medium text-brand"
+          className="inline-flex items-center gap-1 rounded-full bg-brand px-2.5 py-0.5 text-xs font-medium text-brand-foreground"
         >
           {tag}
           <button

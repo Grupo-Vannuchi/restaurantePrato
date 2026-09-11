@@ -152,8 +152,15 @@ export default async function InformationPage({
                         aria-current={active ? "page" : undefined}
                         className={cn(
                           "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                          // Par SÓLIDO no item ativo, medido: `bg-brand/10` com
+                          // `text-brand` dá 4,24:1 sobre o cartão, abaixo dos
+                          // 4,5:1 da AA. O verde da marca é o token mais claro
+                          // dos três e não sobrevive ao próprio tom a 10% —
+                          // `success` e `danger`, que são escuros, sobrevivem
+                          // (5,35 e 5,74). Sólido dá 4,98:1, e item de navegação
+                          // ativo em cor cheia é o tratamento usual.
                           active
-                            ? "bg-brand/10 font-medium text-brand"
+                            ? "bg-brand font-medium text-brand-foreground"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground",
                         )}
                       >

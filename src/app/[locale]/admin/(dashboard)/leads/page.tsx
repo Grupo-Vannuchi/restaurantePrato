@@ -14,8 +14,26 @@ import { resolveLocale } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import { buttonVariants } from "@/components/ui/button";
 
+/**
+ * ⚠️ **`NEW` é sólido e os outros dois são tingidos, e a diferença é medida.**
+ *
+ * Pastilha tingida com texto da mesma cor só funciona se a cor for escura o
+ * bastante. Medido sobre as três superfícies do site:
+ *
+ *   text-success sobre bg-success/10 ..... 5,04 a 5,54:1  ✅
+ *   text-danger  sobre bg-danger/10  ..... 5,43 a 5,97:1  ✅
+ *   text-brand   sobre bg-brand/10   ..... 4,01 a 4,40:1  ❌ abaixo de 4,5
+ *
+ * O verde da marca é o token mais claro dos três — ele já vive em 4,98:1 contra
+ * o branco — e não sobrevive ao próprio tom a 10%. Não existe um verde escuro na
+ * paleta do cliente para usar no texto, e inventar um é proibido aqui, então a
+ * saída é a cor cheia com texto claro: 4,98:1.
+ *
+ * A inconsistência visual é aceita de propósito, e cabe no significado: `NEW` é
+ * o estado que pede atenção.
+ */
 const statusStyles: Record<LeadStatus, string> = {
-  NEW: "bg-brand/10 text-brand",
+  NEW: "bg-brand text-brand-foreground",
   CONTACTED: "bg-success/10 text-success",
   ARCHIVED: "bg-muted text-muted-foreground",
 };
