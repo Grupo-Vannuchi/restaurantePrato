@@ -68,10 +68,29 @@ export async function tintaDoTexto(alvo: Locator): Promise<Tinta> {
 }
 
 /**
- * Decodifica um PNG no canvas do PRÓPRIO navegador e devolve os pixels.
- * Evita depender de um decodificador de PNG no processo de teste.
+ * Decodifica um PNG no canvas do PRÓPRIO navegador e devolve as cores DISTINTAS
+ * que ele contém, sem repetição.
+ *
+ * Decodificar no navegador evita depender de um decodificador de PNG no processo
+ * de teste. Deduplicar antes de devolver é o que torna isto rápido.
+ *
+ * ⚠️ **A versão anterior serializava todos os pixels, e isso quase matou uma
+ * guarda.** Ela devolvia `Array.from(getImageData().data)`: para um recorte de
+ * 400×100 numa tela de celular, com densidade 2,6, são mais de um milhão de
+ * números atravessando a ponte com o navegador — por MEDIÇÃO, e o cartão de
+ * fechamento faz quatro. O spec levava 12,7 s sozinho e estourava os 30 s
+ * quando a suíte rodava com dois trabalhadores. Guarda lenta que pisca sob
+ * carga é guarda que as pessoas aprendem a ignorar.
+ *
+ * Para a pergunta "qual é o PIOR pixel" a repetição não acrescenta nada: o
+ * resultado é idêntico e o transporte cai por um fator grande — num cartão de
+ * cor chapada, de um milhão de números para algumas dezenas.
+ *
+ * A fórmula da WCAG continua vivendo num lugar só, aqui no processo de teste. É
+ * a razão de deduplicar em vez de calcular o contraste dentro da página: lá
+ * dentro não há acesso a este módulo, e a conta viraria uma segunda cópia.
  */
-export async function pixels(page: Page, png: Buffer): Promise<number[]> {
+export async function coresDistintas(page: Page, png: Buffer): Promise<number[]> {
   return page.evaluate(async (b64) => {
     const img = new Image();
     img.src = `data:image/png;base64,${b64}`;
@@ -79,8 +98,20 @@ export async function pixels(page: Page, png: Buffer): Promise<number[]> {
     const c = document.createElement("canvas");
     c.width = img.width;
     c.height = img.height;
-    c.getContext("2d")!.drawImage(img, 0, 0);
-    return Array.from(c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data);
+    const ctx = c.getContext("2d")!;
+    ctx.drawImage(img, 0, 0);
+    const dados = ctx.getImageData(0, 0, c.width, c.height).data;
+
+    // `Set` de inteiro empacotado: comparar números é o que deixa isto barato.
+    const vistas = new Set<number>();
+    for (let i = 0; i < dados.length; i += 4) {
+      vistas.add((dados[i]! << 16) | (dados[i + 1]! << 8) | dados[i + 2]!);
+    }
+    const saida: number[] = [];
+    for (const v of vistas) {
+      saida.push((v >> 16) & 255, (v >> 8) & 255, v & 255, 255);
+    }
+    return saida;
   }, png.toString("base64"));
 }
 
@@ -229,7 +260,7 @@ export async function contrasteNaTela(
     { m: modo, anterior: antes },
   );
 
-  const pior = piorContraste(tinta, await pixels(page, fundo));
+  const pior = piorContraste(tinta, await coresDistintas(page, fundo));
 
   return { pior, largura: caixa.width, altura: caixa.height };
 }
