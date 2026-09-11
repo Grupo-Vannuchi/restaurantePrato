@@ -147,6 +147,7 @@
     "route": "Traçar rota",
     "labels": {
       "email": "E-mail",
+      "hours": "Horário",
       "phone": "Telefone",
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",

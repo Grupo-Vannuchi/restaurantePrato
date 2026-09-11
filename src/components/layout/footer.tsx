@@ -9,6 +9,7 @@ import {
   siteConfig,
   fullAddress,
   mapEmbedUrl,
+  openingHoursLabel,
   reviewLink,
 } from "@/config/site";
 
@@ -30,6 +31,14 @@ export async function Footer() {
   ) as [keyof typeof socialIcons, string][];
 
   const avaliar = reviewLink();
+  /*
+   * ⚠️ **Nunca montado à mão.** `openingHoursLabel()` já inclui a faixa de
+   * DIAS; formatar a partir de `opens`/`closes` publicaria "das 11h às 15h" sem
+   * dizer que a casa fecha no fim de semana, e é a regra que o próprio
+   * `config/site.ts` escreve em maiúsculas. Devolve `null` se o horário sair da
+   * configuração, e aí a linha desaparece em vez de sair vazia.
+   */
+  const horario = openingHoursLabel();
   const address = fullAddress();
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
   const mapSrc = mapEmbedUrl();
@@ -78,6 +87,14 @@ export async function Footer() {
             <span className="text-sm text-muted-foreground">
               {siteConfig.contact.phone}
             </span>
+          ) : null}
+          {/* O horário no rodapé, que é onde ele é procurado: o rodapé aparece
+              nas sete páginas, e "estão abertos agora?" é a pergunta que traz
+              alguém ao site na hora do almoço. Estava publicado em
+              `/reservas`, na abertura do cardápio e no `llms.txt`, e faltava
+              justamente no lugar que acompanha o visitante em toda página. */}
+          {horario ? (
+            <span className="text-sm text-muted-foreground">{horario}</span>
           ) : null}
           <a
             href={mapsLink}

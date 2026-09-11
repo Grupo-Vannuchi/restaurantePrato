@@ -2,7 +2,7 @@ import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
+import { Mail, Phone, MessageCircle, MapPin, Clock } from "lucide-react";
 // lucide-react removeu ícones de marca (ver `brand-icons.tsx`); o rodapé já
 // importa o Instagram de lá.
 import { Instagram } from "@/components/ui/brand-icons";
@@ -14,6 +14,7 @@ import { ReserveButton } from "@/components/reserve-button";
 import {
   fullAddress,
   mapEmbedUrl,
+  openingHoursLabel,
   phoneLink,
   reviewLink,
   siteConfig,
@@ -48,6 +49,7 @@ export default async function ContactPage({
   const { contact } = siteConfig;
 
   const whatsapp = whatsappLink();
+  const horario = openingHoursLabel();
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress())}`;
 
   const channels: {
@@ -97,6 +99,18 @@ export default async function ContactPage({
       value: `${contact.address.street}, ${contact.address.city} — ${contact.address.region}`,
       href: mapsLink,
     },
+    /*
+     * O horário fecha a lista, e entra sem `href` porque não é um canal: é a
+     * resposta para "estão abertos agora?", que é a outra metade do que alguém
+     * procura ao abrir a página de contato. O campo `href` é opcional na lista
+     * justamente para isto.
+     *
+     * ⚠️ Vem de `openingHoursLabel()`, nunca montado à mão: o helper já inclui
+     * a faixa de DIAS, e formatar a partir de `opens`/`closes` publicaria "das
+     * 11h às 15h" sem dizer que a casa fecha no fim de semana. Some sozinho se
+     * o horário sair da configuração.
+     */
+    ...(horario ? [{ icon: Clock, label: t("labels.hours"), value: horario }] : []),
   ];
 
   return (
