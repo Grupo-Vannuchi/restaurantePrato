@@ -151,6 +151,107 @@ describe("as cores translúcidas alcançam contraste de elemento gráfico", () =
     ).toBeGreaterThanOrEqual(MINIMO);
   });
 
+  it("o selo de hoje se lê nos dois estados da aba", () => {
+    /*
+     * ⚠️ **Este caso é texto, então o mínimo é 4,5:1 e não os 3:1 do resto do
+     * arquivo.** O selo é `text-[10px]`, bem longe da isenção de texto grande.
+     *
+     * O defeito que ele guarda: o selo era translúcido nas duas posições, e
+     * translúcido sobre superfície da mesma família de cor não rende contraste.
+     * `bg-background/20` herdando o texto branco da aba selecionada dava
+     * 3,38:1; `bg-brand/10` com `text-brand` sobre o cartão dava 4,24:1.
+     *
+     * ⚠️ **Ele acompanha um e2e, e a divisão de trabalho é o fim de semana.**
+     * `e2e/o-selo-de-hoje-se-le.spec.ts` mede o pixel de verdade na tela, que é
+     * a medida boa — mas o selo só é renderizado de segunda a sexta, porque é
+     * então que a casa abre, e no sábado aquele teste se declara pulado. Este
+     * roda todo dia lendo a fonte. Um cobre o pixel, o outro cobre a classe.
+     *
+     * ⚠️ **A cor de texto tem de estar DECLARADA em cada estado.** No estado
+     * selecionado ela era herdada da aba, e herdar cor de texto é justamente
+     * como se chega a branco sobre branco-a-20%: ninguém escolheu aquele par,
+     * ele apareceu.
+     */
+    const texto = fonte("src/components/cardapio/day-tabs.tsx");
+    const css = fonte("src/app/globals.css");
+
+    const TOKENS: Record<string, string> = {
+      background: siteConfig.theme.background,
+      foreground: siteConfig.theme.foreground,
+      brand: siteConfig.theme.brand,
+      "brand-foreground": siteConfig.theme.brandForeground,
+      accent: siteConfig.theme.accent,
+      card: css.match(/--card:\s*(#[0-9a-fA-F]{6})/)![1]!,
+      muted: css.match(/--muted:\s*(#[0-9a-fA-F]{6})/)![1]!,
+      "muted-foreground": css.match(/--muted-foreground:\s*(#[0-9a-fA-F]{6})/)![1]!,
+    };
+
+    /*
+     * As superfícies atrás do selo, uma por estado — é o que a aba pinta.
+     * Sentinela: se a aba trocar de cor, estes dois `toContain` falham e o
+     * cálculo abaixo não passa a medir contra um fundo que não existe mais.
+     */
+    expect(texto, "a aba selecionada não é mais bg-brand").toContain("bg-brand ");
+    expect(texto, "a aba sem seleção não é mais bg-card").toContain("bg-card ");
+    const SUPERFICIES = [TOKENS.brand!, TOKENS.card!];
+
+    /*
+     * `text-[10px]` só existe no selo, e é por ele que o trecho é localizado —
+     * mas o recorte começa no `cn(` que abre a chamada, e não no marcador.
+     * ⚠️ Cortando a partir do marcador, a primeira aspa encontrada é a que
+     * FECHA a string base: o pareamento sai deslocado de um e as "classes"
+     * extraídas viram os pedaços de código entre as strings de verdade.
+     */
+    const marcador = texto.indexOf("text-[10px]");
+    expect(marcador, "o selo do dia de hoje não foi encontrado").toBeGreaterThan(-1);
+    const inicio = texto.lastIndexOf("cn(", marcador);
+    const trecho = texto.slice(inicio, texto.indexOf(")}", marcador));
+
+    // A primeira string é a base (a que contém o `text-[10px]`); as seguintes
+    // são os dois ramos do ternário, na ordem: selecionada, depois sem seleção.
+    const estados = [...trecho.matchAll(/"([^"]+)"/g)].map((m) => m[1]!).slice(1);
+    expect(
+      estados.length,
+      "esperava duas listas de classe no selo, uma por estado da aba",
+    ).toBe(2);
+
+    const nomes = ["com a aba selecionada", "com a aba sem seleção"];
+
+    estados.forEach((classes, i) => {
+      const fundoM = classes.match(/bg-([a-z-]+)(?:\/([0-9]{1,3}))?/);
+      const textoM = classes.match(/text-([a-z-]+)(?:\/([0-9]{1,3}))?/);
+
+      expect(fundoM, `${nomes[i]}: o selo não declara cor de fundo`).not.toBeNull();
+      expect(
+        textoM,
+        `${nomes[i]}: o selo não declara cor de TEXTO e herda a da aba — foi ` +
+          `exatamente assim que ele chegou a 3,38:1`,
+      ).not.toBeNull();
+
+      const hexDo = (nome: string) => {
+        const hex = TOKENS[nome];
+        // Sentinela: token fora do mapa falha em vez de o caso passar sem medir.
+        expect(hex, `token "${nome}" não está no mapa deste teste`).toBeDefined();
+        return hex!;
+      };
+
+      const superficie = SUPERFICIES[i]!;
+      const alfaFundo = fundoM![2] ? Number(fundoM![2]) / 100 : 1;
+      const fundoDoSelo = achatar(hexDo(fundoM![1]!), superficie, alfaFundo);
+
+      const alfaTexto = textoM![2] ? Number(textoM![2]) / 100 : 1;
+      const corDoTexto = achatar(hexDo(textoM![1]!), fundoDoSelo, alfaTexto);
+
+      const razao = contraste(corDoTexto, fundoDoSelo);
+      expect(
+        razao,
+        `${nomes[i]}: "${classes}" dá ${razao.toFixed(2)}:1 sobre ${superficie} — ` +
+          `abaixo de 4,5:1. Cor translúcida sobre superfície da mesma família não ` +
+          `rende contraste; o par sólido invertido dá 4,98:1.`,
+      ).toBeGreaterThanOrEqual(4.5);
+    });
+  });
+
   it("nenhum anel de foco pinta da mesma cor do que está atrás dele", () => {
     // `focus-visible:ring-[#25D366]` desenhava um anel da MESMA cor do fundo do
     // botão: um anel que não anela. Não causava dano (o contorno global aparece

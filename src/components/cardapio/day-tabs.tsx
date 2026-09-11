@@ -100,10 +100,31 @@ export function DayTabs({
             >
               {labels[dia]}
               {today === dia ? (
+                /*
+                 * ⚠️ **Par SÓLIDO nos dois estados, e é medição, não gosto.**
+                 *
+                 * O selo era translúcido nas duas posições, e translúcido sobre
+                 * superfície da mesma família de cor não rende contraste:
+                 * `bg-background/20` herdando o texto branco da aba selecionada
+                 * dava **3,38:1**, e `bg-brand/10` com `text-brand` sobre o
+                 * cartão dava **4,24:1** — os dois abaixo dos 4,5:1 da AA, num
+                 * texto de 10 px.
+                 *
+                 * `test/palette-contrast.test.ts` seguia verde porque os dois
+                 * tokens são legítimos; o que falhava era a MISTURA, que não
+                 * existe declarada em lugar nenhum. Mesma classe do véu do topo.
+                 *
+                 * O par invertido resolve com o que a paleta já garante: aqui os
+                 * dois estados são `brand` contra `background`, 4,98:1, o mesmo
+                 * par que aquele teste vigia — mexer no verde da marca acusa nos
+                 * dois lugares em vez de num só.
+                 */
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-                    selecionada ? "bg-background/20" : "bg-brand/10 text-brand",
+                    selecionada
+                      ? "bg-background text-brand"
+                      : "bg-brand text-brand-foreground",
                   )}
                 >
                   {todayLabel}

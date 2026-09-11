@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { contrasteNaTela } from "./contraste";
+
 /**
  * O texto das aberturas continua legível sobre o que estiver atrás dele.
  *
@@ -39,20 +41,13 @@ import { expect, test } from "@playwright/test";
  * arquivo em `public` não o invalida: duas execuções seguidas mediriam a mesma
  * imagem antiga e a prova pareceria passar.
  */
+/*
+ * ⚠️ **A fórmula da WCAG e a decodificação dos pixels vivem em
+ * `e2e/contraste.ts`.** Estavam escritas aqui e, depois, outra vez na guarda do
+ * selo de hoje — e duas cópias da mesma conta divergem. Quando divergem, uma das
+ * duas guardas passa a afirmar um número que ninguém conferiu.
+ */
 const MINIMO_AA = 4.5;
-
-/** Luminância relativa da WCAG. */
-function luminancia(r: number, g: number, b: number): number {
-  const f = (c: number) => {
-    const v = c / 255;
-    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
-  };
-  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
-}
-
-function contraste(a: number, b: number): number {
-  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
-}
 
 /**
  * As aberturas com foto. Em ambas o primeiro parágrafo da primeira seção é o
@@ -123,44 +118,20 @@ for (const { rota, nome, seletor, onde } of ABERTURAS) {
     await page.goto(rota, { waitUntil: "networkidle" });
 
     const texto = page.locator(seletor).first();
-    await expect(texto).toBeVisible();
+    await expect(texto, `texto de abertura não encontrado em ${rota}`).toBeVisible();
 
-    const caixa = await texto.boundingBox();
-    const cor = await texto.evaluate((e) => getComputedStyle(e).color);
-    expect(caixa, `texto de abertura não encontrado em ${rota}`).not.toBeNull();
+    /*
+     * Recorte pela caixa do elemento e véu escondido com `visibility` — os dois
+     * padrões do helper. Aqui é o certo: o fundo é pintado por OUTRO elemento (o
+     * véu, a foto), então esconder o texto preservando o espaço mostra
+     * exatamente o que está atrás dele.
+     */
+    const { pior, largura, altura } = await contrasteNaTela(page, texto);
 
     // Sentinela: um seletor errado pegaria um parágrafo de 0 px e a varredura
-    // abaixo passaria sem examinar pixel nenhum.
-    expect(caixa!.width).toBeGreaterThan(100);
-    expect(caixa!.height).toBeGreaterThan(10);
-
-    await texto.evaluate((e) => {
-      e.style.visibility = "hidden";
-    });
-    const fundo = await page.screenshot({ clip: caixa! });
-
-    const rgb = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(cor);
-    expect(rgb, `cor do texto ilegível: ${cor}`).not.toBeNull();
-    const lTexto = luminancia(Number(rgb![1]), Number(rgb![2]), Number(rgb![3]));
-
-    // Decodifica no canvas do próprio navegador: evita depender de um
-    // decodificador de PNG no processo de teste.
-    const pixels = await page.evaluate(async (b64) => {
-      const img = new Image();
-      img.src = `data:image/png;base64,${b64}`;
-      await img.decode();
-      const c = document.createElement("canvas");
-      c.width = img.width;
-      c.height = img.height;
-      c.getContext("2d")!.drawImage(img, 0, 0);
-      return Array.from(c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data);
-    }, fundo.toString("base64"));
-
-    let pior = Number.POSITIVE_INFINITY;
-    for (let i = 0; i < pixels.length; i += 4) {
-      const c = contraste(lTexto, luminancia(pixels[i]!, pixels[i + 1]!, pixels[i + 2]!));
-      if (c < pior) pior = c;
-    }
+    // passaria sem examinar pixel nenhum.
+    expect(largura, `o texto de ${rota} não tem largura`).toBeGreaterThan(100);
+    expect(altura, `o texto de ${rota} não tem altura`).toBeGreaterThan(10);
 
     expect(
       pior,
