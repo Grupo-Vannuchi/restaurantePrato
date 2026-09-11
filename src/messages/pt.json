@@ -102,10 +102,10 @@
   },
   "galeria": {
     "title": "Galeria",
-    "subtitle": "O ambiente e os pratos da casa.",
+    "subtitle": "O balcão e os pratos da casa, do buffet frio ao churrasco na brasa.",
     "empty": "Em breve, novas fotos por aqui.",
-    "photoAlt": "Foto do restaurante",
-    "metaDescription": "Fotos do salão, do buffet e dos pratos do Restaurante Prato, na R. Augusto Severo, 25, Centro de Santos. Veja o ambiente antes de vir almoçar."
+    "photoAlt": "Foto de um prato do restaurante",
+    "metaDescription": "Fotos do buffet, do churrasco e dos pratos do Restaurante Prato, na R. Augusto Severo, 25, Centro de Santos. Veja o que tem no balcão antes de vir almoçar."
   },
   "novidades": {
     "title": "Novidades",
