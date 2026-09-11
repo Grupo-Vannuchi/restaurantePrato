@@ -18,11 +18,23 @@ import { desserts, formatBRL } from "@/config/menu";
  * cardápio antes de passar pelo fotógrafo, e sem foto o texto ocupa a largura
  * toda em vez de deixar um quadrado vazio reservado.
  *
- * ⚠️ **A taxa de embalagem para viagem ainda não está aqui.** No quadro ela
- * aparece em corpo miúdo sob as duas saladas de frutas, e o valor não se lê na
- * foto. Ela é nota da seção, dita uma vez — ao lado do preço da sobremesa
- * virariam dois "R$" na mesma linha, um deles não sendo o que a sobremesa
- * custa. Entra junto com os preços.
+ * ⚠️ **A taxa de embalagem para viagem JÁ está aqui, e o comentário anterior
+ * dizia o contrário — corrigido em 11/09.**
+ *
+ * Ela chegou em 03/09, quando a foto do quadro em alta resolução tornou legível
+ * o corpo miúdo sob as duas saladas de frutas. Mas ela entrou na NOTA de cada
+ * item ("220 g · para viagem R$ 8,50"), e não como nota da seção — que é
+ * exatamente a forma contra a qual o comentário antigo argumentava, porque põe
+ * dois valores na mesma linha e um deles não é o que a sobremesa custa.
+ *
+ * Fica como está, e o motivo é que a taxa não é uma só: 8,50 na salada inteira
+ * e 13,00 na meia porção. Nota de seção teria de dizer as duas, e aí a pessoa
+ * precisa descobrir qual se aplica a qual — pior que ler as duas na linha delas.
+ *
+ * ⚠️ O que vale conferir com o cliente é outra coisa, e está na lista de
+ * pendências: a MEIA porção de salada de frutas custa R$ 11,00 contra R$ 8,00 da
+ * inteira, e a viagem dela 13,00 contra 8,50. A leitura do quadro foi conferida;
+ * a inversão é do quadro, não da transcrição.
  */
 export async function DessertList() {
   const t = await getTranslations("cardapio");
