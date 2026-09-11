@@ -36,9 +36,19 @@ test.describe("sem JavaScript", () => {
    * As páginas onde o `Reveal` carrega conteúdo, e não enfeite. `minimo` é
    * quantos elementos revelados a página tem de ter: sentinela contra a guarda
    * passar porque não encontrou nada para examinar.
+   *
+   * ⚠️ **O mínimo da galeria era 8 e virou 3, porque 8 era um número do BANCO e
+   * não da página.** Na galeria cada foto é um `Reveal`, então o total depende
+   * de quantas linhas estão publicadas: eu calibrei contra o banco local, que
+   * tem 22, e a guarda reprovou contra um build que leu o banco de produção, que
+   * tem 6. O defeito era meu — uma invariante de acessibilidade não pode
+   * depender de quantas fotos o cliente publicou, senão despublicar uma foto
+   * "quebra" a acessibilidade do site.
+   *
+   * Três é o que a página tem de estrutura própria, sem contar conteúdo.
    */
   const PAGINAS = [
-    { rota: "/galeria", nome: "as fotos da galeria", minimo: 8 },
+    { rota: "/galeria", nome: "as fotos da galeria", minimo: 3 },
     { rota: "/", nome: "as seções da home", minimo: 3 },
     { rota: "/experiencia", nome: "os blocos da Experiência", minimo: 3 },
   ];
@@ -67,14 +77,18 @@ test.describe("sem JavaScript", () => {
       const invisiveis = await revelados.evaluateAll((nos) =>
         nos
           .map((n, i) => ({ i, opacidade: Number(getComputedStyle(n).opacity) }))
-          .filter((x) => x.opacidade < 0.99)
-          .slice(0, 5),
+          .filter((x) => x.opacidade < 0.99),
       );
+      // ⚠️ A mensagem mostra no máximo cinco, mas o NÚMERO é o total. A versão
+      // anterior cortava a lista antes de contar e dizia "5 elementos" para
+      // qualquer quantidade maior que cinco — eu mesmo li esse 5 como se fosse
+      // o total ao diagnosticar outra coisa.
+      const amostra = invisiveis.slice(0, 5);
 
       expect(
         invisiveis,
         `Sem JavaScript, ${invisiveis.length} elemento(s) de ${rota} ficam com ` +
-          `opacidade abaixo de 1 — ${JSON.stringify(invisiveis)}. O conteúdo está no ` +
+          `opacidade abaixo de 1 — ${JSON.stringify(amostra)}. O conteúdo está no ` +
           `HTML e não aparece na tela. Causa: a regra [data-reveal]{opacity:0} de ` +
           `src/app/globals.css sem a contrapartida em <noscript>, que vive no <head> ` +
           `de src/app/[locale]/layout.tsx, ao lado do ThemeStyle.`,

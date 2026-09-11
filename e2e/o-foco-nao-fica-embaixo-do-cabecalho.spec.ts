@@ -79,6 +79,32 @@ for (const rota of ROTAS) {
         return {
           proprios,
           total,
+          /*
+           * ⚠️ **`<iframe>` é medido por outro limiar, e o motivo é que a caixa
+           * dele não é o que está focado.**
+           *
+           * O mapa do Google é uma parada de teclado, e o Tab continua ANDANDO
+           * dentro dele: os controles de zoom, os links da Google. Visto do
+           * documento de fora, `document.activeElement` continua sendo o
+           * `<iframe>` em todas essas paradas, e o navegador rola DENTRO do
+           * quadro em vez de reposicionar a página — então a caixa do iframe
+           * pode ficar parada, com o topo sob o cabeçalho, enquanto o que
+           * realmente tem foco é um botão lá dentro cuja posição não é
+           * observável daqui.
+           *
+           * Medido: focando o iframe diretamente, ele fica com 15 de 15 pontos
+           * visíveis. Percorrendo por teclado até entrar nele, a mesma caixa
+           * aparece com 5 de 15 — quatro vezes, uma por controle interno.
+           *
+           * Aplicar o limiar de metade a essa caixa acusaria um defeito que não
+           * existe. O que ainda dá para exigir, e é exatamente a letra do
+           * critério AA 2.4.11, é que ele não fique INTEIRAMENTE escondido.
+           *
+           * Isto só aparece em build de produção: no servidor de
+           * desenvolvimento o mapa não carrega a tempo de virar parada de
+           * teclado, e a guarda passava sem nunca ter visto o caso.
+           */
+          quadro: el.tagName === "IFRAME",
           etiqueta:
             (el.textContent ?? "").trim().slice(0, 34) ||
             el.getAttribute("aria-label") ||
@@ -89,8 +115,12 @@ for (const rota of ROTAS) {
       // `null` = nada focado, ou fora da janela: não é o caso que este teste
       // examina, e tratar como falha produziria ruído.
       if (!r) continue;
-      if (r.proprios * 2 < r.total) {
-        encobertos.push(`"${r.etiqueta}" (${r.proprios}/${r.total} pontos visíveis)`);
+      const encoberto = r.quadro ? r.proprios === 0 : r.proprios * 2 < r.total;
+      if (encoberto) {
+        encobertos.push(
+          `"${r.etiqueta}" (${r.proprios}/${r.total} pontos visíveis` +
+            `${r.quadro ? ", quadro externo: exigido ao menos um" : ""})`,
+        );
       }
     }
 
