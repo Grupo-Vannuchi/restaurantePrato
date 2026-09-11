@@ -119,7 +119,7 @@ export default async function ContactPage({
         title={t("title")}
         subtitle={t("subtitle")}
         image="/ambiente/fachada.webp"
-        imageAlt="A fachada do Restaurante Prato na Rua Augusto Severo, 25"
+        imageAlt={t("headerAlt")}
       />
 
       {/* O mapa antes do formulario: quem abre esta pagina quer saber onde fica

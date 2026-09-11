@@ -43,7 +43,7 @@ export default async function ReservasPage({
         title={t("title")}
         subtitle={t("subtitle")}
         image="/ambiente/salao.webp"
-        imageAlt="O salão do Restaurante Prato, com as mesas postas"
+        imageAlt={t("headerAlt")}
       />
 
       {/* Como está o salão ao longo do serviço — vem antes da seção de

@@ -78,6 +78,7 @@
   },
   "experiencia": {
     "title": "A Experiência",
+    "headerAlt": "O balcão do Restaurante Prato visto do salão",
     "metaDescription": "Buffet completo, churrasco na brasa e tempero caseiro no Centro de Santos. O Restaurante Prato serve almoço de segunda a sexta, das 11h às 15h.",
     "subtitle": "A sua pausa merecida no coração do Centro.",
     "lead": "O Prato foi pensado para quem valoriza o próprio tempo. O salão é dinâmico, a rotatividade é alta e não há longas esperas. A comida chega farta e sempre quente, para você recarregar as energias e voltar pontualmente ao expediente. No Centro de Santos desde {foundedYear}.",
@@ -125,6 +126,7 @@
   },
   "reservas": {
     "title": "Horários",
+    "headerAlt": "O salão do Restaurante Prato, com as mesas postas",
     "metaDescription": "Restaurante Prato, no Centro de Santos: almoço de segunda a sexta, das 11h às 15h. Reserve sua mesa pelo WhatsApp e garanta lugar no horário de pico.",
     "subtitle": "De segunda a sexta, das 11h às 15h.",
     "groupsTitle": "Reservas para grupos e eventos",
@@ -146,6 +148,7 @@
   },
   "contact": {
     "title": "A poucos passos de você no Centro",
+    "headerAlt": "A fachada do Restaurante Prato na Rua Augusto Severo, 25",
     "subtitle": "R. Augusto Severo, 25, Centro, Santos/SP.",
     "infoTitle": "Como falar com a gente",
     "route": "Traçar rota",
