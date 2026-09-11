@@ -15,6 +15,30 @@ import { defineConfig, devices } from "@playwright/test";
  * combinada de antemão, ou selecione apenas os specs de leitura:
  *
  *   E2E_BASE_URL=https://… npx playwright test e2e/metadata-routes.spec.ts
+ *
+ * ── ⚠️ `/cardapio` e `networkidle` no servidor de DESENVOLVIMENTO ─────────
+ *
+ * Contra `npm run dev`, os specs que abrem `/cardapio` com
+ * `waitUntil: "networkidle"` estouram o tempo: três das oito fotos do
+ * carrossel de massas ficam pendentes no navegador indefinidamente, e o estado
+ * "sem rede" nunca chega. São sempre as mesmas três, e não é lentidão do
+ * servidor — investigado em 11/09:
+ *
+ *   · pedidas por `curl`, uma a uma, respondem em ~80 ms
+ *   · pedidas por `curl` em paralelo, as quatro respondem em menos de 200 ms
+ *   · rolar o carrossel até elas entrarem em vista não as completa
+ *   · o cache de imagem quente não muda nada
+ *
+ * É interação do Chromium com as conexões longas do servidor de
+ * desenvolvimento (HMR), não defeito do site: contra um build de produção as
+ * mesmas rotas passam. **A rodada que vale, depois de mexer em imagem ou em
+ * layout, é contra `next build` + `next start`.**
+ *
+ * ⚠️ E construa com o banco LOCAL e o `.next` limpo. `next build` carrega
+ * `.env.production.local`, que aponta para o Supabase de produção — sem passar
+ * `DATABASE_URL`, as páginas são prerenderizadas com os dados de PRODUÇÃO, e a
+ * semeadura do `globalSetup`, que escreve no banco local, não aparece. E sem
+ * apagar `.next` o `unstable_cache` devolve o conteúdo da build anterior.
  */
 export default defineConfig({
   testDir: "./e2e",

@@ -132,13 +132,17 @@
     "groupsMessage": "Olá! Gostaria de informações sobre reserva para grupos e eventos.",
     "practicalTitle": "Como está o salão",
     "addressLabel": "Endereço",
-    "hoursLabel": "Horário",
-    "salaoEarlyLabel": "11h",
-    "salaoEarlyValue": "Buffet intacto, comida recém-saída do fogo e muita tranquilidade. O paraíso de quem almoça cedo.",
-    "salaoPeakLabel": "Das 12h às 13h30",
-    "salaoPeakValue": "O fluxo intenso do Centro. Mas fica tranquilo: a rotatividade é alta e a chapa não para.",
-    "salaoLateLabel": "A partir das 13h30",
-    "salaoLateValue": "Clima mais calmo, ideal para comer sem pressa, com reposição garantida no buffet."
+    "hoursLabel": "Horário"
+  },
+  "salao": {
+    "title": "O melhor momento para vir",
+    "intro": "Cada horário do almoço tem um clima. Escolha o seu.",
+    "earlyLabel": "11h",
+    "earlyValue": "Buffet intacto, comida recém-saída do fogo e muita tranquilidade. O paraíso de quem almoça cedo.",
+    "peakLabel": "Das 12h às 13h30",
+    "peakValue": "O fluxo intenso do Centro. Mas fica tranquilo: a rotatividade é alta e a chapa não para.",
+    "lateLabel": "A partir das 13h30",
+    "lateValue": "Clima mais calmo, ideal para comer sem pressa, com reposição garantida no buffet."
   },
   "contact": {
     "title": "A poucos passos de você no Centro",

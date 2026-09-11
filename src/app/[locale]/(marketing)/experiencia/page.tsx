@@ -6,12 +6,13 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowRight, Check } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/page-header";
-import { Section } from "@/components/ui/section";
+import { Section, SectionHeader } from "@/components/ui/section";
 import { Reveal } from "@/components/ui/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { ReserveButton } from "@/components/reserve-button";
 import { ClosingCta } from "@/components/sections/closing-cta";
 import { GalleryPreview } from "@/components/sections/gallery-preview";
+import { MomentosDoSalao } from "@/components/sections/momentos-do-salao";
 import { fillYears, siteConfig } from "@/config/site";
 
 export async function generateMetadata({
@@ -54,6 +55,7 @@ export default async function AboutPage({
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
   const t = await getTranslations("experiencia");
+  const tSalao = await getTranslations("salao");
   const tc = await getTranslations("common");
 
   // A bullet mentions how long the house has been open; `fillYears` resolves it
@@ -90,6 +92,31 @@ export default async function AboutPage({
             {t.rich("audience.intro", richTags)}
           </p>
           <CheckList items={audienceItems} />
+        </div>
+      </Section>
+
+      {/*
+       * Os três momentos do salão, a MESMA lista que `/reservas` mostra na
+       * grade de informação prática.
+       *
+       * ⚠️ **A repetição é deliberada e a fonte é uma.** Esta página responde
+       * "como é almoçar aqui", e o ritmo do salão ao longo do serviço é
+       * exatamente isso: cedo o buffet está intacto, ao meio-dia o Centro chega
+       * inteiro, depois das 13h30 dá para comer sem pressa. Quem está decidindo
+       * se vem precisa dessa informação aqui, e não só na página de horários.
+       *
+       * O projeto irmão tem a mesma informação escrita duas vezes, em namespaces
+       * separados. Aqui as seis frases vivem uma vez, em `salao`, e as duas
+       * páginas renderizam a mesma lista — o layout é que difere.
+       */}
+      <Section>
+        <SectionHeader
+          title={tSalao("title")}
+          subtitle={tSalao("intro")}
+          align="left"
+        />
+        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
+          <MomentosDoSalao />
         </div>
       </Section>
 
