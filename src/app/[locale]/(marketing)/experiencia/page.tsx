@@ -124,7 +124,9 @@ export default async function AboutPage({
       >
         <div className="flex flex-col gap-3">
           {contactParagraphs.map((p, i) => (
-            <p key={i} className="text-pretty leading-relaxed opacity-90">
+            // Sem `opacity-90`, pelo mesmo motivo medido em `sections/cta.tsx`:
+            // branco a 90% sobre o verde da marca dá 4,39:1, abaixo dos 4,5:1.
+            <p key={i} className="text-pretty leading-relaxed">
               {p}
             </p>
           ))}

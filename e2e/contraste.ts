@@ -29,12 +29,42 @@ export function contraste(a: number, b: number): number {
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 }
 
-/** Lê a luminância da cor de texto computada de um elemento. */
-export async function luminanciaDoTexto(alvo: Locator): Promise<number> {
-  const cor = await alvo.evaluate((e) => getComputedStyle(e).color);
-  const rgb = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(cor);
-  if (!rgb) throw new Error(`cor de texto ilegível: ${cor}`);
-  return luminancia(Number(rgb[1]), Number(rgb[2]), Number(rgb[3]));
+/** A tinta com que o texto é de fato pintado: cor e opacidade efetiva. */
+export type Tinta = { r: number; g: number; b: number; alfa: number };
+
+/**
+ * Lê a cor de texto de um elemento **e a opacidade com que ela chega à tela**.
+ *
+ * ⚠️ **A opacidade é a parte que faltava, e sem ela esta função mentia.** Ela
+ * devolvia só a luminância de `getComputedStyle(e).color`, que é sempre a cor
+ * OPACA: num `<p class="opacity-90">` branco sobre o verde da marca ela
+ * respondia branco puro, 4,98:1, quando a tinta que aparece é branco a 90% e o
+ * número real é 4,40:1 — abaixo do mínimo. O defeito ficaria invisível
+ * justamente para a guarda escrita para achá-lo.
+ *
+ * Três fontes de transparência se multiplicam e todas contam:
+ *
+ * - `opacity` no próprio elemento (`opacity-90`)
+ * - `opacity` em qualquer ANCESTRAL, que se aplica ao subárvore inteira
+ * - o alfa do próprio `color`, quando vem como `rgba(…, 0.8)`
+ *
+ * O laço sobe até a raiz multiplicando tudo; ancestral com `opacity: 1` não
+ * muda nada, que é o caso quase sempre. Ele existe porque um pai translúcido
+ * afeta a subárvore inteira sem aparecer no `color` computado do filho.
+ */
+export async function tintaDoTexto(alvo: Locator): Promise<Tinta> {
+  return alvo.evaluate((e) => {
+    const cor = getComputedStyle(e).color;
+    const m = /rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?/.exec(cor);
+    if (!m) throw new Error(`cor de texto ilegível: ${cor}`);
+
+    let alfa = m[4] === undefined ? 1 : Number(m[4]);
+    for (let n: Element | null = e; n; n = n.parentElement) {
+      alfa *= Number(getComputedStyle(n).opacity);
+    }
+
+    return { r: Number(m[1]), g: Number(m[2]), b: Number(m[3]), alfa };
+  });
 }
 
 /**
@@ -54,11 +84,27 @@ export async function pixels(page: Page, png: Buffer): Promise<number[]> {
   }, png.toString("base64"));
 }
 
-/** O pior contraste entre a cor do texto e cada pixel de um retângulo de fundo. */
-export function piorContraste(lTexto: number, dados: number[]): number {
+/**
+ * O pior contraste entre a tinta do texto e cada pixel de um retângulo de fundo.
+ *
+ * A tinta é composta SOBRE CADA PIXEL antes da conta, porque é isso que
+ * acontece na tela: texto a 90% de opacidade sobre fundo escuro resulta numa
+ * cor diferente do mesmo texto sobre fundo claro. Compor uma vez, contra uma
+ * média, esconderia justamente o pior ponto — que é o que governa.
+ */
+export function piorContraste(tinta: Tinta, dados: number[]): number {
   let pior = Number.POSITIVE_INFINITY;
   for (let i = 0; i < dados.length; i += 4) {
-    const c = contraste(lTexto, luminancia(dados[i]!, dados[i + 1]!, dados[i + 2]!));
+    const fr = dados[i]!;
+    const fg = dados[i + 1]!;
+    const fb = dados[i + 2]!;
+    const lFundo = luminancia(fr, fg, fb);
+    const lTinta = luminancia(
+      tinta.r * tinta.alfa + fr * (1 - tinta.alfa),
+      tinta.g * tinta.alfa + fg * (1 - tinta.alfa),
+      tinta.b * tinta.alfa + fb * (1 - tinta.alfa),
+    );
+    const c = contraste(lTinta, lFundo);
     if (c < pior) pior = c;
   }
   return pior;
@@ -97,6 +143,36 @@ export async function contrasteNaTela(
   await alvo.scrollIntoViewIfNeeded();
 
   /*
+   * ⚠️ **Espera a animação de entrada TERMINAR, e isto não é paciência
+   * defensiva: sem ela a medição é de um quadro intermediário.**
+   *
+   * Rolar até o elemento é o que dispara o `IntersectionObserver` do `Reveal`,
+   * e o cartão então leva 0,7 s subindo de `opacity: 0` para 1. Fotografando na
+   * hora, o fundo capturado é uma mistura do verde do cartão com o branco da
+   * página — o título do cartão de fechamento, que é branco opaco sobre verde e
+   * mede 4,98:1, apareceu como 1,60:1 numa página e 2,80:1 na mesma página
+   * noutro tamanho de tela. Números baixos e instáveis, que pareciam defeito.
+   *
+   * A espera é pela OPACIDADE chegar a 1, não por um tempo fixo: com
+   * `prefers-reduced-motion: reduce` a transição dura 0,01 ms e a espera acaba
+   * no primeiro quadro, e nenhuma medição paga 700 ms que não precisa.
+   */
+  await alvo.evaluate(
+    (e) =>
+      new Promise<void>((resolve) => {
+        const revelado = e.closest("[data-reveal]");
+        if (!revelado) return resolve();
+        const limite = performance.now() + 3000;
+        const olha = () => {
+          const opaco = Number(getComputedStyle(revelado).opacity) >= 0.999;
+          if (opaco || performance.now() > limite) return resolve();
+          requestAnimationFrame(olha);
+        };
+        olha();
+      }),
+  );
+
+  /*
    * ⚠️ **`so-onde-ha-letra` existe por um falso positivo que custou uma rodada.**
    *
    * A caixa de um elemento `rounded-full` inclui os cantos, e no canto aparece o
@@ -120,13 +196,13 @@ export async function contrasteNaTela(
       : await alvo.boundingBox();
   if (!caixa) throw new Error("elemento sem caixa para medir");
 
-  const lTexto = await luminanciaDoTexto(alvo);
+  const tinta = await tintaDoTexto(alvo);
 
   /*
    * ⚠️ **Devolve o que mexeu, e isso é correção de um defeito real desta
    * função.** Ela apagava a tinta e ia embora deixando o `style.color` inline
    * no elemento. Numa segunda medição do MESMO elemento — que é o caso quando
-   * um selo tem dois estados — `luminanciaDoTexto` lia `rgba(0, 0, 0, 0)`, a
+   * um selo tem dois estados — a leitura da tinta pegava `rgba(0, 0, 0, 0)`, a
    * expressão pegava os três zeros e a conta saía contra PRETO: um selo branco
    * sobre verde, que mede 4,98:1, apareceu como 4,21:1. O número era plausível
    * o suficiente para eu procurar o erro no componente, não no medidor.
@@ -153,7 +229,7 @@ export async function contrasteNaTela(
     { m: modo, anterior: antes },
   );
 
-  const pior = piorContraste(lTexto, await pixels(page, fundo));
+  const pior = piorContraste(tinta, await pixels(page, fundo));
 
   return { pior, largura: caixa.width, altura: caixa.height };
 }

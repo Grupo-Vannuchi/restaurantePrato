@@ -32,7 +32,13 @@ export async function CTA() {
         </>
       }
     >
-      <p className="text-pretty opacity-90">{t("subtitle")}</p>
+      {/* Sem `opacity-90`: branco a 90% sobre o verde da marca mede 4,39:1,
+          abaixo do mínimo de 4,5 da WCAG AA — o verde chapado com branco opaco
+          dá 4,98:1, e a folga de 10% não cabe uma camada de transparência. A
+          hierarquia entre título e corpo já vem de tamanho e peso, que é como
+          ela deve vir; a opacidade estava fazendo de graça um trabalho que o
+          `text-3xl font-bold` do título já faz. */}
+      <p className="text-pretty">{t("subtitle")}</p>
     </ClosingCta>
   );
 }
