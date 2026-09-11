@@ -51,9 +51,12 @@ const ROTAS = [
   "/sitemap.xml",
   "/robots.txt",
   "/manifest.webmanifest",
-  "/icon",
-  "/apple-icon",
-  "/opengraph-image",
+  // Com extensão desde 09-11/09: os três deixaram de ser rota gerada e viraram
+  // arquivo estático. Aquecer `/icon` ou `/opengraph-image` hoje é aquecer um
+  // 404 — não compila nada e some com a razão de a linha existir.
+  "/icon.png",
+  "/apple-icon.png",
+  "/opengraph-image.jpg",
   // A página de erro tem código próprio e compila como qualquer outra.
   "/rota-que-nao-existe-jamais",
 ];
