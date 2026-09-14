@@ -24,10 +24,27 @@ import { renderWithIntl, screen, userEvent, within } from "./test-utils";
  */
 const ROTULOS = { 1: "Segunda", 2: "Terça", 3: "Quarta", 4: "Quinta", 5: "Sexta" };
 
+/**
+ * O título de cada painel, só para leitor de tela.
+ *
+ * ⚠️ O texto aqui é DIFERENTE do rótulo da aba de propósito: se os dois fossem
+ * "Segunda", uma asserção que procurasse "Segunda" não distinguiria a aba do
+ * título do painel, e o teste passaria achando ter encontrado um quando
+ * encontrou o outro.
+ */
+const TITULOS = {
+  1: "Buffet de Segunda",
+  2: "Buffet de Terça",
+  3: "Buffet de Quarta",
+  4: "Buffet de Quinta",
+  5: "Buffet de Sexta",
+};
+
 function montar(hoje: number | null = null) {
   return renderWithIntl(
     <DayTabs
       labels={ROTULOS}
+      panelHeadings={TITULOS}
       todayLabel="hoje"
       selectorLabel="Dia da semana"
       today={hoje}

@@ -65,6 +65,18 @@ export default async function CardapioPage({
   );
 
   /*
+   * O título do painel de cada dia, só para leitor de tela — ver o aviso em
+   * `DayTabs`. Montado aqui porque o componente é de cliente e não tem o
+   * catálogo, igual aos rótulos acima.
+   */
+  const titulosDePainel = Object.fromEntries(
+    WEEKDAYS.map((d) => [
+      d,
+      t("dayPanelHeading", { day: t(`weekday${d}` as "weekday1") }),
+    ]),
+  );
+
+  /*
    * O dia de hoje resolvido no fuso do restaurante, e `null` no fim de semana.
    * `weekdayNoRestaurante` devolve 6 e 7 no sábado e no domingo, que não são
    * dias de cardápio — as abas caem na segunda, porque abrir em branco seria
@@ -94,6 +106,7 @@ export default async function CardapioPage({
           <div className="mt-10">
             <DayTabs
               labels={rotulos}
+              panelHeadings={titulosDePainel}
               todayLabel={t("today")}
               selectorLabel={t("daySelectorLabel")}
               today={hoje}
@@ -111,17 +124,31 @@ export default async function CardapioPage({
                   <div key={dia} className="flex flex-col gap-8">
                     {agrupadosPorCategoria(pratos).map((grupo) => (
                       <section key={grupo.categoria.slug}>
-                        {/* `h2`, e não `h3`: acima só existe o `h1` da
-                            página, e o nome do PRATO já é `h3` na linha. Com
-                            `h3` aqui, a página pulava de h1 para h3 e a
-                            categoria ficava no mesmo nível dos pratos que ela
-                            agrupa. */}
-                        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                        {/* ⚠️ **`h3` desde 14/09, e o comentário anterior aqui
+                            defendia `h2` com um argumento que era certo na
+                            época:** acima só existia o `h1` da página, então
+                            `h3` pularia um nível e empataria a categoria com os
+                            pratos.
+
+                            O que mudou é que o DIA passou a ter título. A
+                            árvore agora é página → dia → categoria → prato, e a
+                            categoria ocupa o terceiro degrau sem pular nada.
+                            Antes, as seis categorias do dia ficavam no mesmo
+                            nível de "Sobremesas" e "Ilha de massas", que são
+                            seções inteiras do cardápio — a estrutura afirmava
+                            que uma prateleira do buffet pesa o mesmo que elas.
+
+                            O tamanho do texto não mudou: nível de título é
+                            estrutura, tamanho é desenho. */}
+                        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                           {grupo.categoria.name}
-                        </h2>
+                        </h3>
                         <ul role="list" className="overflow-hidden rounded-2xl border border-border bg-card">
                           {grupo.pratos.map((prato) => (
-                            <DishRow key={prato.id} dish={prato} />
+                            // Quarto degrau: dia → categoria → prato. Na ilha
+                            // de massas, mais abaixo, a linha fica direto sob a
+                            // seção e mantém o padrão `h3`.
+                            <DishRow key={prato.id} dish={prato} nivel={4} />
                           ))}
                         </ul>
                       </section>

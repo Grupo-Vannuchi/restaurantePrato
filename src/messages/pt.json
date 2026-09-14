@@ -526,6 +526,7 @@
     "everyday": "Todos os dias",
     "empty": "O cardápio da semana ainda não foi publicado.",
     "emptyDay": "Ainda não há pratos cadastrados para este dia.",
+    "dayPanelHeading": "Buffet de {day}",
     "buffetLabel": "Buffet por quilo",
     "buffetNote": "O valor é calculado pelo peso do prato que você montar, não pelo que você escolher.",
     "pastaLabel": "Ilha de massas",

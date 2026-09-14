@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
  */
 export function DayTabs({
   labels,
+  panelHeadings,
   todayLabel,
   selectorLabel,
   today,
@@ -37,6 +38,12 @@ export function DayTabs({
 }: {
   /** Rótulo visível de cada dia, vindo do catálogo. */
   labels: Record<number, string>;
+  /**
+   * Título do painel de cada dia, só para leitor de tela. Vem montado do
+   * servidor pelo mesmo motivo que `labels`: este é componente de cliente e
+   * não tem o catálogo.
+   */
+  panelHeadings: Record<number, string>;
   /** Marca "hoje" na aba do dia corrente. */
   todayLabel: string;
   /** Nome do grupo de abas, para quem chega nele por leitor de tela. */
@@ -188,6 +195,30 @@ export function DayTabs({
           hidden={dia !== ativo}
           className="mt-8"
         >
+          {/*
+           * ⚠️ **O dia precisa de TÍTULO, e não só de nome acessível.**
+           *
+           * O painel já é nomeado pela aba, por `aria-labelledby` — quem entra
+           * nele como região ouve "Sexta". Mas o modo dominante de navegação de
+           * leitor de tela é saltar de TÍTULO em título, e nessa lista o dia não
+           * existia: media 15 títulos de nível 2 na árvore visível, e os seis
+           * primeiros eram categorias do buffet do dia sem nada acima dizendo de
+           * que dia. Saltar para "Carnes" não dizia se era segunda ou sexta.
+           *
+           * Pior: "Fritos", que é uma prateleira do buffet daquele dia,
+           * aparecia como IGUAL a "Sobremesas", que é uma seção inteira do
+           * cardápio. A estrutura afirmava que os dois pesam o mesmo.
+           *
+           * ⚠️ **`sr-only` de propósito, e isso é contenção, não economia.** A
+           * aba já mostra o dia na tela, com estado selecionado visível; um
+           * título repetindo isso seria mudança de layout, que neste projeto só
+           * acontece a pedido. O que falta é a camada que o desenho comunica por
+           * posição e a estrutura não comunica por nada.
+           *
+           * Só um destes existe na árvore por vez: os outros quatro painéis têm
+           * `hidden`, que os tira da acessibilidade junto com o conteúdo.
+           */}
+          <h2 className="sr-only">{panelHeadings[dia]}</h2>
           {children[i]}
         </div>
       ))}
