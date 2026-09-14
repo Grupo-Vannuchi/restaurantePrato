@@ -28,20 +28,57 @@ const LIMITE_LCP_MS = 2500; // limiar "bom" do Core Web Vitals
  * se não medir a medir errado.
  *
  * O pulo aparece como "skipped" no relatório do Playwright, com este motivo:
- * lacuna declarada, não silenciosa. Em CI o `webServer` sobe um build de
- * produção, então lá ele roda.
+ * lacuna declarada, não silenciosa.
+ *
+ * ── ⚠️ A condição PERGUNTA ao servidor, e antes ela adivinhava ────────────
+ *
+ * Era `/localhost|127\.0\.0\.1/.test(alvo) && !process.env.CI`: qualquer coisa
+ * em localhost fora do CI valia por servidor de desenvolvimento. A aproximação
+ * era verdadeira enquanto a única forma de rodar localmente fosse `next dev`.
+ *
+ * **Deixou de ser em 11/09**, quando a configuração da suíte passou a mandar
+ * rodar, depois de mexer em imagem ou layout, contra `next build` + `next start`
+ * — que sobe em localhost. Resultado: na única rodada local que produziria
+ * número válido, estas três medições se declaravam puladas. Elas nunca rodaram
+ * nesta máquina desde que foram escritas, e ninguém notou porque "skipped" com
+ * motivo parece decisão, não lacuna.
+ *
+ * O sinal agora é evidência direta da ferramenta: o HTML do `next dev` carrega
+ * o pacote de ferramentas (`next-devtools`) e o cliente de recarga a quente
+ * (`hmr-client`); o de produção não carrega nenhum dos dois. Medido nos dois
+ * servidores ao mesmo tempo, na mesma máquina: 6 ocorrências no dev, 0 no build.
+ *
+ * ⚠️ **E a direção da falha é escolhida.** Se o Next renomear esses pacotes, a
+ * detecção passa a dizer "produção" e as três RODAM contra o dev — falham alto,
+ * com número ruim e visível. O contrário — voltar a se calar em silêncio — é o
+ * que acabou de custar três semanas de medição que não aconteceu.
  */
-const alvo = process.env.E2E_BASE_URL ?? "http://localhost:3000";
-const ehServidorDeDesenvolvimento =
-  /localhost|127\.0\.0\.1/.test(alvo) && !process.env.CI;
+const MARCAS_DE_DESENVOLVIMENTO = ["next-devtools", "hmr-client"];
+
+/** Preenchido por `beforeAll`: uma sondagem por trabalhador, não por teste. */
+let ehServidorDeDesenvolvimento: boolean | null = null;
+
+test.beforeAll(async ({ request }) => {
+  const resposta = await request.get("/");
+  // Sentinela: sem conseguir ler a página não se decide nada. Pular aqui
+  // esconderia um servidor fora do ar atrás de "lacuna declarada".
+  expect(
+    resposta.status(),
+    "a sondagem de tipo de servidor não conseguiu carregar a home",
+  ).toBe(200);
+  const html = await resposta.text();
+  ehServidorDeDesenvolvimento = MARCAS_DE_DESENVOLVIMENTO.some((m) =>
+    html.includes(m),
+  );
+});
 
 for (const path of ["/", "/cardapio", "/galeria"]) {
   test(`${path} pinta o maior elemento em menos de ${LIMITE_LCP_MS}ms`, async ({
     page,
   }) => {
     test.skip(
-      ehServidorDeDesenvolvimento,
-      "LCP contra `next dev` mede a ferramenta, não o site — aponte E2E_BASE_URL para o site publicado",
+      ehServidorDeDesenvolvimento === true,
+      "LCP contra `next dev` mede a ferramenta, não o site — rode contra `next build` + `next start`, ou aponte E2E_BASE_URL para o site publicado",
     );
     await page.goto(path, { waitUntil: "networkidle" });
 
@@ -55,6 +92,13 @@ for (const path of ["/", "/cardapio", "/galeria"]) {
           setTimeout(() => resolve(Math.round(maior)), 1000);
         }),
     );
+
+    /*
+     * Registra o número mesmo quando passa. Orçamento que só fala ao estourar
+     * não deixa ver a tendência — e foi por não ter número nenhum no relatório
+     * que o pulo destas três medições passou três semanas invisível.
+     */
+    console.log(`LCP ${path} = ${lcp}ms (limite ${LIMITE_LCP_MS})`);
 
     expect(lcp, `LCP de ${lcp}ms em ${path}`).toBeLessThan(LIMITE_LCP_MS);
   });
