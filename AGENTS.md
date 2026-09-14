@@ -170,6 +170,17 @@ null by hardcoding a number.
   `unstable_cache` + `tags`; invalidate with `updateTag(tags.<x>)` on writes.
 - **Before coding Next APIs**, read `node_modules/next/dist/docs/` — this is
   Next 16 + Turbopack, not your training data.
+  ⚠️ **Never delete `.next/cache/images` while a server is running.** The image
+  optimizer keeps state over that directory; removed from under a live
+  `next start`, some conversions **block forever** — no response, no error, no
+  log line. On 14/09 that cost an afternoon: sixteen mobile tests timed out on
+  `/cardapio` and every hypothesis pointed at the site. None was. The header
+  mark is `priority`, so the hang held the page's `load` event and took every
+  test on the route with it, none of them measuring images. It looked like a
+  site defect because it was deterministic per (file, width) — those were the
+  entries whose directory had been destroyed — while `sharp` converted all of
+  them standalone in under 1.3 s and WebP answered in 58 ms. Stop the server,
+  delete, start: the same two conversions then return in 209 ms and 219 ms.
   ⚠️ **`quality` on `next/image` is ignored unless the value is in
   `images.qualities`.** Next 16 made that allowlist mandatory and it defaults to
   `[75]`: a `quality={50}` in a component is not a build error, not a warning,

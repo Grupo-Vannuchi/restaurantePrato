@@ -16,39 +16,38 @@ import { defineConfig, devices } from "@playwright/test";
  *
  *   E2E_BASE_URL=https://… npx playwright test e2e/metadata-routes.spec.ts
  *
- * ── ⚠️ `/cardapio` no tamanho de CELULAR: problema aberto ────────────────
+ * ── ⚠️ NUNCA apague `.next/cache/images` com o servidor NO AR ────────────
  *
- * Nove a dezesseis testes do projeto `celular`, todos em `/cardapio`, estouram
- * o tempo no `page.goto`. **Não está resolvido**, e o que se sabe é isto:
+ * Isso travou dezesseis testes do projeto `celular` em `/cardapio` durante uma
+ * tarde inteira de 14/09, e cada hipótese que investiguei apontava para o site.
+ * Nenhuma era. O dano vinha do procedimento de diagnóstico.
  *
- *   · não é o servidor: por `curl` as oito fotos do carrossel respondem 200
- *     AVIF em menos de 1,1 s, a frio, uma a uma E em paralelo
- *   · não é defeito visível: a tela mostra os slides, e as fotos que ficam em
- *     0×0 são as tardias fora de vista, que é o comportamento correto
- *   · não é o cache de imagem: apagar ou aquecer não muda o resultado
- *   · não é `networkidle`: trocado por `load` em 14/09 e os estouros seguem
- *   · não é o tempo do caso: subir de 30 s para 60 s não mudou nada
- *   · não é só do servidor de desenvolvimento, como este aviso afirmava até
- *     14/09 — reproduz igual contra `next build` + `next start`
+ * O otimizador de imagem mantém estado sobre aquele diretório. Removido embaixo
+ * de um `next start` vivo, a conversão de certas entradas **bloqueia para
+ * sempre**: sem resposta, sem erro, sem uma linha no log. Como a marca do
+ * cabeçalho é `priority`, o evento `load` da página nunca chegava — e com ele
+ * foram todos os testes daquela rota, nenhum deles medindo imagem.
  *
- *   · não é contenção entre trabalhadores: com `--workers=1` o projeto
- *     `celular` falha nos MESMOS dezesseis casos, em 10 minutos de rodada
+ * O que fez parecer defeito do site, e não é:
  *
- * O dado que não fecha com nada disso: medido isolado, num arquivo de teste com
- * um caso só, o mesmo `goto` volta em 238 ms. Rodando dentro da suíte, estoura.
- * A diferença entre os dois ambientes é o que falta entender — e é onde a
- * próxima tentativa deve começar, em vez de repetir as seis hipóteses acima.
+ *   · determinístico por (arquivo, largura) — eram as entradas cujo diretório
+ *     eu havia destruído; `logo-claro.png` travava em 384 e 1080 e respondia em
+ *     128 e 256, três vezes de três
+ *   · `logo.png`, idêntica em dimensão, canais, profundidade e alfa, passava
+ *   · o `sharp` sozinho converte TODAS as combinações em menos de 1,3 s
+ *   · em WebP a mesma conversão volta em 58 ms; só o caminho AVIF travava
  *
- * Custo enquanto isso: dezesseis casos do `celular` sem cobertura, todos em
- * `/cardapio`. Nenhum deles mede rede — medem contraste, títulos, refluxo,
- * foco, CSP e dado estruturado.
+ * Com o cache removido enquanto o servidor estava PARADO, as mesmas duas
+ * conversões voltam em 209 ms e 219 ms, e a suíte fecha em **235 passando, 0
+ * falhando, 6 puladas**.
  *
- * ⚠️ A afirmação anterior deste bloco — "contra um build de produção as mesmas
- * rotas passam" — era FALSA, e ficou registrada porque acreditar nela custou uma
- * rodada inteira de investigação no lugar errado.
+ * **A ordem certa é parar, apagar, subir.** É a mesma disciplina que a ordem de
+ * semeadura abaixo, e pela mesma razão: `next start` lê o `.next` no boot e não
+ * espera que ele mude embaixo dele.
  *
- * **A rodada que vale, depois de mexer em imagem ou em layout, continua sendo
- * contra `next build` + `next start`** — por causa da ordem e do banco abaixo.
+ * ⚠️ Havia aqui, escrito em 11/09, que os estouros eram interação do Chromium
+ * com o servidor de desenvolvimento e que "contra um build de produção as
+ * mesmas rotas passam". Era falso nas duas metades.
  *
  * ⚠️ E construa com o banco LOCAL e o `.next` limpo. `next build` carrega
  * `.env.production.local`, que aponta para o Supabase de produção — sem passar
