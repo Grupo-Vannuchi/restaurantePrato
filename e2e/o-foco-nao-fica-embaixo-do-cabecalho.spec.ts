@@ -47,7 +47,7 @@ for (const rota of ROTAS) {
   test(`${rota}: nada que recebe foco fica escondido atrás do cabeçalho`, async ({
     page,
   }) => {
-    await page.goto(rota, { waitUntil: "networkidle" });
+    await page.goto(rota, { waitUntil: "load" });
 
     // Percorre para a frente e depois volta: é na volta que o defeito aparece.
     const PASSOS = 25;

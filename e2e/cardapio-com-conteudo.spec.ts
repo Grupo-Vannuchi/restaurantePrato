@@ -53,7 +53,7 @@ const DICA_DE_CACHE =
   "(O `globalSetup` semeia antes do servidor subir, e é assim que o CI roda.)";
 
 test("a página mostra o cardápio, agrupado por categoria", async ({ page }) => {
-  await page.goto("/cardapio", { waitUntil: "networkidle" });
+  await page.goto("/cardapio", { waitUntil: "load" });
 
   await expect(page.getByRole("tablist")).toBeVisible();
 
@@ -71,7 +71,7 @@ test("não pula nível de título com conteúdo na tela", async ({ page }) => {
    * Foi assim que o salto h1 → h3 daqui passou despercebido até eu semear
    * dados à mão em 01/09.
    */
-  await page.goto("/cardapio", { waitUntil: "networkidle" });
+  await page.goto("/cardapio", { waitUntil: "load" });
   const saltos = await page.evaluate(() => {
     const niveis = [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")].map((h) => ({
       nivel: Number(h.tagName[1]),
@@ -89,7 +89,7 @@ test("não pula nível de título com conteúdo na tela", async ({ page }) => {
 });
 
 test("a aba escolhida troca os pratos do dia", async ({ page }) => {
-  await page.goto("/cardapio", { waitUntil: "networkidle" });
+  await page.goto("/cardapio", { waitUntil: "load" });
 
   const painel = page.getByRole("tabpanel");
   await page.getByRole("tab").nth(0).click(); // segunda
@@ -107,7 +107,7 @@ test("a aba escolhida troca os pratos do dia", async ({ page }) => {
 test("as setas do teclado andam entre as abas, no navegador de verdade", async ({ page }) => {
   // O teste unitário já cobre isto, mas o padrão de abas vive de como o
   // navegador trata `tabindex` e foco — coisas que o jsdom simula.
-  await page.goto("/cardapio", { waitUntil: "networkidle" });
+  await page.goto("/cardapio", { waitUntil: "load" });
 
   await page.getByRole("tab").nth(0).focus();
   await page.keyboard.press("ArrowRight");
@@ -118,7 +118,7 @@ test("as setas do teclado andam entre as abas, no navegador de verdade", async (
 test("a massa da ilha aparece em seção própria, fora das abas", async ({ page }) => {
   // Preço diferente, seção diferente. Se ela aparecesse dentro de uma aba de
   // dia, quem lê na mesa concluiria que entra no preço do buffet.
-  await page.goto("/cardapio", { waitUntil: "networkidle" });
+  await page.goto("/cardapio", { waitUntil: "load" });
   const massas = page.locator("#massas");
   await expect(massas).toBeVisible();
   await expect(massas.getByText(NOMES.massa)).toBeVisible();

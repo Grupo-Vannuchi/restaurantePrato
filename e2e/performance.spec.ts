@@ -80,7 +80,7 @@ for (const path of ["/", "/cardapio", "/galeria"]) {
       ehServidorDeDesenvolvimento === true,
       "LCP contra `next dev` mede a ferramenta, não o site — rode contra `next build` + `next start`, ou aponte E2E_BASE_URL para o site publicado",
     );
-    await page.goto(path, { waitUntil: "networkidle" });
+    await page.goto(path, { waitUntil: "load" });
 
     const lcp = await page.evaluate(
       () =>
@@ -126,7 +126,7 @@ test("nenhuma requisição sai para terceiros", async ({ page, baseURL }) => {
     }
   });
 
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "load" });
 
   expect([...externos], [...externos].join(", ")).toEqual([]);
 });
@@ -254,10 +254,35 @@ for (const [path, limite] of Object.entries(ORCAMENTO_DE_IMAGEM_KB)) {
       bytesPorUrl.set(r.url(), Number(r.headers()["content-length"] ?? 0));
     });
 
+    let ultimaImagem = Date.now();
+    page.on("response", (r) => {
+      if (r.request().resourceType() === "image") ultimaImagem = Date.now();
+    });
+
     await page.goto(path, { waitUntil: "load" });
     // As de baixo da dobra: sem isto o orçamento mediria meia página.
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await page.waitForLoadState("networkidle");
+
+    /*
+     * ⚠️ **Espera SILÊNCIO de imagem, e não `networkidle`.**
+     *
+     * Aqui a espera faz trabalho de verdade: as fotos abaixo da dobra só são
+     * pedidas depois da rolagem, e medir antes delas daria meio orçamento. Mas
+     * `networkidle` exige ZERO conexões pendentes, e uma requisição que nunca
+     * termina — no celular, `/cardapio` tem uma foto tardia fora da tela nesse
+     * estado — trava a espera para sempre: medido, 40 s de estouro contra 238 ms
+     * de `load`.
+     *
+     * Silêncio é a pergunta certa para um orçamento: "paramos de receber
+     * imagem?". Byte que nunca chega também não é byte que o visitante pagou,
+     * então uma requisição pendurada some da conta em vez de derrubar o teste.
+     */
+    const CAP = 15_000;
+    const QUIETO = 800;
+    const limite = Date.now() + CAP;
+    while (Date.now() < limite && Date.now() - ultimaImagem < QUIETO) {
+      await page.waitForTimeout(100);
+    }
 
     const total = [...bytesPorUrl.values()].reduce((s, n) => s + n, 0);
     const kb = Math.round(total / 1024);

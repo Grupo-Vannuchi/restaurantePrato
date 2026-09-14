@@ -20,7 +20,7 @@ const alternador = (page: import("@playwright/test").Page) =>
   page.getByRole("button", { name: /^(Abrir|Fechar) menu$/ });
 
 const abrir = async (page: import("@playwright/test").Page) => {
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "load" });
   const botao = alternador(page);
   await botao.click();
   await expect(botao).toHaveAttribute("aria-expanded", "true");

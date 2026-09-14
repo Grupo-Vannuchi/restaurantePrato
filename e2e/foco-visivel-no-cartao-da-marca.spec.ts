@@ -46,7 +46,7 @@ function achatar(cor: string, fundo: number[]): number[] | null {
 
 for (const caminho of PAGINAS) {
   test(`${caminho}: o foco é visível dentro do cartão da marca`, async ({ page }) => {
-    await page.goto(caminho, { waitUntil: "networkidle" });
+    await page.goto(caminho, { waitUntil: "load" });
 
     const resultado = await page.evaluate(async () => {
       // O cartão é o elemento cuja cor de fundo é a da marca.

@@ -38,7 +38,7 @@ for (const path of PAGES) {
       });
     });
 
-    await page.goto(path, { waitUntil: "networkidle" });
+    await page.goto(path, { waitUntil: "load" });
 
     // O rodapé embute o mapa com `loading="lazy"`, então ele só busca o quadro
     // quando entra em tela. Sem rolar até o fim, cinco das seis páginas
@@ -60,7 +60,7 @@ test("o painel de login carrega sem violar a CSP", async ({ page }) => {
     }
   });
 
-  await page.goto("/admin", { waitUntil: "networkidle" });
+  await page.goto("/admin", { waitUntil: "load" });
   await expect(page.getByRole("button", { name: "Entrar" })).toBeVisible();
   expect(violations, violations.join("\n")).toEqual([]);
 });

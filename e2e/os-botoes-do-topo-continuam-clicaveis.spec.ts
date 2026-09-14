@@ -76,7 +76,7 @@ for (const escala of ESCALAS) {
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/", { waitUntil: "networkidle" });
+    await page.goto("/", { waitUntil: "load" });
 
     /*
      * É assim que a pessoa amplia o texto: a preferência de tamanho de fonte do

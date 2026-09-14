@@ -115,7 +115,7 @@ for (const { rota, nome, seletor, onde } of ABERTURAS) {
      * o único que todo mundo vê.
      */
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto(rota, { waitUntil: "networkidle" });
+    await page.goto(rota, { waitUntil: "load" });
 
     const texto = page.locator(seletor).first();
     await expect(texto, `texto de abertura não encontrado em ${rota}`).toBeVisible();

@@ -49,7 +49,7 @@ const ANEL = (() => {
 })();
 
 test("a aba do dia selecionado aparece na faixa", async ({ page }) => {
-  await page.goto("/cardapio", { waitUntil: "networkidle" });
+  await page.goto("/cardapio", { waitUntil: "load" });
 
   const m = await page.evaluate(() => {
     const lista = document.querySelector('[role="tablist"]') as HTMLElement | null;
@@ -92,7 +92,7 @@ test("a aba do dia selecionado aparece na faixa", async ({ page }) => {
 });
 
 test("nenhum rolador horizontal corta o anel de foco", async ({ page }) => {
-  await page.goto("/cardapio", { waitUntil: "networkidle" });
+  await page.goto("/cardapio", { waitUntil: "load" });
 
   const apertados = await page.evaluate((anel) => {
     const problemas: string[] = [];

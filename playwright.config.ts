@@ -16,23 +16,39 @@ import { defineConfig, devices } from "@playwright/test";
  *
  *   E2E_BASE_URL=https://… npx playwright test e2e/metadata-routes.spec.ts
  *
- * ── ⚠️ `/cardapio` e `networkidle` no servidor de DESENVOLVIMENTO ─────────
+ * ── ⚠️ `/cardapio` no tamanho de CELULAR: problema aberto ────────────────
  *
- * Contra `npm run dev`, os specs que abrem `/cardapio` com
- * `waitUntil: "networkidle"` estouram o tempo: três das oito fotos do
- * carrossel de massas ficam pendentes no navegador indefinidamente, e o estado
- * "sem rede" nunca chega. São sempre as mesmas três, e não é lentidão do
- * servidor — investigado em 11/09:
+ * Nove a dezesseis testes do projeto `celular`, todos em `/cardapio`, estouram
+ * o tempo no `page.goto`. **Não está resolvido**, e o que se sabe é isto:
  *
- *   · pedidas por `curl`, uma a uma, respondem em ~80 ms
- *   · pedidas por `curl` em paralelo, as quatro respondem em menos de 200 ms
- *   · rolar o carrossel até elas entrarem em vista não as completa
- *   · o cache de imagem quente não muda nada
+ *   · não é o servidor: por `curl` as oito fotos do carrossel respondem 200
+ *     AVIF em menos de 1,1 s, a frio, uma a uma E em paralelo
+ *   · não é defeito visível: a tela mostra os slides, e as fotos que ficam em
+ *     0×0 são as tardias fora de vista, que é o comportamento correto
+ *   · não é o cache de imagem: apagar ou aquecer não muda o resultado
+ *   · não é `networkidle`: trocado por `load` em 14/09 e os estouros seguem
+ *   · não é o tempo do caso: subir de 30 s para 60 s não mudou nada
+ *   · não é só do servidor de desenvolvimento, como este aviso afirmava até
+ *     14/09 — reproduz igual contra `next build` + `next start`
  *
- * É interação do Chromium com as conexões longas do servidor de
- * desenvolvimento (HMR), não defeito do site: contra um build de produção as
- * mesmas rotas passam. **A rodada que vale, depois de mexer em imagem ou em
- * layout, é contra `next build` + `next start`.**
+ *   · não é contenção entre trabalhadores: com `--workers=1` o projeto
+ *     `celular` falha nos MESMOS dezesseis casos, em 10 minutos de rodada
+ *
+ * O dado que não fecha com nada disso: medido isolado, num arquivo de teste com
+ * um caso só, o mesmo `goto` volta em 238 ms. Rodando dentro da suíte, estoura.
+ * A diferença entre os dois ambientes é o que falta entender — e é onde a
+ * próxima tentativa deve começar, em vez de repetir as seis hipóteses acima.
+ *
+ * Custo enquanto isso: dezesseis casos do `celular` sem cobertura, todos em
+ * `/cardapio`. Nenhum deles mede rede — medem contraste, títulos, refluxo,
+ * foco, CSP e dado estruturado.
+ *
+ * ⚠️ A afirmação anterior deste bloco — "contra um build de produção as mesmas
+ * rotas passam" — era FALSA, e ficou registrada porque acreditar nela custou uma
+ * rodada inteira de investigação no lugar errado.
+ *
+ * **A rodada que vale, depois de mexer em imagem ou em layout, continua sendo
+ * contra `next build` + `next start`** — por causa da ordem e do banco abaixo.
  *
  * ⚠️ E construa com o banco LOCAL e o `.next` limpo. `next build` carrega
  * `.env.production.local`, que aponta para o Supabase de produção — sem passar
@@ -62,7 +78,13 @@ import { defineConfig, devices } from "@playwright/test";
  *
  * Para semear à mão, o `globalSetup` é um módulo com exportação padrão:
  *
- *   DATABASE_URL=… npx tsx -e "import s from './e2e/semeia-cardapio.ts'; await s()"
+ *   DATABASE_URL=… npx tsx -e "import('./e2e/semeia-cardapio.ts').then((m) => (typeof m.default === 'function' ? m.default : m.default.default)())"
+ *
+ * ⚠️ O comando é feio por interoperabilidade, e a versão curta NÃO roda: `tsx -e`
+ * transpila para CJS, onde `await` de topo morre com "Top-level await is
+ * currently not supported with the cjs output format", e o `default` chega
+ * embrulhado em outro `default`. A forma acima está verificada — semeia as duas
+ * categorias de teste.
  */
 export default defineConfig({
   testDir: "./e2e",

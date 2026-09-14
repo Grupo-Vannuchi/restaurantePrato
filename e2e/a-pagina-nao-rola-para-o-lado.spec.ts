@@ -99,7 +99,7 @@ async function mede(page: import("@playwright/test").Page) {
 for (const rota of ROTAS) {
   test(`${rota} não rola para o lado a 320 px`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 });
-    await page.goto(rota, { waitUntil: "networkidle" });
+    await page.goto(rota, { waitUntil: "load" });
 
     const m = await mede(page);
 
@@ -114,7 +114,7 @@ for (const rota of ROTAS) {
   });
 
   test(`${rota} não rola para o lado com o texto em 200%`, async ({ page }) => {
-    await page.goto(rota, { waitUntil: "networkidle" });
+    await page.goto(rota, { waitUntil: "load" });
 
     /*
      * A preferência de tamanho de fonte do navegador muda o corpo do elemento

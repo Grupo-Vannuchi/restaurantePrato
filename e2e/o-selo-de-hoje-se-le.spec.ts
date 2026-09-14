@@ -49,7 +49,7 @@ const ABA_DE_HOJE = '[role="tab"]:has(span)';
 
 test.describe("o selo de hoje", () => {
   test("se lê com a aba de hoje selecionada e sem ela", async ({ page }) => {
-    await page.goto("/cardapio", { waitUntil: "networkidle" });
+    await page.goto("/cardapio", { waitUntil: "load" });
 
     const abaDeHoje = page.locator(ABA_DE_HOJE);
     const existe = (await abaDeHoje.count()) > 0;

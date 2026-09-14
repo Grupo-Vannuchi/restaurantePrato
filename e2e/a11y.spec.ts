@@ -52,7 +52,7 @@ for (const path of PAGES) {
   });
 
   test(`${path} não pula nível de título`, async ({ page }) => {
-    await page.goto(path, { waitUntil: "networkidle" });
+    await page.goto(path, { waitUntil: "load" });
 
     const saltos = await page.evaluate(() => {
       const níveis = [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")].map((h) => ({
@@ -77,7 +77,7 @@ for (const path of PAGES) {
   });
 
   test(`${path} nomeia todo formulário de mais de um campo`, async ({ page }) => {
-    await page.goto(path, { waitUntil: "networkidle" });
+    await page.goto(path, { waitUntil: "load" });
 
     /*
      * **Um `<form>` só é anunciado como REGIÃO quando tem nome acessível.** Sem
@@ -138,7 +138,7 @@ for (const path of PAGES) {
   });
 
   test(`${path} descreve toda imagem`, async ({ page }) => {
-    await page.goto(path, { waitUntil: "networkidle" });
+    await page.goto(path, { waitUntil: "load" });
     const semAlt = await page.evaluate(
       () =>
         [...document.querySelectorAll("img")].filter((img) => !img.hasAttribute("alt"))

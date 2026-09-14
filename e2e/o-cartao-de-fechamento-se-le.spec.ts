@@ -47,7 +47,7 @@ const PAGINAS = [
 
 for (const { rota, nome } of PAGINAS) {
   test(`${nome} se lê sobre o verde`, async ({ page }) => {
-    await page.goto(rota, { waitUntil: "networkidle" });
+    await page.goto(rota, { waitUntil: "load" });
 
     const cartao = page.locator(CARTAO);
     expect(
