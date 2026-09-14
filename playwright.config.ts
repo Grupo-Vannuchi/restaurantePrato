@@ -39,6 +39,30 @@ import { defineConfig, devices } from "@playwright/test";
  * `DATABASE_URL`, as páginas são prerenderizadas com os dados de PRODUÇÃO, e a
  * semeadura do `globalSetup`, que escreve no banco local, não aparece. E sem
  * apagar `.next` o `unstable_cache` devolve o conteúdo da build anterior.
+ *
+ * ── ⚠️ A ORDEM, que é o que sobra de errado quando tudo acima está certo ──
+ *
+ * Semear → construir → subir → rodar. Nessa ordem, e não em outra.
+ *
+ * O `globalSetup` semeia antes do `webServer`, e é assim que o CI acerta: a
+ * semeadura acontece, DEPOIS o build prerenderiza `/cardapio`, e a página
+ * congelada já traz os pratos de teste. Subindo o servidor à mão, a ordem
+ * inverte: o build congela `/cardapio` sem eles, e a semeadura do `globalSetup`
+ * chega tarde — a página servida é a de antes.
+ *
+ * O sintoma são as duas asserções de `cardapio-com-conteudo.spec.ts` falhando
+ * com "o prato semeado não apareceu", e as outras quatro do mesmo arquivo
+ * pulando atrás delas, porque o describe é `serial`. Aconteceu em 11/09 e de
+ * novo em 14/09 antes de isto ficar escrito; a mensagem de falha já dizia a
+ * causa, e eu tratei como limitação do procedimento em vez de passo faltando.
+ *
+ * Semeando antes do build, medido em 14/09: **231 passando, 0 falhando, 6
+ * puladas** — e as seis são condicionais declaradas (o spec que escreve no
+ * banco, o menu que só existe no celular, o suspenso que só existe no desktop).
+ *
+ * Para semear à mão, o `globalSetup` é um módulo com exportação padrão:
+ *
+ *   DATABASE_URL=… npx tsx -e "import s from './e2e/semeia-cardapio.ts'; await s()"
  */
 export default defineConfig({
   testDir: "./e2e",
