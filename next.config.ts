@@ -107,11 +107,51 @@ const nextConfig: NextConfig = {
     // regra é foto autoral do restaurante. Enquanto estivessem autorizados,
     // bastava colar uma URL de banco de imagens num campo do painel para
     // publicar foto genérica como se fosse da casa.
-    // AVIF primeiro: o navegador escolhe o primeiro formato que aceita, e AVIF
-    // costuma ser 20–30% menor que WebP na mesma qualidade — diferença maior
-    // justamente em foto de comida, que tem gradação suave. O padrão do Next é
-    // só WebP, então isto não vinha de graça.
-    formats: ["image/avif", "image/webp"],
+    /*
+     * ⚠️ **AVIF SAIU em 15/09, e a razão é um travamento medido — não gosto.**
+     *
+     * O comentário anterior aqui dizia que "AVIF costuma ser 20–30% menor que
+     * WebP na mesma qualidade, diferença maior justamente em foto de comida".
+     * Isso é verdade em geral e **falso para os arquivos deste projeto**, porque
+     * as fontes já são WebP. Medido, mesma largura e mesma qualidade:
+     *
+     *   hero/buffet-quente  1920 ... AVIF 221.383 B · WebP 221.030 B ...  0%
+     *   massas/fettuccine   1080 ... AVIF  76.504 B · WebP  76.292 B ...  0%
+     *   galeria/churrasco    640 ... AVIF  19.005 B · WebP  20.010 B ... +5%
+     *   brand/wordmark       384 ... AVIF  16.347 B · WebP  17.956 B ... +9%
+     *
+     * Zero nas duas pesadas, que são as que decidem o tempo de pintura.
+     *
+     * ── O que o AVIF custava ──────────────────────────────────────────────
+     *
+     * O otimizador do Next **trava indefinidamente** ao produzir AVIF para
+     * certas combinações de (arquivo, largura): sem resposta, sem erro, sem uma
+     * linha no log. Reproduzido, determinístico, com cache frio e quente:
+     *
+     *   brand/logo.png        w=128  ... TRAVA  ·  w=256 responde em 63 ms
+     *   brand/logo-claro.png  w=384  ... TRAVA  ·  w=128 responde em  3 ms
+     *
+     * A mesma requisição em WebP volta em 25 ms. O `sharp` sozinho converte
+     * TODAS as combinações em menos de 1,3 s, então o defeito está no caminho
+     * do otimizador, não no encoder nem no arquivo.
+     *
+     * O dano não é a imagem que falta: a marca do cabeçalho é `priority`, então
+     * a requisição pendurada **impede o evento `load` da página** e derruba
+     * qualquer medição de navegador naquela rota. Custou duas tardes — em 14/09
+     * eu atribuí isso a apagar `.next/cache/images` com o servidor no ar e
+     * generalizei de dois pontos de dados; em 15/09 reproduziu num servidor
+     * recém-subido, com cache criado por ele mesmo.
+     *
+     * ⚠️ E a armadilha é pior que "uma imagem trava": a largura pedida depende
+     * do `sizes`, então **mexer no layout sorteia combinações novas**. Foi o que
+     * aconteceu: corrigir o `sizes` da marca em 14/09 fez o navegador pedir
+     * w=128 pela primeira vez, e o site parou de carregar no dia seguinte.
+     *
+     * Para voltar a ligar o AVIF é preciso que isto passe: pedir todas as
+     * larguras do `srcset` de cada imagem de marca, com `Accept: image/avif`,
+     * com cache frio, e nenhuma pendurar.
+     */
+    formats: ["image/webp"],
     // ⚠️ **No Next 16 esta lista é obrigatória, e o que ficar fora dela é
     // ignorado EM SILÊNCIO.** O padrão é `[75]`: um `quality={50}` num
     // componente não vira erro nem aviso, a imagem sai em 75 e o autor conclui
