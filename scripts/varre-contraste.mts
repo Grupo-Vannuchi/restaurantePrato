@@ -17,15 +17,22 @@
  * quatro defesas abaixo são de lá — cada uma custou horas a alguém — e as
  * diferenças estão marcadas.
  *
+ * ⚠️ **São quatro aqui e seis no total.** A quinta e a sexta armadilha foram
+ * descobertas neste repositório e o projeto irmão ainda tem as duas: a **cor em
+ * `oklab()`** lida por expressão regular (no `resolveCor`, quinze reprovas
+ * fantasmas) e a **sombra de sobreposto fixo** (na grade, uma reprova que não
+ * existia). Uma sétima defesa foi tentada e desfeita — está na amostragem, para
+ * ninguém reinventá-la.
+ *
  * Uso, com um build de produção no ar:
  *
- *   npx tsx scripts/varre-contraste.ts /cardapio,/
- *   BASE_URL=http://localhost:3200 npx tsx scripts/varre-contraste.ts
+ *   npx tsx scripts/varre-contraste.mts /cardapio,/
+ *   BASE_URL=http://localhost:3200 npx tsx scripts/varre-contraste.mts
  *
  * Sai com código 1 se houver qualquer reprova, para servir de porta em CI.
  *
  * ─────────────────────────────────────────────────────────────────────────
- *  As quatro armadilhas, e a defesa de cada uma
+ *  As quatro armadilhas herdadas, e a defesa de cada uma
  * ─────────────────────────────────────────────────────────────────────────
  *
  * Número errado e evidente a gente descarta; o perigo é o número errado e
@@ -81,7 +88,7 @@ import { chromium } from "@playwright/test";
  * A fórmula da WCAG vem de `e2e/contraste.ts`, e não copiada para cá. Este
  * repositório já pagou por duas cópias da mesma conta: quando divergem, uma das
  * medições passa a afirmar um número que ninguém conferiu. É também por isso
- * que este arquivo é `.ts` rodado por `tsx`, e não `.mjs` — para poder importar
+ * que este arquivo é `.mts` rodado por `tsx`, e não `.mjs` — para poder importar
  * o módulo que já existe em vez de trazer uma terceira cópia.
  */
 import { contraste, luminancia } from "../e2e/contraste";
@@ -110,13 +117,6 @@ const ROTAS_PADRAO = [
   "/contato",
   "/novidades",
 ];
-
-/**
- * O botão flutuante do WhatsApp cobre texto por cima: é sobreposição, não
- * contraste. O verde é o da marca WhatsApp, fixado em
- * `components/layout/whatsapp-button.tsx`.
- */
-const WHATSAPP: [number, number, number] = [37, 211, 102];
 
 /**
  * ⚠️ **A cor do texto é resolvida PELO NAVEGADOR, e não por expressão regular.
@@ -248,6 +248,82 @@ for (const rota of rotas) {
         const PASSO_Y = 14;
         const MAX_POR_ELEMENTO = 5;
 
+        /*
+         * ⚠️ **A sexta armadilha: a SOMBRA de um sobreposto fixo escurece o
+         * fundo sem aparecer no `elementFromPoint`. Rendeu a única reprova que
+         * sobrou da varredura, e ela não existia.**
+         *
+         * O preço de uma sobremesa reprovou com 4,32:1 sobre rgb(238,239,235),
+         * a 0,18 do mínimo — plausível o bastante para me fazer procurar uma
+         * superfície com tinta de 5% que não existe em lugar nenhum do projeto.
+         * A pilha declarada é `text-brand` sobre `bg-card`: 4,80:1, passa.
+         *
+         * O ponto era (340, 830) numa tela de 390×844 — canto inferior
+         * direito, onde vive o botão do WhatsApp, `fixed bottom-5 right-5` de
+         * 56 px. A caixa dele termina em y=824, e o ponto está 6 px ABAIXO
+         * dela: o que escurece ali é a `shadow-lg`, `0 10px 15px -3px`, cuja
+         * penumbra alcança y≈849. Sombra não é alvo de teste de acerto, então
+         * `elementFromPoint` respondeu o parágrafo do preço, e a varredura
+         * compôs a tinta LIMPA sobre um fundo já sombreado.
+         *
+         * Esse é o erro, e ele é de aritmética, não de desenho: na tela a
+         * sombra cai sobre a letra E sobre o fundo, e o contraste entre os dois
+         * quase não muda. Medir só o fundo escurecido inventa uma diferença.
+         *
+         * A defesa é geométrica e substitui o `WHATSAPP` que havia aqui —
+         * aquele comparava o pixel com o verde da marca, o que pegava a TINTA
+         * do botão e nunca a sombra dele. Esta veta a região, e vale para o
+         * próximo sobreposto que alguém acrescentar sem avisar.
+         *
+         * ⚠️ **O ponto cego que ela abre, e por que ele é aceitável.** Texto que
+         * viva DENTRO de um sobreposto fixo deixa de ser medido, porque a caixa
+         * dele é vetada em toda tela. Hoje o único sobreposto fixo é o botão do
+         * WhatsApp, que não tem texto visível — só `aria-label` e ícone. Se um
+         * dia entrar aviso de cookie ou barra de CTA fixa, ela precisa de guarda
+         * própria em `e2e/`, porque esta varredura não vai vê-la. Conteúdo
+         * normal não corre esse risco: a região vetada é relativa à TELA, e o
+         * passo de rolagem é de 75% da altura, então o que cai no canto num
+         * passo aparece no meio do seguinte.
+         *
+         * Verificado nos dois sentidos em 15/09: com o veto, `/cardapio` fecha
+         * em 0 reprovas e 1.000 amostras no celular — 15 pontos a menos que as
+         * 1.015 de antes, que é o tamanho da região. E com o verde da marca
+         * trocado por um #8AA84E de propósito, a varredura reprova 48 vezes a
+         * 2,59:1, inclusive no MESMO preço que dava o fantasma.
+         *
+         * ⚠️ `sticky` fica FORA da lista de propósito. O cabeçalho é sticky,
+         * opaco e de 65 px: ponto embaixo dele já é descartado porque
+         * `elementFromPoint` responde um elemento do cabeçalho, que não está em
+         * `main` nem em `footer`. Vetar a caixa dele cegaria a faixa superior
+         * de toda tela em troca de nada.
+         */
+        const vetados: { l: number; t: number; r: number; b: number }[] = [];
+        for (const el of document.querySelectorAll("body *")) {
+          const s = getComputedStyle(el);
+          if (s.position !== "fixed") continue;
+          const cx = el.getBoundingClientRect();
+          if (cx.width === 0 || cx.height === 0) continue;
+          let dx = 0;
+          let dy = 0;
+          // `box-shadow` vem como "<cor> x y desfoque espalhamento" por camada.
+          // A cor sai primeiro para as vírgulas restantes separarem só camadas.
+          for (const camada of s.boxShadow.replace(/rgba?\([^)]*\)/g, "").split(",")) {
+            const n = camada.match(/-?[\d.]+/g);
+            if (!n) continue;
+            const v = [0, 1, 2, 3].map((i) => parseFloat(n[i] ?? "0") || 0);
+            // Espalhamento negativo encolhe, mas entra em módulo: vetar 3 px a
+            // mais não custa nada e nunca subestimar a penumbra é o que importa.
+            dx = Math.max(dx, Math.abs(v[0]!) + v[2]! + Math.abs(v[3]!));
+            dy = Math.max(dy, Math.abs(v[1]!) + v[2]! + Math.abs(v[3]!));
+          }
+          vetados.push({
+            l: cx.left - dx,
+            t: cx.top - dy,
+            r: cx.right + dx,
+            b: cx.bottom + dy,
+          });
+        }
+
         const porElemento = new Map<
           Element,
           { txt: string; cor: [number, number, number, number]; pontos: [number, number][] }
@@ -255,6 +331,12 @@ for (const rota of rotas) {
 
         for (let y = 4; y < window.innerHeight - 4; y += PASSO_Y) {
           for (let x = 4; x < window.innerWidth - 4; x += PASSO_X) {
+            // Sexta armadilha: dentro de sobreposto fixo ou da sombra dele, o
+            // pixel não é o fundo da letra. Antes do `elementFromPoint` porque
+            // é a checagem mais barata das duas.
+            if (vetados.some((v) => x >= v.l && x <= v.r && y >= v.t && y <= v.b)) {
+              continue;
+            }
             const dono = document.elementFromPoint(x, y);
             if (!dono) continue;
             /*
@@ -341,6 +423,33 @@ for (const rota of rotas) {
           const ctx = c.getContext("2d")!;
           ctx.drawImage(img, 0, 0);
           const escala = img.width / larguraCss;
+          /*
+           * ⚠️ **Um pixel, e a MEDIANA de uma janela de 5×5 foi tentada e
+           * desfeita em 15/09. Fica escrito para ninguém reinventá-la.**
+           *
+           * A reprova de 4,32:1 no preço de uma sobremesa — `text-brand` sobre
+           * `bg-card`, par declarado de 4,80 — parecia ser amostra caída sobre o
+           * fio de 1 px que separa as linhas da lista. A mediana de 25 pixels
+           * rejeitaria um fio minoritário, e por isso ela foi escrita.
+           *
+           * Ela não mudou o número em nada, e a razão é que a hipótese estava
+           * errada: despejando a janela crua, os 49 pixels em volta do ponto
+           * eram um GRADIENTE suave de 234 a 243 — sombra, não borda. A causa
+           * verdadeira é a sexta armadilha, documentada na grade.
+           *
+           * Desfeita porque defesa que não defende ainda cobra: a mediana troca
+           * "pior pixel governa" por "pior vizinhança governa" e passaria a
+           * perder texto fino sobre fundo listrado, que é defeito real.
+           *
+           * ⚠️ E a lição de percurso, que vale para qualquer edição aqui:
+           * **nenhuma função NOMEADA dentro de um `evaluate`.** A mediana morava
+           * num `const mediana = (v) => …` e a varredura morria com
+           * `ReferenceError: __name is not defined` — o `tsx` compila este
+           * arquivo com o `keepNames` do esbuild, que envolve toda função
+           * batizada num auxiliar `__name(...)` declarado no MÓDULO, e o corpo
+           * desta função é serializado para dentro do navegador, onde esse
+           * auxiliar não existe. Nem `typecheck` nem `lint` veem isso.
+           */
           return pedidos.map(({ x, y }) => {
             const px = Math.round(x * escala);
             const py = Math.round(y * escala);
@@ -364,8 +473,6 @@ for (const rota of rotas) {
         for (let i = 0; i < alvo.pontos.length; i++) {
           const fundo = medidas[cursor++];
           if (!fundo) continue;
-          if (fundo.every((v, i) => v === WHATSAPP[i])) continue;
-
           amostras++;
           /*
            * A tinta é composta SOBRE O PIXEL antes da conta, porque é isso que
