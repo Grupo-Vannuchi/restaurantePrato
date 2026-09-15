@@ -60,6 +60,31 @@ jobs:
       - name: Run E2E tests
         run: npm run test:e2e
 
+      # A varredura mede o COMPOSTO renderizado — esconde o texto, fotografa e
+      # amostra a cor sob cada elemento — em três larguras e nas sete rotas. As
+      # guardas de `e2e/` cobrem superfícies que alguém já sabia que existiam;
+      # esta acha o que ninguém pensou em olhar, e por isso vale de porta.
+      #
+      # Reaproveita o `.next` que o `webServer` do passo anterior construiu:
+      # `npm run build && npm run start` roda em CI, então aqui basta subir. Um
+      # segundo build custaria dois minutos para produzir o mesmo artefato.
+      #
+      # ⚠️ Roda mesmo se o passo de E2E falhar (`always()`): as duas medições são
+      # independentes, e saber que o contraste regrediu junto com outra coisa é
+      # mais útil que descobrir isso na rodada seguinte.
+      - name: Varredura de contraste
+        if: ${{ always() }}
+        env:
+          BASE_URL: http://localhost:3000
+        run: |
+          npm run start &
+          for i in $(seq 1 60); do
+            if curl -sf -o /dev/null http://localhost:3000/; then break; fi
+            sleep 2
+          done
+          curl -sf -o /dev/null http://localhost:3000/ || { echo "o servidor não subiu"; exit 1; }
+          npm run varre:contraste
+
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
