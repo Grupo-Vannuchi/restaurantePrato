@@ -73,7 +73,7 @@ export function MenuCategoryForm({
       {/* Basics */}
       <fieldset className="rounded-xl border border-border bg-card p-5">
         <legend className="px-1 text-sm font-semibold">{t("sectionBasics")}</legend>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="slug">{t("categorySlug")}</Label>
             <Input

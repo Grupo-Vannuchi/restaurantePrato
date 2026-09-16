@@ -32,7 +32,7 @@ export default async function AdminInformationsPage({
       {informations.length === 0 ? (
         <p className="text-muted-foreground">{t("empty")}</p>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul role="list" className="flex flex-col gap-3">
           {informations.map((information) => (
             <li
               key={information.id}

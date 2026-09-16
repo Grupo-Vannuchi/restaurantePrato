@@ -127,7 +127,7 @@ async function FeedGrid() {
   if (posts === null || posts.length === 0) return null;
 
   return (
-    <ul className={faixa}>
+    <ul role="list" className={faixa}>
       {posts.map((post, i) => (
         <li key={post.id} className="contents">
           <PostCard post={post} index={i} />
@@ -140,7 +140,7 @@ async function FeedGrid() {
 /** Quadrados na mesma proporção dos cards, enquanto a Meta responde. */
 function FeedSkeleton({ count }: { count: number }) {
   return (
-    <ul className={faixa} aria-hidden>
+    <ul role="list" className={faixa} aria-hidden>
       {Array.from({ length: count }, (_, i) => (
         <li
           key={i}
@@ -168,7 +168,7 @@ export async function InstagramFeed() {
   return (
     <Section className="pt-0">
       {preview ? (
-        <ul className={faixa}>
+        <ul role="list" className={faixa}>
           <PreviewCards count={env.INSTAGRAM_POST_LIMIT} />
         </ul>
       ) : (

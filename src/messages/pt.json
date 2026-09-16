@@ -78,6 +78,7 @@
   },
   "experiencia": {
     "title": "A Experiência",
+    "headerAlt": "O balcão do Restaurante Prato visto do salão",
     "metaDescription": "Buffet completo, churrasco na brasa e tempero caseiro no Centro de Santos. O Restaurante Prato serve almoço de segunda a sexta, das 11h às 15h.",
     "subtitle": "A sua pausa merecida no coração do Centro.",
     "lead": "O Prato foi pensado para quem valoriza o próprio tempo. O salão é dinâmico, a rotatividade é alta e não há longas esperas. A comida chega farta e sempre quente, para você recarregar as energias e voltar pontualmente ao expediente. No Centro de Santos desde {foundedYear}.",
@@ -102,10 +103,10 @@
   },
   "galeria": {
     "title": "Galeria",
-    "subtitle": "O ambiente e os pratos da casa.",
+    "subtitle": "O balcão e os pratos da casa, do buffet frio ao churrasco na brasa.",
     "empty": "Em breve, novas fotos por aqui.",
-    "photoAlt": "Foto do restaurante",
-    "metaDescription": "Fotos do salão, do buffet e dos pratos do Restaurante Prato, na R. Augusto Severo, 25, Centro de Santos. Veja o ambiente antes de vir almoçar."
+    "photoAlt": "Foto de um prato do restaurante",
+    "metaDescription": "Fotos do buffet, do churrasco e dos pratos do Restaurante Prato, na R. Augusto Severo, 25, Centro de Santos. Veja o que tem no balcão antes de vir almoçar."
   },
   "novidades": {
     "title": "Novidades",
@@ -125,6 +126,7 @@
   },
   "reservas": {
     "title": "Horários",
+    "headerAlt": "O salão do Restaurante Prato, com as mesas postas",
     "metaDescription": "Restaurante Prato, no Centro de Santos: almoço de segunda a sexta, das 11h às 15h. Reserve sua mesa pelo WhatsApp e garanta lugar no horário de pico.",
     "subtitle": "De segunda a sexta, das 11h às 15h.",
     "groupsTitle": "Reservas para grupos e eventos",
@@ -132,27 +134,34 @@
     "groupsMessage": "Olá! Gostaria de informações sobre reserva para grupos e eventos.",
     "practicalTitle": "Como está o salão",
     "addressLabel": "Endereço",
-    "hoursLabel": "Horário",
-    "salaoEarlyLabel": "11h",
-    "salaoEarlyValue": "Buffet intacto, comida recém-saída do fogo e muita tranquilidade. O paraíso de quem almoça cedo.",
-    "salaoPeakLabel": "Das 12h às 13h30",
-    "salaoPeakValue": "O fluxo intenso do Centro. Mas fica tranquilo: a rotatividade é alta e a chapa não para.",
-    "salaoLateLabel": "A partir das 13h30",
-    "salaoLateValue": "Clima mais calmo, ideal para comer sem pressa, com reposição garantida no buffet."
+    "hoursLabel": "Horário"
+  },
+  "salao": {
+    "title": "O melhor momento para vir",
+    "intro": "Cada horário do almoço tem um clima. Escolha o seu.",
+    "earlyLabel": "11h",
+    "earlyValue": "Buffet intacto, comida recém-saída do fogo e muita tranquilidade. O paraíso de quem almoça cedo.",
+    "peakLabel": "Das 12h às 13h30",
+    "peakValue": "O fluxo intenso do Centro. Mas fica tranquilo: a rotatividade é alta e a chapa não para.",
+    "lateLabel": "A partir das 13h30",
+    "lateValue": "Clima mais calmo, ideal para comer sem pressa, com reposição garantida no buffet."
   },
   "contact": {
     "title": "A poucos passos de você no Centro",
+    "headerAlt": "A fachada do Restaurante Prato na Rua Augusto Severo, 25",
     "subtitle": "R. Augusto Severo, 25, Centro, Santos/SP.",
     "infoTitle": "Como falar com a gente",
     "route": "Traçar rota",
     "labels": {
       "email": "E-mail",
+      "hours": "Horário",
       "phone": "Telefone",
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",
       "address": "Endereço"
     },
     "form": {
+      "title": "Mande uma mensagem",
       "name": "Nome",
       "email": "E-mail",
       "phone": "Telefone (opcional)",
@@ -517,6 +526,7 @@
     "everyday": "Todos os dias",
     "empty": "O cardápio da semana ainda não foi publicado.",
     "emptyDay": "Ainda não há pratos cadastrados para este dia.",
+    "dayPanelHeading": "Buffet de {day}",
     "buffetLabel": "Buffet por quilo",
     "buffetNote": "O valor é calculado pelo peso do prato que você montar, não pelo que você escolher.",
     "pastaLabel": "Ilha de massas",

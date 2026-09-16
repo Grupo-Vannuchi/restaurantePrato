@@ -200,6 +200,60 @@ describe("nomes acessíveis dizem o que a coisa é", () => {
     expect(texto).toMatch(/socialLink/);
   });
 
+  it("toda lista continua sendo uma lista no Safari", () => {
+    /*
+     * ⚠️ **`list-style: none` faz o WebKit tirar a semântica de lista**, e o
+     * reset do Tailwind aplica isso a TODO `<ul>` e `<ol>` do projeto. Medido no
+     * navegador: `/cardapio` tem 50 listas, e as 50 computam
+     * `list-style-type: none`.
+     *
+     * O efeito é só no Safari com VoiceOver, que é uma fatia enorme de quem
+     * abre um site de restaurante pelo telefone: em vez de "lista, 32 itens" a
+     * pessoa ouve os itens soltos, um a um, sem saber quantos são nem que
+     * pertencem a um conjunto. Num cardápio de 32 pratos, é a informação que
+     * decide se vale ouvir a seção inteira ou pular para a próxima.
+     *
+     * `role="list"` devolve o que o CSS tirou. Não muda nada visualmente e não
+     * muda nada no Chrome — é remendo de um comportamento de um motor só, e é
+     * por isso que a regra tem de ser escrita: ninguém a deduz olhando a tela.
+     *
+     * A varredura exige `role` em qualquer `<ul>`/`<ol>` novo, e aceita
+     * qualquer valor: uma lista que precise ser `role="tablist"` ou
+     * `role="menu"` declarou uma escolha, que é justamente o que a guarda quer.
+     * O que ela recusa é a AUSÊNCIA.
+     */
+    const semRole = arquivos("src")
+      .flatMap((caminho) => {
+        const texto = fonte(caminho);
+        const achados: string[] = [];
+        let i = 0;
+        for (;;) {
+          const m = /<(ul|ol)(?=[\s>])/.exec(texto.slice(i));
+          if (!m) break;
+          const abre = i + m.index;
+          // Até o `>` que fecha a tag de abertura, ignorando os que estiverem
+          // dentro de uma expressão `{...}` de JSX.
+          let j = abre;
+          let prof = 0;
+          while (j < texto.length) {
+            const c = texto[j];
+            if (c === "{") prof++;
+            else if (c === "}") prof--;
+            else if (c === ">" && prof === 0) break;
+            j++;
+          }
+          const tag = texto.slice(abre, j + 1);
+          if (!/\srole=/.test(tag)) {
+            achados.push(`${caminho}: <${m[1]}> sem role`);
+          }
+          i = j + 1;
+        }
+        return achados;
+      });
+
+    expect(semRole, semRole.join(" | ")).toEqual([]);
+  });
+
   it("o menu de novidades não promete abrir o que ele navega", () => {
     // O elemento é um `<a href="/novidades">`: ele leva para a página.
     const texto = fonte("src/components/layout/information-menu.tsx");

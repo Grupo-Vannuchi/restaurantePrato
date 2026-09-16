@@ -2,7 +2,7 @@ import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
+import { Mail, Phone, MessageCircle, MapPin, Clock } from "lucide-react";
 // lucide-react removeu ícones de marca (ver `brand-icons.tsx`); o rodapé já
 // importa o Instagram de lá.
 import { Instagram } from "@/components/ui/brand-icons";
@@ -14,6 +14,7 @@ import { ReserveButton } from "@/components/reserve-button";
 import {
   fullAddress,
   mapEmbedUrl,
+  openingHoursLabel,
   phoneLink,
   reviewLink,
   siteConfig,
@@ -48,6 +49,7 @@ export default async function ContactPage({
   const { contact } = siteConfig;
 
   const whatsapp = whatsappLink();
+  const horario = openingHoursLabel();
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress())}`;
 
   const channels: {
@@ -97,6 +99,18 @@ export default async function ContactPage({
       value: `${contact.address.street}, ${contact.address.city} — ${contact.address.region}`,
       href: mapsLink,
     },
+    /*
+     * O horário fecha a lista, e entra sem `href` porque não é um canal: é a
+     * resposta para "estão abertos agora?", que é a outra metade do que alguém
+     * procura ao abrir a página de contato. O campo `href` é opcional na lista
+     * justamente para isto.
+     *
+     * ⚠️ Vem de `openingHoursLabel()`, nunca montado à mão: o helper já inclui
+     * a faixa de DIAS, e formatar a partir de `opens`/`closes` publicaria "das
+     * 11h às 15h" sem dizer que a casa fecha no fim de semana. Some sozinho se
+     * o horário sair da configuração.
+     */
+    ...(horario ? [{ icon: Clock, label: t("labels.hours"), value: horario }] : []),
   ];
 
   return (
@@ -105,7 +119,7 @@ export default async function ContactPage({
         title={t("title")}
         subtitle={t("subtitle")}
         image="/ambiente/fachada.webp"
-        imageAlt="A fachada do Restaurante Prato na Rua Augusto Severo, 25"
+        imageAlt={t("headerAlt")}
       />
 
       {/* O mapa antes do formulario: quem abre esta pagina quer saber onde fica
@@ -119,18 +133,23 @@ export default async function ContactPage({
       </Section>
 
       <Section>
-        <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_340px]">
           <ContactForm />
 
           <aside className="flex flex-col gap-6">
             <h2 className="text-lg font-semibold">{t("infoTitle")}</h2>
-            <ul className="flex flex-col gap-5">
+            <ul role="list" className="flex flex-col gap-5">
               {channels.map((channel) => (
                 <li key={channel.label} className="flex gap-3">
                   <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
                     <channel.icon className="size-5" />
                   </span>
-                  <div>
+                  {/* `min-w-0` autoriza esta coluna a encolher abaixo do
+                      conteúdo dela; sem isso o e-mail, que é uma palavra só,
+                      define a largura mínima da linha e empurra a página. O
+                      `break-words` nos valores é o outro lado do mesmo par —
+                      um sem o outro não resolve. */}
+                  <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       {channel.label}
                     </p>
@@ -139,7 +158,7 @@ export default async function ContactPage({
                         href={channel.href}
                         target={channel.href.startsWith("http") ? "_blank" : undefined}
                         rel="noopener noreferrer"
-                        className="text-sm transition-colors hover:text-brand"
+                        className="break-words text-sm transition-colors hover:text-brand"
                       >
                         {channel.value}
                       </a>

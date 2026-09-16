@@ -121,6 +121,51 @@ export default async function LocaleLayout({
             saiu junto — ele existia só porque aquele script mexia no elemento
             antes do React. */}
         <ThemeStyle />
+        {/*
+         * Sem JavaScript, o conteúdo que entra com animação APARECE.
+         *
+         * `globals.css` declara `[data-reveal] { opacity: 0 }`, e quem devolve a
+         * opacidade é o `data-visible="true"` que o componente `Reveal` põe num
+         * efeito, no cliente. O servidor entrega `data-visible="false"`: sem
+         * script o atributo nunca vira e o elemento fica invisível para sempre.
+         * Na galeria são todas as fotos, e a página parece vazia.
+         *
+         * ⚠️ **Não é o caso hipotético de quem desliga o script.** O mesmo
+         * estado acontece quando o pacote de JavaScript não chega — 3G ruim,
+         * bloqueador que engole um chunk. O HTML chega inteiro, o texto está
+         * lá, e a pessoa vê uma página em branco. Isso é pior que um erro de
+         * rede visível, porque não parece falha: parece restaurante sem
+         * cardápio.
+         *
+         * ⚠️ **`<noscript>`, e não `@media (scripting: none)`.** A consulta de
+         * mídia é mais elegante e resolve o mesmo caso, mas é do Media Queries
+         * nível 5: navegador antigo a ignora, e navegador antigo é justamente
+         * a população que também pode não estar executando o script.
+         *
+         * ⚠️ **O seletor é `html [data-reveal]`, e o `html` a mais não é
+         * enfeite.** A regra que ele precisa vencer é `[data-reveal]` — mesma
+         * especificidade —, e entre iguais decide a ORDEM DE ORIGEM, que aqui
+         * depende de onde o bundler põe a folha de estilo. Eu havia escrito que
+         * ela vivia em `@layer base` e que estilo fora de camada venceria
+         * sozinho; ela não vive em camada nenhuma, está no topo do arquivo
+         * dentro de um `@media (prefers-reduced-motion: no-preference)`, e
+         * `@media` não muda especificidade. Um descendente a mais resolve sem
+         * `!important` e sem depender de ordem. Não conflita com
+         * `[data-reveal][data-visible="true"]`, que é mais específico mas pede a
+         * mesma coisa: opacidade 1.
+         *
+         * `dangerouslySetInnerHTML` porque o conteúdo de `<noscript>` é texto
+         * para o parser do navegador, não árvore de React.
+         *
+         * Guarda: `e2e/o-conteudo-aparece-sem-javascript.spec.ts`, que é o
+         * único spec da suíte que roda com o script desligado.
+         */}
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html:
+              "<style>html [data-reveal]{opacity:1;transform:none;transition:none}</style>",
+          }}
+        />
       </head>
       <body className="flex min-h-full flex-col">
         {/* `messages` explícito, e o motivo é medido: sem a prop, o next-intl

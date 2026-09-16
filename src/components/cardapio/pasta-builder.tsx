@@ -108,7 +108,7 @@ export function PastaBuilder({
         {t("pastaPortionNote", { portion: pastaChoices.portion })}
       </p>
 
-      <ol className="mt-10">
+      <ol role="list" className="mt-10">
         {passos.map((passo, i) => {
           const ultimo = i === passos.length - 1;
           return (
@@ -135,7 +135,7 @@ export function PastaBuilder({
                   {passo.titulo}
                 </h4>
                 {passo.opcoes ? (
-                  <ul className="mt-4 overflow-hidden rounded-2xl border border-border bg-card">
+                  <ul role="list" className="mt-4 overflow-hidden rounded-2xl border border-border bg-card">
                     {passo.opcoes.map((opcao) => (
                       <li
                         key={opcao}
@@ -170,7 +170,7 @@ export function PastaBuilder({
           <h3 className="mt-12 font-serif text-2xl font-bold tracking-tight sm:text-3xl">
             {t("pastaExtras")}
           </h3>
-          <ul className="mt-6 overflow-hidden rounded-2xl border border-border bg-card">
+          <ul role="list" className="mt-6 overflow-hidden rounded-2xl border border-border bg-card">
             {extras.map((extra) => (
               <li
                 key={extra.name}

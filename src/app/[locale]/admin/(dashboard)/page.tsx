@@ -41,7 +41,7 @@ export default async function DashboardPage({
         ) : null}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {cards.map((card) => (
           <div
             key={card.label}
@@ -62,7 +62,7 @@ export default async function DashboardPage({
         <h2 className="border-b border-border px-5 py-4 font-semibold">
           {t("recentLeads")}
         </h2>
-        <ul className="divide-y divide-border">
+        <ul role="list" className="divide-y divide-border">
           {recentLeads.map((lead) => (
             <li
               key={lead.id}

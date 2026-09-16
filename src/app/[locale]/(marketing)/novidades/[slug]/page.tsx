@@ -103,7 +103,7 @@ export default async function InformationPage({
           {t("title")}
         </Link>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12">
           {/* Article */}
           <div className="min-w-0">
             {information.image ? (
@@ -142,7 +142,7 @@ export default async function InformationPage({
               <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("listTitle")}
               </h2>
-              <ul className="flex max-h-[26rem] flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-card p-2">
+              <ul role="list" className="flex max-h-[26rem] flex-col gap-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-card p-2">
                 {informations.map((item) => {
                   const active = item.slug === slug;
                   return (
@@ -152,8 +152,15 @@ export default async function InformationPage({
                         aria-current={active ? "page" : undefined}
                         className={cn(
                           "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                          // Par SÓLIDO no item ativo, medido: `bg-brand/10` com
+                          // `text-brand` dá 4,24:1 sobre o cartão, abaixo dos
+                          // 4,5:1 da AA. O verde da marca é o token mais claro
+                          // dos três e não sobrevive ao próprio tom a 10% —
+                          // `success` e `danger`, que são escuros, sobrevivem
+                          // (5,35 e 5,74). Sólido dá 4,98:1, e item de navegação
+                          // ativo em cor cheia é o tratamento usual.
                           active
-                            ? "bg-brand/10 font-medium text-brand"
+                            ? "bg-brand font-medium text-brand-foreground"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground",
                         )}
                       >
@@ -174,7 +181,7 @@ export default async function InformationPage({
               {t("relatedTitle")}
             </h2>
             <InformationGallery items={informations}>
-              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {related.map((item) => (
                   <InformationCard key={item.id} information={item} />
                 ))}

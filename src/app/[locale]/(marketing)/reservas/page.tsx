@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Clock, MapPin, Sofa, Sunrise, Users } from "lucide-react";
+import { Clock, MapPin } from "lucide-react";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { ReserveButton } from "@/components/reserve-button";
+import {
+  Fact,
+  MomentosDoSalao,
+} from "@/components/sections/momentos-do-salao";
 import { fullAddress, openingHoursLabel } from "@/config/site";
 
 export async function generateMetadata({
@@ -20,29 +24,6 @@ export async function generateMetadata({
     description: t("metaDescription"),
     ...localeMetadata(locale, "/reservas"),
   };
-}
-
-/** One line of the "practical information" list. */
-function Fact({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof Clock;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex gap-4">
-      <span className="mt-0.5 inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
-        <Icon className="size-5" />
-      </span>
-      <div>
-        <p className="text-sm font-semibold">{label}</p>
-        <p className="text-pretty text-muted-foreground">{value}</p>
-      </div>
-    </div>
-  );
 }
 
 export default async function ReservasPage({
@@ -62,7 +43,7 @@ export default async function ReservasPage({
         title={t("title")}
         subtitle={t("subtitle")}
         image="/ambiente/salao.webp"
-        imageAlt="O salão do Restaurante Prato, com as mesas postas"
+        imageAlt={t("headerAlt")}
       />
 
       {/* Como está o salão ao longo do serviço — vem antes da seção de
@@ -71,27 +52,16 @@ export default async function ReservasPage({
          /reservas passa a liderar com o horario"). */}
       <Section>
         <SectionHeader title={t("practicalTitle")} align="left" />
-        <div className="mt-10 grid gap-8 sm:grid-cols-2">
+        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
           {/* `openingHoursLabel` já inclui os dias — ver o aviso na função. */}
           {hours ? (
             <Fact icon={Clock} label={t("hoursLabel")} value={hours} />
           ) : null}
           <Fact icon={MapPin} label={t("addressLabel")} value={fullAddress()} />
-          <Fact
-            icon={Sunrise}
-            label={t("salaoEarlyLabel")}
-            value={t("salaoEarlyValue")}
-          />
-          <Fact
-            icon={Users}
-            label={t("salaoPeakLabel")}
-            value={t("salaoPeakValue")}
-          />
-          <Fact
-            icon={Sofa}
-            label={t("salaoLateLabel")}
-            value={t("salaoLateValue")}
-          />
+          {/* Os três momentos do salão, agora compartilhados com
+              `/experiencia`: uma fonte só para as seis frases. Ver o aviso em
+              `components/sections/momentos-do-salao.tsx`. */}
+          <MomentosDoSalao />
         </div>
       </Section>
 

@@ -26,7 +26,7 @@ export async function DrinkList() {
           <h3 className="font-serif text-xl font-bold tracking-tight sm:text-2xl">
             {t(grupo.labelKey)}
           </h3>
-          <ul className="mt-4 overflow-hidden rounded-2xl border border-border bg-card">
+          <ul role="list" className="mt-4 overflow-hidden rounded-2xl border border-border bg-card">
             {grupo.items.map((bebida) => (
               <li
                 key={`${bebida.name}-${bebida.volume}`}

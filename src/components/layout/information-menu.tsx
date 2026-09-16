@@ -35,7 +35,7 @@ export function InformationMenu({ links }: { links: InformationLink[] }) {
           {links.length === 0 ? (
             <p className="px-3 py-2 text-sm text-muted-foreground">{t("empty")}</p>
           ) : (
-            <ul>
+            <ul role="list">
               {links.map((link) => (
                 <li key={link.slug}>
                   <Link

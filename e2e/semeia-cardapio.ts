@@ -1,3 +1,4 @@
+import { ALVO } from "./porta";
 import { PrismaClient } from "@prisma/client";
 
 /**
@@ -33,7 +34,13 @@ import { PrismaClient } from "@prisma/client";
  * de não colidir, ele explica a asserção para quem for depurar: "prato de
  * segunda e quinta" some da aba de terça porque é o que o nome promete.
  */
-const alvo = process.env.E2E_BASE_URL ?? "http://localhost:3000";
+/*
+ * ⚠️ O alvo vem de `e2e/porta.ts`, e não de uma literal aqui. Esta linha tinha
+ * `?? "http://localhost:3000"` — uma TERCEIRA cópia da porta, noutro arquivo,
+ * que escapou da primeira correção de 16/09 porque a guarda lia só a
+ * configuração do Playwright.
+ */
+const alvo = ALVO;
 
 export const rodaContraLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(
   alvo,

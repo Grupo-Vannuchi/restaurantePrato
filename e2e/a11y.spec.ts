@@ -52,7 +52,7 @@ for (const path of PAGES) {
   });
 
   test(`${path} não pula nível de título`, async ({ page }) => {
-    await page.goto(path, { waitUntil: "networkidle" });
+    await page.goto(path, { waitUntil: "load" });
 
     const saltos = await page.evaluate(() => {
       const níveis = [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")].map((h) => ({
@@ -76,8 +76,69 @@ for (const path of PAGES) {
     expect(saltos, saltos.join(" | ")).toEqual([]);
   });
 
+  test(`${path} nomeia todo formulário de mais de um campo`, async ({ page }) => {
+    await page.goto(path, { waitUntil: "load" });
+
+    /*
+     * **Um `<form>` só é anunciado como REGIÃO quando tem nome acessível.** Sem
+     * nome ele não entra na lista de regiões, e quem chega nele pelo teclado
+     * cai num campo "Nome" sem saber nome de quê. Foi o estado do formulário de
+     * `/contato` até 11/09: a página tinha `h1` na faixa de topo e um `h2` na
+     * coluna de contatos, e a outra metade dela — o formulário — não tinha
+     * título nenhum. Na lista de cabeçalhos, que é como se navega uma página
+     * com leitor de tela, metade do conteúdo não aparecia.
+     *
+     * ⚠️ **"Mais de um campo" é o recorte, e é deliberado.** Formulário de UM
+     * controle existe e não quer ser região: os dois de sair do painel são um
+     * botão cada, e o de acrescentar etiqueta num lead é um campo de texto
+     * solto. Exigir nome deles encheria a lista de regiões de ruído. O que pede
+     * nome é o formulário que a pessoa ENTRA e percorre.
+     *
+     * A verificação resolve o `aria-labelledby` até o texto do elemento
+     * apontado, em vez de só conferir que o atributo existe: apontar para um
+     * `id` que não existe deixa o formulário tão sem nome quanto antes, e é a
+     * forma silenciosa de isto voltar.
+     */
+    const semNome = await page.evaluate(() => {
+      const problemas: string[] = [];
+      let comCampos = 0;
+      for (const form of Array.from(document.querySelectorAll("form"))) {
+        const campos = form.querySelectorAll(
+          "input:not([type=hidden]):not([aria-hidden=true]), textarea, select",
+        ).length;
+        if (campos <= 1) continue;
+        comCampos++;
+
+        const rotulo = form.getAttribute("aria-label")?.trim();
+        const alvo = form.getAttribute("aria-labelledby");
+        const textoDoAlvo = alvo
+          ? (document.getElementById(alvo)?.textContent ?? "").trim()
+          : "";
+
+        if (!rotulo && !textoDoAlvo) {
+          problemas.push(
+            `formulário de ${campos} campos sem nome` +
+              (alvo ? ` (aria-labelledby="${alvo}" aponta para um id que não existe)` : ""),
+          );
+        }
+      }
+      return { problemas, comCampos };
+    });
+
+    // Sentinela: em `/contato` existe um formulário de vários campos. Se ele
+    // desaparecer, é a guarda que precisa saber — e não passar calada.
+    if (path === "/contato") {
+      expect(
+        semNome.comCampos,
+        "nenhum formulário de mais de um campo encontrado em /contato",
+      ).toBeGreaterThan(0);
+    }
+
+    expect(semNome.problemas, semNome.problemas.join(" | ")).toEqual([]);
+  });
+
   test(`${path} descreve toda imagem`, async ({ page }) => {
-    await page.goto(path, { waitUntil: "networkidle" });
+    await page.goto(path, { waitUntil: "load" });
     const semAlt = await page.evaluate(
       () =>
         [...document.querySelectorAll("img")].filter((img) => !img.hasAttribute("alt"))

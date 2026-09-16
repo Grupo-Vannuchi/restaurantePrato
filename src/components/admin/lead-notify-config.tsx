@@ -131,7 +131,7 @@ export function LeadNotifyConfig() {
       </div>
       <p className="mt-1 text-sm text-muted-foreground">{t("hint")}</p>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <Label htmlFor="ln-instance">{t("instance")}</Label>
           <Select

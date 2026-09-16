@@ -95,11 +95,18 @@ describe("nenhum vestígio do cliente anterior", () => {
      *
      * O Next aceita as duas formas para as três, então a extensão é uma escolha
      * que pode mudar de novo. O nome-base, não.
+     *
+     * ⚠️ **O cartão de compartilhamento mudou de SEGMENTO em 11/09**, e aí o
+     * nome-base não salvou: ele saiu de `src/app/[locale]/` para `src/app/`.
+     * Rota de arquivo estático tem ponto, e o matcher de `src/proxy.ts` isenta
+     * caminhos com ponto — dentro de `[locale]/` a URL sem prefixo não alcança
+     * nada. O caminho aqui precisou ser corrigido à mão, e foi esta guarda que
+     * apontou o lugar, falhando na sentinela de superfície não encontrada.
      */
     const SUPERFICIES_DE_ICONE = [
       "src/app/icon",
       "src/app/apple-icon",
-      "src/app/[locale]/opengraph-image",
+      "src/app/opengraph-image",
     ];
     const EXTENSOES = [".tsx", ".ts", ".png", ".jpg", ".jpeg", ".svg", ".ico", ".gif"];
 

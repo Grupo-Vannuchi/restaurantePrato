@@ -20,12 +20,41 @@ const LAYOUT = readFileSync(
 );
 
 describe("o formato das imagens", () => {
-  it("oferece AVIF antes de WebP", () => {
-    // O padrão do Next é só WebP. AVIF costuma ser 20–30% menor na mesma
-    // qualidade, e a diferença é maior justamente em foto de comida, que tem
-    // gradação suave. O navegador escolhe o primeiro formato que aceita, então
-    // a ordem importa.
-    expect(CONFIG).toMatch(/formats:\s*\[\s*["']image\/avif["']\s*,\s*["']image\/webp["']/);
+  /**
+   * ⚠️ **Esta guarda cobrava AVIF antes de WebP até 15/09, e o que envelheceu
+   * foi a JUSTIFICATIVA dela, não a configuração.**
+   *
+   * O comentário que morava aqui dizia que "AVIF costuma ser 20–30% menor na
+   * mesma qualidade, diferença maior justamente em foto de comida". Isso é
+   * verdade em geral e falso para os arquivos deste projeto, porque as fontes já
+   * são WebP: medido na mesma largura e qualidade, as duas imagens pesadas —
+   * que são as que decidem o tempo de pintura — deram **0%**, e duas leves
+   * ficaram 5% e 9% MAIORES em AVIF. A tabela está no `next.config.ts`.
+   *
+   * E o AVIF cobrava: o otimizador do Next **trava indefinidamente** em certas
+   * combinações de (arquivo, largura) — sem resposta, sem erro, sem log. A marca
+   * do cabeçalho é `priority`, então a requisição pendurada segura o evento
+   * `load` e derruba toda medição de navegador na rota. Custou duas tardes.
+   *
+   * ⚠️ **A guarda estava verde quando o defeito foi introduzido, e vermelha
+   * depois do conserto — invertida.** Ela é a quinta deste repositório a afirmar
+   * uma previsão em vez de uma medição, e é o mesmo erro que o `AGENTS.md`
+   * corrige em dois lugares ("400+ páginas estáticas", "o React Compiler está
+   * ligado"): a regra sobrevive, a justificativa inflada não.
+   *
+   * Agora ela cobra a decisão tomada, e falha nos dois sentidos — se alguém
+   * reintroduzir AVIF sem passar pela verificação que o `next.config.ts` exige,
+   * isto quebra.
+   */
+  it("serve só WebP, e não oferece AVIF", () => {
+    expect(CONFIG).toMatch(/formats:\s*\[\s*["']image\/webp["']\s*,?\s*\]/);
+    expect(CONFIG).not.toMatch(/formats:[^\]]*image\/avif/);
+  });
+
+  it("continua declarando algum formato — senão o padrão do Next volta calado", () => {
+    // Sem a chave, o Next assume o padrão dele. A guarda acima passaria
+    // vacuamente na ausência de `formats`, e é isso que esta sentinela impede.
+    expect(CONFIG).toMatch(/formats:\s*\[/);
   });
 });
 

@@ -51,6 +51,28 @@ export function localeAlternates(locale: Locale, path = "") {
  * rather than deep-merge it — never drops the image/type/siteName/locale.
  * `overrides` carries the per-page bits (e.g. `url`, `type: "article"`, a
  * page-specific `images`).
+ *
+ * ⚠️ **A imagem é declarada aqui à mão, e não pela convenção de arquivo — o
+ * motivo é o mesmo merge rasteiro descrito acima.** `app/opengraph-image.jpg`
+ * anexa a imagem ao `openGraph` do segmento RAIZ; o `openGraph` que este
+ * projeto devolve em `[locale]/layout.tsx` substitui o do pai inteiro, e a
+ * imagem vai embora com ele. O `<link rel="icon">` sobrevive à mesma troca
+ * porque vive noutro campo (`icons`), o que faz o sintoma parecer aleatório:
+ * o favicon aparece, o cartão de compartilhamento não.
+ *
+ * ⚠️ **E o caminho NÃO leva o locale.** O arquivo mora em `src/app/`, fora de
+ * `[locale]/`, porque lá dentro ele é inalcançável: a rota de um arquivo
+ * estático tem ponto (`/opengraph-image.jpg`), e o matcher de `src/proxy.ts`
+ * isenta caminhos com ponto de propósito — sem a reescrita do next-intl, a URL
+ * sem prefixo não casa com uma rota que só existe sob `[locale]`.
+ *
+ * Isso inverteu em 09/09/2026, quando os três geradores `ImageResponse` viraram
+ * arquivo estático. O gerador respondia em `/opengraph-image`, SEM ponto: o
+ * proxy o reescrevia para `/pt/opengraph-image` e por isso ficar dentro de
+ * `[locale]/` era justamente o que o fazia funcionar. Trocar a extensão mudou a
+ * rota de classe e o cartão ficou sem imagem por dois dias, sem nada acusar —
+ * o build passa, a página responde 200 e o `og:image` sai apontando para um
+ * 404. `e2e/metadata-routes.spec.ts` agora busca a URL que o HTML publica.
  */
 export function baseOpenGraph(
   locale: Locale,
@@ -62,10 +84,14 @@ export function baseOpenGraph(
     locale,
     images: [
       {
-        url: `${localizedUrl(locale)}/opengraph-image`,
+        url: absoluteUrl("/opengraph-image.jpg"),
         width: 1200,
         height: 630,
-        alt: siteConfig.name,
+        // Descreve a imagem, não repete o nome da marca: quem recebe o link
+        // numa conversa e usa leitor de tela ouve esta frase no lugar do
+        // cartão. Era `siteConfig.name`, que só dizia de novo o que o título
+        // ao lado já diz.
+        alt: "A marca do Restaurante Prato sobre a foto do buffet quente da casa",
       },
     ],
     ...overrides,

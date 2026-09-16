@@ -92,6 +92,31 @@ export function ContactForm() {
         {isSubmitting ? t("submitting") : ""}
       </p>
 
+      {/*
+       * ⚠️ **O formulário precisa de um título que o NOMEIE, e não tinha.**
+       *
+       * A página tem um `h1` na faixa de topo e um `h2` na coluna de contatos
+       * ("Como falar com a gente"), mas o formulário — que é a outra metade da
+       * página — não tinha nome nenhum. Duas consequências, e a segunda é a
+       * pior:
+       *
+       * - na lista de cabeçalhos, que é como muita gente navega uma página com
+       *   leitor de tela, metade do conteúdo não aparecia
+       * - o `<form>` sem nome acessível não é anunciado como região, então quem
+       *   entra nele pelo teclado chega num campo "Nome" sem saber nome de quê
+       *
+       * `aria-labelledby` aponta para este `h2` em vez de repetir o texto num
+       * `aria-label`: o nome fica visível para todo mundo e existe uma só fonte
+       * dele. Fica FORA do `status === "success"`, então continua sendo o título
+       * da região depois do envio, quando o formulário dá lugar à confirmação.
+       *
+       * O tamanho acompanha o `h2` da coluna ao lado: as duas metades da página
+       * são pares, e um título menor que o outro leria como subordinação.
+       */}
+      <h2 id="titulo-da-mensagem" className="mb-6 text-lg font-semibold">
+        {t("title")}
+      </h2>
+
       {status === "success" ? (
         <div
           ref={confirmacaoRef}
@@ -107,6 +132,7 @@ export function ContactForm() {
         </div>
       ) : (
         <form
+          aria-labelledby="titulo-da-mensagem"
           // O `handleSubmit(...)` é montado DENTRO do manipulador, e não no
           // render: `onSubmit` lê `enviando.current`, e uma ref lida durante o
           // render é justamente o que a regra de pureza do React proíbe.
@@ -131,7 +157,7 @@ export function ContactForm() {
             className="absolute left-[-9999px] size-0 opacity-0"
             {...register("hp")}
           />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <Label htmlFor="name" required>
                 {t("name")}

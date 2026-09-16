@@ -26,7 +26,7 @@ export async function MenuItemCard({
       {/* Lista vazia = prato permanente, e aí a etiqueta não aparece. Com dias,
           eles saem em ordem: o cadastro pode vir em qualquer uma. */}
       {item.weekdays.length > 0 ? (
-        <span className="inline-flex w-fit items-center gap-1 rounded-full bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">
+        <span className="inline-flex w-fit items-center gap-1 rounded-full bg-brand px-2.5 py-1 text-xs font-semibold text-brand-foreground">
           <span className="sr-only">{t("weekOfTitle")}: </span>
           {[...item.weekdays]
             .sort((a, b) => a - b)
@@ -55,7 +55,7 @@ export async function MenuItemCard({
         ) : null}
       </div>
       {item.tags.length > 0 ? (
-        <ul className="mt-auto flex flex-wrap gap-1.5">
+        <ul role="list" className="mt-auto flex flex-wrap gap-1.5">
           {item.tags.map((tag) => (
             <li
               key={tag}

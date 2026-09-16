@@ -61,7 +61,7 @@ export function WineList({ wines }: { wines: readonly Wine[] }) {
             </p>
           ) : null}
 
-          <ul className="mt-4 overflow-hidden rounded-2xl border border-border bg-card">
+          <ul role="list" className="mt-4 overflow-hidden rounded-2xl border border-border bg-card">
             {vinho.servings.map((dose) => (
               <li
                 key={dose.label}

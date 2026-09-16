@@ -32,7 +32,7 @@ export async function GalleryPreview({ locale }: { locale: Locale }) {
           <ArrowRight className="size-4" />
         </Link>
       </div>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {photos.map((photo, i) => (
           <Reveal key={photo.id} delay={(i % 3) * 90} className="h-full">
             <GalleryPhotoCard photo={photo} />

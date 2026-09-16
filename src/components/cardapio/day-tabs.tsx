@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { WEEKDAYS, type Weekday } from "@/config/menu";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
  */
 export function DayTabs({
   labels,
+  panelHeadings,
   todayLabel,
   selectorLabel,
   today,
@@ -37,6 +38,12 @@ export function DayTabs({
 }: {
   /** Rótulo visível de cada dia, vindo do catálogo. */
   labels: Record<number, string>;
+  /**
+   * Título do painel de cada dia, só para leitor de tela. Vem montado do
+   * servidor pelo mesmo motivo que `labels`: este é componente de cliente e
+   * não tem o catálogo.
+   */
+  panelHeadings: Record<number, string>;
   /** Marca "hoje" na aba do dia corrente. */
   todayLabel: string;
   /** Nome do grupo de abas, para quem chega nele por leitor de tela. */
@@ -48,10 +55,43 @@ export function DayTabs({
 }) {
   const [escolhido, setEscolhido] = useState<Weekday | null>(null);
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
+  const listaRef = useRef<HTMLDivElement | null>(null);
 
   // A escolha da pessoa manda; sem ela, hoje; no fim de semana, segunda — abrir
   // em branco seria pior que abrir no primeiro dia útil.
   const ativo = escolhido ?? (today as Weekday | null) ?? WEEKDAYS[0];
+
+  /*
+   * ⚠️ **Traz a aba ativa para dentro da faixa visível do rolador.**
+   *
+   * No celular as cinco abas não caberiam lado a lado, então a faixa rola na
+   * horizontal — e ela começa no zero, no primeiro dia útil. Numa sexta-feira,
+   * a aba de HOJE, que é a que o cardápio abre selecionada, ficava em 398 px
+   * numa faixa de 404: seis pixels dela na tela. Quem chegava via segunda,
+   * terça e quarta, nenhuma selecionada, e o painel embaixo mostrando um dia
+   * que não estava à vista.
+   *
+   * `scrollLeft` direto, e não `scrollIntoView`: aquele rola TODO ancestral
+   * rolável até o elemento aparecer, incluindo a página — o visitante que abre
+   * `/cardapio` seria jogado para o meio do documento sem ter pedido nada.
+   *
+   * Só age quando a aba está fora da faixa, e centraliza. Depende de `ativo`
+   * porque a seleção também muda por clique, e clicar numa aba cortada pela
+   * borda não a traz para dentro sozinho — as setas do teclado trazem, porque
+   * `focus()` rola, e é justamente essa diferença que deixava o clique pior que
+   * o teclado.
+   */
+  useEffect(() => {
+    const lista = listaRef.current;
+    const aba = refs.current[WEEKDAYS.indexOf(ativo)];
+    if (!lista || !aba) return;
+
+    const faixa = lista.getBoundingClientRect();
+    const dela = aba.getBoundingClientRect();
+    if (dela.left >= faixa.left - 1 && dela.right <= faixa.right + 1) return;
+
+    lista.scrollLeft += dela.left - faixa.left - (faixa.width - dela.width) / 2;
+  }, [ativo]);
 
   function aoTeclar(evento: React.KeyboardEvent, indice: number) {
     const passo =
@@ -67,11 +107,22 @@ export function DayTabs({
   return (
     <>
       <div
+        ref={listaRef}
         role="tablist"
         aria-label={selectorLabel}
         /* Rola na horizontal no celular pequeno em vez de quebrar em duas
-           linhas, que empurraria o cardápio para fora da primeira tela. */
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0"
+           linhas, que empurraria o cardápio para fora da primeira tela.
+
+           ⚠️ **O recuo vertical existe para o ANEL DE FOCO, não para respiro.**
+           `overflow-x: auto` faz o eixo vertical computar `auto` também — a
+           regra do CSS é que `visible` num eixo vira `auto` quando o outro não
+           é `visible` —, então a caixa recorta em cima e embaixo. O anel de
+           `globals.css` é `2px` de traço com `2px` de deslocamento, ou seja 4 px
+           para fora do botão, e o recuo de topo era ZERO: quem percorre as abas
+           por teclado via o anel cortado ao meio justamente na borda de cima.
+           Os 6 px de `py-1.5` cobrem os 4 com folga, e os `-my-1.5` devolvem o
+           espaço ao layout para a página não mudar de altura. */
+        className="-mx-4 -my-1.5 flex gap-2 overflow-x-auto px-4 py-1.5 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0"
       >
         {WEEKDAYS.map((dia, i) => {
           const selecionada = dia === ativo;
@@ -100,10 +151,31 @@ export function DayTabs({
             >
               {labels[dia]}
               {today === dia ? (
+                /*
+                 * ⚠️ **Par SÓLIDO nos dois estados, e é medição, não gosto.**
+                 *
+                 * O selo era translúcido nas duas posições, e translúcido sobre
+                 * superfície da mesma família de cor não rende contraste:
+                 * `bg-background/20` herdando o texto branco da aba selecionada
+                 * dava **3,38:1**, e `bg-brand/10` com `text-brand` sobre o
+                 * cartão dava **4,24:1** — os dois abaixo dos 4,5:1 da AA, num
+                 * texto de 10 px.
+                 *
+                 * `test/palette-contrast.test.ts` seguia verde porque os dois
+                 * tokens são legítimos; o que falhava era a MISTURA, que não
+                 * existe declarada em lugar nenhum. Mesma classe do véu do topo.
+                 *
+                 * O par invertido resolve com o que a paleta já garante: aqui os
+                 * dois estados são `brand` contra `background`, 4,98:1, o mesmo
+                 * par que aquele teste vigia — mexer no verde da marca acusa nos
+                 * dois lugares em vez de num só.
+                 */
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-                    selecionada ? "bg-background/20" : "bg-brand/10 text-brand",
+                    selecionada
+                      ? "bg-background text-brand"
+                      : "bg-brand text-brand-foreground",
                   )}
                 >
                   {todayLabel}
@@ -123,6 +195,30 @@ export function DayTabs({
           hidden={dia !== ativo}
           className="mt-8"
         >
+          {/*
+           * ⚠️ **O dia precisa de TÍTULO, e não só de nome acessível.**
+           *
+           * O painel já é nomeado pela aba, por `aria-labelledby` — quem entra
+           * nele como região ouve "Sexta". Mas o modo dominante de navegação de
+           * leitor de tela é saltar de TÍTULO em título, e nessa lista o dia não
+           * existia: media 15 títulos de nível 2 na árvore visível, e os seis
+           * primeiros eram categorias do buffet do dia sem nada acima dizendo de
+           * que dia. Saltar para "Carnes" não dizia se era segunda ou sexta.
+           *
+           * Pior: "Fritos", que é uma prateleira do buffet daquele dia,
+           * aparecia como IGUAL a "Sobremesas", que é uma seção inteira do
+           * cardápio. A estrutura afirmava que os dois pesam o mesmo.
+           *
+           * ⚠️ **`sr-only` de propósito, e isso é contenção, não economia.** A
+           * aba já mostra o dia na tela, com estado selecionado visível; um
+           * título repetindo isso seria mudança de layout, que neste projeto só
+           * acontece a pedido. O que falta é a camada que o desenho comunica por
+           * posição e a estrutura não comunica por nada.
+           *
+           * Só um destes existe na árvore por vez: os outros quatro painéis têm
+           * `hidden`, que os tira da acessibilidade junto com o conteúdo.
+           */}
+          <h2 className="sr-only">{panelHeadings[dia]}</h2>
           {children[i]}
         </div>
       ))}

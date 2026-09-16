@@ -73,6 +73,33 @@ export function Logo({
         alt=""
         width={marca.width}
         height={marca.height}
+        /*
+         * ⚠️ **`sizes` é obrigatório aqui, e a falta dele custava caro em dois
+         * lugares ao mesmo tempo.**
+         *
+         * `width`/`height` só declaram a PROPORÇÃO — o tamanho na tela vem do
+         * CSS abaixo (`h-10`, `h-24`, com `w-auto`). Sem `sizes`, o Next monta a
+         * lista de variantes a partir da largura DECLARADA, oferecendo 1× e 2×
+         * dela. Medido no Pixel 7 (densidade 2,625):
+         *
+         *   marca do cabeçalho .... 103×40 na tela, declarava 720×280, baixava w=1920
+         *   logo do rodapé ........ 100×96 na tela, declarava 520×499, baixava w=1080
+         *
+         * Uma variante de 1920 px para um espaço de 103. E a segunda dose:
+         * `logo-claro.png` pedida em 1080 — acima dos 520 do arquivo — **travava
+         * o otimizador**, deterministicamente, 3 de 3 com cache frio. Como ela é
+         * `priority` (não é tardia), o evento `load` da página nunca chegava, e
+         * com ele foram dezesseis testes do tamanho celular em `/cardapio`.
+         *
+         * Não é o encoder: o `sharp` converte os dois arquivos em 1,3 s. Não é o
+         * arquivo: `logo.png` e `logo-claro.png` são idênticos em dimensão,
+         * canais, profundidade, espaço de cor e alfa. É a AMPLIAÇÃO que o
+         * otimizador não digere nesse caso — e ninguém precisava dela.
+         *
+         * Com `sizes`, a escolha passa a ser por largura real: 120 px × 2,625
+         * dá 315, o navegador pega o balde de 384, e nenhuma ampliação é pedida.
+         */
+        sizes={variant === "wordmark" ? "120px" : "104px"}
         /* A marca do cabeçalho aparece em toda página e no primeiro quadro:
            carregá-la com prioridade evita o pulo de layout que uma imagem
            preguiçosa causaria bem no topo. */

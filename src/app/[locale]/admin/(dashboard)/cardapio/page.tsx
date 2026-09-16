@@ -38,7 +38,7 @@ export default async function AdminCardapioPage({
       {categories.length === 0 ? (
         <p className="text-muted-foreground">{t("empty")}</p>
       ) : (
-        <ul className="flex flex-col gap-4">
+        <ul role="list" className="flex flex-col gap-4">
           {categories.map((category) => (
             <li
               key={category.id}
@@ -85,7 +85,7 @@ export default async function AdminCardapioPage({
                 {category.items.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t("emptyItems")}</p>
                 ) : (
-                  <ul className="flex flex-col gap-2">
+                  <ul role="list" className="flex flex-col gap-2">
                     {category.items.map((item) => (
                       <li
                         key={item.id}
@@ -106,7 +106,12 @@ export default async function AdminCardapioPage({
                             {item.available ? t("statusAvailable") : t("statusUnavailable")}
                           </span>
                           {item.weekdays.length > 0 ? (
-                            <span className="rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
+                            /* Par sólido: `bg-brand/10` com `text-brand` mede 4,24:1
+                               sobre o cartão, abaixo dos 4,5:1 da AA — o verde da marca
+                               é o token mais claro e não sobrevive ao próprio tom a
+                               10%. A pastilha de disponibilidade ao lado segue tingida
+                               porque `success` é escuro e mede 5,35:1. */
+                            <span className="rounded-full bg-brand px-2 py-0.5 text-xs font-medium text-brand-foreground">
                               {[...item.weekdays]
                                 .sort((a, b) => a - b)
                                 .map((dia) => t(weekdayKeys[dia - 1]))

@@ -9,6 +9,7 @@ import {
   siteConfig,
   fullAddress,
   mapEmbedUrl,
+  openingHoursLabel,
   reviewLink,
 } from "@/config/site";
 
@@ -30,13 +31,21 @@ export async function Footer() {
   ) as [keyof typeof socialIcons, string][];
 
   const avaliar = reviewLink();
+  /*
+   * ⚠️ **Nunca montado à mão.** `openingHoursLabel()` já inclui a faixa de
+   * DIAS; formatar a partir de `opens`/`closes` publicaria "das 11h às 15h" sem
+   * dizer que a casa fecha no fim de semana, e é a regra que o próprio
+   * `config/site.ts` escreve em maiúsculas. Devolve `null` se o horário sair da
+   * configuração, e aí a linha desaparece em vez de sair vazia.
+   */
+  const horario = openingHoursLabel();
   const address = fullAddress();
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
   const mapSrc = mapEmbedUrl();
 
   return (
     <footer className="mt-auto border-t border-border bg-muted/30">
-      <Container className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
+      <Container className="grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-3">
           {/* The footer has the vertical room the header doesn't, so it carries
               the complete mark — stove and all. */}
@@ -61,9 +70,16 @@ export async function Footer() {
 
         <div className="flex flex-col gap-3">
           <h2 className="text-sm font-semibold">{t("contactTitle")}</h2>
+          {/* `break-words` porque o e-mail é uma palavra só de 21 caracteres: com
+              o texto em 200% ele mede ~300 px, e o rodapé só tem 240 px de
+              largura útil numa tela de 320 — o recuo do container é em `rem` e
+              dobra junto com a fonte, então sobra menos, não mais. Sem
+              autorização para quebrar, ele empurrava a página inteira para o
+              lado, nas SEIS páginas do site. É o critério de refluxo (WCAG
+              1.4.10), e a guarda é `e2e/a-pagina-nao-rola-para-o-lado.spec.ts`. */}
           <a
             href={`mailto:${siteConfig.contact.email}`}
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="break-words text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             {siteConfig.contact.email}
           </a>
@@ -71,6 +87,14 @@ export async function Footer() {
             <span className="text-sm text-muted-foreground">
               {siteConfig.contact.phone}
             </span>
+          ) : null}
+          {/* O horário no rodapé, que é onde ele é procurado: o rodapé aparece
+              nas sete páginas, e "estão abertos agora?" é a pergunta que traz
+              alguém ao site na hora do almoço. Estava publicado em
+              `/reservas`, na abertura do cardápio e no `llms.txt`, e faltava
+              justamente no lugar que acompanha o visitante em toda página. */}
+          {horario ? (
+            <span className="text-sm text-muted-foreground">{horario}</span>
           ) : null}
           <a
             href={mapsLink}

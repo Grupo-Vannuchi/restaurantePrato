@@ -43,7 +43,7 @@ export async function VisitBlock() {
         {t("visitTitle")}
       </h2>
 
-      <dl className="mt-5 grid gap-5 sm:grid-cols-2">
+      <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div className="flex items-start gap-3">
           <MapPin className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
           <div>

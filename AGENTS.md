@@ -40,10 +40,18 @@ bugs they prevent. Follow them.
 - **Portuguese only.** Every UI string goes in `src/messages/pt.json`. There is
   no `en.json` — the restaurant serves the Centro de Santos and has no
   English-speaking audience. Don't reintroduce a second locale casually.
-- **Never invent client data.** Razão social, CNPJ, the LGPD officer's e-mail and
-  the final domain are still unknown; `src/content/legal.ts` marks them with
-  `«PENDENTE: …»` on purpose. Filling those with a plausible guess — or with the
-  agency's old values — is a legal problem, not a cosmetic one.
+- **Never invent client data.** What is still unknown gets `«PENDENTE: …»` in
+  `src/content/legal.ts` on purpose; filling it with a plausible guess — or with
+  the agency's old values — is a legal problem, not a cosmetic one.
+  ⚠️ **As of 15/09 exactly ONE field is pending there: the final domain.** An
+  earlier version of this rule listed four — razão social, CNPJ, the LGPD
+  officer's e-mail and the domain — and three of those have been filled since
+  17/08: the legal name and CNPJ came with the confirmed data, and the LGPD
+  address is the general contact e-mail on purpose (the restaurant has no
+  separate data officer, and pointing LGPD at a mailbox nobody reads would be
+  worse). Read the file, not this list: `pendencias()` there sweeps the fields
+  and is the only answer that cannot go stale. A stale list of unknowns costs
+  the client being asked twice for data they already sent.
 - Use the dedicated tools/skills. When touching DB, React, security or Next.js,
   the matching skill encodes deeper rules — these are the project-specific subset.
 
@@ -170,6 +178,17 @@ null by hardcoding a number.
   `unstable_cache` + `tags`; invalidate with `updateTag(tags.<x>)` on writes.
 - **Before coding Next APIs**, read `node_modules/next/dist/docs/` — this is
   Next 16 + Turbopack, not your training data.
+  ⚠️ **Never delete `.next/cache/images` while a server is running.** The image
+  optimizer keeps state over that directory; removed from under a live
+  `next start`, some conversions **block forever** — no response, no error, no
+  log line. On 14/09 that cost an afternoon: sixteen mobile tests timed out on
+  `/cardapio` and every hypothesis pointed at the site. None was. The header
+  mark is `priority`, so the hang held the page's `load` event and took every
+  test on the route with it, none of them measuring images. It looked like a
+  site defect because it was deterministic per (file, width) — those were the
+  entries whose directory had been destroyed — while `sharp` converted all of
+  them standalone in under 1.3 s and WebP answered in 58 ms. Stop the server,
+  delete, start: the same two conversions then return in 209 ms and 219 ms.
   ⚠️ **`quality` on `next/image` is ignored unless the value is in
   `images.qualities`.** Next 16 made that allowlist mandatory and it defaults to
   `[75]`: a `quality={50}` in a component is not a build error, not a warning,
@@ -274,9 +293,23 @@ null by hardcoding a number.
   `components/layout/logo.tsx` serves three pieces from `public/brand`, and the
   three image routes became static files: `app/icon.png` (the cloche — the full
   chef is a smudge at 16-32 px, measured), `app/apple-icon.png` (the chef, which
-  reads at 180) and `[locale]/opengraph-image.jpg` (the buffet photo under a dark
+  reads at 180) and `app/opengraph-image.jpg` (the buffet photo under a dark
   veil with the mark on top, which is what that file's own docblock had asked for
   once photos existed).
+  ⚠️ **A static metadata file cannot live inside `[locale]/`, and the share card
+  spent two days broken proving it.** The generated route answered on
+  `/opengraph-image` — no dot — so the `proxy.ts` matcher processed it and
+  next-intl rewrote it to `/pt/opengraph-image`, which is exactly why being
+  inside `[locale]/` was what made it work. The static file answers on
+  `/opengraph-image.jpg`, and the matcher exempts dotted paths on purpose: with
+  no rewrite, the unprefixed URL matches a route that only exists under
+  `[locale]`. Moving the file to `app/` fixes the route. **And the tag still has
+  to be declared by hand** in `lib/seo.ts`: the file convention attaches the
+  image to the ROOT segment's `openGraph`, and this project's
+  `[locale]/layout.tsx` returns its own `openGraph`, which replaces the parent's
+  whole object — the `<link rel="icon">` survives the same merge because it
+  lives in `icons`, which is what makes the symptom look random. Nothing failed:
+  build green, page 200, `og:image` pointing at a 404.
   ⚠️ **Two rules turn the source's white into transparency, and the difference is
   the artwork's.** In the chef, white IS art — hat, jacket, dome highlight — so
   only border-reachable white was removed by flood fill. In the wordmark there is
