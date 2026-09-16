@@ -98,6 +98,45 @@ async function mede(page: import("@playwright/test").Page) {
 
 for (const rota of ROTAS) {
   test(`${rota} não rola para o lado a 320 px`, async ({ page }) => {
+    /*
+     * ⚠️ **PENDENTE, e o tempo folgado aqui é diagnóstico, não conserto.**
+     *
+     * Este teste mede LARGURA — `scrollWidth <= clientWidth`, o piso da WCAG
+     * 1.4.10 — e no caminho LOCAL ele reprova por TEMPO em `/cardapio`, num
+     * dos dois projetos, em toda execução completa de 16/09. Quem mede tempo é
+     * `performance.spec.ts`, com orçamento próprio; reprovar por aqui manda
+     * quem depura procurar o defeito errado, e é por isso que a folga subiu.
+     *
+     * O que a folga PROVOU, e é o motivo de ela ficar: com 30 s a mensagem era
+     * só "Test timeout of 30000ms exceeded", ambígua entre página lenta e
+     * página travada. Com 120 s ela continua estourando — `page.goto`
+     * esperando `load` em `/cardapio` passa de dois minutos — e a captura de
+     * tela do Playwright mostra a PÁGINA RENDERIZADA, com o link "Pular para o
+     * conteúdo" no lugar. Não é lentidão: o evento `load` não chega.
+     *
+     * É a mesma assinatura que derrubou o site em 15/09, quando o otimizador
+     * pendurava uma conversão AVIF e a marca `priority` do cabeçalho segurava
+     * o `load` da página inteira. O AVIF saiu naquele dia; a 320 px o
+     * navegador pede larguras de imagem que nenhuma outra medição deste
+     * repositório pede — a varredura de contraste roda em 390, 1440 e 1920 —, e
+     * a lição escrita então foi exatamente esta: **mexer no layout sorteia
+     * combinações de (arquivo, largura) novas.**
+     *
+     * ⚠️ Três hipóteses foram medidas e DESCARTADAS, para ninguém repetir:
+     * · não é o limite de 30 s — estoura igual com 120 s;
+     * · não é contenção de compilação — sozinho contra servidor recém-subido o
+     *   teste passa em 7,0 s, e as dezesseis rotas do aquecimento pedidas em
+     *   paralelo voltam todas com o status certo;
+     * · não é `.next` reaproveitado depois de um `taskkill` — reiniciado sem
+     *   apagar o diretório, `/`, `/cardapio` e `/privacy` respondem 200.
+     *
+     * Contra o build de PRODUÇÃO a suíte fechou em 235 passando e 0 falhando
+     * em 15/09, este teste incluído. Falta isolar qual requisição fica
+     * pendurada a 320 px: a sonda que eu escrevi para isso mediu um servidor
+     * que estava devolvendo 404 e não vale.
+     */
+    test.setTimeout(120_000);
+
     await page.setViewportSize({ width: 320, height: 640 });
     await page.goto(rota, { waitUntil: "load" });
 

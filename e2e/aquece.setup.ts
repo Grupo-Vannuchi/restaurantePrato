@@ -45,6 +45,20 @@ const ROTAS = [
   "/reservas",
   "/contato",
   "/novidades",
+  /*
+   * ⚠️ **As duas páginas legais faltavam aqui, e não era descuido só do
+   * aquecimento: até 16/09 NENHUM spec da suíte visitava `/privacy` ou
+   * `/terms`.** São as páginas que precisam estar certas para o site poder ser
+   * publicado — é nelas que vivem razão social, CNPJ e o domínio `«PENDENTE»`
+   * que mantém o site fechado aos buscadores.
+   *
+   * Descoberto porque `e-o-site-deste-cliente.setup.ts` confere o CNPJ em
+   * `/privacy`. Aquecer não bastou para estabilizá-la — a confirmação insiste
+   * no status por conta própria, e o porquê está lá —, mas as duas rotas
+   * pertencem a esta lista pelo mesmo motivo que as outras sete.
+   */
+  "/privacy",
+  "/terms",
   // O painel: a suíte confere que ele exige sessão.
   "/admin",
   // Rotas de metadados, que também compilam sob demanda.
@@ -64,6 +78,21 @@ const ROTAS = [
 setup("aquece as rotas para a primeira asserção não pagar a compilação", async ({
   request,
 }) => {
+  /*
+   * ⚠️ **O tempo do TESTE, e não só o de cada requisição.** Cada `request.get`
+   * abaixo tem 90 s, mas o teste em volta herdava o limite padrão de 30 s do
+   * Playwright — as duas folgas nunca concordaram, e a de fora é a que manda.
+   *
+   * Ficou latente enquanto a lista era curta. Acrescentar `/privacy` e
+   * `/terms` em 16/09 estourou os 30 s num servidor frio, e o aquecimento
+   * passou a reprovar levando a suíte inteira com ele: "241 did not run".
+   *
+   * Aquecer dezesseis rotas que compilam sob demanda é justamente o trabalho
+   * que pode passar de meio minuto — e é trabalho de PREPARAÇÃO, não asserção
+   * de tempo. Quem mede tempo é `performance.spec.ts`, com limite próprio.
+   */
+  setup.setTimeout(180_000);
+
   /*
    * Em paralelo de propósito. Aquecendo uma de cada vez o total passava de 30 s;
    * juntas, a contenção só torna o AQUECIMENTO mais lento, e não um teste
