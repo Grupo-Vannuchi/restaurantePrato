@@ -1,5 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
 
+/*
+ * ⚠️ **A porta local NÃO é 3000, e a razão é grave: 3000 é, nesta máquina, o
+ * projeto irmão — o fork de que este repositório nasceu, com as MESMAS rotas e
+ * o mesmo DOM.** Com `reuseExistingServer`, a suíte reusava o servidor dele e
+ * media o site de outro cliente, verde. O porquê inteiro, o motivo de a porta
+ * do CI continuar 3000 e a razão de isto ser um módulo em vez de uma constante
+ * local estão em `e2e/porta.ts`. A defesa que cobre também o `E2E_BASE_URL`
+ * apontado para o lugar errado é `e2e/e-o-site-deste-cliente.setup.ts`.
+ */
+import { LOCAL, PORTA } from "./e2e/porta";
+
 /**
  * E2E config. Local-first: runs the app via `npm run dev` (reusing a running
  * server if there is one) against the local DB and runs the specs in `e2e/`.
@@ -106,7 +117,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? "html" : "list",
   use: {
-    baseURL: process.env.E2E_BASE_URL ?? "http://localhost:3000",
+    baseURL: process.env.E2E_BASE_URL ?? LOCAL,
     // Force the browser locale so next-intl serves Portuguese (default,
     // unprefixed) instead of redirecting to /en.
     locale: "pt-BR",
@@ -142,15 +153,35 @@ export default defineConfig({
      * padrão do Playwright só casa `*.spec.ts` e `*.test.ts`.
      */
     { name: "aquecimento", testMatch: /aquece\.setup\.ts$/ },
+    /*
+     * ⚠️ **Projeto próprio, e DEPOIS do aquecimento — não junto com ele.**
+     *
+     * A confirmação de identidade começou dentro do projeto de aquecimento, e
+     * com `fullyParallel` as duas preparações corriam ao mesmo tempo. Ela
+     * confere o CNPJ em `/privacy`, que o aquecimento ainda não havia
+     * compilado, e reprovava de forma INTERMITENTE — por tempo, não por
+     * identidade. Guarda que falha às vezes é pior que guarda nenhuma: ensina
+     * quem depura a reexecutar até ficar verde.
+     *
+     * Encadeado — aquecer, confirmar, então asseverar — o resultado é
+     * determinístico. E os dois navegadores dependem DESTE projeto, não do
+     * aquecimento: reprovando a identidade, nenhuma asserção roda contra o
+     * site errado (verificado: "10 did not run").
+     */
+    {
+      name: "identidade",
+      testMatch: /e-o-site-deste-cliente\.setup\.ts$/,
+      dependencies: ["aquecimento"],
+    },
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
-      dependencies: ["aquecimento"],
+      dependencies: ["identidade"],
     },
     {
       name: "celular",
       use: { ...devices["Pixel 7"] },
-      dependencies: ["aquecimento"],
+      dependencies: ["identidade"],
     },
   ],
   // Sem servidor local quando a suíte mira um site publicado: subir um seria
@@ -161,8 +192,10 @@ export default defineConfig({
     : {
         // Locally: the dev server (fast, reused if already running). In CI: a
         // real production build + start, which is what E2E should exercise.
-        command: process.env.CI ? "npm run build && npm run start" : "npm run dev",
-        url: "http://localhost:3000",
+        command: process.env.CI
+          ? `npm run build && npm run start -- --port ${PORTA}`
+          : `npm run dev -- --port ${PORTA}`,
+        url: LOCAL,
         reuseExistingServer: !process.env.CI,
         timeout: process.env.CI ? 180_000 : 120_000,
       },
