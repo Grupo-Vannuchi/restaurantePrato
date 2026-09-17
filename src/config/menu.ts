@@ -14,17 +14,22 @@
 /**
  * Valores em reais.
  *
- * ⚠️ **PENDENTE — os dois números ainda não vieram do cliente.** Ele confirmou
- * o modelo em 31/08 (buffet por quilo, massas com preço próprio) e não passou os
- * valores.
+ * ✅ **Chegaram em 17/09/2026.** O cliente confirmou o modelo em 31/08 (buffet
+ * por quilo, massas com preço próprio) e nesta data passou os valores: **R$
+ * 94,99 o quilo** e **R$ 41,90 a porção** de 190 g.
  *
- * `undefined` de propósito, e não um número plausível: inventar preço é o mesmo
- * erro que o `AGENTS.md` proíbe em razão social e CNPJ, com uma agravante — um
- * preço errado numa mesa é uma discussão no caixa. Enquanto estiverem assim, o
- * aviso de preço não aparece, no mesmo padrão do telefone, do WhatsApp e do
- * horário deste projeto.
+ * ⚠️ **O tipo continua opcional, e isso não é resto de andaime.** Os dois
+ * ajudantes (`precoDoBuffet`, `precoDaMassa`) devolvem `null` sem valor e quem
+ * chama some com o aviso inteiro — em vez de mostrar "R$ 0,00" ou um rótulo
+ * seguido de vazio. Essa degradação foi construída antes dos números
+ * chegarem, custou o seu trabalho, e é o que segura o dia em que um preço
+ * mudar e alguém apagar a linha antes de ter o novo. Mesmo contrato do telefone
+ * (`contact.phone`), do WhatsApp (`whatsappLink()`) e do horário
+ * (`openingHoursLabel()`). **Não torne obrigatório.**
  *
- * Preencher é uma linha cada.
+ * `test/o-cardapio-funciona-sem-o-preco.test.ts` cobra os dois lados: o valor
+ * configurado E o caminho do ausente, este com argumento explícito para não
+ * depender do que está aqui.
  */
 export const menuPricing: {
   /** Buffet por quilo — cobrado pelo peso do prato montado. */
@@ -32,8 +37,8 @@ export const menuPricing: {
   /** Massas — valor fechado por porção, independente da combinação. */
   pasta?: number;
 } = {
-  buffetPerKg: undefined,
-  pasta: undefined,
+  buffetPerKg: 94.99,
+  pasta: 41.9,
 };
 
 /** Formata em real brasileiro: 105.9 → "R$ 105,90". */
@@ -182,8 +187,24 @@ export const pastaPhotos = [
   { photo: "/massas/tres-massas-emplatadas.webp", name: "Três massas da ilha" },
 ] as const;
 
-/** Adicionais com preço próprio. Vazio até os valores chegarem — veja acima. */
-export const pastaExtras: readonly PastaExtra[] = [];
+/**
+ * Adicionais com preço próprio, cobrados por unidade.
+ *
+ * ✅ **Os dois valores chegaram em 17/09/2026** — filé de frango R$ 7,50 e bife
+ * de alcatra R$ 8,50. Os gramas já vinham confirmados de 03/09, com a
+ * composição da ilha.
+ *
+ * Até esta data a lista era VAZIA de propósito, e o motivo sobrevive a ela
+ * estar cheia: o adicional é a exceção à regra de que o preço é da seção, então
+ * uma linha "Filé de frango" sem valor no meio do cardápio lê como INCLUSA e a
+ * pessoa descobre o contrário na conta. `PastaBuilder` some com a seção inteira
+ * quando a lista está vazia — é assim que um adicional novo espera o preço sem
+ * enganar ninguém.
+ */
+export const pastaExtras: readonly PastaExtra[] = [
+  { name: "Filé de frango", weight: "110 gramas", price: 7.5 },
+  { name: "Bife de alcatra", weight: "120 gramas", price: 8.5 },
+];
 
 /**
  * ─────────────────────────────────────────────────────────────────────────

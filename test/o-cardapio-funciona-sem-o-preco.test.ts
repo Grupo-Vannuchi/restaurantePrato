@@ -4,6 +4,7 @@ import {
   WEEKDAYS,
   formatBRL,
   isWeekday,
+  pastaExtras,
   precoDaMassa,
   precoDoBuffet,
 } from "@/config/menu";
@@ -37,11 +38,45 @@ import {
 const NBSP = "\u00a0";
 
 describe("os preços do cardápio", () => {
-  it("devolvem null enquanto não forem configurados", () => {
-    // O estado de HOJE. Se este teste começar a falhar, é porque alguém pôs um
-    // número — e aí os dois abaixo é que passam a valer.
-    expect(precoDoBuffet()).toBeNull();
-    expect(precoDaMassa()).toBeNull();
+  /**
+   * ⚠️ **Os preços chegaram em 17/09/2026, e este teste mudou de lado — é o que
+   * o anterior mandava fazer.**
+   *
+   * Havia aqui uma asserção de que os dois ajudantes devolviam `null`, com o
+   * comentário: "O estado de HOJE. Se este teste começar a falhar, é porque
+   * alguém pôs um número — e aí os dois abaixo é que passam a valer." Foi o que
+   * aconteceu: o cliente passou R$ 94,99 o quilo e R$ 41,90 a porção de massa.
+   *
+   * O valor fica cobrado aqui, e não só na configuração, porque preço é dado de
+   * cliente: um dedo errado em `menu.ts` vira discussão no caixa, e o número
+   * escrito em dois lugares que precisam concordar é o que transforma isso em
+   * teste vermelho em vez de reclamação de cliente.
+   */
+  it("saem configurados com os valores que o cliente passou", () => {
+    expect(precoDoBuffet()).toBe(`R$${NBSP}94,99/kg`);
+    expect(precoDaMassa()).toBe(`R$${NBSP}41,90`);
+  });
+
+  it("continuam degradando com qualquer valor falso", () => {
+    /*
+     * ⚠️ **`precoDoBuffet(undefined)` NÃO exercita o caminho do ausente, e a
+     * primeira versão deste teste caiu nessa.** Passar `undefined` a um
+     * parâmetro com valor padrão ACIONA o padrão — os ajudantes são
+     * `valor = menuPricing.buffetPerKg` —, então a chamada devolveu
+     * "R$ 94,99/kg" e o teste falhou afirmando o contrário do que queria.
+     *
+     * Ou seja: com o preço configurado, o cenário "configuração vazia" não é
+     * alcançável por argumento, só trocando o módulo. O que É cobrável, e é o
+     * contrato de verdade da função, é `if (!valor) return null` — qualquer
+     * valor falso cai no mesmo caminho. `0` já é cobrado logo abaixo por ser o
+     * caso perigoso (preço de zero anuncia buffet de graça); `NaN` entra aqui
+     * porque é o que um parse ruim produz.
+     *
+     * A degradação de PONTA — o aviso inteiro sumir da tela — é guardada em
+     * `e2e/`, contra o que a página realmente renderiza, e não aqui.
+     */
+    expect(precoDoBuffet(Number.NaN)).toBeNull();
+    expect(precoDaMassa(Number.NaN)).toBeNull();
   });
 
   it("formatam em real brasileiro quando existem", () => {
@@ -67,6 +102,39 @@ describe("os preços do cardápio", () => {
   it("formatam com vírgula decimal e cifrão, como se lê no Brasil", () => {
     expect(formatBRL(7)).toBe(`R$${NBSP}7,00`);
     expect(formatBRL(1234.5)).toBe(`R$${NBSP}1.234,50`);
+  });
+});
+
+describe("os adicionais da ilha de massas", () => {
+  /**
+   * ⚠️ **Eles estavam FORA do cardápio, não sem preço — e a diferença é a
+   * razão de existirem só agora.**
+   *
+   * `pastaExtras` era uma lista vazia de propósito: o adicional é a exceção à
+   * regra de que o preço é da seção, então uma linha "Filé de frango" solta no
+   * meio do cardápio lê como INCLUSA, e a pessoa descobre o contrário na conta.
+   * O componente some com a seção inteira quando a lista está vazia.
+   *
+   * Os dois valores chegaram em 17/09/2026: filé de frango R$ 7,50 e bife de
+   * alcatra R$ 8,50. Os gramas já estavam confirmados desde 03/09, com a
+   * composição da ilha.
+   */
+  it("são os dois que o cliente confirmou, com peso e preço", () => {
+    expect(pastaExtras.map((e) => [e.name, e.weight, e.price])).toEqual([
+      ["Filé de frango", "110 gramas", 7.5],
+      ["Bife de alcatra", "120 gramas", 8.5],
+    ]);
+  });
+
+  it("nenhum entra sem preço, que é o que fazia a lista ficar vazia", () => {
+    // Sentinela: uma lista vazia passaria as duas asserções acima de forma
+    // vácua se a primeira mudasse de forma, e um adicional com preço 0 ou
+    // ausente é exatamente o caso que a seção existia para não publicar.
+    expect(pastaExtras.length).toBe(2);
+    for (const extra of pastaExtras) {
+      expect(extra.price).toBeGreaterThan(0);
+      expect(extra.weight).toMatch(/\d+ gramas/);
+    }
   });
 });
 
