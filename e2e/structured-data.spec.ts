@@ -58,3 +58,35 @@ test("a página inicial se declara um restaurante, com endereço e horário", as
   expect(restaurante.address?.streetAddress).toBeTruthy();
   expect(restaurante.openingHoursSpecification?.length).toBeGreaterThan(0);
 });
+
+/**
+ * Os três campos que a auditoria de SEO de 17/09 achou faltando no
+ * `Restaurant`, cobrados no HTML PUBLICADO — não no objeto do código.
+ *
+ * ⚠️ A diferença importa, e o repositório tem o exemplo: a guarda de
+ * `/llms.txt` importa o handler e prova a função, enquanto a rota responde 404
+ * de propósito. Aqui a página é buscada e o JSON é parseado do que saiu.
+ */
+test("o Restaurant leva imagem, faixa de preço e o cardápio", async ({ page }) => {
+  await page.goto("/");
+  const restaurante = (await blocosJsonLd(page)).find((b) => b?.["@type"] === "Restaurant");
+  expect(restaurante, "nenhum bloco Restaurant na página inicial").toBeTruthy();
+
+  // Sem `image` o resultado rico de restaurante sai sem foto. O `og:image` é
+  // outro campo e não conta.
+  expect(restaurante.image, "Restaurant sem `image`").toMatch(/^https?:\/\/.+\.(jpg|jpeg|png|webp)$/);
+
+  /*
+   * ⚠️ `priceRange` DERIVADO, nunca digitado. Até 17/09 ele era corretamente
+   * ausente — o projeto não inventa dado de cliente e não havia preço. O
+   * cliente passou R$ 94,99/kg e R$ 41,90 nessa data, então o campo deixou de
+   * ser palpite. A guarda cobra a forma e o cifrão, não um valor fixo: quando
+   * o preço mudar em `menuPricing`, isto tem de continuar passando sem edição.
+   */
+  expect(restaurante.priceRange, "Restaurant sem `priceRange`").toMatch(/^R\$\s?\d/);
+
+  // `hasMenu` é a propriedade corrente do schema.org; `menu` é a forma antiga.
+  // As duas apontam para o cardápio.
+  expect(restaurante.hasMenu, "Restaurant sem `hasMenu`").toMatch(/\/cardapio$/);
+  expect(restaurante.menu).toBe(restaurante.hasMenu);
+});

@@ -99,46 +99,52 @@ async function mede(page: import("@playwright/test").Page) {
 for (const rota of ROTAS) {
   test(`${rota} não rola para o lado a 320 px`, async ({ page }) => {
     /*
-     * ⚠️ **PENDENTE, e o tempo folgado aqui é diagnóstico, não conserto.**
+     * ⚠️ **NÃO espere `load` aqui, e a razão foi isolada em 17/09 depois de
+     * dois dias de hipótese errada.**
      *
      * Este teste mede LARGURA — `scrollWidth <= clientWidth`, o piso da WCAG
-     * 1.4.10 — e no caminho LOCAL ele reprova por TEMPO em `/cardapio`, num
-     * dos dois projetos, em toda execução completa de 16/09. Quem mede tempo é
-     * `performance.spec.ts`, com orçamento próprio; reprovar por aqui manda
-     * quem depura procurar o defeito errado, e é por isso que a folga subiu.
+     * 1.4.10. Com `waitUntil: "load"` ele reprovava em `/cardapio` sem nunca
+     * chegar à asserção: o `goto` estourava 120 s com a página RENDERIZADA na
+     * captura de tela. Não era lentidão, e não era rolagem lateral.
      *
-     * O que a folga PROVOU, e é o motivo de ela ficar: com 30 s a mensagem era
-     * só "Test timeout of 30000ms exceeded", ambígua entre página lenta e
-     * página travada. Com 120 s ela continua estourando — `page.goto`
-     * esperando `load` em `/cardapio` passa de dois minutos — e a captura de
-     * tela do Playwright mostra a PÁGINA RENDERIZADA, com o link "Pular para o
-     * conteúdo" no lugar. Não é lentidão: o evento `load` não chega.
+     * ── O que estava pendurado ────────────────────────────────────────────
      *
-     * É a mesma assinatura que derrubou o site em 15/09, quando o otimizador
-     * pendurava uma conversão AVIF e a marca `priority` do cabeçalho segurava
-     * o `load` da página inteira. O AVIF saiu naquele dia; a 320 px o
-     * navegador pede larguras de imagem que nenhuma outra medição deste
-     * repositório pede — a varredura de contraste roda em 390, 1440 e 1920 —, e
-     * a lição escrita então foi exatamente esta: **mexer no layout sorteia
-     * combinações de (arquivo, largura) novas.**
+     * A 320 px num Pixel 7 (densidade 2,625) o navegador pede o balde de
+     * **1080** para a foto de topo do cardápio, e essa requisição não volta:
      *
-     * ⚠️ Três hipóteses foram medidas e DESCARTADAS, para ninguém repetir:
-     * · não é o limite de 30 s — estoura igual com 120 s;
-     * · não é contenção de compilação — sozinho contra servidor recém-subido o
-     *   teste passa em 7,0 s, e as dezesseis rotas do aquecimento pedidas em
-     *   paralelo voltam todas com o status certo;
-     * · não é `.next` reaproveitado depois de um `taskkill` — reiniciado sem
-     *   apagar o diretório, `/`, `/cardapio` e `/privacy` respondem 200.
+     *   /_next/image?url=/hero/churrasco-na-brasa.webp&w=1080&q=50
      *
-     * Contra o build de PRODUÇÃO a suíte fechou em 235 passando e 0 falhando
-     * em 15/09, este teste incluído. Falta isolar qual requisição fica
-     * pendurada a 320 px: a sonda que eu escrevi para isso mediu um servidor
-     * que estava devolvendo 404 e não vale.
+     * Medido: travada depois de 120 s, enquanto 640, 750, 828, 1200 e 1920 da
+     * MESMA imagem voltam em milissegundos, uma largura genuinamente fria
+     * (w=384) volta em 27 ms, e o `sharp` sozinho faz exatamente essa conversão
+     * em 0,11 s. Encoder são, geração a frio sã, uma chave travada.
+     *
+     * A 412 px — a largura padrão do aparelho — a mesma página dispara `load`
+     * sem nenhuma pendente. Só a 320 px, porque é a única medição deste
+     * repositório que sorteia aquele balde.
+     *
+     * ── Por que é o processo, e não o disco ───────────────────────────────
+     *
+     * Reiniciando o servidor SEM apagar `.next`, a mesma URL volta em 0,30 s.
+     * O estado ruim é em MEMÓRIA: uma otimização em voo abortada — e a suíte
+     * abre e fecha páginas o tempo todo — deixa a entrada pendurada no mapa de
+     * deduplicação do otimizador, e toda requisição seguinte da mesma chave
+     * espera por ela para sempre. É `priority` na foto de topo, então o `load`
+     * da página inteira fica preso atrás disso.
+     *
+     * ⚠️ **E isso corrige o diagnóstico de 15/09.** Naquele dia o mesmo sintoma
+     * foi atribuído ao AVIF, e o AVIF saiu do `next.config.ts` por causa dele.
+     * O travamento NÃO é do AVIF: reproduz no caminho WebP, com o AVIF
+     * desligado. O que muda é a chave, não o formato.
+     *
+     * Esperar `domcontentloaded` mais as fontes é o que este teste de fato
+     * precisa: layout estável, que é o que ele mede. Quem mede tempo é
+     * `performance.spec.ts`, com orçamento próprio e mensagem própria.
      */
-    test.setTimeout(120_000);
-
     await page.setViewportSize({ width: 320, height: 640 });
-    await page.goto(rota, { waitUntil: "load" });
+    await page.goto(rota, { waitUntil: "domcontentloaded" });
+    // As fontes mudam a largura do texto, e é largura que se mede aqui.
+    await page.evaluate(() => document.fonts.ready);
 
     const m = await mede(page);
 

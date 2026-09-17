@@ -322,12 +322,20 @@ null by hardcoding a number.
   **Still missing:** the vector original, for print and lossless scaling.
 - Headings are a display serif (Playfair), body is the sans. Set in
   `globals.css` under `@layer base`, scoped to `h1`–`h3`.
-- **No prices anywhere — inherited, not settled.** There is no price field in
-  the menu schema and no `priceRange` in the JSON-LD. That was the *previous*
-  client's product direction, carried over by the fork; whether the Restaurante
-  Prato wants prices is an open question (§4.1 of the rebrand spec). Adding them
-  means schema, admin and validation changes — don't do it on a hunch, and don't
-  "clean up" the absence either.
+- **Prices are settled — since 17/09/2026, and only where the client sent them.**
+  An older version of this rule said "no prices anywhere, inherited, not
+  settled": the *previous* client's direction, carried over by the fork, with
+  the question left open. The Prato answered it: buffet R$ 94,99/kg, pasta
+  portion R$ 41,90 and the two pasta extras live in `config/menu.ts`
+  (`menuPricing`, `pastaExtras`) and render on `/cardapio`; desserts, drinks and
+  wines carry a price per item; and the `Restaurant` JSON-LD emits `priceRange`
+  **derived** from the same helpers (`precoDaMassa()`, `precoDoBuffet()`), never
+  typed — no price configured, no field. ⚠️ What has NOT changed: buffet dishes
+  have no per-item price and never will (the buffet is charged by weight), so
+  `MenuItem` still has no price column. Don't add one on a hunch. And the
+  `json-ld.tsx` docblock that claimed the client "forbids publishing prices" was
+  the third inherited justification this repo has found not to match the code —
+  same family as the two corrected below.
 - **Reviews never enter structured data — permanent rule.** Testimonials render
   on the page (`components/sections/testimonials.tsx`), each one linking to its
   real source via `source`/`sourceUrl`. They must never feed the `Restaurant`

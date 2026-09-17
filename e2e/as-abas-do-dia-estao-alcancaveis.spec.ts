@@ -51,29 +51,62 @@ const ANEL = (() => {
 test("a aba do dia selecionado aparece na faixa", async ({ page }) => {
   await page.goto("/cardapio", { waitUntil: "load" });
 
-  const m = await page.evaluate(() => {
-    const lista = document.querySelector('[role="tablist"]') as HTMLElement | null;
-    if (!lista) return null;
-    const ativa = lista.querySelector('[aria-selected="true"]') as HTMLElement | null;
-    if (!ativa) return null;
-    const f = lista.getBoundingClientRect();
-    const a = ativa.getBoundingClientRect();
-    return {
-      abas: lista.querySelectorAll('[role="tab"]').length,
-      rola: lista.scrollWidth > lista.clientWidth,
-      dia: (ativa.textContent ?? "").trim().slice(0, 12),
-      recorte: {
-        esquerda: Math.round(a.left - f.left),
-        direita: Math.round(a.right - f.right),
-        faixa: Math.round(f.width),
-      },
-    };
-  });
+  const medir = () =>
+    page.evaluate(() => {
+      const lista = document.querySelector('[role="tablist"]') as HTMLElement | null;
+      if (!lista) return null;
+      const ativa = lista.querySelector('[aria-selected="true"]') as HTMLElement | null;
+      if (!ativa) return null;
+      const f = lista.getBoundingClientRect();
+      const a = ativa.getBoundingClientRect();
+      return {
+        abas: lista.querySelectorAll('[role="tab"]').length,
+        rola: lista.scrollWidth > lista.clientWidth,
+        dia: (ativa.textContent ?? "").trim().slice(0, 12),
+        recorte: {
+          esquerda: Math.round(a.left - f.left),
+          direita: Math.round(a.right - f.right),
+          faixa: Math.round(f.width),
+        },
+      };
+    });
+
+  /*
+   * ⚠️ **A medição INSISTE, e sem isso esta guarda reprovava o site por causa
+   * do relógio.** Em 17/09 — a primeira QUINTA desde que ela foi escrita — ela
+   * acusou a aba de hoje 34 px fora da faixa. Medido no navegador: logo depois
+   * do `load` a aba passa mesmo 36 px da borda, com `scrollLeft` em 0; um
+   * instante depois o efeito de `day-tabs.tsx` roda, `scrollLeft` vai a 138 e a
+   * aba fica INTEIRA dentro (right 304 contra 408). O site está certo; a
+   * medição era cedo.
+   *
+   * `waitUntil: "load"` não basta: a centralização é um `useEffect`, e efeito
+   * roda na HIDRATAÇÃO, que é depois do `load`. E ninguém viu antes porque na
+   * quarta-feira a aba já cabe em `scrollLeft` 0 — a corrida só aparece nos dias
+   * cuja aba fica perto da borda direita.
+   *
+   * Insistir não afrouxa nada: se a centralização não acontecer, a espera estoura
+   * e a guarda reprova, que é exatamente o defeito original — "a aba nascia fora
+   * da tela e ficava lá".
+   */
+  const primeira = await medir();
 
   // Sentinelas: sem faixa, sem aba marcada ou com menos de cinco dias, o resto
   // da verificação não examina o que ela diz examinar.
-  expect(m, "faixa de abas ou aba selecionada não encontrada em /cardapio").not.toBeNull();
-  expect(m!.abas, "esperava os cinco dias úteis na faixa").toBe(5);
+  expect(primeira, "faixa de abas ou aba selecionada não encontrada em /cardapio").not.toBeNull();
+  expect(primeira!.abas, "esperava os cinco dias úteis na faixa").toBe(5);
+
+  await expect
+    .poll(async () => (await medir())!.recorte.direita, {
+      timeout: 10_000,
+      message:
+        "a aba ativa segue passando da borda direita da faixa depois de 10 s — o " +
+        "efeito que centraliza em src/components/cardapio/day-tabs.tsx não rodou, " +
+        "ou rodou e não bastou",
+    })
+    .toBeLessThanOrEqual(1);
+
+  const m = await medir();
 
   expect(
     m!.recorte.esquerda,
