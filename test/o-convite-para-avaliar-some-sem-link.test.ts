@@ -53,4 +53,77 @@ describe("o link de avaliação", () => {
     expect(reviewLink("javascript:alert(1)")).toBeNull();
     expect(reviewLink("g.page/restaurante")).toBeNull(); // sem esquema
   });
+
+  /**
+   * ⚠️ **A URL COLADA DA BARRA DE ENDEREÇOS, que é o que de fato chega.**
+   *
+   * Em 17/09/2026 o link entregue para este campo foi
+   * `https://www.google.com/search?q=restaurante+prato+avaliações&…` — a página
+   * de RESULTADO DE BUSCA, copiada do navegador. Ela passava em todas as
+   * checagens acima: é absoluta, é `https`, não é vazia.
+   *
+   * Dois danos, e o segundo é o que obriga a guarda:
+   *
+   * 1. **Não é a ficha do restaurante.** É uma busca por "restaurante prato
+   *    avaliações", que devolve resultado genérico — inclusive de outras casas
+   *    com "Prato" no nome. O convite "Deixe sua avaliação" levaria a uma lista.
+   *
+   * 2. **Publica a sessão de navegação de quem copiou.** O link trazia
+   *    `biw=1366&bih=633` (o tamanho da janela), `sxsrf` com carimbo de tempo
+   *    daquele minuto, `ei` e `sca_esv` (ids de sessão e de experimento),
+   *    `gs_lp` (telemetria de como a consulta foi digitada) e 300 caracteres de
+   *    payload no fragmento. `reviewLink()` é consumido pelo RODAPÉ, então isso
+   *    iria para o HTML público de toda página do cliente.
+   *
+   * O que serve é o link da ficha, que o painel do Google Business Profile
+   * entrega pronto: `https://g.page/r/<id>/review` ou
+   * `https://search.google.com/local/writereview?placeid=<id>`.
+   */
+  it("recusa página de busca do Google, que não é a ficha do restaurante", () => {
+    expect(reviewLink("https://www.google.com/search?q=restaurante+prato")).toBeNull();
+    expect(reviewLink("https://www.google.com/search")).toBeNull();
+  });
+
+  it("recusa URL com parâmetro de sessão do navegador", () => {
+    // Cada um destes só existe em endereço copiado da barra. Basta um.
+    for (const sujeira of ["sxsrf", "ei", "biw", "bih", "gs_lp", "sca_esv", "sclient"]) {
+      expect(
+        reviewLink(`https://g.page/r/ABC/review?${sujeira}=x`),
+        `${sujeira} deveria invalidar o link`,
+      ).toBeNull();
+    }
+  });
+
+  it("aceita as formas que o Google entrega de verdade", () => {
+    // Sentinela do par acima: se a recusa ficar larga demais, ela come o link
+    // bom e o convite nunca aparece — falha silenciosa, que é a pior das duas.
+    for (const bom of [
+      "https://g.page/r/CQz1aBcDeFgH/review",
+      "https://search.google.com/local/writereview?placeid=ChIJ0123456789",
+      "https://maps.app.goo.gl/AbCdEfGhIjK",
+      "https://share.google/abc123",
+    ]) {
+      expect(reviewLink(bom), `${bom} deveria ser aceito`).toBe(bom);
+    }
+  });
+
+  it("o que estiver NA CONFIGURAÇÃO tem de sobreviver ao ajudante", () => {
+    /*
+     * A guarda que pega o erro de verdade. As de cima provam o comportamento do
+     * ajudante; esta olha o valor real do projeto, e é ela que fica vermelha no
+     * dia em que alguém colar a URL da barra de endereços em `siteConfig`.
+     *
+     * Escrita como uma asserção só, e não com `if (...) return`, porque teste
+     * que se pula sozinho passa vazio justamente no caso que importa.
+     */
+    expect(
+      siteConfig.reviewUrl === undefined || reviewLink() !== null,
+      "`reviewUrl` está preenchido com um valor que `reviewLink()` recusa — " +
+        "provavelmente uma URL copiada da barra de endereços do Google (página " +
+        "de busca, ou com parâmetros de sessão como sxsrf/ei/biw). Cole o link " +
+        "da ficha, que o Google Business Profile entrega pronto: " +
+        "https://g.page/r/<id>/review ou " +
+        "https://search.google.com/local/writereview?placeid=<id>.",
+    ).toBe(true);
+  });
 });

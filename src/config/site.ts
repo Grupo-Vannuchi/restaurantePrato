@@ -373,17 +373,65 @@ export function whatsappLink(message?: string): string | null {
  * código na página, e este campo existe para ser editado por quem não escreve
  * código.
  */
+/**
+ * Parâmetros que só existem em endereço COPIADO DA BARRA do navegador.
+ *
+ * ⚠️ Nasceram de um caso real, em 17/09/2026: o link entregue para `reviewUrl`
+ * foi `https://www.google.com/search?q=restaurante+prato+avaliações&…`, colado
+ * do navegador. Ele passava em toda validação que existia — absoluto, `https`,
+ * não vazio — e `reviewLink()` é consumido pelo RODAPÉ, então o valor iria para
+ * o HTML público de toda página: `biw`/`bih` (o tamanho da janela de quem
+ * copiou), `sxsrf` com carimbo de tempo daquele minuto, `ei` e `sca_esv` (ids
+ * de sessão e experimento) e `gs_lp` (telemetria de digitação).
+ *
+ * Basta UM deles para o valor não ser um link de ficha.
+ */
+const PARAMETROS_DE_SESSAO = [
+  "sxsrf",
+  "ei",
+  "biw",
+  "bih",
+  "gs_lp",
+  "sca_esv",
+  "sclient",
+  "uact",
+  "oq",
+  "ved",
+] as const;
+
+/**
+ * O link de avaliação, validado — ou `null`, que faz o convite sumir.
+ *
+ * ⚠️ **Recusar é mais seguro que publicar, e por isso o `null` cobre também o
+ * link ERRADO, não só o ausente.** Um convite "Deixe sua avaliação" que cai
+ * numa busca genérica do Google — com resultados de outras casas com "Prato" no
+ * nome — é pior que convite nenhum.
+ *
+ * Quem pega o erro em tempo de desenvolvimento é
+ * `test/o-convite-para-avaliar-some-sem-link.test.ts`, que confere o valor real
+ * de `siteConfig` e diz na mensagem o que colar no lugar. Aqui a recusa é a
+ * rede: mesmo que passe pela revisão, o site do cliente não publica a sessão de
+ * navegação de ninguém.
+ *
+ * As formas que o Google entrega prontas, no painel do Business Profile:
+ *   https://g.page/r/<id>/review
+ *   https://search.google.com/local/writereview?placeid=<id>
+ */
 export function reviewLink(
   url: string | undefined = siteConfig.reviewUrl,
 ): string | null {
   const limpo = url?.trim();
   if (!limpo) return null;
+  let endereco: URL;
   try {
-    const { protocol } = new URL(limpo);
-    if (protocol !== "http:" && protocol !== "https:") return null;
+    endereco = new URL(limpo);
   } catch {
     return null; // não é URL absoluta
   }
+  if (endereco.protocol !== "http:" && endereco.protocol !== "https:") return null;
+  // Página de resultado de busca não é a ficha do restaurante.
+  if (/^\/search\/?$/.test(endereco.pathname)) return null;
+  if (PARAMETROS_DE_SESSAO.some((p) => endereco.searchParams.has(p))) return null;
   return limpo;
 }
 
