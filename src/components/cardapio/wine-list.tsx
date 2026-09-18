@@ -36,7 +36,7 @@ export function WineList({ wines }: { wines: readonly Wine[] }) {
 
   if (wines.length === 0) {
     return (
-      <p className="mt-6 max-w-xl text-pretty text-[color:var(--texto-solto-apoio)]">
+      <p className="mt-6 max-w-xl text-pretty text-muted-foreground">
         {t("winesPending")}
       </p>
     );
@@ -46,17 +46,17 @@ export function WineList({ wines }: { wines: readonly Wine[] }) {
     <div className="mt-10 flex flex-col gap-10">
       {wines.map((vinho) => (
         <div key={vinho.name}>
-          <h3 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-serif text-xl font-bold tracking-tight sm:text-2xl text-[color:var(--texto-solto)]">
+          <h3 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-serif text-xl font-bold tracking-tight sm:text-2xl">
             {vinho.name}
             {vinho.note ? (
-              <span className="font-sans text-sm font-medium tracking-normal text-[color:var(--texto-solto-apoio)]">
+              <span className="font-sans text-sm font-medium tracking-normal text-muted-foreground">
                 {vinho.note}
               </span>
             ) : null}
           </h3>
 
           {vinho.labels ? (
-            <p className="mt-2 text-pretty text-sm text-[color:var(--texto-solto-apoio)]">
+            <p className="mt-2 text-pretty text-sm text-muted-foreground">
               {vinho.labels.join(" · ")}
             </p>
           ) : null}

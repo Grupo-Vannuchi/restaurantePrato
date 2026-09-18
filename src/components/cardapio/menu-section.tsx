@@ -1,8 +1,4 @@
 import { Container } from "@/components/ui/container";
-import {
-  TEXTO_SOLTO,
-  TEXTO_SOLTO_APOIO,
-} from "@/components/cardapio/menu-backdrop";
 
 /**
  * Uma seção do cardápio digital, sobre o fundo verde.
@@ -56,43 +52,19 @@ export function MenuSection({
   const Titulo = level === 1 ? "h1" : "h2";
 
   return (
-    <section
-      id={id}
-      className="scroll-mt-24 pb-12 sm:pb-16"
-      /*
-       * ⚠️ **As duas cores viram variável CSS aqui, e isso é o que evita
-       * treze cópias do mesmo hex.**
-       *
-       * Não é só o título da seção que cai solto sobre o verde: os rótulos de
-       * categoria do dia, os grupos da carta de vinhos, os títulos das bebidas
-       * e o passo a passo da ilha de massas também. A varredura de contraste
-       * mediu 144 reprovas entre 1,06:1 e 2,53:1 no primeiro build — todas
-       * texto de tema sobre fundo colorido.
-       *
-       * Declaradas aqui, valem para tudo que estiver dentro da seção, e
-       * `menu-backdrop.tsx` segue sendo a única fonte do valor. Um componente
-       * que precise delas escreve `text-[color:var(--texto-solto-apoio)]` em
-       * vez de repetir `#E3E8CE`.
-       */
-      style={
-        {
-          "--texto-solto": TEXTO_SOLTO,
-          "--texto-solto-apoio": TEXTO_SOLTO_APOIO,
-        } as React.CSSProperties
-      }
-    >
+    <section id={id} className="scroll-mt-24 pb-12 sm:pb-16">
       <Container className="max-w-3xl">
         <div
           className={`flex flex-col gap-3 pt-12 sm:pt-16 ${
             centrado ? "items-center text-center" : "items-start"
           }`}
         >
-          <Titulo className="font-serif text-3xl font-bold tracking-tight sm:text-4xl text-[color:var(--texto-solto)]">
+          <Titulo className="font-serif text-3xl font-bold tracking-tight sm:text-4xl">
             {title}
           </Titulo>
           {subtitle ? (
             <p
-              className={`text-pretty text-lg sm:text-xl text-[color:var(--texto-solto-apoio)] ${centrado ? "max-w-xl" : ""}`}
+              className={`text-pretty text-lg sm:text-xl text-muted-foreground ${centrado ? "max-w-xl" : ""}`}
             >
               {subtitle}
             </p>

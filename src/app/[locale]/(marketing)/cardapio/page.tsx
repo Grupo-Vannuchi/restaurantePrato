@@ -144,7 +144,7 @@ export default async function CardapioPage({
 
                             O tamanho do texto não mudou: nível de título é
                             estrutura, tamanho é desenho. */}
-                        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-[color:var(--texto-solto-apoio)]">
+                        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                           {grupo.categoria.name}
                         </h3>
                         <ul role="list" className="overflow-hidden rounded-2xl border border-border bg-card">
