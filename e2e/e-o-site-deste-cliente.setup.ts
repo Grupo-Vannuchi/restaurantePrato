@@ -2,6 +2,7 @@ import { expect, test as setup } from "@playwright/test";
 
 import { siteConfig } from "@/config/site";
 import { legalEntity } from "@/content/legal";
+import { NOMES, rodaContraLocal } from "./semeia-cardapio";
 
 /**
  * Confirma que o servidor medido é o site DESTE cliente, antes de qualquer
@@ -119,4 +120,68 @@ setup("o servidor no ar é o site deste cliente", async ({ request }) => {
     await (await request.get("/privacy")).text(),
     "o CNPJ publicado não é o deste cliente: a suíte está apontada para outro site",
   ).toContain(legalEntity.cnpj);
+});
+
+/**
+ * E confirma que o servidor lê o BANCO que esta suíte semeia.
+ *
+ * ⚠️ **A verificação acima prova o site; esta prova o banco, e são coisas
+ * diferentes.** O servidor pode ser o site deste cliente, na porta certa, com o
+ * nome e o CNPJ certos, e estar lendo o Supabase de PRODUÇÃO.
+ *
+ * Como isso acontece sem ninguém pedir: `next build` e `next start` rodam com
+ * `NODE_ENV=production`, e aí o Next carrega `.env.production.local` ANTES do
+ * `.env`. Esse arquivo aponta para o Supabase do cliente. Quem sobe um build de
+ * produção local para medir — o que é justamente o que se deve medir — recebe
+ * um servidor `localhost` ligado ao banco de produção.
+ *
+ * ⚠️ **E o custo não é só medir errado.** `e2e/contact.spec.ts` ENVIA o
+ * formulário: ele se pula sozinho quando `E2E_BASE_URL` está definida, porque a
+ * premissa daquele guarda é "alvo localhost ⇒ banco local". É exatamente essa
+ * premissa que o `.env.production.local` quebra. Em 18/09/2026 a suíte rodou
+ * inteira contra um build de produção local e o spec de contato não se pulou —
+ * o alvo era `localhost`. Já havia acontecido em 20/08, de outro jeito, e o
+ * `contact.spec.ts` registrou a lição na íntegra: *"o aviso existia num
+ * comentário do `playwright.config.ts`, e comentário não impede nada"*. O aviso
+ * sobre este arquivo de ambiente também estava escrito lá, em 14/09, e eu passei
+ * por ele duas vezes no mesmo dia atribuindo a falha à ordem de semeadura.
+ *
+ * Por isso a confirmação é aqui, onde ela PARA a suíte: os projetos de navegador
+ * dependem desta preparação, então nada que escreva chega a rodar.
+ *
+ * A prova é a fixture do `globalSetup`, que é escrita via Prisma com o
+ * `DATABASE_URL` do `.env` — o Docker local. Se ela não está na página servida,
+ * o servidor está lendo outro banco. Não há palpite no meio: é a mesma fixture,
+ * pelo mesmo nome, da mesma fonte.
+ *
+ * Contra site publicado a semeadura não roda (ver `rodaContraLocal`), e aí esta
+ * confirmação se pula — senão ela reprovaria toda medição de produção.
+ */
+setup("o servidor lê o banco que a suíte semeia", async ({ request }) => {
+  setup.setTimeout(150_000);
+  setup.skip(
+    !rodaContraLocal,
+    "alvo publicado: o globalSetup não semeia, então não há fixture a exigir",
+  );
+
+  await expect
+    .poll(async () => (await request.get("/cardapio")).status(), {
+      timeout: 60_000,
+      message: "/cardapio não respondeu 200" + DICA_DE_SERVIDOR_VELHO,
+    })
+    .toBe(200);
+
+  expect(
+    await (await request.get("/cardapio")).text(),
+    "O cardápio servido não traz a fixture do `globalSetup`, então o servidor " +
+      "NÃO está lendo o banco local.\n\n" +
+      "Causa mais provável: `.env.production.local` aponta para o Supabase de " +
+      "produção, e `next build`/`next start` o carregam antes do `.env`.\n\n" +
+      "Construa e suba com o banco local explícito — e nesta ordem, com o " +
+      "servidor parado antes de apagar o cache:\n" +
+      "  DATABASE_URL=<local> npm run build\n" +
+      "  DATABASE_URL=<local> npm run start -- --port 3200\n\n" +
+      "⚠️ Enquanto isto reprova, NÃO force a suíte: `e2e/contact.spec.ts` " +
+      "escreveria um contato de teste no banco do cliente.",
+  ).toContain(NOMES.permanente);
 });
