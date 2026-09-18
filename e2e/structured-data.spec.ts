@@ -121,3 +121,60 @@ test("o Restaurant localiza a casa e diz como se paga", async ({ page }) => {
   expect(restaurante.paymentAccepted, "Restaurant sem `paymentAccepted`").toMatch(/Pix/i);
   expect(restaurante.paymentAccepted).toMatch(/Dinheiro/i);
 });
+
+/**
+ * O `Menu` de `/cardapio`: o conteúdo real do site, agora legível por máquina.
+ *
+ * ⚠️ Medido no HTML PUBLICADO, e não no objeto do código, pela mesma razão das
+ * guardas acima: o `og:image` deste projeto ficou dois dias apontando para um
+ * 404 com build verde e página 200. `test/o-cardapio-estruturado-nao-afirma-o-dia.test.ts`
+ * prova as regras da montagem; só esta prova que o bloco SAIU.
+ *
+ * E a varredura de avaliação no topo deste arquivo já cobre `/cardapio`, então
+ * o `Menu` entra automaticamente na proibição de `review`/`aggregateRating` —
+ * não há nada a acrescentar lá.
+ */
+test("/cardapio publica o cardápio como Menu, sem afirmar o dia", async ({ page }) => {
+  await page.goto("/cardapio");
+  const menu = (await blocosJsonLd(page)).find((b) => b?.["@type"] === "Menu");
+
+  expect(menu, "nenhum bloco Menu em /cardapio").toBeTruthy();
+  expect(menu["@id"], "Menu sem @id ancorado na rota").toMatch(/\/cardapio#menu$/);
+
+  const secoes = menu.hasMenuSection;
+  expect(Array.isArray(secoes), "Menu sem hasMenuSection").toBe(true);
+  // O piso: com o banco semeado há categoria de buffet, massas e as listas do
+  // cardápio da casa. Um número baixo aqui significa seção sumindo em silêncio.
+  expect(secoes.length, "poucas seções: alguma lista deixou de entrar").toBeGreaterThan(3);
+
+  /*
+   * ⚠️ **Nenhuma seção nomeia dia da semana.** É a decisão (a) do plano de SEO,
+   * cobrada na saída: o banco tem a união das duas semanas, então um eixo de dia
+   * afirmaria a lista errada num dia específico.
+   */
+  const dias = /segunda|ter[çc]a|quarta|quinta|sexta|s[áa]bado|domingo/i;
+  for (const secao of secoes) {
+    expect(secao.name, `a seção "${secao.name}" nomeia um dia`).not.toMatch(dias);
+  }
+
+  const itens = secoes.flatMap((s: { hasMenuItem?: unknown[] }) => s.hasMenuItem ?? []);
+  expect(itens.length, "Menu sem item nenhum").toBeGreaterThan(20);
+
+  /*
+   * ⚠️ **Nenhum item de buffet com preço, e é o que este trecho cobra de fato.**
+   * O buffet é cobrado por peso. Todo `Offer` que existir tem de vir em BRL e com
+   * valor positivo — um `price: 0` diria "de graça", que é o jeito silencioso de
+   * publicar preço errado.
+   */
+  const ofertas = itens.flatMap((i: { offers?: unknown[] }) => i.offers ?? []);
+  expect(ofertas.length, "nenhuma oferta: os preços do cliente não chegaram ao schema").toBeGreaterThan(0);
+  for (const oferta of ofertas as { price: string; priceCurrency: string }[]) {
+    expect(oferta.priceCurrency).toBe("BRL");
+    expect(Number(oferta.price), `preço inválido: ${oferta.price}`).toBeGreaterThan(0);
+  }
+
+  // E o `Restaurant` continua apontando para a rota — o `hasMenu` não virou
+  // objeto embutido, que duplicaria a entidade que este bloco já declara.
+  const restaurante = (await blocosJsonLd(page)).find((b) => b?.["@type"] === "Restaurant");
+  expect(restaurante?.hasMenu).toMatch(/\/cardapio$/);
+});

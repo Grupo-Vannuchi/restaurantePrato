@@ -60,7 +60,7 @@ A auditoria é de 17/09. O que mudou desde então, com o commit que fechou cada 
 | 2 | `priceRange` ausente | ✅ fechado — `09c8d35`, **derivado** de `precoDaMassa()`/`precoDoBuffet()`, nunca digitado |
 | 3 | `geo` e `paymentAccepted` ausentes | ✅ fechado — `aa10b82`, com as coordenadas e as formas de pagamento que o cliente mandou |
 | 4 | `menu` em vez de `hasMenu` | ✅ fechado — `09c8d35`, as duas propriedades saem apontando para o mesmo lugar |
-| 5 | `/cardapio` sem dado estruturado de cardápio | ⏸️ **aberto, e é decisão do dono** — as três opções estão no plano de ação; recomendação é a (a). O projeto irmão também não tem |
+| 5 | `/cardapio` sem dado estruturado de cardápio | ✅ fechado — 18/09, opção **(a)** escolhida pelo dono: a união, **sem eixo de dia**. 13 seções, 125 itens, 27 ofertas no HTML publicado |
 | 6 | `og:title` com 66 caracteres | ✅ fechado — 18/09: chave própria `metadata.ogTitle`, 56 caracteres. O `<title>` fica nos 66 de propósito |
 
 E um item que estava fora da lista de marcação, sob "Não verificado":

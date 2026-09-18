@@ -24,20 +24,45 @@ const FONTE = readFileSync(
   "utf8",
 );
 
+/**
+ * O texto do arquivo SEM comentário — e é sobre ele que a proibição corre.
+ *
+ * ⚠️ **Em 18/09/2026 esta guarda reprovou a própria documentação.** O bloco
+ * `Menu` entrou com um docblock que explica por que avaliação não pode entrar no
+ * schema, e a varredura, que lia o arquivo inteiro, achou a palavra proibida na
+ * frase que a proíbe. É a sexta guarda deste projeto a tropeçar na própria
+ * documentação.
+ *
+ * O conserto não é reescrever o comentário: uma guarda que impede o arquivo de
+ * NOMEAR a regra que ele cumpre obriga quem escreve a falar por rodeios, e aí a
+ * próxima pessoa não encontra a explicação procurando pelo termo. Comentário
+ * descreve o padrão; código é que o aplica. A proibição corre no código.
+ *
+ * ⚠️ **E o comentário de linha é removido pelo INÍCIO da linha, nunca por
+ * ocorrência de `//`.** Este arquivo é cheio de `https://schema.org`, e cortar a
+ * partir de qualquer `//` decapitaria cada uma dessas linhas — inclusive a que
+ * declara `"@context"`, que é justamente o que a sentinela do fim confere. O
+ * mesmo erro já custou uma depuração em `a-suite-mede-o-site-deste-cliente`,
+ * onde o corte comia `http://localhost:${PORTA}`.
+ *
+ * Uma string no código continua valendo: só comentário sai.
+ */
+const CODIGO = FONTE.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+
 describe("o dado estruturado não fala de avaliações", () => {
   it("não declara as chaves que o Google proíbe aqui", () => {
-    expect(FONTE).not.toMatch(/aggregateRating/);
-    expect(FONTE).not.toMatch(/"@type":\s*"Review"/);
-    expect(FONTE).not.toMatch(/\breviewCount\b|\bratingValue\b/);
+    expect(CODIGO).not.toMatch(/aggregateRating/);
+    expect(CODIGO).not.toMatch(/"@type":\s*"Review"/);
+    expect(CODIGO).not.toMatch(/\breviewCount\b|\bratingValue\b/);
   });
 
   it("não busca depoimento nenhum", () => {
     // Se um dia este arquivo importar `getTestimonials`, é porque alguém está
     // a um passo de emitir o que não pode.
-    expect(FONTE).not.toMatch(/getTestimonials|TestimonialView/);
+    expect(CODIGO).not.toMatch(/getTestimonials|TestimonialView/);
   });
 
   it("continua sendo o arquivo que monta o schema — senão a guarda não guarda", () => {
-    expect(FONTE).toMatch(/"@type":\s*"Restaurant"/);
+    expect(CODIGO).toMatch(/"@type":\s*"Restaurant"/);
   });
 });

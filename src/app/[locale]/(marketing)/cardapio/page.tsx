@@ -11,7 +11,8 @@ import { DessertList } from "@/components/cardapio/dessert-list";
 import { PastaBuilder } from "@/components/cardapio/pasta-builder";
 import { WineList } from "@/components/cardapio/wine-list";
 import { DrinkList } from "@/components/cardapio/drink-list";
-import { agrupadosPorCategoria, pratosDoDia } from "@/lib/cardapio";
+import { agrupadosPorCategoria, pratosDoDia, secoesDoCardapio } from "@/lib/cardapio";
+import { MenuJsonLd } from "@/components/json-ld";
 import {
   WEEKDAYS,
   desserts,
@@ -85,6 +86,33 @@ export default async function CardapioPage({
   const hojeNaSemana = weekdayNoRestaurante();
   const hoje = isWeekday(hojeNaSemana) ? hojeNaSemana : null;
 
+  /*
+   * O cardapio como dado estruturado. As secoes saem do mesmo dado que a tela
+   * desenha, e os rotulos do mesmo catalogo — duas fontes contariam historias
+   * diferentes para a pessoa e para o buscador.
+   *
+   * Os rotulos de grupo de bebida vem daqui, e nao do componente, pela mesma
+   * razao que os rotulos de dia: `secoesDoCardapio` e pura e nao conhece o
+   * catalogo, o que e o que a deixa exercitavel com listas que o banco de hoje
+   * nunca produziria.
+   */
+  const secoesEstruturadas = secoesDoCardapio({
+    buffet,
+    massas,
+    rotulos: {
+      massas: t("pastaLabel"),
+      sobremesas: t("dessertsLabel"),
+      bebidas: t("drinksLabel"),
+      vinhos: t("winesLabel"),
+    },
+    sobremesas: desserts,
+    bebidas: drinkGroups.map((g) => ({
+      name: t(g.labelKey as "drinksSodasBeer"),
+      items: g.items,
+    })),
+    vinhos: wines,
+  });
+
   return (
     <>
       {/* A identidade antes da lista: quem chega aqui pode ter escaneado um
@@ -93,6 +121,10 @@ export default async function CardapioPage({
           `menu-backdrop.tsx` é a fonte, e um comentário duplicado já envelheceu
           no projeto irmão — descrevia uma versão que não estava mais no ar. */}
       <MenuBackdrop />
+
+      {/* Antes de tudo na arvore porque nao desenha nada: e o cardapio para
+          quem le a pagina por maquina. */}
+      <MenuJsonLd locale={locale} secoes={secoesEstruturadas} />
 
       <MenuHero />
 

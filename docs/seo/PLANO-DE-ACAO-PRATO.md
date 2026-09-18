@@ -16,12 +16,13 @@
 | 2 · `priceRange` derivado | ✅ `09c8d35` |
 | 3 · `hasMenu` ao lado de `menu` | ✅ `09c8d35` |
 | 4 · `og:title` abaixo de 60 | ✅ 18/09 — 56 caracteres, chave própria `metadata.ogTitle`. O `<title>` fica nos 66 |
-| 5 · dado estruturado do cardápio | ⏸️ **esperando tua decisão entre (a), (b) e (c)** — recomendação abaixo é (a) |
+| 5 · dado estruturado do cardápio | ✅ 18/09 — **(a)**, a união sem eixo de dia. `Menu` com `@id` próprio em `/cardapio`; preço só onde a casa cobra por item |
 | 6 · AVIF de volta | ✅ `782ac7f` — `/galeria` de 16.723 KB para 8.215 KB |
 | 🥉 `geo` e `paymentAccepted` | ✅ `aa10b82` — saiu do balde "depende do cliente" quando ele mandou as coordenadas e as formas de pagamento |
 
-**Sobrou um item nesta lista, e é o único que depende de alguém: o 5.** Os outros quatro
-que não dependiam de ninguém estão fechados, com guarda medindo o HTML publicado.
+**Todos os itens deste plano estão fechados**, cada um com guarda medindo o HTML publicado. O 5 era o único que dependia de decisão, e a decisão foi tomada em 18/09: opção (a).
+
+O que resta de SEO não está em marcação — está no domínio final e no deploy.
 
 ⚠️ **E a produção segue atrasada em relação ao `Development`** — ver a última seção. Nada
 do que está fechado acima está no ar até o deploy.
