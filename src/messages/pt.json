@@ -4,8 +4,9 @@
     "ogTitle": "{brand} | Almoço, buffet e churrasco em Santos",
     "titleTemplate": "%s · {brand}",
     "description": "Buffet completo e churrasco na brasa no Centro de Santos, na R. Augusto Severo, 25. De segunda a sexta, das 11h às 15h. Desde 1998.",
-    "keywords": "almoço centro de santos, buffet centro de santos, churrasco centro de santos, restaurante centro de santos, onde almoçar no centro de santos"
-  },
+    "keywords": "almoço centro de santos, buffet centro de santos, churrasco centro de santos, restaurante centro de santos, onde almoçar no centro de santos",
+    "privacyDescription": "Como o Restaurante Prato trata dados pessoais: quais dados são coletados, para quê, por quanto tempo e como exercer seus direitos.",
+    "termsDescription": "As regras de uso do site do Restaurante Prato: reservas por WhatsApp, conteúdo do cardápio, propriedade intelectual e limitações."  },
   "nav": {
     "inicio": "Início",
     "experiencia": "A Experiência",
