@@ -54,8 +54,13 @@ const fonte = (caminho: string) => readFileSync(caminho, "utf8");
  */
 function extrairAlts(texto: string): string[] {
   const saida: string[] = [];
-  // Sem `` no padrao: a barra invertida nao sobrevive as camadas de escape
-  // ate aqui. A checagem do caractere anterior faz o mesmo trabalho.
+  // Sem `\b` no padrao, e o motivo vale mais que a ausencia: ao escrever este
+  // arquivo o `\b` da propria nota virou um BYTE 0x08 — backspace literal —
+  // porque `\b` e escape valido em Python e o heredoc que gerou o arquivo o
+  // converteu. O editor nao mostra o byte, entao o padrao parece certo e nunca
+  // casa. Em 18/09 a mesma armadilha custou uma rodada de depuracao em
+  // `test/preparado-para-as-fotos.test.ts`. A checagem do caractere anterior
+  // faz o mesmo trabalho da borda de palavra, sem barra invertida nenhuma.
   const marca = /alt=/g;
   let achado: RegExpExecArray | null;
   while ((achado = marca.exec(texto)) !== null) {
