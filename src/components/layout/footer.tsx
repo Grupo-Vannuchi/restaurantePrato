@@ -43,8 +43,28 @@ export async function Footer() {
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
   const mapSrc = mapEmbedUrl();
 
+  /*
+   * ⚠️ **Fundo OPACO, e `bg-muted/30` aqui era uma bomba-relógio.**
+   *
+   * Enquanto toda página tinha fundo branco, 30% de `muted` sobre branco dava
+   * #FBFCF9 — branco, na prática. Em 18/09 `/cardapio` ganhou um fundo verde
+   * `fixed inset-0`, e o rodapé translúcido passou a compor sobre ELE: a
+   * varredura de contraste mediu 253 reprovas entre 1,5:1 e 1,8:1 — a
+   * tagline, os links de navegação, o e-mail, o horário, o endereço, os
+   * termos e o CNPJ, todos ilegíveis.
+   *
+   * `bg-background` em vez de `bg-muted`: o resultado nas outras páginas é
+   * visualmente o mesmo que antes (#FFFFFF contra os #FBFCF9 de hoje), então
+   * a correção não redesenha o rodapé do site inteiro para consertar uma
+   * página.
+   *
+   * O projeto irmão pagou exatamente esta conta antes de nós — lá o couro
+   * quase preto atravessava e apagava a tagline e o CNPJ, e a correção também
+   * foi deixar o rodapé opaco. Um rodapé translúcido só parece funcionar
+   * enquanto nada colorido passa por baixo.
+   */
   return (
-    <footer className="mt-auto border-t border-border bg-muted/30">
+    <footer className="mt-auto border-t border-border bg-background">
       <Container className="grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-3">
           {/* The footer has the vertical room the header doesn't, so it carries

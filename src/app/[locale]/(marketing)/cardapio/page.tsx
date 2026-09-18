@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MenuHero } from "@/components/cardapio/menu-hero";
-import { PageHeader } from "@/components/page-header";
-import { Section, SectionHeader } from "@/components/ui/section";
+import { MenuBackdrop } from "@/components/cardapio/menu-backdrop";
+import { MenuSection } from "@/components/cardapio/menu-section";
 import { DayTabs } from "@/components/cardapio/day-tabs";
 import { DishRow } from "@/components/cardapio/dish-row";
 import { PriceCallout } from "@/components/cardapio/price-callout";
@@ -89,13 +89,17 @@ export default async function CardapioPage({
     <>
       {/* A identidade antes da lista: quem chega aqui pode ter escaneado um
           código na mesa e nunca ter visto o site. */}
+      {/* O fundo verde da página inteira. Não repita a descrição dele aqui:
+          `menu-backdrop.tsx` é a fonte, e um comentário duplicado já envelheceu
+          no projeto irmão — descrevia uma versão que não estava mais no ar. */}
+      <MenuBackdrop />
+
       <MenuHero />
-      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       {/* Coluna estreita: um cardápio é lido de cima a baixo, não varrido em
           grade. `max-w-3xl` mantém a linha na faixa confortável de leitura
           mesmo num monitor largo. */}
-      <Section containerClassName="max-w-3xl">
+      <MenuSection title={t("title")} subtitle={t("subtitle")} level={1}>
         {/* Some inteiro enquanto os preços não vierem do cliente — ver
             `price-callout.tsx`. */}
         <PriceCallout buffet={precoDoBuffet()} massa={precoDaMassa()} />
@@ -140,7 +144,7 @@ export default async function CardapioPage({
 
                             O tamanho do texto não mudou: nível de título é
                             estrutura, tamanho é desenho. */}
-                        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-[color:var(--texto-solto-apoio)]">
                           {grupo.categoria.name}
                         </h3>
                         <ul role="list" className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -159,7 +163,7 @@ export default async function CardapioPage({
             </DayTabs>
           </div>
         )}
-      </Section>
+      </MenuSection>
 
       {/* Massas: seção própria porque o preço é outro.
 
@@ -172,16 +176,12 @@ export default async function CardapioPage({
           precisar voltar ao topo para lembrar quanto custa. Sem preço
           configurado, o título sai só com o rótulo em vez de sair com um vazio
           pendurado num travessão. */}
-      <Section
+      <MenuSection
         id="massas"
-        className="border-t border-border bg-muted/30"
-        containerClassName="max-w-3xl"
+        title={precoMassa ? `${t("pastaLabel")} — ${precoMassa}` : t("pastaLabel")}
+        subtitle={t("pastaNote")}
+        align="left"
       >
-        <SectionHeader
-          title={precoMassa ? `${t("pastaLabel")} — ${precoMassa}` : t("pastaLabel")}
-          subtitle={t("pastaNote")}
-          align="left"
-        />
 
         {/* Massas cadastradas no painel, quando houver. O passo a passo abaixo
             é o serviço da ilha e independe delas. */}
@@ -194,38 +194,33 @@ export default async function CardapioPage({
         ) : null}
 
         <PastaBuilder extras={pastaExtras} photos={pastaPhotos} />
-      </Section>
+      </MenuSection>
 
       {/* Sobremesas: não pertencem a um dia — saem todo dia, do mesmo balcão.
           Some inteira enquanto a lista estiver vazia: uma vitrine de sobremesas
           sem sobremesa nenhuma promete o que a página não tem. */}
       {desserts.length > 0 ? (
-        <Section containerClassName="max-w-3xl">
-          <SectionHeader
-            title={t("dessertsLabel")}
-            subtitle={t("dessertsNote")}
-            align="left"
-          />
+        <MenuSection
+          title={t("dessertsLabel")}
+          subtitle={t("dessertsNote")}
+          align="left"
+        >
           <DessertList />
-        </Section>
+        </MenuSection>
       ) : null}
 
       {/* Bebidas: fecha a página porque é o que se pede por último. Segunda
           seção com preço por linha, pela mesma razão da sobremesa — nenhuma
           das duas entra no valor por quilo. */}
       {drinkGroups.length > 0 ? (
-        <Section
+        <MenuSection
           id="bebidas"
-          className="border-t border-border bg-muted/30"
-          containerClassName="max-w-3xl"
+          title={t("drinksLabel")}
+          subtitle={t("drinksNote")}
+          align="left"
         >
-          <SectionHeader
-            title={t("drinksLabel")}
-            subtitle={t("drinksNote")}
-            align="left"
-          />
           <DrinkList />
-        </Section>
+        </MenuSection>
       ) : null}
 
       {/* Carta de vinhos: seção própria porque o vinho não é bebida de balcão.
@@ -236,12 +231,11 @@ export default async function CardapioPage({
           Ela aparece mesmo sem rótulo cadastrado: nesse caso o componente
           escreve a linha de apoio, que diz que a carta existe e ainda não foi
           digitada. Sumir aqui esconderia do visitante que a casa serve vinho. */}
-      <Section containerClassName="max-w-3xl">
-        <SectionHeader
-          title={t("winesLabel")}
-          subtitle={t("winesNote")}
-          align="left"
-        />
+      <MenuSection
+        title={t("winesLabel")}
+        subtitle={t("winesNote")}
+        align="left"
+      >
         {/* A foto abre a seção, como no projeto irmão: vinho é escolha, e uma
             garrafa na mesa do salão diz isso melhor que uma lista de preços.
             Decorativa — a carta abaixo é que informa, e o `alt` preenchido
@@ -256,7 +250,7 @@ export default async function CardapioPage({
           className="mt-8 aspect-[16/9] w-full rounded-2xl object-cover"
         />
         <WineList wines={wines} />
-      </Section>
+      </MenuSection>
     </>
   );
 }

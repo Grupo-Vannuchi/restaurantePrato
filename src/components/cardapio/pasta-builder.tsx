@@ -101,10 +101,10 @@ export function PastaBuilder({
         </div>
       ) : null}
 
-      <h3 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+      <h3 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl text-[color:var(--texto-solto)]">
         {t("pastaBuild")}
       </h3>
-      <p className="mt-2 max-w-xl text-pretty text-muted-foreground">
+      <p className="mt-2 max-w-xl text-pretty text-[color:var(--texto-solto-apoio)]">
         {t("pastaPortionNote", { portion: pastaChoices.portion })}
       </p>
 
@@ -123,7 +123,7 @@ export function PastaBuilder({
               {/* `min-w-0` para as opções quebrarem em vez de empurrar a coluna
                   do número para fora da tela. */}
               <div className={`min-w-0 flex-1 pt-1.5 ${ultimo ? "" : "pb-9"}`}>
-                <h4 className="flex items-center gap-2.5 font-serif text-lg font-bold leading-snug sm:text-xl">
+                <h4 className="flex items-center gap-2.5 font-serif text-lg font-bold leading-snug sm:text-xl text-[color:var(--texto-solto)]">
                   {/* O mesmo número da trilha, na versão de celular. Some em
                       `sm`, onde o círculo da calha assume. */}
                   <span
@@ -152,7 +152,7 @@ export function PastaBuilder({
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-2 text-pretty leading-relaxed text-muted-foreground">
+                  <p className="mt-2 text-pretty leading-relaxed text-[color:var(--texto-solto-apoio)]">
                     {passo.nota}
                   </p>
                 )}
@@ -167,7 +167,7 @@ export function PastaBuilder({
           preço no meio de um cardápio lê como incluso. */}
       {extras.length > 0 ? (
         <>
-          <h3 className="mt-12 font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+          <h3 className="mt-12 font-serif text-2xl font-bold tracking-tight sm:text-3xl text-[color:var(--texto-solto)]">
             {t("pastaExtras")}
           </h3>
           <ul role="list" className="mt-6 overflow-hidden rounded-2xl border border-border bg-card">

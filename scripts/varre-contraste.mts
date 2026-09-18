@@ -166,7 +166,23 @@ for (const rota of rotas) {
     try {
       await pagina.goto(`${base}${rota}`, { waitUntil: "load", timeout: 60_000 });
     } catch {
-      console.log(`  ⚠️  ${rota} ${nome}: a página não carregou, rota pulada`);
+      /*
+       * ⚠️ **Rota que não carrega é REPROVA, não "pulada".**
+       *
+       * Isto dizia "rota pulada" e seguia em frente, e em 18/09 a varredura
+       * imprimiu as três larguras de `/cardapio` puladas e fechou com
+       * "✅ 0 reprovas" — com o servidor fora do ar por um erro de build. Uma
+       * ferramenta que aprova quando o site não responde não é porta de CI; é
+       * carimbo.
+       *
+       * Segunda vez que este arquivo aprova sem medir, e a outra está na
+       * sentinela de amostras mais abaixo. As duas são a mesma lição: só existe
+       * "0 reprovas" depois de existir medição.
+       */
+      reprovas++;
+      const linha = `  ❌ ${rota} ${nome}: a página não carregou`;
+      console.log(linha);
+      achados.push(linha.trim());
       await pagina.close();
       continue;
     }
@@ -301,6 +317,23 @@ for (const rota of rotas) {
         for (const el of document.querySelectorAll("body *")) {
           const s = getComputedStyle(el);
           if (s.position !== "fixed") continue;
+          /*
+           * ⚠️ **Só o que está POR CIMA, e esta linha nasceu de a varredura
+           * devolver "0 amostras · ✅ 0 reprovas" numa página inteira.**
+           *
+           * Em 18/09 o cardápio ganhou um fundo `fixed inset-0 -z-10`, que
+           * cobre a tela toda por TRÁS do conteúdo. O veto acima foi escrito
+           * para sobreposto — o botão do WhatsApp e a sombra dele — e não
+           * distinguia os dois: vetou cada ponto da grade, e a varredura passou
+           * verde sem medir um pixel.
+           *
+           * `z-index` negativo é o que diz "fica atrás do conteúdo". Um fundo
+           * assim não pode cobrir texto nenhum, então ele não tem por que vetar
+           * nada — pelo contrário, ele é exatamente a superfície que esta
+           * varredura existe para medir.
+           */
+          const camada = Number.parseInt(s.zIndex, 10);
+          if (Number.isFinite(camada) && camada < 0) continue;
           const cx = el.getBoundingClientRect();
           if (cx.width === 0 || cx.height === 0) continue;
           let dx = 0;
@@ -359,6 +392,36 @@ for (const rota of rotas) {
               cx.bottom - y < 3
             ) {
               continue;
+            }
+            /*
+             * ⚠️ **E a margem tem de conhecer o RAIO, não só a caixa** — a
+             * margem de 3 px acima é medida da caixa de acerto, que é
+             * retangular mesmo quando o elemento é uma pílula.
+             *
+             * Em 18/09 isso rendeu duas reprovas nas abas de dia do cardápio:
+             * "Segunda" a 3,14:1 sobre rgb(168,179,145) e "Quinta" a 1,17:1
+             * sobre o verde puro. O par declarado da aba é
+             * `muted-foreground` sobre `card`, que mede **6,65:1** e passa — o
+             * ponto tinha caído no canto da pílula `rounded-full`, fora do que
+             * ela pinta, num pixel de borda antisserrilhada ou já no fundo.
+             *
+             * Só apareceu na largura de laptop, porque é onde a grade de 16 px
+             * calha de cair nos cantos: defeito de medição que se disfarça de
+             * defeito de layout dependente de tela.
+             *
+             * O teste abaixo é a contenção exata num retângulo arredondado: no
+             * quadrante de cada canto, o ponto tem de estar dentro do círculo
+             * de raio `r`. `border-radius` em porcentagem ou com dois valores
+             * não é tratado — cai no caminho de cima e segue com a margem
+             * reta, que é o comportamento conservador.
+             */
+            const raioBruto = Number.parseFloat(getComputedStyle(dono).borderRadius);
+            if (Number.isFinite(raioBruto) && raioBruto > 3) {
+              const r = Math.min(raioBruto, cx.width / 2, cx.height / 2);
+              const dx = Math.max(cx.left + r - x, x - (cx.right - r), 0);
+              const dy = Math.max(cx.top + r - y, y - (cx.bottom - r), 0);
+              // Fora do círculo do canto, ou a menos de 3 px da curva dele.
+              if (dx > 0 && dy > 0 && Math.hypot(dx, dy) > r - 3) continue;
             }
             // Só FOLHAS com texto: um contêiner "contém" o texto dos filhos, e
             // medir a cor dele contra a foto que ele embrulha não diz nada.
@@ -499,6 +562,33 @@ for (const rota of rotas) {
           if (r < pior.r) pior = { r, txt: alvo.txt };
         }
       }
+    }
+
+    /*
+     * ⚠️ **Sentinela: medir NADA não é passar.**
+     *
+     * Em 18/09 a varredura devolveu "0 amostras · pior — · ✅ 0 reprovas" para
+     * `/cardapio` inteiro, nas três larguras, e eu quase li aquilo como página
+     * limpa. A causa está na grade (o veto de sobrepostos comendo um fundo
+     * `-z-10`), mas a lição é desta linha: sem isto, QUALQUER defeito que
+     * impeça a amostragem — grade vetada, rota que não renderiza texto, seletor
+     * que deixou de casar — aparece como aprovação.
+     *
+     * É a mesma família da guarda vacuamente verde que este repositório já
+     * corrigiu em `preparado-para-as-fotos`, em `structured-data` e na de
+     * `/llms.txt`: a asserção tem de falhar quando não tem o que examinar.
+     *
+     * O piso é baixo de propósito (30): rota curta com pouco texto existe, e o
+     * que se quer pegar é a queda para perto de zero, não calibrar por página.
+     */
+    const MINIMO_DE_AMOSTRAS = 30;
+    if (amostras < MINIMO_DE_AMOSTRAS) {
+      reprovas++;
+      const linha =
+        `  ❌ só ${amostras} amostras (mínimo ${MINIMO_DE_AMOSTRAS}) — a varredura não ` +
+        `mediu esta tela, e "0 reprovas" aqui não significaria nada`;
+      console.log(linha);
+      achados.push(`${rota} ${nome}:${linha}`);
     }
 
     const larguraRolagem = await pagina.evaluate(() => document.documentElement.scrollWidth);

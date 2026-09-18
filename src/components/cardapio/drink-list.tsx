@@ -23,7 +23,7 @@ export async function DrinkList() {
     <div className="mt-10 flex flex-col gap-10">
       {drinkGroups.map((grupo) => (
         <div key={grupo.labelKey}>
-          <h3 className="font-serif text-xl font-bold tracking-tight sm:text-2xl">
+          <h3 className="font-serif text-xl font-bold tracking-tight sm:text-2xl text-[color:var(--texto-solto)]">
             {t(grupo.labelKey)}
           </h3>
           <ul role="list" className="mt-4 overflow-hidden rounded-2xl border border-border bg-card">

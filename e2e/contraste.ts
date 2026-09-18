@@ -174,6 +174,31 @@ export async function contrasteNaTela(
   await alvo.scrollIntoViewIfNeeded();
 
   /*
+   * ⚠️ **E aí CENTRALIZA, porque encostado na borda o alvo cai debaixo do
+   * botão flutuante — e a medição passa a ser do botão.**
+   *
+   * `scrollIntoViewIfNeeded` encosta o elemento na borda mais próxima, que no
+   * caminho de baixo é exatamente onde vive o WhatsApp (`fixed bottom-5
+   * right-5 z-50`). Em 18/09 isso derrubou `o-selo-de-hoje-se-le` no celular
+   * com 1,21:1: o par declarado do selo é tinta da marca sobre branco, que mede
+   * 4,98 — e `elementFromPoint` no centro do selo respondia
+   * `A.fixed bottom-5 right-5`, com `bg` do verde do WhatsApp. A guarda estava
+   * medindo o botão.
+   *
+   * Só apareceu numa sexta-feira, e o motivo é geométrico: o selo mora na aba
+   * de HOJE, que na sexta é a última da faixa — a mais à direita, do mesmo lado
+   * do botão. Nos outros dias ele para longe dali.
+   *
+   * Mesma família da sombra do botão que a varredura de contraste isolou em
+   * 17/09: sobreposto fixo contaminando medição de pixel. Centralizar tira o
+   * alvo da faixa dos cantos sem afrouxar nada — o que se mede continua sendo o
+   * pior pixel do elemento.
+   */
+  await alvo.evaluate((el) =>
+    el.scrollIntoView({ block: "center", inline: "center", behavior: "instant" }),
+  );
+
+  /*
    * ⚠️ **Espera a animação de entrada TERMINAR, e isto não é paciência
    * defensiva: sem ela a medição é de um quadro intermediário.**
    *

@@ -33,7 +33,12 @@ describe("as fontes declaradas", () => {
   it("toda família baixada é usada em algum lugar", () => {
     const familias: { nome: string; utilitario: RegExp }[] = [
       { nome: "Geist_Mono", utilitario: /\bfont-mono\b/ },
-      { nome: "Playfair_Display", utilitario: /\bfont-serif\b/ },
+      // ⚠️ Trocada de Playfair_Display para Literata em 18/09/2026, e o NOME
+      // importa mais do que parece: esta lista é filtrada por família presente
+      // no layout, então uma entrada desatualizada simplesmente some do filtro
+      // — a guarda passaria vazia, deixando de cobrir justamente a fonte que o
+      // visitante passou a baixar.
+      { nome: "Literata", utilitario: /\bfont-serif\b/ },
     ];
 
     const mortas = familias

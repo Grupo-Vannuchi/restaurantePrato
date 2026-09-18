@@ -320,8 +320,22 @@ null by hardcoding a number.
   tinting everything makes the chef a faceless blob. All of it in
   [`public/brand/README.md`](public/brand/README.md).
   **Still missing:** the vector original, for print and lossless scaling.
-- Headings are a display serif (Playfair), body is the sans. Set in
-  `globals.css` under `@layer base`, scoped to `h1`–`h3`.
+- Headings are a display serif, body is the sans. Set in `globals.css` under
+  `@layer base`, scoped to `h1`–`h3`.
+  ⚠️ **The serif is Literata since 18/09/2026, and it was chosen against the
+  LOGO, not by genre.** It was Playfair Display: the client's direction said
+  "elegant serif for headings", and Playfair is the generic answer to that — a
+  **Didone**, extreme contrast, hairline serifs. The "Prato" wordmark is the
+  opposite: big x-height, near-circular bowls, generous width and *discreet*
+  wedge serifs that grow out of the stroke. Rendered side by side at the same
+  width, the two don't look like they come from the same place. Literata shares
+  all three traits; Vollkorn and Andada Pro came close in the same comparison.
+  The tiebreaker was practical: `/cardapio` sets dozens of dish names in
+  `font-serif` at small sizes, and a high-contrast Didone loses its thin strokes
+  there. **Don't swap it for a "prettier" serif without putting the candidate
+  next to `public/brand/wordmark.png` at matched width first.**
+  `test/peso-morto.test.ts` names the family — that list is filtered by what the
+  layout declares, so an outdated entry makes the guard pass vacuously.
 - **Prices are settled — since 17/09/2026, and only where the client sent them.**
   An older version of this rule said "no prices anywhere, inherited, not
   settled": the *previous* client's direction, carried over by the fork, with
