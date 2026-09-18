@@ -90,6 +90,7 @@ describe("experiencia.lead (t.rich com placeholder ICU)", () => {
  */
 const ALLOWED: Record<string, string[]> = {
   "metadata.defaultTitle": ["brand"],
+  "metadata.ogTitle": ["brand"],
   "metadata.titleTemplate": ["brand"],
   "common.callUs": ["phone"],
   "home.hero.eyebrow": ["years"],

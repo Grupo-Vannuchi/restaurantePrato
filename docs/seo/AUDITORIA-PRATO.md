@@ -50,6 +50,34 @@ correto no dia em que abrir.
 
 ---
 
+## Estado dos achados — atualizado em 18/09/2026
+
+A auditoria é de 17/09. O que mudou desde então, com o commit que fechou cada item:
+
+| # | Achado | Estado |
+|---|---|---|
+| 1 | `Restaurant` sem `image` | ✅ fechado — `09c8d35`, apontando para `/opengraph-image.jpg` |
+| 2 | `priceRange` ausente | ✅ fechado — `09c8d35`, **derivado** de `precoDaMassa()`/`precoDoBuffet()`, nunca digitado |
+| 3 | `geo` e `paymentAccepted` ausentes | ✅ fechado — `aa10b82`, com as coordenadas e as formas de pagamento que o cliente mandou |
+| 4 | `menu` em vez de `hasMenu` | ✅ fechado — `09c8d35`, as duas propriedades saem apontando para o mesmo lugar |
+| 5 | `/cardapio` sem dado estruturado de cardápio | ⏸️ **aberto, e é decisão do dono** — as três opções estão no plano de ação; recomendação é a (a). O projeto irmão também não tem |
+| 6 | `og:title` com 66 caracteres | ✅ fechado — 18/09: chave própria `metadata.ogTitle`, 56 caracteres. O `<title>` fica nos 66 de propósito |
+
+E um item que estava fora da lista de marcação, sob "Não verificado":
+
+| O quê | Estado |
+|---|---|
+| Peso de imagem (AVIF desligado por dois motivos errados) | ✅ fechado — `782ac7f`. `/galeria` cai de 16.723 KB para 8.215 KB; `/` de 4.459 para 2.429. A condição de reabertura escrita no `next.config.ts` foi cumprida: 40 requisições, 0 penduradas |
+
+**Guardas que passaram a cobrar isso**, todas medindo o HTML publicado e não o objeto do
+código: `e2e/structured-data.spec.ts` (os campos novos do `Restaurant`, incluindo uma faixa
+estreita de latitude/longitude para Santos), `e2e/metadata-routes.spec.ts` (o `og:title`
+publicado, e que ele NÃO é igual ao `<title>`) e `test/metadados-cabem-no-cartao.test.ts`
+(o teto de um e o **piso** do outro — só o teto faria o conserto óbvio, encurtar os dois,
+passar).
+
+---
+
 ## Achados
 
 ### 1. `Restaurant` sem `image` — ⚠️ Warning

@@ -175,8 +175,13 @@ setup("o servidor lê o banco que a suíte semeia", async ({ request }) => {
     await (await request.get("/cardapio")).text(),
     "O cardápio servido não traz a fixture do `globalSetup`, então o servidor " +
       "NÃO está lendo o banco local.\n\n" +
-      "Causa mais provável: `.env.production.local` aponta para o Supabase de " +
-      "produção, e `next build`/`next start` o carregam antes do `.env`.\n\n" +
+      "Duas causas, nesta ordem de probabilidade:\n\n" +
+      "1. Você reconstruiu DEPOIS de uma rodada anterior. O `globalTeardown` " +
+      "apaga as fixtures ao fim de cada execução, então um build feito em " +
+      "seguida congela `/cardapio` sem elas. Semeie de novo antes de construir " +
+      "— e sim, toda vez.\n" +
+      "2. `.env.production.local` aponta para o Supabase de produção, e " +
+      "`next build`/`next start` o carregam ANTES do `.env`.\n\n" +
       "Construa e suba com o banco local explícito — e nesta ordem, com o " +
       "servidor parado antes de apagar o cache:\n" +
       "  DATABASE_URL=<local> npm run build\n" +
