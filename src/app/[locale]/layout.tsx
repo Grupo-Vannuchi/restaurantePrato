@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Playfair_Display } from "next/font/google";
+import { Geist, Literata } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import {
   getMessages,
@@ -16,14 +16,32 @@ import "../globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 /**
- * Display face for headings — the client's direction asks for "serifada
- * elegante nos títulos + sans limpa no corpo". Self-hosted by `next/font`, so
- * it costs no extra connection and can't shift layout (`display: swap` plus a
- * matched fallback metric are handled by Next).
+ * A serifa dos títulos — escolhida para casar com a LOGO, e não por gênero.
+ *
+ * ⚠️ **Era Playfair Display até 18/09/2026, e ela brigava com a marca.** A
+ * direção do cliente pedia "serifada elegante nos títulos", e Playfair é a
+ * resposta genérica a esse pedido: uma **Didone**, de contraste extremo e
+ * serifas em fio de cabelo. A palavra "Prato" da logo é o oposto disso —
+ * altura-x grande, bojos quase circulares, largura generosa e serifas
+ * DISCRETAS, em cunha, que nascem do próprio traço. Postas lado a lado na
+ * mesma largura, as duas não parecem do mesmo lugar.
+ *
+ * Literata tem as três coisas que a logo tem: altura-x grande, formas redondas
+ * e serifa em cunha de contraste moderado. Vollkorn e Andada Pro ficaram perto
+ * na mesma comparação; Faustina e Source Serif 4 são mais estreitas e formais;
+ * Bitter e Zilla Slab são slab geométricas, longe da marca.
+ *
+ * E há a razão prática, que desempatou: `/cardapio` usa `font-serif` em
+ * dezenas de nomes de prato em corpo miúdo, e Literata foi desenhada para
+ * leitura em tela em tamanho pequeno — o que uma Didone de contraste alto faz
+ * mal, porque o traço fino some.
+ *
+ * Servida pelo próprio domínio por `next/font`: não custa conexão nova e não
+ * desloca o layout (`display: swap` mais métrica de reserva, que o Next cuida).
  */
-const playfair = Playfair_Display({
-  // Not `--font-serif`: that name is the Tailwind theme token in globals.css,
-  // and pointing it at itself would be circular.
+const serifaDeTitulo = Literata({
+  // Não `--font-serif`: esse nome é o token do tema em globals.css, e apontá-lo
+  // para si mesmo seria circular.
   variable: "--font-serif-display",
   subsets: ["latin"],
   display: "swap",
@@ -99,7 +117,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${playfair.variable} h-full`}
+      className={`${geistSans.variable} ${serifaDeTitulo.variable} h-full`}
     >
       <head>
         {/* Abre a conexão com o servidor de imagens ANTES de a primeira foto

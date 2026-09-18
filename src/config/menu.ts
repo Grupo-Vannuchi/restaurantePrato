@@ -121,15 +121,21 @@ export function isWeekday(value: number): value is Weekday {
  * Nenhum destes textos está escrito dentro de componente: mexer aqui muda a
  * página.
  *
- * ⚠️ **PENDENTE — os adicionais existem e estão sem preço.** O cardápio lista
- * filé de frango (110 g) e bife de alcatra (120 g), cobrados por unidade. É a
- * exceção à regra de que o preço é da seção, e por isso mesmo eles não podem
- * entrar sem valor: uma linha "Filé de frango" solta no meio do cardápio lê como
- * incluso, e o cliente descobre o contrário na conta. Ficam fora até os valores
- * chegarem — mesma decisão das sobremesas.
+ * ⚠️ **Havia aqui dois avisos `PENDENTE` que o próprio arquivo já desmentia, e
+ * eles são omissão minha de 17/09/2026.** Um dizia que os adicionais estavam sem
+ * preço; o outro, que `menuPricing.pasta` seguia indefinido. Os dois preços
+ * chegaram naquele dia — filé de frango R$ 7,50, bife de alcatra R$ 8,50 e a
+ * porção a R$ 41,90 — e eu corrigi os docblocks de `menuPricing` e de
+ * `pastaExtras` e esqueci estes dois parágrafos, dez linhas acima deles.
  *
- * ⚠️ **PENDENTE — o preço da porção.** `menuPricing.pasta` segue indefinido, e
- * enquanto estiver o título da seção sai sem valor em vez de sair com um vazio.
+ * A varredura de 17/09 achou. Vale mais que a correção: é o mesmo padrão que
+ * este repositório já caçou quatro vezes — justificativa que envelhece ao lado
+ * do código que a contradiz. Documentação errada custa mais que código errado,
+ * porque o código pelo menos falha.
+ *
+ * O PORQUÊ que aqueles avisos carregavam não se perdeu: a razão de um adicional
+ * não poder entrar sem valor está preservada no docblock de `pastaExtras`, que é
+ * onde ela pertence.
  */
 export type PastaExtra = { name: string; weight: string; price: number };
 

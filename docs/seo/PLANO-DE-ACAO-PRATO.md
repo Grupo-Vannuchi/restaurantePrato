@@ -8,6 +8,27 @@
 > propósito, e dois "🔴 críticos" que a ferramenta aponta são decisões deliberadas. Nada
 > neste plano pede para abrir o site.
 
+## Estado em 18/09/2026
+
+| Item | Estado |
+|---|---|
+| 1 · `image` no `Restaurant` | ✅ `09c8d35` |
+| 2 · `priceRange` derivado | ✅ `09c8d35` |
+| 3 · `hasMenu` ao lado de `menu` | ✅ `09c8d35` |
+| 4 · `og:title` abaixo de 60 | ✅ 18/09 — 56 caracteres, chave própria `metadata.ogTitle`. O `<title>` fica nos 66 |
+| 5 · dado estruturado do cardápio | ✅ 18/09 — **(a)**, a união sem eixo de dia. `Menu` com `@id` próprio em `/cardapio`; preço só onde a casa cobra por item |
+| 6 · AVIF de volta | ✅ `782ac7f` — `/galeria` de 16.723 KB para 8.215 KB |
+| 🥉 `geo` e `paymentAccepted` | ✅ `aa10b82` — saiu do balde "depende do cliente" quando ele mandou as coordenadas e as formas de pagamento |
+
+**Todos os itens deste plano estão fechados**, cada um com guarda medindo o HTML publicado. O 5 era o único que dependia de decisão, e a decisão foi tomada em 18/09: opção (a).
+
+O que resta de SEO não está em marcação — está no domínio final e no deploy.
+
+⚠️ **E a produção segue atrasada em relação ao `Development`** — ver a última seção. Nada
+do que está fechado acima está no ar até o deploy.
+
+---
+
 ---
 
 ## 🥇 Faço agora, sem depender de ninguém
@@ -97,9 +118,19 @@ buscar a URL que a página publica.**
 
 ## Antes de qualquer coisa: a produção está atrasada
 
-O último deploy é o merge `8e60f89`. Depois dele entraram em `Development`, e **não estão no
-ar**: os preços do cardápio (`ff1312c`), a guarda do link de avaliação (`5253566`), a segunda
-semana do cardápio (`fb510e8`) e as duas correções de guarda (`a932c16`).
+⚠️ **Atualizado em 18/09/2026.** A versão anterior desta seção dizia que o último deploy era
+`8e60f89` e listava quatro commits fora do ar — os preços, a guarda do link de avaliação, a
+segunda semana do cardápio e as correções de guarda. **Todos esses já subiram**: a `main`
+está em `f496349`. Deixo a correção visível em vez de reescrever calado, porque uma lista de
+"o que falta subir" é exatamente o tipo de frase que envelhece sem avisar e manda alguém
+fazer deploy do que já está no ar.
+
+O último deploy é o merge **`f496349`**. Depois dele entraram em `Development` e **não estão
+no ar**: o fundo e a serifa do cardápio (`73b8202`, `675aa4b`), a paridade de dado
+estruturado com `geo` e `paymentAccepted` (`aa10b82`), o AVIF de volta (`782ac7f`), os bytes
+invisíveis (`f74a611`) e o portão de banco do E2E (`bae5e7b`).
+
+A conta que não envelhece: `git log --oneline origin/main..origin/Development`.
 
 E há dois itens que **não** se resolvem com deploy:
 

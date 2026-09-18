@@ -1,6 +1,13 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 
+/*
+ * ⚠️ Os ícones apontam para `/icon.png`, COM extensão, e o `/icon` sem
+ * extensão que morava aqui respondia 404 — quebrando o ícone de instalação
+ * ("adicionar à tela"). Em 09-11/09 as três rotas de metadado deixaram de ser
+ * geradas e viraram arquivo estático; este arquivo ficou apontando para a rota
+ * antiga. Achado pela varredura de 17/09.
+ */
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: siteConfig.name,
@@ -21,13 +28,13 @@ export default function manifest(): MetadataRoute.Manifest {
       // it cleanly. Same source, two declared purposes (the spec keeps them
       // separate, and Next's manifest type accepts only one purpose per entry).
       {
-        src: "/icon",
+        src: "/icon.png",
         sizes: "192x192 512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icon",
+        src: "/icon.png",
         sizes: "192x192 512x512",
         type: "image/png",
         purpose: "maskable",

@@ -7,6 +7,58 @@ the production deploy basics see SNAPSHOT.md too.
 > ⚠️ Secrets (DB password, API keys, tokens) live in Vercel env vars and the
 > local `.env`. Never paste them into commits, chats or screenshots.
 
+## ⚠️ As credenciais de produção não se carregam sozinhas — e por quê
+
+**Desde 18/09/2026 as credenciais de produção vivem em `.env.producao`**, e esse
+nome é escolhido: o Next **não** o reconhece. O arquivo anterior chamava-se
+`.env.production.local`, que é o nome que
+`vercel env pull --environment=production` escreve por padrão — e é um dos nomes
+que `next build` / `next start` carregam **sozinhos**, com precedência **acima**
+do `.env`.
+
+O que isso causava: subir um build de produção localmente — que é justamente o
+que se deve medir antes de um deploy — dava um servidor em `localhost` **ligado
+ao banco de produção**. As páginas eram pré-renderizadas com os dados do
+cliente, a semeadura da suíte E2E não aparecia, e `e2e/contact.spec.ts`, que
+envia o formulário de verdade, não se pulava — o guarda dele decide pelo alvo ser
+`localhost`. Nada falhava: build verde, HTTP 200.
+
+Duas coisas impedem a volta, e nenhuma é disciplina:
+
+- `test/nenhum-env-de-producao-se-carrega-sozinho.test.ts` reprova se
+  `.env.production.local` ou `.env.production` reaparecer, com o `mv` na
+  mensagem. **Ele volta sozinho** no próximo `vercel env pull`;
+- `e2e/e-o-site-deste-cliente.setup.ts` exige que a fixture semeada esteja na
+  página servida antes de qualquer teste rodar — e os projetos de navegador
+  dependem dele, então nada que escreva chega ao banco.
+
+### Rodar algo contra produção
+
+O ato passa a ser explícito, que é o ponto:
+
+```bash
+# uma variável só, lida do arquivo renomeado
+DATABASE_URL="$(grep -E '^DATABASE_URL=' .env.producao | sed -E 's/^DATABASE_URL=//; s/^"//; s/"$//')" \
+  node scripts/importa-galeria.mjs
+
+# ou o arquivo inteiro, para um comando só
+set -a; . ./.env.producao; set +a; npx prisma migrate status
+```
+
+### Construir e medir localmente
+
+Nada a passar — o `.env` já aponta para o Docker:
+
+```bash
+npm run build && npm run start -- --port 3200
+```
+
+⚠️ E semeie **antes** de construir, toda vez: o `globalTeardown` da suíte apaga
+as fixtures ao fim de cada execução, e um build feito em seguida congela
+`/cardapio` sem elas.
+
+---
+
 ## Environment variables
 
 | Var | Where | Notes |

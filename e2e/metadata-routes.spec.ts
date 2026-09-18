@@ -122,3 +122,35 @@ for (const { nome, seletor, atributo, tipo } of ANUNCIADAS) {
     ).toContain(tipo);
   });
 }
+
+/**
+ * O `og:title` da home cabe no cartão, medido no HTML PUBLICADO.
+ *
+ * ⚠️ A guarda de unidade (`test/metadados-cabem-no-cartao.test.ts`) cobra o
+ * tamanho no catálogo e cobra que a home passe a chave adiante. Nenhuma das duas
+ * prova que o Next publicou o campo: `openGraph.title` entra num objeto que o
+ * merge rasteiro do Next SUBSTITUI inteiro quando uma página devolve o seu — é
+ * exatamente como o `og:image` deste projeto ficou dois dias apontando para um
+ * 404, com build verde e página 200. Então o número se mede aqui, na tag.
+ *
+ * E cobra-se também que ele NÃO seja igual ao `<title>`: é assim que o campo
+ * volta a ser o título da busca se alguém remover o override, e o sintoma seria
+ * apenas "o cartão ficou cortado" — que ninguém abre o inspetor para conferir.
+ */
+test("o og:title da home cabe no cartão e não é o <title>", async ({ page }) => {
+  await page.goto("/");
+
+  const ogTitle = await page
+    .locator('meta[property="og:title"]')
+    .first()
+    .getAttribute("content");
+  expect(ogTitle, "a home não publicou og:title").toBeTruthy();
+  expect(
+    ogTitle!.length,
+    `og:title publicado com ${ogTitle!.length} caracteres: "${ogTitle}"`,
+  ).toBeLessThanOrEqual(60);
+
+  const title = await page.title();
+  expect(title.length, "o <title> encolheu junto").toBeGreaterThan(60);
+  expect(ogTitle).not.toBe(title);
+});

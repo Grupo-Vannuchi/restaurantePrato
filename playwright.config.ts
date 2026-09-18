@@ -60,11 +60,25 @@ import { LOCAL, PORTA } from "./e2e/porta";
  * com o servidor de desenvolvimento e que "contra um build de produção as
  * mesmas rotas passam". Era falso nas duas metades.
  *
- * ⚠️ E construa com o banco LOCAL e o `.next` limpo. `next build` carrega
+ * ⚠️ **Isto era um aviso, e virou mecanismo em 18/09/2026.** O texto que morava
+ * aqui dizia para construir com o banco LOCAL porque `next build` carregava
  * `.env.production.local`, que aponta para o Supabase de produção — sem passar
- * `DATABASE_URL`, as páginas são prerenderizadas com os dados de PRODUÇÃO, e a
- * semeadura do `globalSetup`, que escreve no banco local, não aparece. E sem
- * apagar `.next` o `unstable_cache` devolve o conteúdo da build anterior.
+ * `DATABASE_URL`, as páginas saíam prerenderizadas com os dados do CLIENTE e a
+ * semeadura do `globalSetup` não aparecia.
+ *
+ * O aviso estava certo e não impediu nada: passei por ele duas vezes no mesmo
+ * dia atribuindo a falha à ordem de semeadura. Então o arquivo foi renomeado
+ * para `.env.producao`, um nome que o Next não carrega sozinho —
+ * `test/nenhum-env-de-producao-se-carrega-sozinho.test.ts` reprova se o nome
+ * especial voltar, e ele volta no próximo `vercel env pull`. E
+ * `e2e/e-o-site-deste-cliente.setup.ts` exige a fixture na página servida antes
+ * de qualquer teste rodar, então a suíte não mede o banco errado nem escreve
+ * nele.
+ *
+ * O que sobra de verdade aqui: **apague o `.next` com o servidor JÁ PARADO** —
+ * sem isso o `unstable_cache` devolve o conteúdo da build anterior, e é assim
+ * que um build feito depois do `globalTeardown` congela `/cardapio` sem as
+ * fixtures.
  *
  * ── ⚠️ A ORDEM, que é o que sobra de errado quando tudo acima está certo ──
  *

@@ -1,6 +1,7 @@
 import { defaultLocale, locales, type Locale } from "@/i18n/routing";
 import { siteConfig } from "@/config/site";
 import { precoDaMassa, precoDoBuffet } from "@/config/menu";
+import type { SecaoEstruturada } from "@/lib/cardapio";
 import { absoluteUrl, localizedUrl } from "@/lib/seo";
 
 /**
@@ -85,6 +86,17 @@ export function OrganizationJsonLd() {
     (p): p is string => p !== null,
   );
 
+  /*
+   * O ponto no mapa, quando o cliente passou as coordenadas. É o que resolve o
+   * restaurante para a busca por proximidade — "almoço perto de mim" —, e o
+   * projeto irmão já o emitia; era a última diferença de dado estruturado entre
+   * os dois.
+   *
+   * ⚠️ Sem coordenada configurada o campo não sai, em vez de sair com um ponto
+   * aproximado: coordenada errada manda alguém para a esquina errada.
+   */
+  const geo = contact.address.geo;
+
   const data = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
@@ -106,6 +118,18 @@ export function OrganizationJsonLd() {
     hasMenu: `${url}/cardapio`,
     menu: `${url}/cardapio`,
     ...(faixaDePreco.length > 0 && { priceRange: faixaDePreco.join(" – ") }),
+    ...(geo && {
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: geo.latitude,
+        longitude: geo.longitude,
+      },
+    }),
+    // Lista o que a casa ACEITA, que é o que o schema.org espera — e num
+    // restaurante por quilo "dinheiro" não é óbvio para quem procura.
+    ...(siteConfig.paymentAccepted?.length && {
+      paymentAccepted: siteConfig.paymentAccepted.join(", "),
+    }),
     address: {
       "@type": "PostalAddress",
       streetAddress: contact.address.street,
@@ -213,6 +237,74 @@ export function ArticleJsonLd({
         }
       : { "@id": ORG_ID },
     publisher: { "@id": ORG_ID },
+  };
+
+  return <JsonLd data={data} />;
+}
+
+/**
+ * `Menu` do restaurante — o cardápio como dado estruturado.
+ *
+ * É o conteúdo real deste site: o visitante vem ver o que a casa serve, e até
+ * 18/09/2026 nada disso existia para quem lê a página por máquina. O
+ * `Restaurant` apontava `hasMenu` para `/cardapio`, o que diz "o cardápio está
+ * ali" — não o que tem nele.
+ *
+ * ⚠️ **Sem eixo de dia, por decisão registrada.** As seções vêm de
+ * `secoesDoCardapio()`, que monta a UNIÃO das duas semanas e explica por quê no
+ * próprio docblock: sem âncora de semana no banco, um `hasMenuSection` por dia
+ * útil afirmaria a lista errada num dia específico. O `Menu` descreve o que a
+ * casa serve.
+ *
+ * ⚠️ **`@id` próprio, ancorado na rota do cardápio.** É o que liga este bloco ao
+ * `hasMenu` do `Restaurant` sem duplicar a entidade — o grafo deste projeto já
+ * usa o mesmo padrão em `ORG_ID` e `SITE_ID`, e a auditoria de SEO conferiu que
+ * não há referência pendurada.
+ *
+ * ⚠️ **Nenhum preço digitado aqui.** Cada `offers` vem do preço que o cardápio
+ * da casa já publica na tela; item sem preço sai sem `offers`, nunca com zero.
+ * Prato de buffet nunca leva preço — é cobrado por peso, e o valor por quilo
+ * vive no `priceRange` do `Restaurant`.
+ *
+ * E a regra permanente continua valendo: **avaliação nunca entra em dado
+ * estruturado**. Este bloco não conhece depoimento, e `e2e/structured-data.spec.ts`
+ * varre `/cardapio` recusando `review`/`aggregateRating` em qualquer
+ * profundidade — o que agora inclui este `Menu`.
+ */
+export function MenuJsonLd({
+  locale,
+  secoes,
+}: {
+  locale: Locale;
+  secoes: readonly SecaoEstruturada[];
+}) {
+  // Sem seção não há cardápio a declarar, e um `Menu` vazio afirmaria que a casa
+  // não serve nada. Com o banco vazio é exatamente o que aconteceria.
+  if (secoes.length === 0) return null;
+
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Menu",
+    "@id": `${localizedUrl(locale, "/cardapio")}#menu`,
+    url: localizedUrl(locale, "/cardapio"),
+    inLanguage: locale,
+    hasMenuSection: secoes.map((secao) => ({
+      "@type": "MenuSection",
+      name: secao.name,
+      hasMenuItem: secao.items.map((item) => ({
+        "@type": "MenuItem",
+        name: item.name,
+        ...(item.description && { description: item.description }),
+        ...(item.offers?.length && {
+          offers: item.offers.map((o) => ({
+            "@type": "Offer",
+            ...(o.name && { name: o.name }),
+            price: o.price.toFixed(2),
+            priceCurrency: "BRL",
+          })),
+        }),
+      })),
+    })),
   };
 
   return <JsonLd data={data} />;
