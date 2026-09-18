@@ -396,3 +396,21 @@ Many integrations need manual setup/maintenance (Google reconnect + publish,
 WhatsApp QR, Upstash, Vercel env vars). The steps live in
 **[`docs/RUNBOOK.md`](docs/RUNBOOK.md)**; restore/snapshot lives in
 [`SNAPSHOT.md`](SNAPSHOT.md).
+
+⚠️ **A local production build no longer reads the client's database — and the
+reason must survive.** Until 18/09/2026 a `.env.production.local` sat in the
+repo root with the production `DATABASE_URL`. `next build` and `next start` run
+with `NODE_ENV=production`, so Next loaded that file **before** `.env`: a
+`localhost` server was wired to the client's Supabase. Pages prerendered with
+the client's data, the E2E seed never showed up, and `e2e/contact.spec.ts` —
+which submits the form for real — did not skip itself, because its guard decides
+by the target being `localhost`. Nothing failed: build green, HTTP 200.
+
+The credentials now live in **`.env.producao`**, a name Next does not load on its
+own, and running anything against production is an explicit act (see
+`docs/RUNBOOK.md`). Two mechanisms keep it that way, because the warning alone
+did not: `test/nenhum-env-de-producao-se-carrega-sozinho.test.ts` fails if the
+special name comes back — and it does, on the next `vercel env pull
+--environment=production` — and `e2e/e-o-site-deste-cliente.setup.ts` demands the
+seeded fixture on the served page before any browser project runs, so the suite
+can neither measure nor write to the wrong database.
