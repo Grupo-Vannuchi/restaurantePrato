@@ -108,50 +108,66 @@ const nextConfig: NextConfig = {
     // bastava colar uma URL de banco de imagens num campo do painel para
     // publicar foto genérica como se fosse da casa.
     /*
-     * ⚠️ **AVIF SAIU em 15/09, e a razão é um travamento medido — não gosto.**
+     * ⚠️ **AVIF VOLTOU em 18/09/2026, e o que saiu daqui foi uma justificativa
+     * errada em DOIS pontos — não uma medição que envelheceu.**
      *
-     * O comentário anterior aqui dizia que "AVIF costuma ser 20–30% menor que
-     * WebP na mesma qualidade, diferença maior justamente em foto de comida".
-     * Isso é verdade em geral e **falso para os arquivos deste projeto**, porque
-     * as fontes já são WebP. Medido, mesma largura e mesma qualidade:
+     * Ele foi removido em 15/09 com duas razões, e as duas caíram:
      *
-     *   hero/buffet-quente  1920 ... AVIF 221.383 B · WebP 221.030 B ...  0%
-     *   massas/fettuccine   1080 ... AVIF  76.504 B · WebP  76.292 B ...  0%
-     *   galeria/churrasco    640 ... AVIF  19.005 B · WebP  20.010 B ... +5%
-     *   brand/wordmark       384 ... AVIF  16.347 B · WebP  17.956 B ... +9%
+     * **1. "Não economiza nada aqui" — a medição foi na QUALIDADE ERRADA.** A
+     * tabela que morava aqui dizia 0% na mesma largura e "mesma qualidade", e
+     * estava certa: em **q=75**. Só que este projeto serve as fotos em **q=50**
+     * — cinco superfícies declaram `quality={50}` — e ali o AVIF é 2 a 2,8
+     * vezes menor. Medido pelo otimizador, mesmo arquivo, mesma largura:
      *
-     * Zero nas duas pesadas, que são as que decidem o tempo de pintura.
+     *                                  q=75            q=50
+     *   hero/buffet-quente   1080   1,00x  (empate)   2,12x
+     *   hero/churrasco        1080   1,11x            2,23x
+     *   massas/tres-massas    1080   1,13x            2,50x
+     *   massas/tres-massas    1920   1,05x            2,79x
      *
-     * ── O que o AVIF custava ──────────────────────────────────────────────
+     * A tabela antiga não estava mentindo sobre os bytes; ela media uma
+     * qualidade que a página não usa.
      *
-     * O otimizador do Next **trava indefinidamente** ao produzir AVIF para
-     * certas combinações de (arquivo, largura): sem resposta, sem erro, sem uma
-     * linha no log. Reproduzido, determinístico, com cache frio e quente:
+     * **2. "O otimizador trava no AVIF" — o travamento NÃO é do AVIF.** Em
+     * 18/09 ele foi reproduzido no caminho **WebP**, com o AVIF já desligado:
+     * `/_next/image?url=/hero/churrasco-na-brasa.webp&w=1080&q=50` não voltou
+     * depois de 120 s, enquanto 640, 750, 828, 1200 e 1920 do MESMO arquivo
+     * voltaram em milissegundos, uma largura fria (w=384) em 27 ms, e o `sharp`
+     * sozinho fez a conversão em 0,11 s.
      *
-     *   brand/logo.png        w=128  ... TRAVA  ·  w=256 responde em 63 ms
-     *   brand/logo-claro.png  w=384  ... TRAVA  ·  w=128 responde em  3 ms
+     * A causa é outra, e é em MEMÓRIA: reiniciando o servidor sem apagar
+     * `.next`, a mesma URL volta em 0,30 s. Uma otimização em voo **abortada**
+     * — e a suíte de testes abre e fecha páginas o tempo todo — deixa a entrada
+     * pendurada no mapa de deduplicação do otimizador, e toda requisição
+     * seguinte da mesma chave espera por ela para sempre. O que muda entre uma
+     * execução e outra é a CHAVE, não o formato.
      *
-     * A mesma requisição em WebP volta em 25 ms. O `sharp` sozinho converte
-     * TODAS as combinações em menos de 1,3 s, então o defeito está no caminho
-     * do otimizador, não no encoder nem no arquivo.
+     * Ou seja: manter o AVIF desligado nunca protegeu de nada. O que protege é
+     * saber que uma requisição abortada envenena a chave até o processo
+     * reiniciar — na Vercel, até a instância reciclar.
      *
-     * O dano não é a imagem que falta: a marca do cabeçalho é `priority`, então
-     * a requisição pendurada **impede o evento `load` da página** e derruba
-     * qualquer medição de navegador naquela rota. Custou duas tardes — em 14/09
-     * eu atribuí isso a apagar `.next/cache/images` com o servidor no ar e
-     * generalizei de dois pontos de dados; em 15/09 reproduziu num servidor
-     * recém-subido, com cache criado por ele mesmo.
+     * ── A condição de reabertura, cumprida ────────────────────────────────
      *
-     * ⚠️ E a armadilha é pior que "uma imagem trava": a largura pedida depende
-     * do `sizes`, então **mexer no layout sorteia combinações novas**. Foi o que
-     * aconteceu: corrigir o `sizes` da marca em 14/09 fez o navegador pedir
-     * w=128 pela primeira vez, e o site parou de carregar no dia seguinte.
+     * O texto anterior exigia: "pedir todas as larguras do `srcset` de cada
+     * imagem de marca, com `Accept: image/avif`, com cache frio, e nenhuma
+     * pendurar". Feito em 18/09, com `.next` apagado e servidor recém-subido —
+     * as 5 imagens de `public/brand` × as 8 larguras de `imageSizes`, 40
+     * requisições, nenhuma pendurada. O registro está no commit.
      *
-     * Para voltar a ligar o AVIF é preciso que isto passe: pedir todas as
-     * larguras do `srcset` de cada imagem de marca, com `Accept: image/avif`,
-     * com cache frio, e nenhuma pendurar.
+     * ⚠️ **E o projeto irmão é a referência que o cliente pediu: lá o AVIF está
+     * LIGADO.** Mas ele não colhe nada com isso, e a razão é instrutiva — o
+     * irmão não declara `images.qualities`, então todo `quality` que um
+     * componente peça é ignorado e tudo sai em q=75, exatamente onde AVIF e
+     * WebP empatam. A marca dele também é **SVG**, que não passa pelo
+     * otimizador. Aqui a marca é PNG e as fotos saem em q=50: é o Prato que
+     * tem o que ganhar.
+     *
+     * ⚠️ A armadilha que continua valendo: a largura pedida depende do `sizes`,
+     * então **mexer no layout sorteia combinações de (arquivo, largura) novas**.
+     * Foi assim que o site parou de carregar em 15/09 — corrigir o `sizes` da
+     * marca fez o navegador pedir w=128 pela primeira vez.
      */
-    formats: ["image/webp"],
+    formats: ["image/avif", "image/webp"],
     // ⚠️ **No Next 16 esta lista é obrigatória, e o que ficar fora dela é
     // ignorado EM SILÊNCIO.** O padrão é `[75]`: um `quality={50}` num
     // componente não vira erro nem aviso, a imagem sai em 75 e o autor conclui

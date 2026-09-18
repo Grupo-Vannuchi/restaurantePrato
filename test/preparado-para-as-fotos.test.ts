@@ -21,34 +21,60 @@ const LAYOUT = readFileSync(
 
 describe("o formato das imagens", () => {
   /**
-   * ⚠️ **Esta guarda cobrava AVIF antes de WebP até 15/09, e o que envelheceu
-   * foi a JUSTIFICATIVA dela, não a configuração.**
+   * ⚠️ **Esta guarda trocou de lado TRÊS vezes, e é o histórico que importa —
+   * não a versão da semana.**
    *
-   * O comentário que morava aqui dizia que "AVIF costuma ser 20–30% menor na
-   * mesma qualidade, diferença maior justamente em foto de comida". Isso é
-   * verdade em geral e falso para os arquivos deste projeto, porque as fontes já
-   * são WebP: medido na mesma largura e qualidade, as duas imagens pesadas —
-   * que são as que decidem o tempo de pintura — deram **0%**, e duas leves
-   * ficaram 5% e 9% MAIORES em AVIF. A tabela está no `next.config.ts`.
+   * · até 15/09 cobrava AVIF antes de WebP, com a justificativa "AVIF costuma
+   *   ser 20–30% menor, e mais ainda em foto de comida". Previsão, não medição.
+   * · em 15/09 passou a cobrar SÓ WebP, porque mediu-se 0% de economia e um
+   *   travamento do otimizador. Medição de verdade — mas na qualidade errada.
+   * · em 18/09 voltou a cobrar AVIF, porque as DUAS razões de 15/09 caíram.
    *
-   * E o AVIF cobrava: o otimizador do Next **trava indefinidamente** em certas
-   * combinações de (arquivo, largura) — sem resposta, sem erro, sem log. A marca
-   * do cabeçalho é `priority`, então a requisição pendurada segura o evento
-   * `load` e derruba toda medição de navegador na rota. Custou duas tardes.
+   * **Por que caíram**, e é isso que impede a quarta reviravolta:
    *
-   * ⚠️ **A guarda estava verde quando o defeito foi introduzido, e vermelha
-   * depois do conserto — invertida.** Ela é a quinta deste repositório a afirmar
-   * uma previsão em vez de uma medição, e é o mesmo erro que o `AGENTS.md`
-   * corrige em dois lugares ("400+ páginas estáticas", "o React Compiler está
-   * ligado"): a regra sobrevive, a justificativa inflada não.
+   * 1. Os 0% foram medidos em **q=75**. Este projeto serve as fotos em **q=50**
+   *    — cinco superfícies declaram `quality={50}` — e ali o AVIF é 2 a 2,8
+   *    vezes menor. Medido pelo otimizador, e depois no peso real por página:
+   *    `/galeria` cai de 16.723 KB para 8.215 KB.
+   * 2. O travamento **não é do AVIF**. Em 18/09 ele foi reproduzido no caminho
+   *    WebP, com o AVIF desligado, e a causa é em memória: uma otimização em
+   *    voo abortada deixa a chave pendurada no mapa de deduplicação do
+   *    otimizador. Reiniciar o servidor limpa. Manter o AVIF desligado nunca
+   *    protegeu de nada.
    *
-   * Agora ela cobra a decisão tomada, e falha nos dois sentidos — se alguém
-   * reintroduzir AVIF sem passar pela verificação que o `next.config.ts` exige,
-   * isto quebra.
+   * A condição de reabertura que o `next.config.ts` exigia foi cumprida e está
+   * registrada lá: as 5 imagens de `public/brand` × 8 larguras, com
+   * `Accept: image/avif` e cache frio, 40 requisições e nenhuma pendurada —
+   * incluindo as duas que travaram em 15/09.
+   *
+   * ⚠️ **A ordem é cobrada, não só a presença.** O navegador escolhe o PRIMEIRO
+   * formato que aceita: com WebP na frente, todo navegador moderno recebe WebP e
+   * o AVIF não serve para nada — uma configuração que parece ligada e não é.
+   *
+   * ⚠️ E o projeto irmão, que o cliente pediu como referência, tem AVIF ligado.
+   * Mas ele não ganha nada com isso: não declara `images.qualities`, então todo
+   * `quality` é ignorado e tudo sai em q=75, exatamente onde os dois empatam.
    */
-  it("serve só WebP, e não oferece AVIF", () => {
-    expect(CONFIG).toMatch(/formats:\s*\[\s*["']image\/webp["']\s*,?\s*\]/);
-    expect(CONFIG).not.toMatch(/formats:[^\]]*image\/avif/);
+  it("oferece AVIF antes de WebP", () => {
+    expect(CONFIG).toMatch(
+      /formats:\s*\[\s*["']image\/avif["']\s*,\s*["']image\/webp["']/,
+    );
+  });
+
+  it("declara as qualidades que os componentes pedem — senão o AVIF não rende", () => {
+    /*
+     * O elo que liga uma coisa à outra, e que não é óbvio: o ganho do AVIF
+     * existe em q=50, e `quality={50}` só chega ao otimizador se 50 estiver em
+     * `images.qualities`. Sem a lista, o Next usa `[75]` e a URL sai `q=75`
+     * calada — sem erro, sem aviso. Foi assim que o irmão ficou com AVIF ligado
+     * e sem benefício, e foi assim que este projeto perdeu duas rodadas de
+     * medição em 04/09.
+     *
+     * `test/qualidade-de-imagem-declarada.test.ts` cobre o outro lado (todo
+     * valor pedido por componente está na lista). Aqui se cobra que o 50 exista,
+     * porque é dele que o AVIF depende.
+     */
+    expect(CONFIG).toMatch(/qualities:\s*\[[^\]]*\b50\b/);
   });
 
   it("continua declarando algum formato — senão o padrão do Next volta calado", () => {
