@@ -67,3 +67,48 @@ describe("os títulos de metadado", () => {
     expect(fonte).toMatch(/localeMetadata\([^)]*\{\s*title:\s*t\("ogTitle"/);
   });
 });
+
+/**
+ * As descrições do catálogo: tamanho, e nenhum marcador interno vazando.
+ *
+ * ⚠️ **Achado da reauditoria de 18/09/2026, no site PUBLICADO.** As páginas
+ * legais usavam o primeiro parágrafo do próprio documento como
+ * `<meta name="description">`. Duas consequências:
+ *
+ * · 370 caracteres em `/privacy` e 350 em `/terms`, contra o corte de ~160 —
+ *   o trecho aparecia cortado no meio da qualificação da empresa;
+ * · `/terms` publicava `«PENDENTE: domínio final do site»` na meta tag.
+ *
+ * ⚠️ **E o `«PENDENTE»` no CORPO do documento continua certo** — é ele que
+ * impede alguém de inventar o domínio, e é por isso que `SITE_INDEXABLE` é
+ * `false`. A guarda abaixo cobra só o catálogo de metadados, não
+ * `src/content/legal.ts`: cobrar o marcador no documento inteiro quebraria de
+ * propósito o mecanismo que o projeto usa para não inventar dado de cliente.
+ */
+describe("as descrições de metadado", () => {
+  const descricoes = Object.entries(pt.metadata).filter(([chave]) =>
+    /escription/.test(chave),
+  ) as [string, string][];
+
+  it("existem — senão esta suíte não está olhando nada", () => {
+    // Sentinela: se as chaves forem renomeadas, as duas asserções abaixo
+    // passariam varrendo uma lista vazia.
+    expect(descricoes.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it.each([["cabem no limite de corte"]])("%s", () => {
+    const longas = descricoes.filter(([, texto]) => texto.length > 160);
+    expect(
+      longas.map(([chave, texto]) => `${chave}: ${texto.length} caracteres`),
+      "descrição acima de 160: o buscador corta no meio da frase",
+    ).toEqual([]);
+  });
+
+  it("não publicam marcador de pendência", () => {
+    const vazando = descricoes.filter(([, texto]) => /PENDENTE/i.test(texto));
+    expect(
+      vazando.map(([chave]) => chave),
+      "marcador interno numa meta tag: ele serve à equipe, não ao visitante",
+    ).toEqual([]);
+  });
+});

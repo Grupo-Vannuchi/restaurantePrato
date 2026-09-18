@@ -8,6 +8,42 @@
 > propósito, e dois "🔴 críticos" que a ferramenta aponta são decisões deliberadas. Nada
 > neste plano pede para abrir o site.
 
+## Reauditoria de 18/09 — o que ela acrescentou
+
+Rodada depois da carga de conteúdo em produção, com a skill `seo`. Dois achados
+novos, os dois já fechados, e um que depende de você:
+
+| Item | Estado |
+|---|---|
+| R1 · meta description das páginas legais com 370/350 caracteres | ✅ 18/09 — copy própria, 130 e 129 |
+| R2 · `/terms` publicava `«PENDENTE: domínio final do site»` na meta tag | ✅ 18/09 — o marcador fica no CORPO, que é onde ele trabalha |
+| R3 · `/novidades` com 89 palavras e nenhum artigo | ⏸️ **decisão sua** |
+| R4 · fotos do hero sem sinal para busca de imagens | ℹ️ oportunidade, não defeito |
+| R5 · `twitter:site`/`creator` ausentes | ℹ️ dependem de conta no X, que o cliente não tem |
+
+### R3 — a decisão
+
+`/novidades` está publicada, linkada no cabeçalho e no rodapé, e entra no
+sitemap quando o site abrir — com 89 palavras e nenhum artigo. Para o buscador
+isso é uma página fina; ela some do índice ou pesa contra a avaliação do site.
+
+Três caminhos:
+
+- **a)** o cliente publica duas ou três novidades reais (prato do mês, feriado,
+  mudança de horário) — resolve de vez e dá conteúdo fresco, que é sinal;
+- **b)** a rota sai do sitemap **enquanto não houver artigo publicado**, e volta
+  sozinha no primeiro. É uma linha em `src/app/sitemap.ts`, com guarda;
+- **c)** não fazer nada até o domínio chegar, já que o site está fechado.
+
+**Recomendo (b) agora e (a) quando o cliente tiver o que dizer**: (b) é
+automático e não depende de ninguém, e não impede (a).
+
+⚠️ Note que (b) **não** tira a página do site nem do menu — ela continua
+acessível a quem clicar. Só deixa de ser oferecida ao rastreador enquanto está
+vazia.
+
+---
+
 ## Estado em 18/09/2026
 
 | Item | Estado |

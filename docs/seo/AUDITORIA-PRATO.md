@@ -50,6 +50,83 @@ correto no dia em que abrir.
 
 ---
 
+## Reauditoria — 18/09/2026, com o conteúdo real no ar
+
+**Escopo:** site publicado (`full-site`, 9 rotas), com evidência da skill `seo`
+(Agentic-SEO-Skill) e verificação direta no HTML servido. A auditoria acima é de
+17/09 e mediu um site com o **cardápio antigo (82 pratos) e a galeria quebrada**;
+esta roda depois da carga de conteúdo em produção — 98 pratos, 22 fotos, `Menu`
+em JSON-LD e AVIF ligado.
+
+**Nota:** sem nota numérica, pela mesma razão da auditoria original — `noindex`
+deliberado domina qualquer rubrica. *Score confidence: Low* enquanto o domínio
+não chegar.
+
+### O que a rubrica confirma, com evidência nova
+
+| Área | Evidência | Estado |
+|---|---|---|
+| **AVIF** | mesma foto, `w=640&q=50`: **6.657 B** em AVIF contra **14.938 B** em WebP — 2,24× | ✅ a decisão de hoje se paga no ar |
+| **Cabeçalhos** | `security_headers.py`: **100/100**, HSTS com `preload`, CSP, `DENY`, `nosniff` | ✅ |
+| **Dado estruturado** | `Restaurant` + `WebSite` + **`Menu`**; 121 itens; `geo`, `priceRange`, `paymentAccepted`; zero `review`/`aggregateRating` | ✅ |
+| **Canonical e hreflang** | auto-referente em todas as rotas, `hreflang=pt` | ✅ |
+| **Links** | `/galeria`: 11 links, **0 quebrados**; redirecionamento: **0 saltos**, 136 ms | ✅ |
+| **Social** | OG completo; Twitter `summary_large_image` com título, descrição e imagem | ✅ |
+| **Imagens da galeria** | 22 fotos, todas com `<figcaption>`; `alt=""` é o padrão correto de `figure`+`figcaption` | ✅ |
+
+⚠️ **Dois falsos positivos que eu mesmo levantei e derrubei na verificação**, e
+ficam escritos para não voltarem como achado:
+
+- *"20 links sem texto âncora"* (`internal_links.py`): o script lê só conteúdo
+  textual. Na home são 5, e **todos têm nome acessível** — `aria-label` no link
+  ou `alt` na imagem. Não é defeito;
+- *"24 imagens sem `alt` em `/galeria`"*: `alt=""` ali é deliberado e correto —
+  a `<figcaption>` logo abaixo carrega a descrição, e um `alt` repetido faria o
+  leitor de tela anunciar a mesma frase duas vezes. Está documentado em
+  `gallery-photo-card.tsx`. O mesmo vale para as três fotos do hero, que são
+  fundo sob um véu, com o título do slide por cima.
+
+### Os cinco "🔴 críticos" que são decisão, não defeito
+
+Todos presos à mesma trava, e todos somem sozinhos quando o domínio chegar:
+`robots.txt` com `Disallow: /`; sem diretiva `Sitemap:`; **`/sitemap.xml`
+respondendo com zero URLs** (`if (!env.SITE_INDEXABLE) return []`, com o motivo
+no código: rastreador busca esse caminho por convenção); `/llms.txt` em 404; e
+`<meta name="robots">` com `noindex, nofollow` em toda rota.
+
+### Achados reais
+
+| # | Área | Severidade | Confiança | Achado | Evidência | Correção |
+|---|---|---|---|---|---|---|
+| R1 | On-page | ⚠️ Warning | Confirmado | Meta description das páginas legais era o parágrafo jurídico inteiro | 370 caracteres em `/privacy`, 350 em `/terms`, contra o corte de ~160 | ✅ **fechado em 18/09** — copy própria no catálogo, 130 e 129 caracteres |
+| R2 | On-page | ⚠️ Warning | Confirmado | `/terms` publicava o marcador interno na meta tag | `content="…utilização do site «PENDENTE: domínio final do site»…"` no HTML servido | ✅ **fechado em 18/09** — junto de R1. No CORPO o marcador fica, de propósito |
+| R3 | Conteúdo | ⚠️ Warning | Confirmado | `/novidades` tem 89 palavras: existe, está linkada e entra no sitemap, sem nenhum artigo | contagem no HTML servido; `h1` "Novidades" e nada abaixo | **decisão sua** — publicar conteúdo ou tirá-la do sitemap enquanto vazia |
+| R4 | Imagens | ℹ️ Info | Confirmado | As três fotos do hero não dão sinal textual para busca de imagens | `alt=""` correto para fundo decorativo; não há `figcaption` | oportunidade, não defeito — mexer conflita com o padrão decorativo |
+| R5 | Social | ℹ️ Info | Confirmado | `twitter:site` e `twitter:creator` ausentes | `social_meta.py` | opcionais; dependem de conta no X, que o cliente não tem |
+
+### Páginas finas, medidas
+
+`/novidades` 89 · `/contato` 155 · `/reservas` 187 · `/galeria` 214 ·
+`/experiencia` 384 · `/` 423 · `/cardapio` **972** · `/terms` 1.146 ·
+`/privacy` 1.299 palavras.
+
+Só `/novidades` é fina por **ausência de conteúdo** (R3). As outras são curtas
+pela natureza da página — um restaurante de bairro não tem 800 palavras a dizer
+sobre o próprio horário, e encher a página para bater uma meta de contagem é
+exatamente o que a rubrica chama de conteúdo sem valor. `/cardapio` quase dobrou
+com a carga de hoje: era o retrato de 82 pratos.
+
+### Limitação de ambiente
+
+**Core Web Vitals de campo não foram medidos**: a API do PageSpeed devolveu
+*rate limit* em duas tentativas. Pela regra da skill isso é limitação de
+ambiente, não defeito do site, e mantém *Hypothesis* para a categoria de
+performance. O que existe de laboratório é do próprio projeto:
+`e2e/performance.spec.ts`, com orçamento de LCP declarado por rota, passou nesta
+data — e o ganho de peso do AVIF está medido acima, no otimizador de produção.
+
+---
+
 ## Estado dos achados — atualizado em 18/09/2026
 
 A auditoria é de 17/09. O que mudou desde então, com o commit que fechou cada item:
@@ -158,13 +235,48 @@ diferentes com públicos diferentes.
 
 ---
 
-## Nota
+## Nota — 18/09/2026
 
-**Não atribuo nota numérica.** Com `Disallow: /` e `noindex` deliberados, qualquer peso da
-rubrica colapsa a pontuação por um motivo que não é defeito — e uma nota baixa aqui mandaria
-alguém "consertar" exatamente o que o build existe para proteger. A pontuação passa a fazer
-sentido no primeiro deploy com domínio e `SITE_INDEXABLE=true`.
+⚠️ **A versão anterior desta seção dizia "não atribuo nota numérica".** A recusa tinha um
+motivo certo — `Disallow: /` e `noindex` deliberados colapsam qualquer rubrica por algo que
+não é defeito, e uma nota baixa manda alguém "consertar" o que o build existe para proteger.
+Mas recusar o número deixa a pergunta sem resposta, e ela é legítima. A saída é dar **duas**
+notas e dizer o que cada uma mede.
 
-O que dá para afirmar: das seis categorias da rubrica, **segurança, Open Graph e a
-disciplina de dado estruturado estão em ordem**; o que falta é campo de `Restaurant` e o
-dado estruturado do cardápio.
+Pesos da rubrica da skill: Técnico 25% · Conteúdo 20% · On-page 15% · Dado estruturado 15% ·
+Performance 10% · Imagens 10% · GEO 5%.
+
+| Categoria | Nota | O que segura | O que sobe |
+|---|---:|---|---|
+| **Técnico** | 95 | HTTPS, 100/100 de cabeçalhos, canonical auto-referente, `hreflang`, 0 saltos de redirecionamento, 0 links quebrados | — (a trava de lançamento sai da conta aqui; ver abaixo) |
+| **Conteúdo** | 80 | negócio real, endereço, CNPJ, horário, fotos autorais, 98 pratos, depoimentos com fonte verificável | `/novidades` com 89 palavras; sem autoria declarada (E-E-A-T) |
+| **On-page** | 90 | títulos únicos e no tamanho, uma `h1` por página, árvore de títulos com guarda, descrições ≤ 160 desde hoje | descrições curtas em páginas curtas |
+| **Dado estruturado** | 95 | `Restaurant` completo + `WebSite` + `Menu` com 121 itens; zero avaliação, como manda a regra | `sameAs` com um item só (falta Facebook); sem `telephone` — deliberado |
+| **Performance** | 85 | AVIF 2,24× menor no ar; orçamento de LCP por rota passando | **campo não medido** — *Score confidence: Low* |
+| **Imagens** | 90 | AVIF+WebP, `qualities` declarada, `sizes`, prioridade só na primeira, legendas | hero sem sinal textual para busca de imagens |
+| **GEO** | 85 | dado estruturado forte, que é o que a citação por IA lê | `llms.txt` fechado — deliberado |
+
+### As duas notas
+
+**89/100 — "Good", a um ponto de "Excellent".** É o que o site vale **no que ele controla**,
+com a trava de lançamento fora da conta. É esta a nota que diz se o trabalho está bem feito.
+
+**70/100 — "Needs Improvement".** É o que uma ferramenta de rastreio devolve **hoje**, porque
+ela conta `Disallow: /`, `noindex` e o sitemap vazio como falha técnica e como GEO zerada.
+Os dois números descrevem o mesmo site; a diferença inteira é a trava.
+
+⚠️ **Não compare com o "94/100" de `docs/seo/AUDIT-REPORT.md`** — aquilo é
+`n8xmarketing.com.br`, o site da agência, medido em 26/06 com outra rubrica e outro conteúdo.
+Comparar os dois números é comparar dois sites.
+
+### O que falta para os 89 virarem 100
+
+Nada disso é marcação, e três dependem do cliente:
+
+1. **domínio final** — libera a trava e faz a nota de rastreio encontrar a de mérito;
+2. **`/novidades` com conteúdo** (ou fora do sitemap enquanto vazia) — vale ~4 pontos de
+   Conteúdo;
+3. **Core Web Vitals de campo** — só existem com tráfego real, ou seja, depois de abrir;
+4. **Facebook** confirmado, para o `sameAs` sair com mais de um item;
+5. **autoria declarada** nas novidades, quando houver novidade — é o sinal de E-E-A-T que
+   falta.
