@@ -90,3 +90,34 @@ test("o Restaurant leva imagem, faixa de preço e o cardápio", async ({ page })
   expect(restaurante.hasMenu, "Restaurant sem `hasMenu`").toMatch(/\/cardapio$/);
   expect(restaurante.menu).toBe(restaurante.hasMenu);
 });
+
+/**
+ * Os dois campos que fecharam a paridade com o projeto irmão em 18/09/2026.
+ *
+ * `geo` era a ÚNICA entidade de dado estruturado que o irmão emitia e este
+ * projeto não — comparado `@type` por `@type` nos dois `json-ld.tsx`. Com ele, a
+ * diferença que resta é `telephone`, e essa é deliberada: o Prato não tem fixo.
+ */
+test("o Restaurant localiza a casa e diz como se paga", async ({ page }) => {
+  await page.goto("/");
+  const restaurante = (await blocosJsonLd(page)).find((b) => b?.["@type"] === "Restaurant");
+  expect(restaurante, "nenhum bloco Restaurant na página inicial").toBeTruthy();
+
+  /*
+   * ⚠️ A faixa é estreita de propósito: Santos/SP, não "algum lugar do Brasil".
+   * Um sinal trocado ou um dígito perdido põe o restaurante no oceano ou noutro
+   * continente, e `geo` é justamente o campo em que ninguém olha o valor — ele
+   * não aparece na tela. A guarda é o único lugar onde esse erro apareceria.
+   */
+  expect(restaurante.geo?.["@type"], "geo sem @type GeoCoordinates").toBe("GeoCoordinates");
+  expect(restaurante.geo?.latitude, "latitude fora de Santos").toBeGreaterThan(-24.1);
+  expect(restaurante.geo?.latitude, "latitude fora de Santos").toBeLessThan(-23.8);
+  expect(restaurante.geo?.longitude, "longitude fora de Santos").toBeGreaterThan(-46.5);
+  expect(restaurante.geo?.longitude, "longitude fora de Santos").toBeLessThan(-46.2);
+
+  // Os meios que o cliente confirmou. A guarda cobra a presença dos dois menos
+  // óbvios — o voucher e o dinheiro —, não a string inteira, para o cliente
+  // poder acrescentar um meio novo sem quebrar isto.
+  expect(restaurante.paymentAccepted, "Restaurant sem `paymentAccepted`").toMatch(/Pix/i);
+  expect(restaurante.paymentAccepted).toMatch(/Dinheiro/i);
+});

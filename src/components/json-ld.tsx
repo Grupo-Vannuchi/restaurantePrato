@@ -85,6 +85,17 @@ export function OrganizationJsonLd() {
     (p): p is string => p !== null,
   );
 
+  /*
+   * O ponto no mapa, quando o cliente passou as coordenadas. É o que resolve o
+   * restaurante para a busca por proximidade — "almoço perto de mim" —, e o
+   * projeto irmão já o emitia; era a última diferença de dado estruturado entre
+   * os dois.
+   *
+   * ⚠️ Sem coordenada configurada o campo não sai, em vez de sair com um ponto
+   * aproximado: coordenada errada manda alguém para a esquina errada.
+   */
+  const geo = contact.address.geo;
+
   const data = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
@@ -106,6 +117,18 @@ export function OrganizationJsonLd() {
     hasMenu: `${url}/cardapio`,
     menu: `${url}/cardapio`,
     ...(faixaDePreco.length > 0 && { priceRange: faixaDePreco.join(" – ") }),
+    ...(geo && {
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: geo.latitude,
+        longitude: geo.longitude,
+      },
+    }),
+    // Lista o que a casa ACEITA, que é o que o schema.org espera — e num
+    // restaurante por quilo "dinheiro" não é óbvio para quem procura.
+    ...(siteConfig.paymentAccepted?.length && {
+      paymentAccepted: siteConfig.paymentAccepted.join(", "),
+    }),
     address: {
       "@type": "PostalAddress",
       streetAddress: contact.address.street,

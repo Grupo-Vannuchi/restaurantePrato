@@ -103,8 +103,30 @@ export type SiteConfig = {
       /** Brazilian CEP. Required by schema.org `PostalAddress` to resolve the
        *  restaurant to a physical place in local search results. */
       postalCode?: string;
+      /**
+       * Coordenadas do prédio, para o `geo` do `Restaurant`.
+       *
+       * ⚠️ **Opcionais, e a degradação é real:** sem elas o `geo` não sai, em
+       * vez de sair com um ponto aproximado. Coordenada errada manda alguém
+       * para a esquina errada — é a mesma classe de dano do horário errado,
+       * e por isso segue o mesmo contrato do telefone e do preço.
+       *
+       * ⚠️ **Elas NÃO respondem a dúvida do número da rua.** O 9 contra 25
+       * é sobre o número que a copy publica; estas coordenadas dizem onde o
+       * prédio está, e os dois trechos ficam a poucos metros um do outro na
+       * mesma rua. Não use uma coisa para "resolver" a outra.
+       */
+      geo?: { latitude: number; longitude: number };
     };
   };
+
+  /**
+   * Meios de pagamento aceitos, para o `paymentAccepted` do `Restaurant`.
+   *
+   * Opcional pelo mesmo motivo de tudo aqui: sem confirmação do cliente, o
+   * campo não sai. Confirmados em 17/09/2026.
+   */
+  paymentAccepted?: readonly string[];
 
   /**
    * Link público para avaliar o restaurante no Google.
@@ -147,9 +169,10 @@ export type SiteConfig = {
    * Tipos de cozinha para `Restaurant.servesCuisine`. Opcional enquanto o
    * cardápio do cliente não chega.
    *
-   * Nota: não existe `priceRange` porque a direção visual do cliente **anterior**
-   * proibia publicar preço. Ver a pergunta aberta §4.1 do spec do rebrand: se o
-   * Prato quiser exibir preço, isso volta à mesa.
+   * ⚠️ Havia aqui uma nota dizendo que "não existe `priceRange` porque a direção
+   * visual do cliente ANTERIOR proibia publicar preço". Vencida em 17/09/2026: o
+   * Prato mandou os preços, eles estão em `/cardapio` e o `Restaurant` emite
+   * `priceRange` derivado de `menuPricing`. Ver a regra no `AGENTS.md`.
    */
   servesCuisine?: string[];
 
@@ -186,8 +209,17 @@ export const siteConfig: SiteConfig = {
       region: "SP",
       country: "Brasil",
       postalCode: "11010-050",
+      // Passadas pelo cliente em 17/09/2026 e corroboradas de forma
+      // independente a ~30 m por uma ficha de agregador (-23.933044,
+      // -46.327737) — mesma quadra, mesmo trecho de rua.
+      geo: { latitude: -23.933114845401494, longitude: -46.328042763058136 },
     },
   },
+
+  // Confirmados pelo cliente em 17/09/2026. "Dinheiro" entra explicitamente:
+  // num restaurante de almoço por quilo ele não é óbvio para quem procura, e o
+  // schema.org espera a lista do que a casa aceita, não o que ela recusa.
+  paymentAccepted: ["VR", "VA", "Cartão", "Pix", "Dinheiro"],
 
   // Instagram confirmado em 19/08/2026; alimenta `sameAs` no structured data e
   // a lista de redes do rodapé, que itera este objeto genericamente.
