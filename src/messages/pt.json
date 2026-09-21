@@ -11,6 +11,7 @@
     "inicio": "Início",
     "experiencia": "A Experiência",
     "cardapio": "Cardápio",
+    "galeria": "Galeria",
     "reservas": "Horários",
     "contato": "Contato",
     "novidades": "Novidades",
@@ -136,7 +137,8 @@
     "groupsMessage": "Olá! Gostaria de informações sobre reserva para grupos e eventos.",
     "practicalTitle": "Como está o salão",
     "addressLabel": "Endereço",
-    "hoursLabel": "Horário"
+    "hoursLabel": "Horário",
+    "paymentLabel": "Formas de pagamento"
   },
   "salao": {
     "title": "O melhor momento para vir",
@@ -160,7 +162,8 @@
       "phone": "Telefone",
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",
-      "address": "Endereço"
+      "address": "Endereço",
+   "landmark": "Ponto de referência"
     },
     "form": {
       "title": "Mande uma mensagem",

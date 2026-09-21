@@ -72,9 +72,25 @@ test("o Restaurant leva imagem, faixa de preço e o cardápio", async ({ page })
   const restaurante = (await blocosJsonLd(page)).find((b) => b?.["@type"] === "Restaurant");
   expect(restaurante, "nenhum bloco Restaurant na página inicial").toBeTruthy();
 
-  // Sem `image` o resultado rico de restaurante sai sem foto. O `og:image` é
-  // outro campo e não conta.
-  expect(restaurante.image, "Restaurant sem `image`").toMatch(/^https?:\/\/.+\.(jpg|jpeg|png|webp)$/);
+  /*
+   * Sem `image` o resultado rico de restaurante sai sem foto. O `og:image` é
+   * outro campo e não conta.
+   *
+   * ⚠️ **São VÁRIAS desde 21/09/2026** — a orientação do Google para restaurante
+   * é oferecer mais de uma, e a guarda cobra o plural: com uma só, ela reprova.
+   * E cobra que cada URL RESPONDA, porque o modo silencioso de isto degradar é
+   * uma lista de caminhos que mudaram de nome.
+   */
+  const imagens: string[] = Array.isArray(restaurante.image)
+    ? restaurante.image
+    : [restaurante.image];
+  expect(imagens.length, "Restaurant com uma imagem só").toBeGreaterThan(1);
+  for (const url of imagens) {
+    expect(url, "URL de imagem malformada").toMatch(/^https?:\/\/.+\.(jpg|jpeg|png|webp)$/);
+    const caminho = new URL(url).pathname;
+    const resposta = await page.request.get(caminho);
+    expect(resposta.status(), `a imagem ${caminho} não responde`).toBe(200);
+  }
 
   /*
    * ⚠️ `priceRange` DERIVADO, nunca digitado. Até 17/09 ele era corretamente
@@ -177,4 +193,52 @@ test("/cardapio publica o cardápio como Menu, sem afirmar o dia", async ({ page
   // objeto embutido, que duplicaria a entidade que este bloco já declara.
   const restaurante = (await blocosJsonLd(page)).find((b) => b?.["@type"] === "Restaurant");
   expect(restaurante?.hasMenu).toMatch(/\/cardapio$/);
+});
+
+/**
+ * A trilha e os dois campos de lugar, medidos no HTML publicado.
+ *
+ * ⚠️ Até 18/09/2026 só a página de UMA novidade emitia `BreadcrumbList` — as
+ * seis rotas do menu, que são as que aparecem na busca, não emitiam nenhuma.
+ * Sem trilha, o resultado da busca desenha a URL crua no lugar dela.
+ */
+const ROTAS_COM_TRILHA = ["/cardapio", "/galeria", "/experiencia", "/contato", "/reservas"];
+
+for (const rota of ROTAS_COM_TRILHA) {
+  test(`${rota} publica a trilha de navegação`, async ({ page }) => {
+    await page.goto(rota);
+    const trilha = (await blocosJsonLd(page)).find((b) => b?.["@type"] === "BreadcrumbList");
+
+    expect(trilha, `nenhum BreadcrumbList em ${rota}`).toBeTruthy();
+    const itens = trilha.itemListElement;
+    expect(itens.length, "trilha de um nível só não é trilha").toBe(2);
+
+    // As posições são 1-based e em ordem: é o que o Google lê para desenhar.
+    expect(itens[0].position).toBe(1);
+    expect(itens[1].position).toBe(2);
+    expect(itens[0].item).toMatch(/^https?:\/\/[^/]+\/?$/);
+    expect(itens[1].item, "o segundo nível tem de ser esta rota").toContain(rota);
+
+    /*
+     * ⚠️ O nome não pode ser a rota. É o modo silencioso de esta guarda passar
+     * enquanto a trilha mostra "cardapio" em vez de "Cardápio" — que é pior que
+     * não ter trilha, porque publica o nome interno.
+     */
+    expect(itens[1].name.length).toBeGreaterThan(2);
+    expect(itens[1].name).not.toBe(rota.replace("/", ""));
+  });
+}
+
+test("o Restaurant leva o mapa e a moeda", async ({ page }) => {
+  await page.goto("/");
+  const restaurante = (await blocosJsonLd(page)).find((b) => b?.["@type"] === "Restaurant");
+
+  /*
+   * ⚠️ `hasMap` tem de ser a URL de VER o mapa, não a de embutir. São endpoints
+   * diferentes do Google, e a de embutir (`output=embed`) aberta fora de um
+   * `<iframe>` não mostra o lugar. A guarda recusa `output=embed` por isso.
+   */
+  expect(restaurante.hasMap, "Restaurant sem `hasMap`").toMatch(/^https:\/\/www\.google\.com\/maps\//);
+  expect(restaurante.hasMap).not.toContain("output=embed");
+  expect(restaurante.currenciesAccepted).toBe("BRL");
 });

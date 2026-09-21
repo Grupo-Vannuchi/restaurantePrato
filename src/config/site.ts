@@ -24,10 +24,29 @@ export type ThemePalette = {
 };
 
 /** Keys available under the `nav` translation namespace. */
+/**
+ * As rotas que o cabecalho oferece.
+ *
+ * ⚠️ **Tres edits acoplados, e o AGENTS.md protege os tres:** este tipo, as
+ * chaves de `nav` em `messages/pt.json` e os nomes das pastas sob
+ * `(marketing)/`. Acrescentar uma rota aqui sem a chave no catalogo faz o
+ * next-intl imprimir o nome interno no lugar do rotulo — calado, porque
+ * `getMessageFallback` nao lanca.
+ *
+ * ⚠️ **`galeria` e `novidades` entraram em 21/09/2026, e o motivo e SEO.** As
+ * duas rotas existiam, respondiam e tinham conteudo, mas só eram alcancaveis
+ * pelo rodape e por um bloco da home: nenhuma delas aparecia no menu. Para quem
+ * rastreia o site isso e profundidade a mais e menos caminho para chegar la; a
+ * auditoria de 18/09 mediu 83 ligacoes internas com 8 a 9 por pagina, e as duas
+ * ficavam na cauda. Sao conteudo real — 22 fotos autorais e a pagina de
+ * novidades —, nao rota de servico.
+ */
 export type NavKey =
   | "inicio"
   | "experiencia"
   | "cardapio"
+  | "galeria"
+  | "novidades"
   | "reservas"
   | "contato";
 
@@ -116,6 +135,28 @@ export type SiteConfig = {
        * prédio está, e os dois trechos ficam a poucos metros um do outro na
        * mesma rua. Não use uma coisa para "resolver" a outra.
        */
+      /**
+       * Ponto de referência, como alguém da cidade explicaria onde é.
+       *
+       * Confirmado pelo cliente em 17/09/2026 e aplicado em 18/09. É dado, não
+       * copy — por isso mora aqui e não no catálogo: `/contato` e `/reservas`
+       * mostram os dois a mesma frase, de uma fonte só.
+       *
+       * ⚠️ **O documento do cliente nomeava também o bairro, e ESSA parte não
+       * entrou.** O termo é fato do cliente ANTERIOR ainda em aberto e
+       * `test/brand-hygiene.test.ts` o bloqueia — ele está escrito lá, na lista
+       * da guarda, e de propósito não se repete aqui: a varredura procura a
+       * string em `src/`, e a primeira versão deste comentário reprovou o
+       * projeto ao citá-la para explicar que não a usava. Herdar o termo seria
+       * exatamente o que a guarda existe para impedir.
+       *
+       * O que entrou são os dois marcos que o cliente citou e que qualquer um
+       * confere no mapa: a Praça Mauá e o Palácio José Bonifácio.
+       *
+       * ⚠️ Opcional pelo mesmo contrato de tudo nesta seção: sem referência
+       * configurada, a linha some das duas páginas em vez de sair vazia.
+       */
+      landmark?: string;
       geo?: { latitude: number; longitude: number };
     };
   };
@@ -205,6 +246,7 @@ export const siteConfig: SiteConfig = {
     },
     address: {
       street: "R. Augusto Severo, 25 — Centro",
+      landmark: "Perto da Praça Mauá, nos fundos da Prefeitura de Santos — o Palácio José Bonifácio",
       city: "Santos",
       region: "SP",
       country: "Brasil",
@@ -232,6 +274,10 @@ export const siteConfig: SiteConfig = {
     { key: "inicio", href: "/" },
     { key: "experiencia", href: "/experiencia" },
     { key: "cardapio", href: "/cardapio" },
+    // As duas que entraram em 21/09 — ver o aviso sobre `NavKey` acima. A ordem
+    // segue a leitura da casa: o que se come antes de quando e onde.
+    { key: "galeria", href: "/galeria" },
+    { key: "novidades", href: "/novidades" },
     { key: "reservas", href: "/reservas" },
     { key: "contato", href: "/contato" },
   ],
@@ -478,10 +524,54 @@ export function phoneLink(): string | null {
   return `tel:${phone.replace(/[^\d+]/g, "")}`;
 }
 
+/**
+ * As fotos autorais da casa, servidas de `public/` — o carrossel do topo e o
+ * dado estruturado leem daqui.
+ *
+ * Chegaram do cliente em 03/09/2026: fotografadas no salão, no balcão e na
+ * brasa do próprio Prato. Nada de banco de imagens — foto genérica de buffet
+ * descreveria outro restaurante.
+ *
+ * São três, uma por slide da copy em `home.hero.slides`, e cada uma ilustra o
+ * que a sua frase promete: o buffet quente, o churrasco na brasa e a ilha de
+ * massas. A primeira é o LCP da home.
+ *
+ * ⚠️ **Elas moraram dentro de `hero.tsx` até 21/09/2026, e saíram por terem
+ * ganhado um segundo consumidor.** O `Restaurant` passou a oferecê-las ao
+ * Google — que recomenda mais de uma foto no resultado rico de restaurante —, e
+ * duas cópias da mesma lista seriam duas chances de uma delas não acompanhar a
+ * troca de uma foto. Mesmo motivo de `mapLink()`.
+ *
+ * Para acrescentar slides: solte o WebP em `public/hero`, mantenha o peso na
+ * faixa (~100–230 KB) e liste aqui, na ordem da copy.
+ */
+export const heroPhotos: readonly string[] = [
+  "/hero/buffet-quente.webp",
+  "/hero/churrasco-na-brasa.webp",
+  "/hero/ilha-de-massas.webp",
+];
+
 /** The restaurant's address as a single comma-separated line. */
 export function fullAddress(): string {
   const { street, city, region, country } = siteConfig.contact.address;
   return [street, city, region, country].filter(Boolean).join(", ");
+}
+
+/**
+ * Link do Google Maps para VER o endereco — o que uma pessoa abre, e o que o
+ * `hasMap` do `Restaurant` espera.
+ *
+ * ⚠️ **Nao confunda com {@link mapEmbedUrl}**, que devolve a URL de EMBUTIR
+ * (`output=embed`) e so serve dentro de um `<iframe>`. Sao endpoints
+ * diferentes: o de embutir aberto numa aba nova nao mostra o lugar.
+ *
+ * Existe desde 18/09/2026 porque a mesma string estava escrita a mao em DOIS
+ * lugares — o rodape e a pagina de contato — e um terceiro consumidor ia
+ * aparecer no dado estruturado. Tres copias de uma URL e tres chances de uma
+ * delas nao acompanhar uma mudanca de endereco.
+ */
+export function mapLink(): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress())}`;
 }
 
 /**

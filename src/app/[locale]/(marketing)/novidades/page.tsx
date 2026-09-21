@@ -8,6 +8,7 @@ import { Section } from "@/components/ui/section";
 import { getInformations } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
+import { RotaBreadcrumbJsonLd } from "@/components/json-ld";
 
 export async function generateMetadata({
   params,
@@ -30,11 +31,14 @@ export default async function InformationsPage({
 }) {
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
+  const tTrilha = await getTranslations({ locale, namespace: "nav" });
   const t = await getTranslations("novidades");
   const informations = await getInformations(locale);
 
   return (
     <>
+      <RotaBreadcrumbJsonLd locale={locale} rota="/novidades" nome={tTrilha("novidades")} />
+
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
       <Section>
         {informations.length === 0 ? (

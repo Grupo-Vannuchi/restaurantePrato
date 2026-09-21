@@ -52,7 +52,28 @@ const fonte = (caminho: string) => readFileSync(caminho, "utf8");
  * primeira versao deste teste, produzindo uma entrada de inventario que nunca
  * casaria com nada.
  */
-function extrairAlts(texto: string): string[] {
+/**
+ * Remove comentario antes de extrair — e a razao e a mesma que ja valeu para
+ * `test/json-ld-sem-avaliacao.test.ts` em 18/09/2026.
+ *
+ * ⚠️ **Esta guarda reprovou a propria documentacao em 21/09/2026.** O docblock
+ * que explica por que as fotos do hero usam `alt` vazio escreveu o termo, e o
+ * extrator o contou como um `alt` nao inventariado em `json-ld.tsx` — arquivo
+ * que nao desenha imagem nenhuma. Foi a oitava vez que uma guarda deste
+ * repositorio tropecou na propria prosa, e a segunda em que a correcao e a
+ * mesma: comentario descreve o padrao, codigo e que o aplica.
+ *
+ * ⚠️ O comentario de linha sai pelo INICIO da linha, nunca por ocorrencia de
+ * `//` — varios arquivos deste projeto carregam `https://` dentro de string, e
+ * cortar a partir de qualquer `//` decapitaria essas linhas. Uma string no
+ * codigo continua valendo: so comentario sai.
+ */
+function semComentario(texto: string): string {
+  return texto.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+}
+
+function extrairAlts(entrada: string): string[] {
+  const texto = semComentario(entrada);
   const saida: string[] = [];
   // Sem `\b` no padrao, e o motivo vale mais que a ausencia: ao escrever este
   // arquivo o `\b` da propria nota virou um BYTE 0x08 — backspace literal —

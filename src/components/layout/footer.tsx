@@ -7,10 +7,10 @@ import { Container } from "@/components/ui/container";
 import { FooterMap } from "@/components/layout/footer-map";
 import {
   siteConfig,
-  fullAddress,
   mapEmbedUrl,
   openingHoursLabel,
   reviewLink,
+  mapLink,
 } from "@/config/site";
 
 const socialIcons = {
@@ -39,8 +39,7 @@ export async function Footer() {
    * configuração, e aí a linha desaparece em vez de sair vazia.
    */
   const horario = openingHoursLabel();
-  const address = fullAddress();
-  const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+  const mapsLink = mapLink();
   const mapSrc = mapEmbedUrl();
 
   /*

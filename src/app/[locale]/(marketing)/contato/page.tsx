@@ -2,7 +2,7 @@ import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Mail, Phone, MessageCircle, MapPin, Clock } from "lucide-react";
+import { Mail, Phone, MessageCircle, MapPin, Landmark, Clock } from "lucide-react";
 // lucide-react removeu ícones de marca (ver `brand-icons.tsx`); o rodapé já
 // importa o Instagram de lá.
 import { Instagram } from "@/components/ui/brand-icons";
@@ -12,14 +12,15 @@ import { ContactForm } from "@/components/forms/contact-form";
 import { MapEmbed } from "@/components/layout/map-embed";
 import { ReserveButton } from "@/components/reserve-button";
 import {
-  fullAddress,
   mapEmbedUrl,
   openingHoursLabel,
   phoneLink,
   reviewLink,
   siteConfig,
   whatsappLink,
+  mapLink,
 } from "@/config/site";
+import { RotaBreadcrumbJsonLd } from "@/components/json-ld";
 
 export async function generateMetadata({
   params,
@@ -42,6 +43,7 @@ export default async function ContactPage({
 }) {
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
+  const tTrilha = await getTranslations({ locale, namespace: "nav" });
   const t = await getTranslations("contact");
   const tRodape = await getTranslations("footer");
   const tComum = await getTranslations("common");
@@ -50,7 +52,7 @@ export default async function ContactPage({
 
   const whatsapp = whatsappLink();
   const horario = openingHoursLabel();
-  const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress())}`;
+  const mapsLink = mapLink();
 
   const channels: {
     icon: typeof Mail;
@@ -100,6 +102,26 @@ export default async function ContactPage({
       href: mapsLink,
     },
     /*
+     * O ponto de referencia entra como item PROPRIO, e nao colado no endereco.
+     *
+     * Duas razoes: o endereco e o link do mapa, e alongar o texto do link piora
+     * o alvo de toque; e quem chega de fora procura primeiro pelo marco — "e
+     * perto da Praca Maua?" — e nao pela numeracao da rua. Como item, ele tem
+     * rotulo proprio e se le antes.
+     *
+     * Sem `href`: nao e um canal, e a mesma razao pela qual o horario entra sem
+     * link logo abaixo. Some inteiro sem referencia configurada.
+     */
+    ...(contact.address.landmark
+      ? [
+          {
+            icon: Landmark,
+            label: t("labels.landmark"),
+            value: contact.address.landmark,
+          },
+        ]
+      : []),
+    /*
      * O horário fecha a lista, e entra sem `href` porque não é um canal: é a
      * resposta para "estão abertos agora?", que é a outra metade do que alguém
      * procura ao abrir a página de contato. O campo `href` é opcional na lista
@@ -115,6 +137,8 @@ export default async function ContactPage({
 
   return (
     <>
+      <RotaBreadcrumbJsonLd locale={locale} rota="/contato" nome={tTrilha("contato")} />
+
       <PageHeader
         title={t("title")}
         subtitle={t("subtitle")}

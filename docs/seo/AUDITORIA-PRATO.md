@@ -6,7 +6,7 @@
 **Método:** skill `seo` (Agentic-SEO-Skill) — LLM-first + scripts da skill + verificação direta em produção e cruzamento com o código-fonte
 **Auditoria anterior deste site:** nenhuma
 
-> ⚠️ **`docs/seo/AUDIT-REPORT.md` e `docs/seo/ACTION-PLAN.md` NÃO são deste site.**
+> ⚠️ **`docs/seo/agencia/AUDIT-REPORT.md` e `docs/seo/agencia/ACTION-PLAN.md` NÃO são deste site.**
 > Eles auditam `n8xmarketing.com.br`, o site da agência de onde este repositório foi
 > forkado duas vezes, e estão datados de 26/06/2026 com nota "94/100". `docs/` não é
 > varrido por `test/brand-hygiene.test.ts` de propósito — os specs do rebrand explicam
@@ -47,6 +47,90 @@ correto no dia em que abrir.
 | **Gestão de rastreador de IA** | GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, Bytespider, CCBot e mais quatro, todos bloqueados pelo curinga — coerente com o estado fechado |
 | **`sitemap.xml` e `robots.txt`** | Respondem 200 |
 | **Referência `@id`** | `Restaurant` é `#organization` e o `WebSite.publisher` aponta para ele. Sem referência pendurada |
+
+---
+
+## Estado em 21/09/2026 — a nota sobe para ~92
+
+Os quatro itens que a reauditoria deixou como "faço sem depender de ninguém" foram
+fechados, e a varredura da saída publicada achou **mais um dado confirmado parado**:
+
+| Entrega | Categoria que mexe |
+|---|---|
+| Ponto de referência (Praça Mauá / Palácio José Bonifácio) em `/contato` e `/reservas` | Conteúdo, On-page |
+| `/novidades` fora do sitemap enquanto não há artigo | Conteúdo |
+| `hasMap` e `currenciesAccepted` no `Restaurant` | Dado estruturado |
+| `BreadcrumbList` nas seis rotas do menu | Dado estruturado, On-page |
+| **Formas de pagamento saindo do schema para a tela** | Conteúdo |
+| **Quatro imagens no `Restaurant`**, fechando o R4 | Imagens, Dado estruturado |
+
+| Categoria | 18/09 | 21/09 |
+|---|---:|---:|
+| Técnico | 95 | 95 |
+| Conteúdo | 80 | **86** |
+| On-page | 90 | **93** |
+| Dado estruturado | 95 | **98** |
+| Performance | 85 | 85 |
+| Imagens | 90 | **93** |
+| GEO | 85 | 85 |
+| **Total** | **89** | **~92** |
+
+⚠️ **A nota é direcional, não uma medição.** A rubrica pede que se diga isso: os
+pesos são da skill, as notas por categoria são julgamento com evidência, e
+Performance segue com *Score confidence: Low* enquanto não houver tráfego real.
+
+### As duas guardas que reprovaram no caminho, as duas com razão
+
+- **o teste de foco**: o ponto de referência deixou `/contato` mais alta, e isso
+  moveu o ponto onde o teclado entra no mapa do rodapé — que terminava ACIMA da
+  janela, com 31 px atrás do cabeçalho fixo. Foco em elemento invisível é o que
+  o critério 2.4.11 proíbe, e a versão publicada passava **por sorte de altura
+  de página**. O mapa saiu da ordem de tabulação; "Traçar rota" e o endereço
+  continuam abrindo o mapa, verificado por teclado;
+- **a varredura de contraste**: a nota do endereço saiu em 4,25:1 contra o
+  mínimo de 4,5, em três larguras. Causa: opacidade sobre a cor mais clara da
+  paleta, que não tem folga. A hierarquia passa a vir do tamanho.
+
+### Linkagem interna — fechada em 21/09, DEPOIS de eu dizer que não havia mais nada
+
+⚠️ **A seção abaixo dizia "acabaram os itens de código", e estava errada quando
+foi escrita.** O dono apontou o cabeçalho, e havia um item real ali:
+`/galeria` e `/novidades` existiam, respondiam e tinham conteúdo — 22 fotos
+autorais e a página de novidades — e **não apareciam no menu**. Só o rodapé e um
+bloco da home levavam até elas. Deixo a correção visível porque "não há mais
+nada a fazer" é a frase mais fácil de envelhecer de um documento técnico, e
+porque o erro foi meu: eu varri a saída publicada e não varri a navegação.
+
+As sete rotas entraram no menu, com os três edits acoplados que o `AGENTS.md`
+protege. E isso quebrou o refluxo: com sete itens o menu passou a ocupar 1.170 px
+dos 1.280 com o texto em 200%, e o CTA saía 273 px para fora — sete reprovas de
+`a-pagina-nao-rola-para-o-lado`. A parte que engana é que **quebra de tela em
+`px` não resolve**: `md:`/`lg:` medem a viewport, que continua com 1.280 px
+quando o texto dobra. O que responde é a linha quebrar (`min-h-16` +
+`flex-wrap`). A 100% o cabeçalho segue com 65 px, que é a premissa do
+`scroll-padding-top`; a 200% cresce para 281 px sem rolagem lateral.
+
+⚠️ **E a nota não se move muito com isso — fica em ~92.** Linkagem interna pesa
+pouco nesta rubrica. O ganho real é de caminho: duas rotas de conteúdo deixam de
+estar a um clique de distância só pelo rodapé. Registrar o ganho honesto em vez
+de inflar a nota é o que mantém o número utilizável.
+
+### ⛔ Agora sim: acabaram os itens de código
+
+Isto é a parte que importa saber: **não há mais nada de marcação, de estrutura ou
+de configuração para fazer.** Os ~8 pontos que faltam dependem, nesta ordem:
+
+1. **domínio final** — libera a trava, junta a nota de rastreio com a de mérito,
+   devolve `sitemap.xml` e `llms.txt`, e é pré-requisito do item 3;
+2. **conteúdo do cliente** — duas ou três novidades reais com autoria declarada.
+   É a categoria de maior peso (20%) e a de nota mais baixa (86);
+3. **tráfego real** — Core Web Vitals de campo não existem sem visitas;
+4. **Facebook confirmado** — para o `sameAs` sair com mais de um item;
+5. **conta no X** — para `twitter:site`/`creator`, que são opcionais.
+
+E **100/100 não é meta realista**: os últimos pontos da rubrica medem volume de
+conteúdo, perfil de links externos e histórico — coisas que um restaurante de
+bairro não tem e não precisa ter. Teto realista: 95 a 96.
 
 ---
 
@@ -235,7 +319,7 @@ diferentes com públicos diferentes.
 
 ---
 
-## Nota — 18/09/2026
+## Nota — 18/09/2026 (ver o estado de 21/09 no topo: ~92)
 
 ⚠️ **A versão anterior desta seção dizia "não atribuo nota numérica".** A recusa tinha um
 motivo certo — `Disallow: /` e `noindex` deliberados colapsam qualquer rubrica por algo que
@@ -265,7 +349,7 @@ com a trava de lançamento fora da conta. É esta a nota que diz se o trabalho e
 ela conta `Disallow: /`, `noindex` e o sitemap vazio como falha técnica e como GEO zerada.
 Os dois números descrevem o mesmo site; a diferença inteira é a trava.
 
-⚠️ **Não compare com o "94/100" de `docs/seo/AUDIT-REPORT.md`** — aquilo é
+⚠️ **Não compare com o "94/100" de `docs/seo/agencia/AUDIT-REPORT.md`** — aquilo é
 `n8xmarketing.com.br`, o site da agência, medido em 26/06 com outra rubrica e outro conteúdo.
 Comparar os dois números é comparar dois sites.
 

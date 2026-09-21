@@ -163,6 +163,68 @@ O aviso sai **só em produção**. Localmente a memória basta — há uma inst�
 e ela vive enquanto o servidor viver —, e avisar a cada `npm run dev` treinaria
 quem lê a ignorar o aviso.
 
+## Domínio próprio — `restauranteprato.com.br`
+
+**Decidido em 21/09/2026.** ⚠️ **Ele já está registrado**, ativo desde
+17/08/2026, no CNPJ **04.160.109/0001-47** (`fogao de ouro restaurante`) e
+apontando para o parking da Hostinger. Não há compra a fazer — há transferência.
+O contexto e o porquê estão em
+[`WHITELABEL-RESTAURANTE-PRATO.md`](WHITELABEL-RESTAURANTE-PRATO.md).
+
+### 1. Titularidade (registro.br)
+
+Entre na conta que registrou o domínio. Se o CNPJ do Prato ainda não é titular:
+
+- **mesma conta, outro CNPJ:** o registro.br tem "transferência de titularidade"
+  (o domínio muda de CNPJ sem trocar de conta). Pede aceite do novo titular;
+- **contas diferentes:** o processo é o mesmo, com confirmação das duas pontas.
+
+⚠️ **Confira a data de expiração antes de qualquer coisa: 17/08/2027.** Domínio
+que expira volta ao mercado, e aí a conversa deixa de ser administrativa.
+
+### 2. Apontar para a Vercel
+
+No painel do projeto `restaurante-prato` (escopo
+`moraesvannuchi-debugs-projects`): **Settings → Domains → Add**. Acrescente
+`restauranteprato.com.br` **e** `www.restauranteprato.com.br` — a Vercel sugere
+qual redireciona para qual.
+
+A Vercel devolve os registros DNS. No registro.br (ou onde o DNS estiver
+delegado — hoje é a Hostinger), troque:
+
+- **apex** (`restauranteprato.com.br`): registro `A` para o IP que a Vercel
+  mostrar;
+- **`www`**: registro `CNAME` para `cname.vercel-dns.com`.
+
+⚠️ **Os servidores de nome hoje são da Hostinger** (`lunar.dns-parking.com`,
+`solar.dns-parking.com`). Ou você edita o DNS lá, ou delega o domínio para os
+servidores da Vercel no registro.br. Editar na Hostinger é o caminho curto;
+delegar para a Vercel é o caminho limpo se o domínio não hospeda mais nada.
+
+O certificado é emitido pela Vercel sozinho depois que o DNS propaga.
+
+### 3. Só então: abrir o site aos buscadores
+
+Nesta ordem, e **não antes do passo 2 estar respondendo**:
+
+1. `src/content/legal.ts` — troque o `PENDENTE("domínio final do site")` pelo
+   domínio;
+2. **Vercel → Settings → Environment Variables:** `NEXT_PUBLIC_SITE_URL` para
+   `https://restauranteprato.com.br`;
+3. `SITE_INDEXABLE` para a string exata `true`;
+4. redeploy.
+
+⚠️ **A ordem não é preferência.** `impedimentoParaIndexar()` derruba o build se
+`SITE_INDEXABLE=true` com qualquer `«PENDENTE»` em `legal.ts` — então o passo 3
+sem o passo 1 falha, de propósito. E o passo 1 sem o passo 2 é pior que falhar:
+os Termos passariam a nomear um endereço que serve uma página de
+estacionamento, trocando uma pendência honesta por uma afirmação falsa.
+
+Com o site aberto, voltam sozinhos: `sitemap.xml` com as URLs, `/llms.txt`,
+`/llms-full.txt` e a remoção do `noindex`. Nada disso precisa de código.
+
+---
+
 ## Deploy
 
 1. Merge `Development → main`. Vercel builds from `main` (region `gru1`):

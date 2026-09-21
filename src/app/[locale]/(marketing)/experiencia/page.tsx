@@ -14,6 +14,7 @@ import { ClosingCta } from "@/components/sections/closing-cta";
 import { GalleryPreview } from "@/components/sections/gallery-preview";
 import { MomentosDoSalao } from "@/components/sections/momentos-do-salao";
 import { fillYears, siteConfig } from "@/config/site";
+import { RotaBreadcrumbJsonLd } from "@/components/json-ld";
 
 export async function generateMetadata({
   params,
@@ -54,6 +55,7 @@ export default async function AboutPage({
 }) {
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
+  const tTrilha = await getTranslations({ locale, namespace: "nav" });
   const t = await getTranslations("experiencia");
   const tSalao = await getTranslations("salao");
   const tc = await getTranslations("common");
@@ -69,6 +71,8 @@ export default async function AboutPage({
 
   return (
     <>
+      <RotaBreadcrumbJsonLd locale={locale} rota="/experiencia" nome={tTrilha("experiencia")} />
+
       <PageHeader
         title={t("title")}
         subtitle={t("subtitle")}

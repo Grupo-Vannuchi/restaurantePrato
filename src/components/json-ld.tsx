@@ -1,5 +1,6 @@
 import { defaultLocale, locales, type Locale } from "@/i18n/routing";
-import { siteConfig } from "@/config/site";
+import { getTranslations } from "next-intl/server";
+import { siteConfig, mapLink, heroPhotos } from "@/config/site";
 import { precoDaMassa, precoDoBuffet } from "@/config/menu";
 import type { SecaoEstruturada } from "@/lib/cardapio";
 import { absoluteUrl, localizedUrl } from "@/lib/seo";
@@ -110,9 +111,25 @@ export function OrganizationJsonLd() {
     foundingDate: String(foundedYear),
     ...(servesCuisine?.length ? { servesCuisine } : {}),
     acceptsReservations: true,
-    // Sem `image` o resultado rico de restaurante sai sem foto. O `og:image` é
-    // outro campo e não conta para o Google aqui; o arquivo é o mesmo.
-    image: absoluteUrl("/opengraph-image.jpg"),
+    /*
+     * Sem `image` o resultado rico de restaurante sai sem foto. O `og:image` é
+     * outro campo e não conta para o Google aqui; o primeiro arquivo é o mesmo.
+     *
+     * ⚠️ **São VÁRIAS desde 21/09/2026, e não por capricho:** a orientação do
+     * Google para restaurante é oferecer mais de uma imagem, para ele escolher
+     * a que serve ao formato do resultado. Entram a imagem de compartilhamento
+     * e as três fotos autorais do topo, lidas de `heroPhotos` — a mesma lista
+     * que o carrossel desenha, nunca uma segunda cópia dos caminhos.
+     *
+     * É também o que dá sinal de busca às três fotos do hero, que a auditoria
+     * de 18/09 apontou como invisíveis: no carrossel elas são fundo sob um véu,
+     * com o título por cima, então `alt=""` está correto e não há legenda onde
+     * pendurar descrição. Aqui elas aparecem sem mexer nesse padrão.
+     */
+    image: [
+      absoluteUrl("/opengraph-image.jpg"),
+      ...heroPhotos.map((f) => absoluteUrl(f)),
+    ],
     // `hasMenu` é a propriedade corrente do schema.org; `menu` é a forma antiga,
     // ainda aceita. As duas ficam, apontando para o mesmo lugar.
     hasMenu: `${url}/cardapio`,
@@ -125,6 +142,20 @@ export function OrganizationJsonLd() {
         longitude: geo.longitude,
       },
     }),
+    /*
+     * O mapa do lugar. É a mesma URL que o rodapé e a página de contato abrem —
+     * de `mapLink()`, fonte única desde 18/09/2026 —, e não a de embutir, que
+     * só funciona dentro de um `<iframe>`.
+     */
+    hasMap: mapLink(),
+    /*
+     * A moeda. Parece redundante ao lado de `priceRange`, e não é: a faixa sai
+     * como texto ("R$ 41,90 – R$ 94,99/kg"), e `currenciesAccepted` é o campo
+     * que diz, em código ISO, qual moeda é essa. Sai porque os preços do
+     * cardápio são em reais — não é palpite sobre o que a casa faz com cartão
+     * estrangeiro.
+     */
+    currenciesAccepted: "BRL",
     // Lista o que a casa ACEITA, que é o que o schema.org espera — e num
     // restaurante por quilo "dinheiro" não é óbvio para quem procura.
     ...(siteConfig.paymentAccepted?.length && {
@@ -308,4 +339,49 @@ export function MenuJsonLd({
   };
 
   return <JsonLd data={data} />;
+}
+
+/**
+ * A trilha de uma rota principal: início → esta página.
+ *
+ * ⚠️ **Existe para não repetir a mesma trilha de dois níveis em seis páginas.**
+ * Até 18/09/2026 só as páginas de novidade emitiam `BreadcrumbList`, e as seis
+ * rotas do menu — que são as que aparecem na busca — não emitiam nenhuma. O
+ * resultado da busca mostra a trilha no lugar da URL crua, e sem ela o Google
+ * desenha `restaurante-prato.vercel.app › cardapio`.
+ *
+ * ⚠️ **O rótulo chega pronto, e não como `NavKey`.** A primeira versão tipou a
+ * chave assim e não compilou: `NavKey` é o conjunto do MENU — `/galeria` não
+ * está nele, e `/novidades` também não, ainda que o catálogo tenha as duas
+ * strings. Esticar o tipo para caber a trilha desalinharia justamente o
+ * acoplamento que o `AGENTS.md` protege, entre `NavKey`, as chaves de `nav` e
+ * as pastas da rota.
+ *
+ * Então cada página passa o rótulo que já tem em mão: o do menu, onde a rota
+ * está no menu, e o próprio título, onde não está. O que importa é a trilha
+ * dizer o mesmo que a pessoa leu ao chegar.
+ *
+ * Páginas de detalhe (uma novidade) têm três níveis e montam a trilha à mão,
+ * com o título do artigo no fim. Este componente é só para as de primeiro nível.
+ */
+export async function RotaBreadcrumbJsonLd({
+  locale,
+  rota,
+  nome,
+}: {
+  locale: Locale;
+  /** Caminho a partir da raiz, com a barra: `/cardapio`. */
+  rota: string;
+  /** O rótulo desta página, já traduzido. */
+  nome: string;
+}) {
+  const t = await getTranslations({ locale, namespace: "nav" });
+  return (
+    <BreadcrumbJsonLd
+      items={[
+        { name: t("inicio"), url: localizedUrl(locale) },
+        { name: nome, url: localizedUrl(locale, rota) },
+      ]}
+    />
+  );
 }

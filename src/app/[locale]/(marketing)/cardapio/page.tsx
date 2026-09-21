@@ -12,7 +12,7 @@ import { PastaBuilder } from "@/components/cardapio/pasta-builder";
 import { WineList } from "@/components/cardapio/wine-list";
 import { DrinkList } from "@/components/cardapio/drink-list";
 import { agrupadosPorCategoria, pratosDoDia, secoesDoCardapio } from "@/lib/cardapio";
-import { MenuJsonLd } from "@/components/json-ld";
+import { MenuJsonLd, RotaBreadcrumbJsonLd } from "@/components/json-ld";
 import {
   WEEKDAYS,
   desserts,
@@ -50,6 +50,7 @@ export default async function CardapioPage({
 }) {
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
+  const tTrilha = await getTranslations({ locale, namespace: "nav" });
   const t = await getTranslations("cardapio");
 
   // Independentes: buscar em sequência só somaria latência.
@@ -115,6 +116,8 @@ export default async function CardapioPage({
 
   return (
     <>
+      <RotaBreadcrumbJsonLd locale={locale} rota="/cardapio" nome={tTrilha("cardapio")} />
+
       {/* A identidade antes da lista: quem chega aqui pode ter escaneado um
           código na mesa e nunca ter visto o site. */}
       {/* O fundo verde da página inteira. Não repita a descrição dele aqui:
