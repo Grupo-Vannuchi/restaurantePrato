@@ -69,7 +69,25 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <Container className="flex h-16 items-center justify-between">
+      {/*
+        ⚠️ **`min-h-16` e `flex-wrap`, e as duas entraram juntas em 21/09/2026.**
+
+        Era `h-16` sem quebra. Quando `/galeria` e `/novidades` entraram no menu,
+        os sete itens passaram a ocupar 1.170 px dos 1.280 com o texto em 200%, e
+        o bloco do CTA (320 px) saía 273 px para fora da tela — refluxo, WCAG
+        1.4.4/1.4.10.
+
+        ⚠️ **Quebra de tela em `px` não resolve isso**, e essa é a parte que
+        engana: `md:`/`lg:` do Tailwind medem a VIEWPORT, que continua com 1.280
+        px quando o texto dobra. Esconder o CTA abaixo de `lg` não muda nada a
+        1.280 px. O que responde ao zoom de texto é deixar a linha quebrar.
+
+        A altura em repouso não muda: a 100% nada quebra e o cabeçalho segue com
+        64 px, que é a medida de que o `scroll-padding-top` de 80 px depende. A
+        200% ele já crescia para 129 px antes desta mudança — o que era fixo era
+        a classe, não o comportamento.
+      */}
+      <Container className="flex min-h-16 flex-wrap items-center justify-between gap-y-2">
         <Logo />
 
         {/* O rótulo vem do catálogo: era a string crua "Primary", em inglês,

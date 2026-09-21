@@ -24,10 +24,29 @@ export type ThemePalette = {
 };
 
 /** Keys available under the `nav` translation namespace. */
+/**
+ * As rotas que o cabecalho oferece.
+ *
+ * ⚠️ **Tres edits acoplados, e o AGENTS.md protege os tres:** este tipo, as
+ * chaves de `nav` em `messages/pt.json` e os nomes das pastas sob
+ * `(marketing)/`. Acrescentar uma rota aqui sem a chave no catalogo faz o
+ * next-intl imprimir o nome interno no lugar do rotulo — calado, porque
+ * `getMessageFallback` nao lanca.
+ *
+ * ⚠️ **`galeria` e `novidades` entraram em 21/09/2026, e o motivo e SEO.** As
+ * duas rotas existiam, respondiam e tinham conteudo, mas só eram alcancaveis
+ * pelo rodape e por um bloco da home: nenhuma delas aparecia no menu. Para quem
+ * rastreia o site isso e profundidade a mais e menos caminho para chegar la; a
+ * auditoria de 18/09 mediu 83 ligacoes internas com 8 a 9 por pagina, e as duas
+ * ficavam na cauda. Sao conteudo real — 22 fotos autorais e a pagina de
+ * novidades —, nao rota de servico.
+ */
 export type NavKey =
   | "inicio"
   | "experiencia"
   | "cardapio"
+  | "galeria"
+  | "novidades"
   | "reservas"
   | "contato";
 
@@ -255,6 +274,10 @@ export const siteConfig: SiteConfig = {
     { key: "inicio", href: "/" },
     { key: "experiencia", href: "/experiencia" },
     { key: "cardapio", href: "/cardapio" },
+    // As duas que entraram em 21/09 — ver o aviso sobre `NavKey` acima. A ordem
+    // segue a leitura da casa: o que se come antes de quando e onde.
+    { key: "galeria", href: "/galeria" },
+    { key: "novidades", href: "/novidades" },
     { key: "reservas", href: "/reservas" },
     { key: "contato", href: "/contato" },
   ],
