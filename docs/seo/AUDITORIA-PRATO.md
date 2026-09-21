@@ -91,7 +91,31 @@ Performance segue com *Score confidence: Low* enquanto não houver tráfego real
   mínimo de 4,5, em três larguras. Causa: opacidade sobre a cor mais clara da
   paleta, que não tem folga. A hierarquia passa a vir do tamanho.
 
-### ⛔ Acabaram os itens de código
+### Linkagem interna — fechada em 21/09, DEPOIS de eu dizer que não havia mais nada
+
+⚠️ **A seção abaixo dizia "acabaram os itens de código", e estava errada quando
+foi escrita.** O dono apontou o cabeçalho, e havia um item real ali:
+`/galeria` e `/novidades` existiam, respondiam e tinham conteúdo — 22 fotos
+autorais e a página de novidades — e **não apareciam no menu**. Só o rodapé e um
+bloco da home levavam até elas. Deixo a correção visível porque "não há mais
+nada a fazer" é a frase mais fácil de envelhecer de um documento técnico, e
+porque o erro foi meu: eu varri a saída publicada e não varri a navegação.
+
+As sete rotas entraram no menu, com os três edits acoplados que o `AGENTS.md`
+protege. E isso quebrou o refluxo: com sete itens o menu passou a ocupar 1.170 px
+dos 1.280 com o texto em 200%, e o CTA saía 273 px para fora — sete reprovas de
+`a-pagina-nao-rola-para-o-lado`. A parte que engana é que **quebra de tela em
+`px` não resolve**: `md:`/`lg:` medem a viewport, que continua com 1.280 px
+quando o texto dobra. O que responde é a linha quebrar (`min-h-16` +
+`flex-wrap`). A 100% o cabeçalho segue com 65 px, que é a premissa do
+`scroll-padding-top`; a 200% cresce para 281 px sem rolagem lateral.
+
+⚠️ **E a nota não se move muito com isso — fica em ~92.** Linkagem interna pesa
+pouco nesta rubrica. O ganho real é de caminho: duas rotas de conteúdo deixam de
+estar a um clique de distância só pelo rodapé. Registrar o ganho honesto em vez
+de inflar a nota é o que mantém o número utilizável.
+
+### ⛔ Agora sim: acabaram os itens de código
 
 Isto é a parte que importa saber: **não há mais nada de marcação, de estrutura ou
 de configuração para fazer.** Os ~8 pontos que faltam dependem, nesta ordem:
