@@ -71,9 +71,50 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
 | Copy definitiva | ✅ Entregue em 19/08 e aplicada |
 | Facebook | `social` só tem Instagram; o `sameAs` sai com um item |
 | Fotos | ✅ Dez fotos autorais entraram em 03/09/2026 — topo da home, abertura do cardápio, três na ilha de massas e seis na galeria. **Falta** foto de sobremesa: a linha da sobremesa tem campo de imagem e hoje ocupa a largura toda sem ele |
-| Domínio final | `«PENDENTE»` em `src/content/legal.ts`; **enquanto existir, `SITE_INDEXABLE` fica `false`** |
+| Domínio final | **Decidido: `restauranteprato.com.br`** *(21/09/2026)*. ⚠️ **Não precisa ser comprado — já está registrado, e no CNPJ errado.** Ver a nota abaixo da tabela. O `«PENDENTE»` em `src/content/legal.ts` **continua**, e de propósito: ele só sai quando o domínio apontar para o site |
 | Telefone fixo | Não existe: `contact.phone` é opcional e cada CTA de ligar some sozinho |
 | Cardápio | ✅ Buffet, ilha de massas, sobremesas, bebidas e carta de vinhos estão no ar. **Falta** o preço do quilo, o da porção de massa e o dos adicionais — sem eles o aviso de preço some sozinho. Os pratos do buffet vivem no banco e entram por script versionado; sobremesas, bebidas e vinhos vivem no código |
+
+
+⚠️ **O domínio foi decidido em 21/09/2026 — e a verificação mudou a tarefa de
+"comprar" para "transferir".** O dono informou `restauranteprato.com.br` como
+domínio final, dizendo que ainda não havia sido comprado. Consulta ao RDAP do
+registro.br na mesma data:
+
+| Campo | Valor |
+|---|---|
+| Estado | **ativo** |
+| Registro | 17/08/2026 · expira 17/08/2027 |
+| Titular | **`fogao de ouro restaurante`** — CNPJ **04.160.109/0001-47** |
+| Servidores de nome | `lunar.dns-parking.com` · `solar.dns-parking.com` (Hostinger) |
+| O que serve | `Parked Domain name on Hostinger DNS system`, com `noindex` |
+
+**A data é a explicação mais provável:** 17/08/2026 é exatamente o dia em que os
+dados do Prato foram confirmados e este projeto começou. A leitura é que o
+domínio do Prato foi registrado no dia um pela própria equipe, usando o CNPJ que
+já estava na conta do registro.br — o do cliente ANTERIOR. Não é terceiro na
+frente; é titularidade trocada.
+
+**Por que não é só burocracia:** os documentos legais deste site nomeiam
+`PRATO COFFEE SHOP REFEICOES LTDA` como controladora dos dados. Domínio em nome
+de outra empresa cria inconsistência exatamente no documento onde ela importa —
+e renovação, acesso ao DNS e qualquer disputa passam pela conta da outra
+empresa.
+
+**A sequência para destravar o site, nesta ordem:**
+
+1. **transferir a titularidade** para o CNPJ do Prato (03.354.096/0001-84) no
+   registro.br — ou decidir por escrito manter como está;
+2. **apontar o domínio para a Vercel** — hoje ele aponta para o parking da
+   Hostinger. Passos em [`RUNBOOK.md`](RUNBOOK.md);
+3. **só então** preencher o `«PENDENTE»` de `src/content/legal.ts`, ajustar
+   `NEXT_PUBLIC_SITE_URL` e ligar `SITE_INDEXABLE=true`.
+
+⚠️ **O passo 3 não pode vir antes do 2, e isso é decisão registrada, não
+esquecimento.** Preencher o domínio no texto legal enquanto ele serve uma página
+de estacionamento faria os Termos de Uso nomearem um endereço que não é o site —
+trocaria uma pendência honesta por uma afirmação falsa. A trava de
+`impedimentoParaIndexar()` continua correta e continua fechada.
 
 ⚠️ **O número do endereço saiu desta lista em 03/09/2026, e o motivo precisa
 sobreviver ao apagamento.** O documento de copy entregue pelo cliente escrevia

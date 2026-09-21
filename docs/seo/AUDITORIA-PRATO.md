@@ -6,7 +6,7 @@
 **Método:** skill `seo` (Agentic-SEO-Skill) — LLM-first + scripts da skill + verificação direta em produção e cruzamento com o código-fonte
 **Auditoria anterior deste site:** nenhuma
 
-> ⚠️ **`docs/seo/AUDIT-REPORT.md` e `docs/seo/ACTION-PLAN.md` NÃO são deste site.**
+> ⚠️ **`docs/seo/agencia/AUDIT-REPORT.md` e `docs/seo/agencia/ACTION-PLAN.md` NÃO são deste site.**
 > Eles auditam `n8xmarketing.com.br`, o site da agência de onde este repositório foi
 > forkado duas vezes, e estão datados de 26/06/2026 com nota "94/100". `docs/` não é
 > varrido por `test/brand-hygiene.test.ts` de propósito — os specs do rebrand explicam
@@ -349,7 +349,7 @@ com a trava de lançamento fora da conta. É esta a nota que diz se o trabalho e
 ela conta `Disallow: /`, `noindex` e o sitemap vazio como falha técnica e como GEO zerada.
 Os dois números descrevem o mesmo site; a diferença inteira é a trava.
 
-⚠️ **Não compare com o "94/100" de `docs/seo/AUDIT-REPORT.md`** — aquilo é
+⚠️ **Não compare com o "94/100" de `docs/seo/agencia/AUDIT-REPORT.md`** — aquilo é
 `n8xmarketing.com.br`, o site da agência, medido em 26/06 com outra rubrica e outro conteúdo.
 Comparar os dois números é comparar dois sites.
 
