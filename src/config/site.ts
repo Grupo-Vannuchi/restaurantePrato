@@ -501,6 +501,33 @@ export function phoneLink(): string | null {
   return `tel:${phone.replace(/[^\d+]/g, "")}`;
 }
 
+/**
+ * As fotos autorais da casa, servidas de `public/` — o carrossel do topo e o
+ * dado estruturado leem daqui.
+ *
+ * Chegaram do cliente em 03/09/2026: fotografadas no salão, no balcão e na
+ * brasa do próprio Prato. Nada de banco de imagens — foto genérica de buffet
+ * descreveria outro restaurante.
+ *
+ * São três, uma por slide da copy em `home.hero.slides`, e cada uma ilustra o
+ * que a sua frase promete: o buffet quente, o churrasco na brasa e a ilha de
+ * massas. A primeira é o LCP da home.
+ *
+ * ⚠️ **Elas moraram dentro de `hero.tsx` até 21/09/2026, e saíram por terem
+ * ganhado um segundo consumidor.** O `Restaurant` passou a oferecê-las ao
+ * Google — que recomenda mais de uma foto no resultado rico de restaurante —, e
+ * duas cópias da mesma lista seriam duas chances de uma delas não acompanhar a
+ * troca de uma foto. Mesmo motivo de `mapLink()`.
+ *
+ * Para acrescentar slides: solte o WebP em `public/hero`, mantenha o peso na
+ * faixa (~100–230 KB) e liste aqui, na ordem da copy.
+ */
+export const heroPhotos: readonly string[] = [
+  "/hero/buffet-quente.webp",
+  "/hero/churrasco-na-brasa.webp",
+  "/hero/ilha-de-massas.webp",
+];
+
 /** The restaurant's address as a single comma-separated line. */
 export function fullAddress(): string {
   const { street, city, region, country } = siteConfig.contact.address;

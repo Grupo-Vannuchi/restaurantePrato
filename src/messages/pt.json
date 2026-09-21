@@ -136,7 +136,8 @@
     "groupsMessage": "Olá! Gostaria de informações sobre reserva para grupos e eventos.",
     "practicalTitle": "Como está o salão",
     "addressLabel": "Endereço",
-    "hoursLabel": "Horário"
+    "hoursLabel": "Horário",
+    "paymentLabel": "Formas de pagamento"
   },
   "salao": {
     "title": "O melhor momento para vir",

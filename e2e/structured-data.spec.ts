@@ -72,9 +72,25 @@ test("o Restaurant leva imagem, faixa de preço e o cardápio", async ({ page })
   const restaurante = (await blocosJsonLd(page)).find((b) => b?.["@type"] === "Restaurant");
   expect(restaurante, "nenhum bloco Restaurant na página inicial").toBeTruthy();
 
-  // Sem `image` o resultado rico de restaurante sai sem foto. O `og:image` é
-  // outro campo e não conta.
-  expect(restaurante.image, "Restaurant sem `image`").toMatch(/^https?:\/\/.+\.(jpg|jpeg|png|webp)$/);
+  /*
+   * Sem `image` o resultado rico de restaurante sai sem foto. O `og:image` é
+   * outro campo e não conta.
+   *
+   * ⚠️ **São VÁRIAS desde 21/09/2026** — a orientação do Google para restaurante
+   * é oferecer mais de uma, e a guarda cobra o plural: com uma só, ela reprova.
+   * E cobra que cada URL RESPONDA, porque o modo silencioso de isto degradar é
+   * uma lista de caminhos que mudaram de nome.
+   */
+  const imagens: string[] = Array.isArray(restaurante.image)
+    ? restaurante.image
+    : [restaurante.image];
+  expect(imagens.length, "Restaurant com uma imagem só").toBeGreaterThan(1);
+  for (const url of imagens) {
+    expect(url, "URL de imagem malformada").toMatch(/^https?:\/\/.+\.(jpg|jpeg|png|webp)$/);
+    const caminho = new URL(url).pathname;
+    const resposta = await page.request.get(caminho);
+    expect(resposta.status(), `a imagem ${caminho} não responde`).toBe(200);
+  }
 
   /*
    * ⚠️ `priceRange` DERIVADO, nunca digitado. Até 17/09 ele era corretamente

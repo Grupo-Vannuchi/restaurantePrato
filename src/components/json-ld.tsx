@@ -1,6 +1,6 @@
 import { defaultLocale, locales, type Locale } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
-import { siteConfig, mapLink } from "@/config/site";
+import { siteConfig, mapLink, heroPhotos } from "@/config/site";
 import { precoDaMassa, precoDoBuffet } from "@/config/menu";
 import type { SecaoEstruturada } from "@/lib/cardapio";
 import { absoluteUrl, localizedUrl } from "@/lib/seo";
@@ -111,9 +111,25 @@ export function OrganizationJsonLd() {
     foundingDate: String(foundedYear),
     ...(servesCuisine?.length ? { servesCuisine } : {}),
     acceptsReservations: true,
-    // Sem `image` o resultado rico de restaurante sai sem foto. O `og:image` é
-    // outro campo e não conta para o Google aqui; o arquivo é o mesmo.
-    image: absoluteUrl("/opengraph-image.jpg"),
+    /*
+     * Sem `image` o resultado rico de restaurante sai sem foto. O `og:image` é
+     * outro campo e não conta para o Google aqui; o primeiro arquivo é o mesmo.
+     *
+     * ⚠️ **São VÁRIAS desde 21/09/2026, e não por capricho:** a orientação do
+     * Google para restaurante é oferecer mais de uma imagem, para ele escolher
+     * a que serve ao formato do resultado. Entram a imagem de compartilhamento
+     * e as três fotos autorais do topo, lidas de `heroPhotos` — a mesma lista
+     * que o carrossel desenha, nunca uma segunda cópia dos caminhos.
+     *
+     * É também o que dá sinal de busca às três fotos do hero, que a auditoria
+     * de 18/09 apontou como invisíveis: no carrossel elas são fundo sob um véu,
+     * com o título por cima, então `alt=""` está correto e não há legenda onde
+     * pendurar descrição. Aqui elas aparecem sem mexer nesse padrão.
+     */
+    image: [
+      absoluteUrl("/opengraph-image.jpg"),
+      ...heroPhotos.map((f) => absoluteUrl(f)),
+    ],
     // `hasMenu` é a propriedade corrente do schema.org; `menu` é a forma antiga,
     // ainda aceita. As duas ficam, apontando para o mesmo lugar.
     hasMenu: `${url}/cardapio`,
