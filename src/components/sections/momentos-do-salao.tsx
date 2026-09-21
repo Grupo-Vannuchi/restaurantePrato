@@ -12,10 +12,28 @@ export function Fact({
   icon: Icon,
   label,
   value,
+  note,
 }: {
   icon: LucideIcon;
   label: string;
   value: string;
+  /**
+   * Uma linha menor sob o valor, para o que COMPLEMENTA o dado sem ser ele.
+   *
+   * ⚠️ **A hierarquia vem do TAMANHO, nunca de opacidade.** A primeira versao
+   * usava `text-muted-foreground/80` e a varredura de contraste reprovou em
+   * 4,25:1 contra o minimo de 4,5 — em tres larguras de tela. Opacidade sobre
+   * uma cor que ja e a mais clara da paleta nao tem folga para gastar; `text-sm`
+   * diferencia a linha sem custar legibilidade.
+   *
+   * Existe desde 18/09/2026 para o ponto de referencia do endereco: "perto da
+   * Praca Maua" nao e o endereco, e juntar os dois numa string so faria o
+   * endereco parecer mais longo do que e — inclusive na linha que vira link
+   * para o mapa.
+   *
+   * Opcional: sem nota, nada e desenhado, em vez de sobrar um paragrafo vazio.
+   */
+  note?: string;
 }) {
   return (
     <div className="flex gap-4">
@@ -28,6 +46,9 @@ export function Fact({
       <div className="min-w-0">
         <p className="text-sm font-semibold">{label}</p>
         <p className="text-pretty text-muted-foreground">{value}</p>
+        {note ? (
+          <p className="text-pretty text-sm text-muted-foreground">{note}</p>
+        ) : null}
       </div>
     </div>
   );

@@ -112,3 +112,66 @@ describe("com o site aberto aos buscadores", () => {
     expect(await res.text()).toContain("Restaurante Prato");
   });
 });
+
+/**
+ * `/novidades` só é oferecida ao rastreador quando tem o que mostrar.
+ *
+ * ⚠️ **Achado da reauditoria de SEO de 18/09/2026:** a página estava publicada,
+ * linkada no cabeçalho e no rodapé, e entrava no sitemap com **89 palavras** —
+ * um `h1` "Novidades" e nada abaixo. Página fina oferecida ao rastreador pesa
+ * contra a avaliação do site inteiro, e some do índice de qualquer jeito.
+ *
+ * ⚠️ **A distinção que o código faz, e que estes três casos guardam:** "o banco
+ * disse zero" não é "o banco não respondeu". Sem artigo, a rota fica de fora;
+ * com o banco fora do ar, ela fica dentro — senão uma falha passageira no build
+ * encolheria o sitemap em silêncio, que é a classe de defeito que este projeto
+ * vem fechando.
+ *
+ * A página continua no site e no menu. O que muda é só o convite ao rastreador.
+ */
+describe("a listagem de novidades no sitemap", () => {
+  const SEM_ARTIGO = { ...CONTEUDO, getInformationSitemapEntries: async () => [] };
+  const BANCO_FORA = {
+    ...CONTEUDO,
+    getInformationSitemapEntries: async () => {
+      throw new Error("banco fora do ar");
+    },
+  };
+
+  /** Como `carregar`, mas com o conteúdo trocado. */
+  async function caminhos(conteudo: object): Promise<string[]> {
+    vi.resetModules();
+    vi.doMock("@/lib/env", () => ({ env: ENV_ABERTO }));
+    vi.doMock("@/lib/queries", () => conteudo);
+    const { default: sitemap } = (await import("@/app/sitemap")) as {
+      default: () => Promise<{ url: string }[]>;
+    };
+    return (await sitemap()).map((r) => new URL(r.url).pathname);
+  }
+
+  it("fica de fora enquanto não há artigo publicado", async () => {
+    const rotas = await caminhos(SEM_ARTIGO);
+
+    expect(rotas).not.toContain("/novidades");
+    // Sentinela: o resto do mapa continua de pé. Sem isto, um sitemap que
+    // quebrasse inteiro faria esta guarda passar.
+    expect(rotas).toContain("/cardapio");
+    expect(rotas.length).toBeGreaterThan(5);
+  });
+
+  it("volta sozinha no primeiro artigo", async () => {
+    const rotas = await caminhos(CONTEUDO);
+
+    expect(rotas).toContain("/novidades");
+    // E a página do artigo entra junto, que é o que torna a listagem útil.
+    expect(rotas).toContain("/novidades/nota");
+  });
+
+  it("fica DENTRO quando o banco não responde — falha passageira não encolhe o mapa", async () => {
+    const rotas = await caminhos(BANCO_FORA);
+
+    expect(rotas).toContain("/novidades");
+    // Sem artigo listado, porque não houve resposta — e não porque não existem.
+    expect(rotas.filter((r) => r.startsWith("/novidades/"))).toEqual([]);
+  });
+});

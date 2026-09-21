@@ -160,7 +160,8 @@
       "phone": "Telefone",
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",
-      "address": "Endereço"
+      "address": "Endereço",
+   "landmark": "Ponto de referência"
     },
     "form": {
       "title": "Mande uma mensagem",

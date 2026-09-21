@@ -10,7 +10,8 @@ import {
   Fact,
   MomentosDoSalao,
 } from "@/components/sections/momentos-do-salao";
-import { fullAddress, openingHoursLabel } from "@/config/site";
+import { siteConfig, fullAddress, openingHoursLabel } from "@/config/site";
+import { RotaBreadcrumbJsonLd } from "@/components/json-ld";
 
 export async function generateMetadata({
   params,
@@ -33,12 +34,15 @@ export default async function ReservasPage({
 }) {
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
+  const tTrilha = await getTranslations({ locale, namespace: "nav" });
   const t = await getTranslations("reservas");
 
   const hours = openingHoursLabel();
 
   return (
     <>
+      <RotaBreadcrumbJsonLd locale={locale} rota="/reservas" nome={tTrilha("reservas")} />
+
       <PageHeader
         title={t("title")}
         subtitle={t("subtitle")}
@@ -57,7 +61,13 @@ export default async function ReservasPage({
           {hours ? (
             <Fact icon={Clock} label={t("hoursLabel")} value={hours} />
           ) : null}
-          <Fact icon={MapPin} label={t("addressLabel")} value={fullAddress()} />
+          <Fact
+            icon={MapPin}
+            label={t("addressLabel")}
+            value={fullAddress()}
+            // Some sozinha sem referencia configurada — ver `config/site.ts`.
+            note={siteConfig.contact.address.landmark}
+          />
           {/* Os três momentos do salão, agora compartilhados com
               `/experiencia`: uma fonte só para as seis frases. Ver o aviso em
               `components/sections/momentos-do-salao.tsx`. */}

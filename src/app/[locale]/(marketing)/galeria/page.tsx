@@ -7,6 +7,7 @@ import { Section } from "@/components/ui/section";
 import { getGalleryPhotos } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
+import { RotaBreadcrumbJsonLd } from "@/components/json-ld";
 
 export async function generateMetadata({
   params,
@@ -34,6 +35,8 @@ export default async function PortfolioPage({
 
   return (
     <>
+      <RotaBreadcrumbJsonLd locale={locale} rota="/galeria" nome={t("title")} />
+
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
       <Section>
         {photos.length === 0 ? (
