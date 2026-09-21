@@ -8,6 +8,23 @@
 > propósito, e dois "🔴 críticos" que a ferramenta aponta são decisões deliberadas. Nada
 > neste plano pede para abrir o site.
 
+## 21/09/2026 — os itens de código acabaram
+
+Os quatro itens independentes da reauditoria estão fechados, mais dois que a
+varredura da saída publicada revelou: as **formas de pagamento** viviam só no
+dado estruturado, e o `Restaurant` oferecia **uma** imagem onde o Google pede
+várias. A nota vai de 89 para **~92**.
+
+⚠️ **Não há mais item de código neste plano.** O que falta, em ordem de quem
+destrava: domínio final → conteúdo do cliente (novidades com autoria) → tráfego
+real para medir velocidade de campo → Facebook → conta no X. Detalhe na
+[auditoria](AUDITORIA-PRATO.md), seção "Estado em 21/09/2026".
+
+E o **R3 fechou** pelo caminho (b): `/novidades` sai do sitemap enquanto vazia e
+volta sozinha no primeiro artigo.
+
+---
+
 ## Reauditoria de 18/09 — o que ela acrescentou
 
 Rodada depois da carga de conteúdo em produção, com a skill `seo`. Dois achados

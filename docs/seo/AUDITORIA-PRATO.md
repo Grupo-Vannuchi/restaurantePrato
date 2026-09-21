@@ -50,6 +50,66 @@ correto no dia em que abrir.
 
 ---
 
+## Estado em 21/09/2026 — a nota sobe para ~92
+
+Os quatro itens que a reauditoria deixou como "faço sem depender de ninguém" foram
+fechados, e a varredura da saída publicada achou **mais um dado confirmado parado**:
+
+| Entrega | Categoria que mexe |
+|---|---|
+| Ponto de referência (Praça Mauá / Palácio José Bonifácio) em `/contato` e `/reservas` | Conteúdo, On-page |
+| `/novidades` fora do sitemap enquanto não há artigo | Conteúdo |
+| `hasMap` e `currenciesAccepted` no `Restaurant` | Dado estruturado |
+| `BreadcrumbList` nas seis rotas do menu | Dado estruturado, On-page |
+| **Formas de pagamento saindo do schema para a tela** | Conteúdo |
+| **Quatro imagens no `Restaurant`**, fechando o R4 | Imagens, Dado estruturado |
+
+| Categoria | 18/09 | 21/09 |
+|---|---:|---:|
+| Técnico | 95 | 95 |
+| Conteúdo | 80 | **86** |
+| On-page | 90 | **93** |
+| Dado estruturado | 95 | **98** |
+| Performance | 85 | 85 |
+| Imagens | 90 | **93** |
+| GEO | 85 | 85 |
+| **Total** | **89** | **~92** |
+
+⚠️ **A nota é direcional, não uma medição.** A rubrica pede que se diga isso: os
+pesos são da skill, as notas por categoria são julgamento com evidência, e
+Performance segue com *Score confidence: Low* enquanto não houver tráfego real.
+
+### As duas guardas que reprovaram no caminho, as duas com razão
+
+- **o teste de foco**: o ponto de referência deixou `/contato` mais alta, e isso
+  moveu o ponto onde o teclado entra no mapa do rodapé — que terminava ACIMA da
+  janela, com 31 px atrás do cabeçalho fixo. Foco em elemento invisível é o que
+  o critério 2.4.11 proíbe, e a versão publicada passava **por sorte de altura
+  de página**. O mapa saiu da ordem de tabulação; "Traçar rota" e o endereço
+  continuam abrindo o mapa, verificado por teclado;
+- **a varredura de contraste**: a nota do endereço saiu em 4,25:1 contra o
+  mínimo de 4,5, em três larguras. Causa: opacidade sobre a cor mais clara da
+  paleta, que não tem folga. A hierarquia passa a vir do tamanho.
+
+### ⛔ Acabaram os itens de código
+
+Isto é a parte que importa saber: **não há mais nada de marcação, de estrutura ou
+de configuração para fazer.** Os ~8 pontos que faltam dependem, nesta ordem:
+
+1. **domínio final** — libera a trava, junta a nota de rastreio com a de mérito,
+   devolve `sitemap.xml` e `llms.txt`, e é pré-requisito do item 3;
+2. **conteúdo do cliente** — duas ou três novidades reais com autoria declarada.
+   É a categoria de maior peso (20%) e a de nota mais baixa (86);
+3. **tráfego real** — Core Web Vitals de campo não existem sem visitas;
+4. **Facebook confirmado** — para o `sameAs` sair com mais de um item;
+5. **conta no X** — para `twitter:site`/`creator`, que são opcionais.
+
+E **100/100 não é meta realista**: os últimos pontos da rubrica medem volume de
+conteúdo, perfil de links externos e histórico — coisas que um restaurante de
+bairro não tem e não precisa ter. Teto realista: 95 a 96.
+
+---
+
 ## Reauditoria — 18/09/2026, com o conteúdo real no ar
 
 **Escopo:** site publicado (`full-site`, 9 rotas), com evidência da skill `seo`
@@ -235,7 +295,7 @@ diferentes com públicos diferentes.
 
 ---
 
-## Nota — 18/09/2026
+## Nota — 18/09/2026 (ver o estado de 21/09 no topo: ~92)
 
 ⚠️ **A versão anterior desta seção dizia "não atribuo nota numérica".** A recusa tinha um
 motivo certo — `Disallow: /` e `noindex` deliberados colapsam qualquer rubrica por algo que
