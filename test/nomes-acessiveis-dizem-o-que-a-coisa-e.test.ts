@@ -139,7 +139,18 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
    * linha escrita sem ele.
    */
   "src/components/page-header.tsx": ["imageAlt"],
-  "src/components/cardapio/menu-hero.tsx": ['""'],
+  /*
+   * A dobra de comida do cardapio: a foto e FUNDO, sob um veu, com o horario
+   * por cima. O texto e que informa; a foto repetida em voz alta atrasaria
+   * quem usa leitor de tela sem acrescentar nada.
+   *
+   * ⚠️ Esta linha dizia `menu-hero.tsx` ate 21/09/2026. A abertura se dividiu
+   * em duas pecas — faixa de assinatura e dobra de comida —, e o `alt` vazio
+   * mudou de arquivo junto com a foto. O inventario pegou a troca, que e
+   * exatamente o que ele existe para fazer: `alt` novo entra aqui de
+   * proposito, e `alt` que se muda de lugar tambem.
+   */
+  "src/components/cardapio/menu-photo.tsx": ['""'],
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.
   /*

@@ -37,6 +37,16 @@ import { cn } from "@/lib/utils";
  */
 const MARCAS = {
   wordmark: { src: "/brand/wordmark.png", width: 720, height: 280 },
+  /*
+   * O nome em branco, para faixa de cor. Mesmas dimensoes do `wordmark`.
+   *
+   * O arquivo existia desde 09/09 e servia so ao cartao de compartilhamento;
+   * virou variante em 21/09, quando a abertura do cardapio passou a ser uma
+   * faixa verde estreita. Sobre `brand` o nome branco da 4,98:1 — e o
+   * `lockup-claro` nao serve aqui: ele e vertical (520x499) e numa faixa de
+   * poucos pixels de altura o cozinheiro viraria borrao.
+   */
+  "wordmark-claro": { src: "/brand/wordmark-claro.png", width: 720, height: 280 },
   lockup: { src: "/brand/logo.png", width: 520, height: 499 },
   /**
    * Para fundo escuro. O nome vem tingido de branco; **o cozinheiro fica nas
@@ -58,9 +68,20 @@ export function Logo({
   variant = "wordmark",
 }: {
   className?: string;
-  variant?: "wordmark" | "lockup" | "lockup-claro";
+  variant?: "wordmark" | "wordmark-claro" | "lockup" | "lockup-claro";
 }) {
   const marca = MARCAS[variant];
+  /*
+   * ⚠️ **Por PREFIXO, e nao por igualdade — a igualdade era uma armadilha.**
+   * Estas duas linhas testavam `variant === "wordmark"`, entao a variante
+   * `wordmark-claro`, criada em 21/09/2026, caiu no `else` e recebeu a altura do
+   * LOCKUP: 96 px de imagem dentro de uma faixa de 40, com o nome decapitado na
+   * tela. Nenhum teste pegou — altura de imagem nao e algo que asercao de
+   * renderizacao veja —, e quem pegou foi olhar a pagina.
+   *
+   * Por prefixo, qualquer `wordmark-*` futuro herda o tamanho certo.
+   */
+  const ehWordmark = variant.startsWith("wordmark");
 
   return (
     <Link
@@ -99,14 +120,14 @@ export function Logo({
          * Com `sizes`, a escolha passa a ser por largura real: 120 px × 2,625
          * dá 315, o navegador pega o balde de 384, e nenhuma ampliação é pedida.
          */
-        sizes={variant === "wordmark" ? "120px" : "104px"}
+        sizes={ehWordmark ? "120px" : "104px"}
         /* A marca do cabeçalho aparece em toda página e no primeiro quadro:
            carregá-la com prioridade evita o pulo de layout que uma imagem
            preguiçosa causaria bem no topo. */
         priority
         className={cn(
           "w-auto object-contain",
-          variant === "wordmark" ? "h-10 sm:h-11" : "h-24",
+          ehWordmark ? "h-10 sm:h-11" : "h-24",
         )}
       />
     </Link>

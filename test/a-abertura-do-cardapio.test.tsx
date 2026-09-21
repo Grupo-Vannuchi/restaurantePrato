@@ -9,21 +9,27 @@ vi.mock("@/i18n/navigation", () => ({
 }));
 
 import { MenuHero } from "@/components/cardapio/menu-hero";
+import { MenuPhoto } from "@/components/cardapio/menu-photo";
 import { openingHoursLabel, siteConfig } from "@/config/site";
 import { renderWithIntl, screen } from "./test-utils";
 
 /**
- * A abertura do cardápio, que precisa funcionar sem foto e sem logo.
+ * A abertura do cardápio — duas peças desde 21/09/2026, e a divisão é o ponto.
  *
  * Quem chega em `/cardapio` pode ter escaneado um código na mesa e nunca ter
- * visto o site: este é o primeiro contato com a marca, e por isso a identidade
- * vem antes da lista.
+ * visto o site: o primeiro contato com a marca acontece aqui.
  *
- * ⚠️ **A foto chegou em 03/09; a marca, não.** Até então a abertura não tinha
- * imagem nenhuma, e o projeto irmão punha o SVG do logo sobre um véu escuro.
- * A marca é imagem desde 09/09 e a abertura passou a véu ESCURO com a marca
- * clara em 10/09, alinhando com o topo da home — que havia invertido um dia
- * antes e deixado as duas aberturas do site sem conversar entre si.
+ * ⚠️ **Era UMA peça de altura cheia até 21/09.** O dono pediu a estrutura do
+ * projeto irmão, cujo spec de 14/09 decide em uma frase: *"a capa assina a
+ * página; não ocupa a primeira dobra — comida vende, couro não."* Então:
+ *
+ * · `MenuHero` — faixa estreita, verde, com o nome. Assina e sai de cena;
+ * · `MenuPhoto` — a fotografia, o horário e a ressalva. Ocupa a dobra.
+ *
+ * **Nenhuma asserção foi perdida na divisão**, e é por isso que este arquivo
+ * ficou com dois `describe` em vez de um: o que era cobrado da peça única
+ * continua cobrado, cada coisa da peça que passou a fazê-la. Testes que
+ * desaparecem numa refatoração são o jeito silencioso de perder cobertura.
  *
  * ⚠️ **A foto entra por parâmetro, com a do módulo como padrão.** Lendo a
  * constante direto, este teste só conseguiria exercitar o estado de HOJE (com
@@ -31,7 +37,7 @@ import { renderWithIntl, screen } from "./test-utils";
  * arquivo — ficaria sem cobertura. Mesma decisão do `PriceCallout` e do
  * `PastaBuilder`, pelo mesmo motivo.
  */
-describe("a abertura do cardápio", () => {
+describe("a capa que assina o cardápio", () => {
   it("mostra a marca, e ela é nomeada para quem não a vê", () => {
     /*
      * A marca virou IMAGEM em 09/09, quando a logo chegou — antes era o nome
@@ -50,9 +56,54 @@ describe("a abertura do cardápio", () => {
     ).toBeInTheDocument();
   });
 
+  it("usa a variante CLARA do nome, porque a faixa é verde", () => {
+    // Sobre `brand`, o wordmark escuro desapareceria. E é o wordmark, não o
+    // lockup: numa faixa desta altura o cozinheiro viraria borrão — medido em
+    // 09/09, quando o ícone do navegador teve de virar só a cloche.
+    const { container } = renderWithIntl(<MenuHero />);
+    expect(
+      container.querySelector('img[src*="wordmark-claro"]'),
+    ).not.toBeNull();
+  });
+
+  it("não escreve nada sobre os blocos de destaque", () => {
+    /*
+     * ⚠️ A regra dura desta faixa, e ela tem número: `accent` dá **1,92:1** com
+     * branco. Ele é fronteira, nunca superfície de texto — a mesma decisão que
+     * o projeto irmão tomou sobre a curva laranja dele.
+     *
+     * A guarda cobra que os blocos sejam decoração DECLARADA: `aria-hidden` e
+     * sem filho de texto. Se alguém puser um rótulo ali dentro, isto reprova
+     * antes de a varredura de contraste ter de descobrir no pixel.
+     */
+    const { container } = renderWithIntl(<MenuHero />);
+    const decoracao = container.querySelectorAll('[aria-hidden="true"]');
+    expect(decoracao.length).toBeGreaterThan(0);
+    for (const bloco of decoracao) {
+      expect(bloco.textContent?.trim() ?? "").toBe("");
+    }
+  });
+
+  it("é uma faixa, não uma dobra: nada de foto aqui", () => {
+    // A metade que saiu. Se a foto voltar para cá, a capa volta a ocupar a
+    // primeira dobra e a decisão do spec se desfaz sem ninguém dizer.
+    const { container } = renderWithIntl(<MenuHero />);
+    expect(container.querySelector('img[src*="hero"]')).toBeNull();
+  });
+
+  it("a marca não é o título da página", () => {
+    // O `h1` é "Cardápio da semana", e nasce em `MenuSection` com `level={1}`.
+    // A capa é identidade, não assunto — dois `h1` na mesma página é tão ruim
+    // quanto nenhum.
+    renderWithIntl(<MenuHero />);
+    expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
+  });
+});
+
+describe("a dobra de comida do cardápio", () => {
   it("desenha a foto de fundo quando existe, que é o estado de hoje", () => {
     const { container } = renderWithIntl(
-      <MenuHero photo="/hero/churrasco-na-brasa.webp" />,
+      <MenuPhoto photo="/hero/churrasco-na-brasa.webp" />,
     );
     const img = container.querySelector('img[src*="churrasco"]');
     expect(img).not.toBeNull();
@@ -64,17 +115,16 @@ describe("a abertura do cardápio", () => {
   it("não quebra sem foto, para onde a página volta se o arquivo sumir", () => {
     // Sem o véu de reserva, a faixa sairia como um retângulo vazio.
     //
-    // ⚠️ A busca é pela imagem de FUNDO, não por qualquer `<img>`: desde
-    // 09/09 a marca também é imagem e vive dentro desta faixa. Perguntar
-    // "existe alguma imagem?" passaria a encontrar a logo e o teste deixaria
-    // de verificar o que nomeia.
-    const { container } = renderWithIntl(<MenuHero photo="" />);
+    // ⚠️ A busca exclui `brand` porque a marca também é imagem. Desde 21/09 ela
+    // não vive mais nesta peça, mas a exclusão fica: ela custa nada e volta a
+    // importar no dia em que alguém trouxer a marca para cá.
+    const { container } = renderWithIntl(<MenuPhoto photo="" />);
     expect(container.querySelector('img[alt=""]:not([src*="brand"])')).toBeNull();
     expect(container.querySelector("[aria-hidden]")).not.toBeNull();
   });
 
   it("mostra o horário pelo ajudante, com os dias", () => {
-    renderWithIntl(<MenuHero />);
+    renderWithIntl(<MenuPhoto />);
     const rotulo = openingHoursLabel();
     if (rotulo === null) return; // sem horário configurado, nada a cobrar
     expect(screen.getByText(rotulo)).toBeInTheDocument();
@@ -83,10 +133,8 @@ describe("a abertura do cardápio", () => {
     expect(rotulo).toMatch(/^(seg|ter|qua|qui|sex|s[áa]b|dom)/i);
   });
 
-  it("a marca é um cabeçalho de nível 2, não um título de página", () => {
-    // O `h1` da página é "Cardápio da semana". A abertura é a identidade, não o
-    // assunto — dois `h1` na mesma página é tão ruim quanto nenhum.
-    renderWithIntl(<MenuHero />);
+  it("também não abre um segundo `h1`", () => {
+    renderWithIntl(<MenuPhoto />);
     expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
   });
 });
