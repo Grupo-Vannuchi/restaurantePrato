@@ -80,6 +80,19 @@ import { LOCAL, PORTA } from "./e2e/porta";
  * que um build feito depois do `globalTeardown` congela `/cardapio` sem as
  * fixtures.
  *
+ * ⚠️ **E ao TERMINAR um ciclo, limpe antes de deixar o servidor de pé.** O
+ * `globalTeardown` apaga as fixtures do banco, mas `/cardapio` é
+ * pré-renderizada: a página guarda o retrato do momento do `build`, e quem abrir
+ * o localhost depois vê "Teste E2E · prato permanente" no cardápio. Aconteceu
+ * duas vezes com o dono do projeto — 18/09 e 21/09/2026 —, e na segunda ele
+ * perguntou por que o SITE estava assim. O banco estava limpo nas duas; era o
+ * retrato.
+ *
+ *   npm run e2e:limpa && npm run build
+ *
+ * Isso é `scripts/limpa-fixtures.mts`, versionado justamente para a correção
+ * não depender de alguém lembrar.
+ *
  * ── ⚠️ A ORDEM, que é o que sobra de errado quando tudo acima está certo ──
  *
  * Semear → construir → subir → rodar. Nessa ordem, e não em outra.
