@@ -11,7 +11,13 @@ import {
  *
  * `src/content/legal.ts` marca com `«PENDENTE: …»` todo dado do cliente que
  * ainda não chegou, em vez de preencher por aproximação — dado de outra empresa
- * num documento de LGPD é pior que campo em branco. Hoje falta só o domínio.
+ * num documento de LGPD é pior que campo em branco.
+ *
+ * ⚠️ **Desde 22/09/2026 não falta nenhum.** O último era o domínio, preenchido
+ * quando `restauranteprato.com.br` passou a responder pela Vercel — e não
+ * quando foi decidido, que é uma data três dias anterior. A trava continua
+ * existindo e continua correta; o que mudou é que ela não tem mais o que
+ * barrar.
  *
  * O aviso de não publicar existia em comentário, e comentário não impede nada.
  * A regra passa a ser cobrada: `SITE_INDEXABLE=true` com pendência derruba a
@@ -21,10 +27,21 @@ import {
  * o host errado leva semanas para sair do índice.
  */
 describe("pendências dos documentos legais", () => {
-  it("encontra o que ainda falta, hoje", () => {
-    // Se este teste começar a falhar porque a lista esvaziou, ótimo: significa
-    // que o domínio chegou. Aí é trocar por `toEqual([])`.
-    expect(pendenciasLegais()).toContain("site");
+  it("não falta nenhum — e o domínio é um domínio, não um vazio", () => {
+    /*
+     * A versão anterior cobrava `toContain("site")` e deixou escrito o que
+     * fazer quando esvaziasse: "ótimo, significa que o domínio chegou; aí é
+     * trocar por `toEqual([])`". Foi o que aconteceu em 22/09/2026.
+     *
+     * ⚠️ Mas `toEqual([])` sozinho passaria com o campo APAGADO, e apagar é o
+     * jeito mais fácil de "resolver" uma pendência: sem o campo, não há
+     * `«PENDENTE»` para encontrar, e os Termos passariam a falar de um site sem
+     * nome. Por isso as duas asserções andam juntas — a lista vazia E o valor
+     * parecendo um domínio de verdade.
+     */
+    expect(pendenciasLegais()).toEqual([]);
+    expect(legalEntity.site).toMatch(/^[a-z0-9.-]+\.[a-z]{2,}$/);
+    expect(legalEntity.site).not.toMatch(/PENDENTE/);
   });
 
   it("não confunde dado preenchido com pendência", () => {

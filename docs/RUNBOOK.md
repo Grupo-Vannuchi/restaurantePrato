@@ -165,7 +165,9 @@ quem lê a ignorar o aviso.
 
 ## Domínio próprio — `restauranteprato.com.br`
 
-**Decidido em 21/09/2026.** ⚠️ **Ele já está registrado**, ativo desde
+✅ **No ar desde 22/09/2026.** O domínio responde pela Vercel, com `www` redirecionando 308 para o apex — verificado em `/`, `/cardapio`, `/galeria` e `/privacy`, com o caminho preservado no redirecionamento. O que segue aberto é só a **titularidade** (passo 1 abaixo).
+
+⚠️ **Ele já estava registrado**, ativo desde
 17/08/2026, no CNPJ **04.160.109/0001-47** (`fogao de ouro restaurante`) e
 apontando para o parking da Hostinger. Não há compra a fazer — há transferência.
 O contexto e o porquê estão em
