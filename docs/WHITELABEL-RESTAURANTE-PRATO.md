@@ -71,7 +71,7 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
 | Copy definitiva | ✅ Entregue em 19/08 e aplicada |
 | Facebook | `social` só tem Instagram; o `sameAs` sai com um item |
 | Fotos | ✅ Dez fotos autorais entraram em 03/09/2026 — topo da home, abertura do cardápio, três na ilha de massas e seis na galeria. **Falta** foto de sobremesa: a linha da sobremesa tem campo de imagem e hoje ocupa a largura toda sem ele |
-| Domínio final | **Decidido: `restauranteprato.com.br`** *(21/09/2026)*. ⚠️ **Não precisa ser comprado — já está registrado, e no CNPJ errado.** Ver a nota abaixo da tabela. O `«PENDENTE»` em `src/content/legal.ts` **continua**, e de propósito: ele só sai quando o domínio apontar para o site |
+| Domínio final | ✅ **No ar desde 22/09/2026: `restauranteprato.com.br`**, servido pela Vercel em `gru1`, com `www` redirecionando 308 para o apex e o caminho preservado. O `«PENDENTE»` de `src/content/legal.ts` **saiu** — `pendenciasLegais()` devolve lista vazia, e era a última pendência jurídica do projeto. ⚠️ **Falta a titularidade:** o registro segue no CNPJ do cliente anterior. Ver a nota abaixo |
 | Telefone fixo | Não existe: `contact.phone` é opcional e cada CTA de ligar some sozinho |
 | Cardápio | ✅ Buffet, ilha de massas, sobremesas, bebidas e carta de vinhos estão no ar. **Falta** o preço do quilo, o da porção de massa e o dos adicionais — sem eles o aviso de preço some sozinho. Os pratos do buffet vivem no banco e entram por script versionado; sobremesas, bebidas e vinhos vivem no código |
 

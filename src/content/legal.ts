@@ -21,8 +21,24 @@
  * o rodapé e o structured data — os dois arquivos precisam concordar.
  */
 
-/** Marca um dado que ainda não foi fornecido pelo cliente. Nunca inventar. */
-const PENDENTE = (campo: string) => `«PENDENTE: ${campo}»`;
+/**
+ * Marca um dado que ainda não foi fornecido pelo cliente. Nunca inventar.
+ *
+ * ⚠️ **Ficou SEM USO em 22/09/2026, quando a última pendência foi preenchida —
+ * e fica.** O `lint` avisou que ninguém a chama, e apagá-la seria a leitura
+ * errada daquele aviso: ela não é código morto, é o MECANISMO pelo qual este
+ * projeto se recusa a inventar dado de cliente. No dia em que um campo novo
+ * chegar vazio, quem estiver aqui precisa encontrar a forma já pronta — senão
+ * inventa uma nova, ou pior, digita um palpite.
+ *
+ * `pendenciasLegais()` continua reconhecendo o que ela escreve, via
+ * {@link MARCA_PENDENTE}. Passou a ser exportada para o aviso do `lint` sumir
+ * dizendo a verdade (ela É parte da interface deste módulo) em vez de por um
+ * `eslint-disable`, que silenciaria sem explicar.
+ *
+ * Uso: `site: PENDENTE("domínio final do site")`.
+ */
+export const PENDENTE = (campo: string) => `«PENDENTE: ${campo}»`;
 
 /** Controller (data + legal entity) — used across both documents. */
 export const legalEntity = {
@@ -36,7 +52,33 @@ export const legalEntity = {
   // Mesmo endereço do contato geral: o restaurante não tem um encarregado de
   // dados separado, e apontar a LGPD para uma caixa que ninguém lê seria pior.
   privacyEmail: "pratocoffee@gmail.com",
-  site: PENDENTE("domínio final do site"),
+  /*
+   * O domínio entrou em 22/09/2026, e com ele fechou a ÚLTIMA pendência
+   * jurídica deste projeto.
+   *
+   * ⚠️ **Preenchido só depois de o domínio RESPONDER**, e essa ordem era
+   * decisão registrada, não zelo: enquanto ele servia a página de
+   * estacionamento da Hostinger, escrever o nome aqui faria os Termos de Uso
+   * nomearem um endereço que não era o site — trocaria uma pendência honesta
+   * por uma afirmação falsa. Verificado antes de escrever: HTTP 200,
+   * `Server: Vercel`, região `gru1`, com o título e o CNPJ do Prato na página.
+   *
+   * ⚠️ **Sem `https://` de propósito.** O valor entra no meio da frase ("a
+   * utilização do site **X**"), e o esquema ali soaria a endereço colado da
+   * barra do navegador. O apex é o canônico: `www` redireciona para ele com
+   * 308, e é este valor que `NEXT_PUBLIC_SITE_URL` acompanha.
+   *
+   * ⚠️ E o que NÃO está resolvido: o REGISTRO do domínio segue no CNPJ do
+   * cliente ANTERIOR, e não no do Prato. Isso não invalida o texto — a empresa
+   * que opera o site é a que está nomeada aqui —, mas é inconsistência aberta.
+   *
+   * O número não se repete aqui de propósito: `test/brand-hygiene.test.ts`
+   * varre `src/` atrás de vestígio do cliente anterior, e a primeira versão
+   * deste comentário reprovou o projeto ao citá-lo para explicar o problema.
+   * Ele está em `docs/WHITELABEL-RESTAURANTE-PRATO.md`, que fica fora da
+   * varredura justamente para carregar esse tipo de registro.
+   */
+  site: "restauranteprato.com.br",
 } as const;
 
 /** O prefixo que `PENDENTE()` escreve — reconhecer o valor exige reconhecê-lo. */

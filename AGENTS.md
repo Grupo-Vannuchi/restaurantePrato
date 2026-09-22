@@ -43,15 +43,20 @@ bugs they prevent. Follow them.
 - **Never invent client data.** What is still unknown gets `«PENDENTE: …»` in
   `src/content/legal.ts` on purpose; filling it with a plausible guess — or with
   the agency's old values — is a legal problem, not a cosmetic one.
-  ⚠️ **As of 15/09 exactly ONE field is pending there: the final domain.** An
-  earlier version of this rule listed four — razão social, CNPJ, the LGPD
-  officer's e-mail and the domain — and three of those have been filled since
-  17/08: the legal name and CNPJ came with the confirmed data, and the LGPD
+  ⚠️ **As of 22/09/2026 NOTHING is pending there — `pendenciasLegais()` returns
+  an empty list.** This rule has now listed four pendings, then one, then none:
+  the legal name and CNPJ came with the confirmed data on 17/08, the LGPD
   address is the general contact e-mail on purpose (the restaurant has no
   separate data officer, and pointing LGPD at a mailbox nobody reads would be
-  worse). Read the file, not this list: `pendencias()` there sweeps the fields
-  and is the only answer that cannot go stale. A stale list of unknowns costs
-  the client being asked twice for data they already sent.
+  worse), and the final domain — `restauranteprato.com.br` — was filled on
+  22/09, **after the domain answered from Vercel**, not when it was decided.
+  That order was the whole point: while it still served Hostinger's parked page,
+  writing it here would have made the Terms name an address that was not the
+  site.
+  **Read the file, not this list.** `pendenciasLegais()` sweeps the fields and is
+  the only answer that cannot go stale — this paragraph has been wrong three
+  times, and each staleness costs the client being asked twice for data they
+  already sent.
 - Use the dedicated tools/skills. When touching DB, React, security or Next.js,
   the matching skill encodes deeper rules — these are the project-specific subset.
 
@@ -377,10 +382,17 @@ null by hardcoding a number.
   the agency's repo this project was forked from; a stray push would publish the
   client's site there. It is *local* config — a fresh clone must re-run
   `git remote set-url --push upstream no_push`.
-- **The site ships closed to search engines.** `SITE_INDEXABLE` defaults to `false`,
-  and only the exact string `"true"` opens it — see `docs/RUNBOOK.md`. Don't
-  "helpfully" flip the default: while `src/content/legal.ts` still carries a
-  `«PENDENTE»`, an indexed site is a legal problem, not a milestone.
+- **`SITE_INDEXABLE` defaults to `false`, and only the exact string `"true"`
+  opens the site to search engines** — see `docs/RUNBOOK.md`. The guard stays:
+  `impedimentoParaIndexar()` fails the build if it is `true` while
+  `src/content/legal.ts` carries a `«PENDENTE»`, because an indexed site with an
+  incomplete LGPD document is a legal problem, not a milestone.
+  ⚠️ **What changed on 22/09/2026 is that the blocker is gone, not the guard.**
+  The last legal pending — the final domain — was filled once
+  `restauranteprato.com.br` answered from Vercel, so the build no longer refuses
+  `true`. Flipping it is now an ordinary deploy decision. Don't read the
+  cleared guard as permission to flip it back and forth: the default stays
+  `false` so a fresh environment is closed until someone says otherwise.
 - **Prisma config lives in `prisma.config.ts`**, not `package.json#prisma` (removed
   in Prisma 7). ⚠️ Once any Prisma config file exists, the CLI **stops auto-loading
   `.env`** — the config loads it itself, guarded by `existsSync` so it is a no-op on
