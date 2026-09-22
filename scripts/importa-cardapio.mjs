@@ -5,10 +5,10 @@
  * útil. Aqui cada prato entra UMA vez: "filé de frango grelhado" sai todos os
  * dias, e um cadastro por dia significaria corrigir a mesma linha cinco vezes.
  *
- * ⚠️ **Em 17/09/2026 chegou uma SEGUNDA SEMANA, e ela mudou a forma do
- * arquivo.** O cliente mandou dez listas — cinco dias × duas semanas — e a
- * rotação de duas semanas **não cabe no modelo**: `MenuItem.weekdays` é `Int[]`
- * de 1 a 5, sem dimensão de semana, aqui e no projeto irmão igualmente.
+ * ⚠️ **Em 17/09/2026 chegou uma SEGUNDA SEMANA, e em 21/09 uma TERCEIRA.** São
+ * quinze listas — cinco dias × três semanas — e a rotação **não cabe no
+ * modelo**: `MenuItem.weekdays` é `Int[]` de 1 a 5, sem dimensão de semana,
+ * aqui e no projeto irmão igualmente.
  *
  * O que se fez, e o porquê de cada metade:
  *
@@ -19,15 +19,36 @@
  *   publicar uma semana só acertaria metade das vezes — pior que publicar as
  *   duas.
  *
- * Dos 180 pratos nomeados que chegaram, 16 eram novos, e **todos os 16 são da
- * segunda semana**: a primeira semana do papel novo é o cardápio que este
- * arquivo já tinha. Vinte e quatro entradas eram variação de grafia
+ * Dos 180 pratos nomeados que chegaram em 17/09, 16 eram novos, e **todos os 16
+ * eram da segunda semana**: a primeira semana daquele papel é o cardápio que
+ * este arquivo já tinha. Vinte e quatro entradas eram variação de grafia
  * ("farota"→Farofa, "esfoliado"→Folheado, "porpetone"→Polpetone) e foram
  * normalizadas, como sempre.
  *
- * ⚠️ **Seis lacunas do próprio papel NÃO foram preenchidas por dedução** — três
- * itens vazios na segunda da 1ª semana, o nº 10 ausente na quarta da 2ª, e dois
- * nomes truncados. Estão nomeadas em `ESPERADO_POR_LISTA`, linha por linha.
+ * A terceira semana, de 21/09, trouxe **13 pratos novos** — berinjela ao forno,
+ * arroz de alho-poró, anchova à mineira, talharim com camarão, canelone de
+ * presunto e queijo, lasanha de peito de peru, penne à calabresa, rocambole de
+ * carne, suflê de brócolis, frango assado (sobrecoxa), bacalhau com batatas,
+ * camarão à paulista e fraldinha na cerveja preta. Mesma normalização de grafia
+ * ("berinjala"→berinjela, "mileanesa"→milanesa, "quijo"→queijo, "teriaki"→
+ * teriyaki, "strogonof"→Strogonoff).
+ *
+ * ⚠️ **E um prato VOLTOU da lista herdada:** o purê de batata, que estava em
+ * `PRATOS_HERDADOS` por não constar do papel de 17/09, aparece na segunda da
+ * terceira semana. Ver a nota dele — ele sai de quinta no mesmo movimento, e
+ * isso é uma pergunta para o cliente.
+ *
+ * ⚠️ **As lacunas do próprio papel NÃO foram preenchidas por dedução.** São
+ * onze, e cada uma está nomeada em `ESPERADO_POR_LISTA`, linha por linha: três
+ * itens vazios na segunda da 1ª semana; o nº 10 ausente na quarta da 2ª; o nº 5
+ * ausente na terça da 3ª; o nº 13 vindo como `**` na sexta da 3ª; uma farofa
+ * repetida em dois números na mesma lista; e quatro nomes que chegaram
+ * truncados ou genéricos demais para virar prato — `Penne com rúcula "...."`,
+ * `Meca à "..."`, `Sfogliatti` e um `omelete` sem recheio, num cardápio que já
+ * tem duas omeletes diferentes.
+ *
+ * O `omelete` segue a mesma regra que já valia para o `pastel` sem recheio:
+ * escolher qual das duas seria inventar dado do cliente.
  *
  * ⚠️ **As descrições ficam vazias, de propósito.** O cliente mandou só os nomes.
  * Escrever "marinado por 24 horas" ou "ao molho da casa" num cardápio é
@@ -83,7 +104,8 @@ const CATEGORIAS = [
 
 /**
  * Quantos pratos cada LISTA do cliente tem. É a verificação embutida, e ela
- * passou de cinco contas para dez em 17/09/2026, quando chegou a segunda semana.
+ * cresceu com os papéis: cinco contas em 03/09, dez em 17/09 e **quinze em
+ * 21/09/2026**, quando chegou a terceira semana.
  *
  * ⚠️ Os números descontam as lacunas que o próprio papel deixou, nomeadas linha
  * por linha — para a conta poder ser refeita à mão, e para ninguém "fechar" o
@@ -100,6 +122,12 @@ const ESPERADO_POR_LISTA = {
   "3b": 16, // 19 numerados, menos o nº 10 (ausente), o "Meca à ..." ilegível e o "pastel" sem recheio
   "4b": 18, // 18 numerados
   "5b": 17, // 18 numerados, menos o "pastel" sem recheio
+  // ── Terceira semana, chegada em 21/09/2026 ──────────────────────────────
+  "1c": 18, // 19 numerados, menos o "pastel" sem recheio
+  "2c": 15, // 19 numerados, menos o nº 5 (ausente), o "omelete" sem recheio, o "Sfogliatti" e o "pastel"
+  "3c": 18, // 19 numerados, menos o "pastel" sem recheio
+  "4c": 17, // 18 numerados, menos o "pastel" sem recheio
+  "5c": 16, // 19 numerados, menos o nº 13 ("**"), a farofa repetida no nº 14 e o "pastel"
 };
 
 /**
@@ -116,10 +144,10 @@ const ESPERADO_POR_LISTA = {
  * nas dez listas novas. **Confirmar se ainda são servidos.**
  */
 const HERDADOS_POR_DIA = {
-  1: 4,
+  1: 3,
   2: 8,
   3: 5,
-  4: 4,
+  4: 3,
 };
 
 /**
@@ -136,67 +164,88 @@ const PRATOS = [
   ["Arroz", [], "acompanhamentos"],
   ["Arroz integral", [], "acompanhamentos"],
   ["Feijão", [], "acompanhamentos"],
-  ["Feijão preto", ["3a", "3b"], "acompanhamentos"],
-  ["Couve mineira", ["1a", "3a", "1b", "3b"], "acompanhamentos"],
-  ["Ovos fritos", ["1a", "3a", "1b", "3b"], "acompanhamentos"],
-  ["Farofa", ["1a", "2a", "3a", "5a", "1b", "2b", "3b", "4b", "5b"], "acompanhamentos"],
+  ["Feijão preto", ["3a", "3b", "3c"], "acompanhamentos"],
+  ["Couve mineira", ["1a", "3a", "1b", "3b", "1c", "3c"], "acompanhamentos"],
+  ["Ovos fritos", ["1a", "3a", "1b", "3b", "1c", "3c"], "acompanhamentos"],
+  ["Farofa", ["1a", "2a", "3a", "5a", "1b", "2b", "3b", "4b", "5b", "1c", "2c", "3c", "4c", "5c"], "acompanhamentos"],
   ["Polenta", ["4a"], "acompanhamentos"],
-  ["Arroz de limão siciliano", ["4a"], "acompanhamentos"],
+  ["Arroz de limão siciliano", ["4a", "4c"], "acompanhamentos"],
   ["Arroz de fraldinha", ["2b"], "acompanhamentos"],
   ["Batata recheada com presunto e queijo", ["4b"], "acompanhamentos"],
   ["Creme de palmito na moranga", ["4a"], "acompanhamentos"],
   ["Couve-flor à dorê", ["4a", "4b"], "acompanhamentos"],
   ["Abobrinha recheada", ["5a"], "acompanhamentos"],
-  ["Tempura de legumes", ["5a", "5b"], "acompanhamentos"],
+  ["Tempura de legumes", ["5a", "5b", "5c"], "acompanhamentos"],
   ["Abobrinha à dorê", ["5b"], "acompanhamentos"],
   ["Arroz com lentilha", ["4b"], "acompanhamentos"],
   ["Berinjela à milanesa", ["1b"], "acompanhamentos"],
-  ["Brócolis à dorê", ["2b"], "acompanhamentos"],
+  ["Brócolis à dorê", ["2b", "2c"], "acompanhamentos"],
   ["Feijão branco com dobradinha", ["2b"], "acompanhamentos"],
-  ["Feijão tropeiro", ["1b"], "acompanhamentos"],
+  ["Feijão tropeiro", ["1b", "1c"], "acompanhamentos"],
+  ["Berinjela ao forno", ["1c"], "acompanhamentos"],
+  ["Arroz de alho-poró", ["2c"], "acompanhamentos"],
+  ["Suflê de brócolis", ["4c"], "acompanhamentos"],
+  /*
+   * ⚠️ **Voltou da lista herdada em 21/09/2026** — ele estava em
+   * `PRATOS_HERDADOS` porque o papel de 17/09 nao o repetia, e o de 21/09
+   * traz de volta, na segunda da terceira semana.
+   *
+   * ⚠️ E sai de QUINTA. Na lista de 03/09 ele era servido nos dias 1 e 4; a
+   * unica evidencia da quinta era aquela lista, e dois papeis depois ela nao
+   * se repetiu. Seguir afirmando a quinta seria manter no ar um dia que
+   * nenhum documento atual sustenta. **Confirmar com o cliente se ele ainda
+   * sai na quinta.**
+   */
+  ["Purê de batata", ["1c"], "acompanhamentos"],
 
   // ── Carnes ────────────────────────────────────────────────────────────
-  ["Bife à rolê", ["1a"], "carnes"],
-  ["Torresmo e calabresa", ["1a", "3a", "1b", "3b"], "carnes"], // CONFIRMAR: no papel vem "torresmo/calabresa"
+  ["Bife à rolê", ["1a", "1c"], "carnes"],
+  ["Torresmo e calabresa", ["1a", "3a", "1b", "3b", "1c", "3c"], "carnes"], // CONFIRMAR: no papel vem "torresmo/calabresa"
   ["Bife acebolado", ["2a"], "carnes"],
   ["Dobradinha", ["2a"], "carnes"],
-  ["Polpetone de toscana", ["2a", "2b"], "carnes"],
-  ["Carnes de feijoada", ["3a", "3b"], "carnes"],
-  ["Strogonoff de carne", ["3a", "3b"], "carnes"],
+  ["Polpetone de toscana", ["2a", "2b", "2c"], "carnes"],
+  ["Carnes de feijoada", ["3a", "3b", "3c"], "carnes"],
+  ["Strogonoff de carne", ["3a", "3b", "3c"], "carnes"],
   ["Hambúrguer de picanha", ["3a"], "carnes"],
-  ["Rabada", ["4a"], "carnes"],
-  ["Pernil", ["4a", "4b"], "carnes"],
+  ["Rabada", ["4a", "2c"], "carnes"],
+  ["Pernil", ["4a", "4b", "4c"], "carnes"],
   ["Fígado grelhado acebolado", ["4a"], "carnes"],
-  ["Escondidinho de carne seca", ["4a", "4b"], "carnes"],
+  ["Escondidinho de carne seca", ["4a", "4b", "4c"], "carnes"],
   ["Carne assada", ["5a", "5b"], "carnes"],
   ["Isca de carne acebolada", ["2b"], "carnes"],
-  ["Picanha suína e lombo", ["1b"], "carnes"], // CONFIRMAR: no papel vem "picanha suina/ lombo"
+  ["Rocambole de carne", ["4c"], "carnes"],
+  ["Fraldinha na cerveja preta", ["5c"], "carnes"],
+  ["Picanha suína e lombo", ["1b", "1c"], "carnes"], // CONFIRMAR: no papel vem "picanha suina/ lombo"
 
   // ── Frangos ───────────────────────────────────────────────────────────
   ["Filé de frango grelhado", [], "frangos"], // CONFIRMAR: só a segunda da 1ª semana diz "grelhado"
   ["Frango à parmegiana", ["1a", "2b"], "frangos"],
-  ["Chicken fried (sobrecoxa à dorê)", ["2a"], "frangos"],
-  ["Frango crocante", ["3a"], "frangos"],
-  ["Frango teriyaki", ["4a", "5b"], "frangos"],
+  ["Chicken fried (sobrecoxa à dorê)", ["2a", "2c"], "frangos"],
+  ["Frango crocante", ["3a", "3c"], "frangos"],
+  ["Frango teriyaki", ["4a", "5b", "5c"], "frangos"],
   ["Peito assado", ["5a", "1b"], "frangos"],
-  ["Isca de frango", ["1b"], "frangos"],
+  ["Isca de frango", ["1b", "1c"], "frangos"],
   ["Rocambole de frango com bacon", ["4b"], "frangos"],
+  ["Frango assado (sobrecoxa)", ["4c"], "frangos"],
 
   // ── Peixes e frutos do mar ────────────────────────────────────────────
-  ["Peixe grelhado", ["1a", "1b"], "peixes-e-frutos-do-mar"],
-  ["Peixe crocante", ["2a", "5a", "2b"], "peixes-e-frutos-do-mar"],
+  ["Peixe grelhado", ["1a", "1b", "1c"], "peixes-e-frutos-do-mar"],
+  ["Peixe crocante", ["2a", "5a", "2b", "2c"], "peixes-e-frutos-do-mar"],
   ["Salmão grelhado", ["5a", "5b"], "peixes-e-frutos-do-mar"],
-  ["Isca de peixe", ["5b"], "peixes-e-frutos-do-mar"],
+  ["Isca de peixe", ["5b", "5c"], "peixes-e-frutos-do-mar"],
   ["Pescada amarela", ["3a"], "peixes-e-frutos-do-mar"], // CONFIRMAR: no papel da 1ª semana vem "peixada amarela" — peixada é ensopado, pescada é o peixe
-  ["Cação grelhado", ["4a", "4b"], "peixes-e-frutos-do-mar"],
+  ["Cação grelhado", ["4a", "4b", "4c"], "peixes-e-frutos-do-mar"],
   ["Bobó de camarão", ["5a", "5b"], "peixes-e-frutos-do-mar"],
-  ["Risoto de frutos do mar", ["5a", "5b"], "peixes-e-frutos-do-mar"],
+  ["Risoto de frutos do mar", ["5a", "5b", "5c"], "peixes-e-frutos-do-mar"],
   ["Anchova ao molho de laranja", ["5a"], "peixes-e-frutos-do-mar"],
+  ["Anchova à mineira", ["3c"], "peixes-e-frutos-do-mar"],
+  ["Bacalhau com batatas", ["5c"], "peixes-e-frutos-do-mar"],
+  ["Camarão à paulista", ["5c"], "peixes-e-frutos-do-mar"],
 
   // ── Massas e risotos ──────────────────────────────────────────────────
-  ["Espaguete alho e óleo", ["1a", "1b"], "massas-e-risotos"],
+  ["Espaguete alho e óleo", ["1a", "1b", "1c"], "massas-e-risotos"],
   ["Nhoque de mandioquinha ao sugo", ["2b"], "massas-e-risotos"],
-  ["Nhoque tradicional ao sugo", ["4b"], "massas-e-risotos"], // CONFIRMAR: no papel da 2ª semana vem só "nhoque ao sugo", e há dois ao sugo
+  ["Nhoque tradicional ao sugo", ["4b", "2c", "4c"], "massas-e-risotos"], // CONFIRMAR: no papel da 2ª semana vem só "nhoque ao sugo", e há dois ao sugo
   ["Lasanha de berinjela", ["2a"], "massas-e-risotos"],
   ["Rondeli de frango com catupiry", ["2a"], "massas-e-risotos"],
   ["Risoto de alho-poró", ["2a"], "massas-e-risotos"],
@@ -204,20 +253,24 @@ const PRATOS = [
   ["Talharim com brócolis", ["3a", "3b"], "massas-e-risotos"],
   ["Nhoque recheado de três queijos", ["4a"], "massas-e-risotos"],
   ["Lasanha de presunto e queijo", ["4a", "2b"], "massas-e-risotos"],
-  ["Yakissoba de legumes", ["5a", "5b"], "massas-e-risotos"],
+  ["Yakissoba de legumes", ["5a", "5b", "5c"], "massas-e-risotos"],
   ["Penne com rúcula, tomate seco e queijo branco", ["5a", "4b"], "massas-e-risotos"], // CONFIRMAR: na 1ª semana o nome vem truncado: «Penne com rúcula "...."»
   ["Espaguete de frango", ["2b"], "massas-e-risotos"],
   ["Lasanha à margarida", ["4b"], "massas-e-risotos"], // CONFIRMAR: no papel vem "lasanha a margarida" — provavelmente à margherita
-  ["Panqueca de carne", ["1b"], "massas-e-risotos"],
-  ["Rondeli de peito de peru", ["3b"], "massas-e-risotos"],
+  ["Panqueca de carne", ["1b", "1c"], "massas-e-risotos"],
+  ["Rondeli de peito de peru", ["3b", "2c"], "massas-e-risotos"],
   ["Talharim à carbonara", ["5b"], "massas-e-risotos"],
+  ["Talharim com camarão", ["3c"], "massas-e-risotos"],
+  ["Canelone de presunto e queijo", ["3c"], "massas-e-risotos"],
+  ["Lasanha de peito de peru", ["4c"], "massas-e-risotos"],
+  ["Penne à calabresa", ["4c"], "massas-e-risotos"],
 
   // ── Fritos ────────────────────────────────────────────────────────────
-  ["Salgados", ["1a", "2a", "3a", "4a", "5a", "1b", "2b", "3b", "4b"], "fritos"],
-  ["Batata frita", ["1a", "2a", "3a", "4a", "5a", "2b", "3b", "4b", "5b"], "fritos"],
+  ["Salgados", ["1a", "2a", "3a", "4a", "5a", "1b", "2b", "3b", "4b", "1c", "2c", "3c", "4c", "5c"], "fritos"],
+  ["Batata frita", ["1a", "2a", "3a", "4a", "5a", "2b", "3b", "4b", "5b", "2c", "3c", "4c", "5c"], "fritos"],
   ["Folheado de presunto e queijo", ["1a"], "fritos"],
   ["Pastel de brócolis", ["2a", "1b"], "fritos"],
-  ["Mandioca frita", ["2a", "3b", "5b"], "fritos"],
+  ["Mandioca frita", ["2a", "3b", "5b", "3c", "5c"], "fritos"],
   ["Pastel de siri", ["4b"], "fritos"],
   ["Pastel de queijo", ["3a"], "fritos"],
 
@@ -229,7 +282,6 @@ const PRATOS = [
 const PRATOS_HERDADOS = [
   // ── Acompanhamentos ───────────────────────────────────────────────────
   ["Tutu", [1], "acompanhamentos"],
-  ["Purê de batata", [1, 4], "acompanhamentos"],
   ["Suflê de palmito", [2], "acompanhamentos"],
 
   // ── Carnes ────────────────────────────────────────────────────────────
@@ -324,16 +376,65 @@ function verificar() {
   const repetidos = slugs.filter((s, i) => slugs.indexOf(s) !== i);
   if (repetidos.length) problemas.push(`slug repetido: ${[...new Set(repetidos)].join(", ")}`);
 
-  for (const [nome, dias, cat] of TODOS_OS_PRATOS) {
+  /*
+   * ⚠️ **Este laço lia TOKEN como se fosse DIA, e os dois defeitos vieram do
+   * mesmo lugar: ele foi escrito quando a segunda posição era `[1, 4]` e não
+   * foi revisto quando os tokens de semana chegaram, em 17/09/2026.**
+   *
+   * · `dias.length === 5` contava TOKENS. Em 21/09 a terceira semana deu cinco
+   *   tokens à mandioca frita — `2a, 3b, 5b, 3c, 5c` — e o guarda reprovou a
+   *   carga dizendo "use [] em vez de [1,2,3,4,5]". São TRÊS dias (2, 3 e 5).
+   *   Falso positivo, e ele apareceu só porque nenhum prato tinha tido cinco
+   *   tokens antes;
+   * · `d < 1 || d > 5` compara `"2a"` com número. Em JavaScript isso é sempre
+   *   falso, então a checagem de faixa **não fazia nada há duas semanas** —
+   *   um `"9a"` teria passado direto. Esse é o defeito pior: o outro reclamava
+   *   alto, este ficava calado.
+   *
+   * Agora a conversão é explícita: `diasDe()` transforma token em dia, e é
+   * sobre o dia que as duas regras valem. E o FORMATO do token passa a ser
+   * verificado — `[1-5][a-c]` —, porque `diasDe` lê só o primeiro caractere e
+   * engoliria `"3d"` (uma quarta semana que não existe) sem dizer nada.
+   */
+  for (const [nome, listas, cat] of TODOS_OS_PRATOS) {
     if (!CATEGORIAS.some(([slug]) => slug === cat)) {
       problemas.push(`${nome}: categoria desconhecida "${cat}"`);
     }
+
+    const malformados = listas.filter((l) => !/^[1-5][a-c]$/.test(l));
+    if (malformados.length) {
+      problemas.push(`${nome}: token fora do formato [1-5][a-c] (${malformados.join(",")})`);
+    }
+
+    const dias = diasDe(listas);
     if (dias.some((d) => d < 1 || d > 5)) {
       problemas.push(`${nome}: dia fora de 1..5 (${dias.join(",")})`);
     }
-    if (dias.length === 5) {
-      problemas.push(`${nome}: use [] em vez de [1,2,3,4,5]`);
-    }
+    /*
+     * ⚠️ **A regra "sai todo dia, use []" FOI REMOVIDA em 21/09/2026, e o
+     * motivo é que ela pertencia a um significado que a segunda posição já não
+     * tem.**
+     *
+     * Quando ela foi escrita, a segunda posição era uma lista de DIAS: `[1, 4]`.
+     * Ali, `[1,2,3,4,5]` e `[]` diziam exatamente a mesma coisa, e preferir o
+     * vazio era simplificação legítima.
+     *
+     * Com os tokens de semana, a segunda posição passou a dizer OUTRA coisa: em
+     * QUAIS listas do papel o prato apareceu. Isso é mais informação que o
+     * conjunto de dias, e é justamente a informação que a verificação por lista
+     * consome. Com a terceira semana, farofa, salgados e batata frita passaram a
+     * cobrir os cinco dias — e trocá-los por `[]` teria dois efeitos:
+     *
+     * · **nenhum** sobre o que vai para o banco: `diasDe` devolve `[1,2,3,4,5]`
+     *   nos dois casos, verificado;
+     * · **quebrar a conta**: `[]` casa com todas as quinze listas, inclusive a
+     *   `4a`, onde o papel da quinta da primeira semana não traz farofa. O total
+     *   daquela lista passaria de 18 para 19 e o guarda acusaria a carga por um
+     *   prato que o cliente não listou ali.
+     *
+     * Ou seja: obedecer à regra apagaria a procedência para não ganhar nada. O
+     * que sobra deste laço — formato do token e faixa do dia — continua valendo.
+     */
   }
 
   /*
@@ -404,8 +505,8 @@ async function main() {
       return `${lista}:${total}`;
     })
     .join("  ");
-  console.log(`${TODOS_OS_PRATOS.length} pratos (${PRATOS.length} do papel de 17/09 + ${PRATOS_HERDADOS.length} herdados), ${CATEGORIAS.length} categorias`);
-  console.log(`pratos do papel novo, por lista  ${porDia}  (conferido contra a lista do cliente)`);
+  console.log(`${TODOS_OS_PRATOS.length} pratos (${PRATOS.length} dos papéis de 17/09 e 21/09 + ${PRATOS_HERDADOS.length} herdados de 03/09), ${CATEGORIAS.length} categorias`);
+  console.log(`pratos por lista do cliente  ${porDia}  (conferido contra a lista do cliente)`);
 
   if (DRY) {
     console.log("\namostra de slug:");

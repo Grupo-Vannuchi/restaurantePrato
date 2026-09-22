@@ -57,7 +57,7 @@ propósito: veja [`superpowers/README.md`](superpowers/README.md).
 | Cobrança | Buffet **por quilo**, cobrado pelo peso do prato montado *(31/08/2026)*. Os valores ainda não vieram |
 | Ilha de massas | Existe, e tem **preço próprio**, à parte do buffet *(31/08/2026)*. A composição — dez formatos, dois preparos, seis molhos, porção de 190 g e até cinco ingredientes — foi confirmada em 03/09/2026 como a mesma do projeto irmão. O valor da porção e o dos dois adicionais ainda não vieram |
 | Sobremesas e bebidas | Onze sobremesas e onze bebidas, transcritas do quadro do salão fotografado em 02–03/09/2026, **com preço por item** — elas não entram no valor por quilo. Falta o preço da Heineken, que não tem etiqueta no quadro |
-| Cardápio do buffet | 82 pratos em cinco listas por dia útil *(03/09/2026)*. Entram por `scripts/importa-cardapio.mjs`, que recusa a carga se algum dia não fechar com a lista do cliente |
+| Cardápio do buffet | **111 pratos** em **quinze listas** — cinco dias × três semanas. O papel cresceu em três entregas: 5 listas em 03/09, 10 em 17/09 e 15 em **21/09/2026**. Entram por `scripts/importa-cardapio.mjs`, que recusa a carga se alguma lista não fechar com a do cliente. ⚠️ A rotação de semana **não cabe no modelo** (`MenuItem.weekdays` é `Int[]` de 1 a 5): o banco recebe a UNIÃO, e a semana fica preservada nos tokens da fonte |
 
 Esses valores vivem em dois arquivos que precisam concordar:
 [`src/config/site.ts`](../src/config/site.ts) (marca, contato, structured data)
