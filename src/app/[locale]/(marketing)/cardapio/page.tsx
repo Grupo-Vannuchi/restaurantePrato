@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MenuHero } from "@/components/cardapio/menu-hero";
+import { MenuPhoto } from "@/components/cardapio/menu-photo";
 import { MenuBackdrop } from "@/components/cardapio/menu-backdrop";
 import { MenuSection } from "@/components/cardapio/menu-section";
 import { DayTabs } from "@/components/cardapio/day-tabs";
@@ -129,7 +130,11 @@ export default async function CardapioPage({
           quem le a pagina por maquina. */}
       <MenuJsonLd locale={locale} secoes={secoesEstruturadas} />
 
+      {/* A capa assina, em faixa. Ver o docblock de `MenuHero`. */}
       <MenuHero />
+
+      {/* E a comida ocupa a primeira dobra — "comida vende, couro nao". */}
+      <MenuPhoto />
 
       {/* Coluna estreita: um cardápio é lido de cima a baixo, não varrido em
           grade. `max-w-3xl` mantém a linha na faixa confortável de leitura
