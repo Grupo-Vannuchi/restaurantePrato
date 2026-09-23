@@ -7,6 +7,11 @@ import {
   Newspaper,
   ShieldCheck,
   Building2,
+  Scale,
+  Flame,
+  UtensilsCrossed,
+  MapPin,
+  Clock,
   type LucideIcon,
 } from "lucide-react";
 import { Instagram } from "@/components/ui/brand-icons";
@@ -36,6 +41,21 @@ const icons: Record<string, LucideIcon> = {
   Newspaper,
   ShieldCheck,
   Building2,
+  /*
+   * Os cinco de comida e lugar, acrescentados em 23/09/2026 para as páginas de
+   * busca local — e a nota acima já previa isto: "se o cliente pedir ícones de
+   * comida, acrescentar aqui é uma linha cada".
+   *
+   * Cinco, e não vinte: cada entrada embarca em TODA página pública, porque o
+   * `Record` é estático. Estes cobrem o que as páginas dizem — a balança do
+   * buffet por quilo, a brasa do churrasco, o talher da ilha de massas, o ponto
+   * no mapa de quem procura endereço e o relógio do horário.
+   */
+  Scale,
+  Flame,
+  UtensilsCrossed,
+  MapPin,
+  Clock,
 };
 
 /** The icon names available to `Information.icon`, for admin pickers and validation. */
