@@ -415,14 +415,53 @@ for (const rota of rotas) {
              * não é tratado — cai no caminho de cima e segue com a margem
              * reta, que é o comportamento conservador.
              */
-            const raioBruto = Number.parseFloat(getComputedStyle(dono).borderRadius);
-            if (Number.isFinite(raioBruto) && raioBruto > 3) {
-              const r = Math.min(raioBruto, cx.width / 2, cx.height / 2);
-              const dx = Math.max(cx.left + r - x, x - (cx.right - r), 0);
-              const dy = Math.max(cx.top + r - y, y - (cx.bottom - r), 0);
+            /*
+             * ⚠️ **E o raio que recorta pode ser de um ANCESTRAL, não do
+             * elemento — foi assim que esta guarda deixou passar a oitava
+             * armadilha, em 23/09.**
+             *
+             * O título do card de `/novidades` é `absolute inset-x-0 top-0`: a
+             * caixa dele encosta no canto do card, que é `rounded-2xl` com
+             * `overflow-hidden`. O `border-radius` do próprio `h2` é **0**,
+             * então o teste acima não vetava nada — mas quem recorta a PINTURA
+             * ali é o pai, e o pixel a 4 px do canto é o fundo da página.
+             *
+             * Deu **1,87:1** em "Almoço perto da Catedral de Santos", só na
+             * largura de laptop, e custou uma tarde: li a reprova como defeito
+             * de desenho, reforcei o véu de legibilidade de 45% para 62% e mudei
+             * a janela transparente dele de lugar — e o número não se mexeu,
+             * porque nada daquilo tocava o pixel medido. A mudança foi desfeita;
+             * o que ficou foi isto.
+             *
+             * Mesma lição das outras sete: varredura que erra o pixel acusa o
+             * site de um defeito do instrumento, e o conserto que ela sugere é
+             * sempre plausível.
+             */
+            let foraDoCanto = false;
+            for (let no: Element | null = dono; no; no = no.parentElement) {
+              const estilo = getComputedStyle(no);
+              // Ancestral só conta se RECORTA: sem `overflow`, o raio dele é
+              // enfeite de borda e não apaga o que o filho pinta por cima.
+              if (
+                no !== dono &&
+                estilo.overflowX === "visible" &&
+                estilo.overflowY === "visible"
+              ) {
+                continue;
+              }
+              const raioBruto = Number.parseFloat(estilo.borderRadius);
+              if (!Number.isFinite(raioBruto) || raioBruto <= 3) continue;
+              const bx = no.getBoundingClientRect();
+              const r = Math.min(raioBruto, bx.width / 2, bx.height / 2);
+              const dx = Math.max(bx.left + r - x, x - (bx.right - r), 0);
+              const dy = Math.max(bx.top + r - y, y - (bx.bottom - r), 0);
               // Fora do círculo do canto, ou a menos de 3 px da curva dele.
-              if (dx > 0 && dy > 0 && Math.hypot(dx, dy) > r - 3) continue;
+              if (dx > 0 && dy > 0 && Math.hypot(dx, dy) > r - 3) {
+                foraDoCanto = true;
+                break;
+              }
             }
+            if (foraDoCanto) continue;
             // Só FOLHAS com texto: um contêiner "contém" o texto dos filhos, e
             // medir a cor dele contra a foto que ele embrulha não diz nada.
             if (dono.children.length > 0) continue;
