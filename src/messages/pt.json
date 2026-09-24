@@ -301,7 +301,7 @@
       "description": "Descrição",
       "content": "Texto",
       "contentHint": "Um bloco por linha. Aceita **negrito**, *itálico*, títulos ## e ###, listas com - e [links](/caminho).",
-      "featured": "Destaque na página inicial",
+      "featured": "Mostrar no menu do cabeçalho",
       "published": "Publicada (visível no site)",
       "create": "Criar novidade",
       "save": "Salvar alterações",
