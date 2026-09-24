@@ -146,79 +146,97 @@ export default async function ContactPage({
         imageAlt={t("headerAlt")}
       />
 
-      {/* O mapa antes do formulario: quem abre esta pagina quer saber onde fica
-          antes de escrever. Ele some do rodape aqui, para nao repetir — ver
-          `footer-map.tsx`. O titulo vem do namespace do rodape de proposito:
-          e a mesma frase, e duplica-la criaria dois lugares para manter. */}
-      <Section className="pb-0 sm:pb-0">
+      {/* ⚠️ **A ordem é canais → mapa → formulário, e mudou em 24/09/2026 a
+          pedido do cliente.** Antes o mapa abria a página e o formulário dividia
+          uma grade de duas colunas com os canais, num aside de 340 px.
+
+          A leitura que sustenta a ordem nova: quem abre `/contato` quase sempre
+          quer o WhatsApp ou o endereço, não escrever um e-mail. Os canais em
+          primeiro entregam isso sem rolagem; o mapa responde "onde fica" logo
+          abaixo; e o formulário, que é o caminho mais lento e o menos usado num
+          restaurante, fecha a página em vez de ocupar a primeira dobra.
+
+          O mapa continua ANTES do formulário, que era a razão original de ele
+          subir, e continua sumindo do rodapé aqui para não repetir — ver
+          `footer-map.tsx`. O título vem do namespace do rodapé de propósito: é a
+          mesma frase, e duplicá-la criaria dois lugares para manter. */}
+      <Section>
+        <h2 className="text-lg font-semibold">{t("infoTitle")}</h2>
+        {/* Os canais eram uma coluna estreita; soltos na largura da página
+            precisam de grade, senão viram uma fileira única de itens curtos com
+            um rio de espaço em branco à direita. */}
+        <ul role="list" className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {channels.map((channel) => (
+            <li key={channel.label} className="flex gap-3">
+              <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
+                <channel.icon className="size-5" />
+              </span>
+              {/* `min-w-0` autoriza esta coluna a encolher abaixo do
+                  conteúdo dela; sem isso o e-mail, que é uma palavra só,
+                  define a largura mínima da linha e empurra a página. O
+                  `break-words` nos valores é o outro lado do mesmo par —
+                  um sem o outro não resolve. */}
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {channel.label}
+                </p>
+                {channel.href ? (
+                  <a
+                    href={channel.href}
+                    target={channel.href.startsWith("http") ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className="break-words text-sm transition-colors hover:text-brand"
+                  >
+                    {channel.value}
+                  </a>
+                ) : (
+                  <p className="text-sm">{channel.value}</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+        {/* Empilhados no celular, em linha a partir do `sm`: soltos na largura
+            da página eles ficariam um por linha com a página inteira vazia ao
+            lado. */}
+        <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
+          <ReserveButton />
+          <a
+            href={mapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-medium text-brand underline-offset-4 hover:underline"
+          >
+            {t("route")}
+          </a>
+          {/* Convite para avaliar no Google. Sai da configuração, nunca
+              escrito aqui, e só aparece quando há URL — sem página no
+              Google, sem botão. Mesmo contrato dos botões de ligar, que
+              somem porque o restaurante não tem telefone fixo. */}
+          {avaliar ? (
+            <a
+              href={avaliar}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-brand underline-offset-4 hover:underline"
+            >
+              {tComum("reviewCta")}
+            </a>
+          ) : null}
+        </div>
+      </Section>
+
+      <Section className="pt-0 sm:pt-0">
         <div className="mx-auto max-w-3xl">
           <MapEmbed src={mapEmbedUrl()} title={tRodape("mapTitle")} />
         </div>
       </Section>
 
+      {/* A mesma largura do mapa, e não a da página: um formulário de 1280 px
+          põe o rótulo de um campo a meia tela do campo seguinte. */}
       <Section>
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="mx-auto max-w-3xl">
           <ContactForm />
-
-          <aside className="flex flex-col gap-6">
-            <h2 className="text-lg font-semibold">{t("infoTitle")}</h2>
-            <ul role="list" className="flex flex-col gap-5">
-              {channels.map((channel) => (
-                <li key={channel.label} className="flex gap-3">
-                  <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
-                    <channel.icon className="size-5" />
-                  </span>
-                  {/* `min-w-0` autoriza esta coluna a encolher abaixo do
-                      conteúdo dela; sem isso o e-mail, que é uma palavra só,
-                      define a largura mínima da linha e empurra a página. O
-                      `break-words` nos valores é o outro lado do mesmo par —
-                      um sem o outro não resolve. */}
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                      {channel.label}
-                    </p>
-                    {channel.href ? (
-                      <a
-                        href={channel.href}
-                        target={channel.href.startsWith("http") ? "_blank" : undefined}
-                        rel="noopener noreferrer"
-                        className="break-words text-sm transition-colors hover:text-brand"
-                      >
-                        {channel.value}
-                      </a>
-                    ) : (
-                      <p className="text-sm">{channel.value}</p>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <div className="flex flex-col gap-3">
-              <ReserveButton />
-              <a
-                href={mapsLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium text-brand underline-offset-4 hover:underline"
-              >
-                {t("route")}
-              </a>
-              {/* Convite para avaliar no Google. Sai da configuração, nunca
-                  escrito aqui, e só aparece quando há URL — sem página no
-                  Google, sem botão. Mesmo contrato dos botões de ligar, que
-                  somem porque o restaurante não tem telefone fixo. */}
-              {avaliar ? (
-                <a
-                  href={avaliar}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium text-brand underline-offset-4 hover:underline"
-                >
-                  {tComum("reviewCta")}
-                </a>
-              ) : null}
-            </div>
-          </aside>
         </div>
       </Section>
     </>

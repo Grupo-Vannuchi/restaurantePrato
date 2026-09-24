@@ -33,7 +33,35 @@ export async function getHeaderLinks(locale: Locale): Promise<HeaderLinks> {
      * seria uma ida ao banco em TODA página do site para preencher uma lista
      * que ninguém lê.
      */
-    const informations = await getInformations(locale);
+    /*
+     * ⚠️ **`featuredOnly` desde 24/09/2026: o menu passou a listar SÓ o que
+     * estiver marcado como destaque, e a razão é do cliente.**
+     *
+     * O menu listava as dezesseis novidades publicadas, e as dezesseis são
+     * páginas de busca local ("almoço perto da Catedral de Santos"). O cliente
+     * não gostou de ver o SEO exposto no cabeçalho, e tem razão: aquilo é
+     * infraestrutura de busca, não recado para quem já está no site.
+     *
+     * Elas continuam publicadas, continuam no `sitemap.xml` e continuam
+     * listadas em `/novidades` — o trabalho de SEO segue inteiro. O que muda é
+     * que saem do menu, que é onde viravam ruído.
+     *
+     * O filtro usa `featured`, que já existia no model, no índice
+     * (`@@index([published, featured, order])`) e no formulário do admin **sem
+     * nenhum consumidor**: marcar uma novidade como destaque não fazia nada.
+     * Agora faz, e quem decide o que aparece é o próprio cliente, pelo painel —
+     * sem lista de slugs no código, que envelheceria na primeira novidade nova.
+     *
+     * ⚠️ Hoje nenhuma está marcada, então o menu mostra "Em breve, novidades por
+     * aqui." — o mesmo estado vazio que o projeto irmão desenha. Isso é
+     * correto: o Prato ainda não tem novidade de verdade, e essa é uma
+     * pendência aberta do cliente. Não marcar uma página de SEO como destaque
+     * só para o menu não ficar vazio; era exatamente disso que ele reclamou.
+     *
+     * A mesma decisão, tomada no mesmo dia, está em
+     * `src/app/[locale]/(marketing)/layout.tsx` do projeto irmão.
+     */
+    const informations = await getInformations(locale, { featuredOnly: true });
     return {
       informationLinks: informations.map((i) => ({
         slug: i.slug,

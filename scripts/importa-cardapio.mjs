@@ -111,21 +111,41 @@ const CATEGORIAS = [
  * por linha — para a conta poder ser refeita à mão, e para ninguém "fechar" o
  * total inventando prato.
  */
+/*
+ * ⚠️ **As três quartas são a MESMA lista desde 23/09/2026, e isso é entrega do
+ * cliente, não simplificação minha.** Veio um quadro novo de quarta — vinte
+ * linhas, dezenove pratos aqui porque "torresmo" e "calabresa" são uma entrada
+ * só — com a instrução de que a quarta passa a ser esse. O dono do projeto
+ * decidiu que ele substitui as três semanas, não uma.
+ *
+ * O quadro é o da 2ª semana com a letra legível: "talharim c/brócolis" e
+ * "rondelli de peito de peru" só existiam em `3b`, e o cliente corrigiu os dois
+ * de viva voz (camarão; canelone de presunto e queijo). O nº 10, que `3b` tinha
+ * como "Meca à ..." ilegível, é **anchova negra à meunière** — e isso desfaz um
+ * erro meu: `3c` trazia "Anchova à mineira", que é outro preparo.
+ *
+ * ⚠️ Saíram nove pratos do site inteiro, e a lista fica aqui porque um dia
+ * alguém vai perguntar: hambúrguer de picanha, pescada amarela, canelone de
+ * peito de peru, talharim com brócolis, e os cinco herdados de 03/09 — feijoada
+ * completa, kafta, tainha com farofa de milho, meca grelhada e canelone de
+ * brócolis ao molho branco. O rondelli continua no site: ele também é servido
+ * na terça da 3ª semana.
+ */
 const ESPERADO_POR_LISTA = {
   "1a": 15, // 19 numerados, menos os itens 5, 11 e 14, que vieram vazios, menos o "pastel" sem recheio
   "2a": 18, // 18 numerados
-  "3a": 19, // 19 numerados
+  "3a": 19, // as três quartas são a mesma lista desde 23/09 — ver a nota
   "4a": 18, // 19 numerados, menos o "pastel" sem recheio
   "5a": 18, // 19 numerados, menos o "pastel" sem recheio
   "1b": 18, // 18 numerados
   "2b": 18, // 19 numerados, menos o "pastel" sem recheio
-  "3b": 16, // 19 numerados, menos o nº 10 (ausente), o "Meca à ..." ilegível e o "pastel" sem recheio
+  "3b": 19, // idem
   "4b": 18, // 18 numerados
   "5b": 17, // 18 numerados, menos o "pastel" sem recheio
   // ── Terceira semana, chegada em 21/09/2026 ──────────────────────────────
   "1c": 18, // 19 numerados, menos o "pastel" sem recheio
   "2c": 15, // 19 numerados, menos o nº 5 (ausente), o "omelete" sem recheio, o "Sfogliatti" e o "pastel"
-  "3c": 18, // 19 numerados, menos o "pastel" sem recheio
+  "3c": 19, // idem
   "4c": 17, // 18 numerados, menos o "pastel" sem recheio
   "5c": 16, // 19 numerados, menos o nº 13 ("**"), a farofa repetida no nº 14 e o "pastel"
 };
@@ -143,12 +163,66 @@ const ESPERADO_POR_LISTA = {
  * roda, e prato que saiu não deveria seguir publicado. Nenhum destes aparece
  * nas dez listas novas. **Confirmar se ainda são servidos.**
  */
+/*
+ * ⚠️ **O dia 3 zerou em 23/09/2026, e a pergunta acima foi RESPONDIDA para
+ * ele.** Os cinco herdados da quarta não aparecem no quadro completo que o
+ * cliente mandou nesta data — depois de não aparecerem nos papéis de 17/09 e
+ * 21/09 também. Três ausências seguidas num quadro que se diz completo é
+ * resposta, e eles saíram do array.
+ *
+ * ⚠️ Saíram do ARRAY, não ficaram com `dias` vazio: vazio significa TODO DIA
+ * nesta estrutura, então esvaziar os cinco os publicaria na semana inteira —
+ * o oposto exato do que a entrega diz.
+ *
+ * Os dias 1, 2 e 4 continuam com a pergunta em aberto.
+ */
 const HERDADOS_POR_DIA = {
   1: 3,
   2: 8,
-  3: 5,
+  3: 0, // zerado em 23/09 — ver a nota acima
   4: 3,
 };
+
+/**
+ * Pratos que SAEM do banco, por slug.
+ *
+ * ⚠️ **Esta lista existe porque o resto do script só faz `upsert`, e upsert não
+ * apaga nada.** Tirar um prato do array acima muda o que a carga escreve e não
+ * muda nada do que já está escrito: o prato continua no banco, continua
+ * publicado e continua aparecendo na aba do dia. A troca de quarta de 23/09
+ * seria exatamente isso — nove pratos "removidos" que seguiriam no ar, com a
+ * carga verde dizendo que deu certo.
+ *
+ * ⚠️ **É uma lista NOMEADA de propósito, e não "apague tudo que não está no
+ * array".** A varredura cega é fácil de escrever e apagaria junto o que o
+ * cliente cadastrar pelo painel, que é justamente o trabalho que ninguém tem
+ * como refazer. Cada saída aqui tem slug, data e motivo.
+ *
+ * Não achar um slug não é erro — quer dizer que a saída já aconteceu numa carga
+ * anterior. A carga reporta os dois casos.
+ */
+const REMOVIDOS = [
+  // ── 23/09/2026 · o quadro novo de quarta substitui as três semanas ──────
+  { slug: "hamburguer-de-picanha", motivo: "fora do quadro de quarta de 23/09" },
+  { slug: "pescada-amarela", motivo: "fora do quadro de quarta de 23/09" },
+  { slug: "canelone-de-peito-de-peru", motivo: "fora do quadro de quarta de 23/09" },
+  { slug: "talharim-com-brocolis", motivo: "o cliente trocou por talharim com camarão" },
+  // Os cinco herdados de 03/09 que a quarta nunca repetiu.
+  { slug: "feijoada-completa", motivo: "herdado de 03/09, ausente dos três papéis seguintes" },
+  { slug: "kafta", motivo: "herdado de 03/09, ausente dos três papéis seguintes" },
+  { slug: "tainha-com-farofa-de-milho", motivo: "herdado de 03/09, ausente dos três papéis seguintes" },
+  { slug: "meca-grelhada", motivo: "herdado de 03/09, ausente dos três papéis seguintes" },
+  { slug: "canelone-de-brocolis-ao-molho-branco", motivo: "herdado de 03/09, ausente dos três papéis seguintes" },
+  /*
+   * ⚠️ Este não saiu do cardápio — MUDOU DE NOME, e por isso mudou de slug.
+   * "Anchova à mineira" era minha leitura de um item que o papel da 2ª semana
+   * trazia ilegível; o cliente confirmou em 23/09 que é "anchova negra à
+   * meunière", que é outro preparo. O upsert cria o slug novo e deixa o velho
+   * publicado do lado — dois peixes na aba de quarta, um deles inventado por mim.
+   */
+  { slug: "anchova-a-mineira", motivo: "renomeado para anchova-negra-a-meuniere em 23/09" },
+];
+
 
 /**
  * O cardápio: `[nome, dias, categoria]`. `dias` vazio significa TODO DIA — é o
@@ -206,7 +280,6 @@ const PRATOS = [
   ["Polpetone de toscana", ["2a", "2b", "2c"], "carnes"],
   ["Carnes de feijoada", ["3a", "3b", "3c"], "carnes"],
   ["Strogonoff de carne", ["3a", "3b", "3c"], "carnes"],
-  ["Hambúrguer de picanha", ["3a"], "carnes"],
   ["Rabada", ["4a", "2c"], "carnes"],
   ["Pernil", ["4a", "4b", "4c"], "carnes"],
   ["Fígado grelhado acebolado", ["4a"], "carnes"],
@@ -221,7 +294,7 @@ const PRATOS = [
   ["Filé de frango grelhado", [], "frangos"], // CONFIRMAR: só a segunda da 1ª semana diz "grelhado"
   ["Frango à parmegiana", ["1a", "2b"], "frangos"],
   ["Chicken fried (sobrecoxa à dorê)", ["2a", "2c"], "frangos"],
-  ["Frango crocante", ["3a", "3c"], "frangos"],
+  ["Frango crocante", ["3a", "3b", "3c"], "frangos"],
   ["Frango teriyaki", ["4a", "5b", "5c"], "frangos"],
   ["Peito assado", ["5a", "1b"], "frangos"],
   ["Isca de frango", ["1b", "1c"], "frangos"],
@@ -233,12 +306,11 @@ const PRATOS = [
   ["Peixe crocante", ["2a", "5a", "2b", "2c"], "peixes-e-frutos-do-mar"],
   ["Salmão grelhado", ["5a", "5b"], "peixes-e-frutos-do-mar"],
   ["Isca de peixe", ["5b", "5c"], "peixes-e-frutos-do-mar"],
-  ["Pescada amarela", ["3a"], "peixes-e-frutos-do-mar"], // CONFIRMAR: no papel da 1ª semana vem "peixada amarela" — peixada é ensopado, pescada é o peixe
   ["Cação grelhado", ["4a", "4b", "4c"], "peixes-e-frutos-do-mar"],
   ["Bobó de camarão", ["5a", "5b"], "peixes-e-frutos-do-mar"],
   ["Risoto de frutos do mar", ["5a", "5b", "5c"], "peixes-e-frutos-do-mar"],
   ["Anchova ao molho de laranja", ["5a"], "peixes-e-frutos-do-mar"],
-  ["Anchova à mineira", ["3c"], "peixes-e-frutos-do-mar"],
+  ["Anchova negra à meunière", ["3a", "3b", "3c"], "peixes-e-frutos-do-mar"],
   ["Bacalhau com batatas", ["5c"], "peixes-e-frutos-do-mar"],
   ["Camarão à paulista", ["5c"], "peixes-e-frutos-do-mar"],
 
@@ -249,8 +321,6 @@ const PRATOS = [
   ["Lasanha de berinjela", ["2a"], "massas-e-risotos"],
   ["Rondeli de frango com catupiry", ["2a"], "massas-e-risotos"],
   ["Risoto de alho-poró", ["2a"], "massas-e-risotos"],
-  ["Canelone de peito de peru", ["3a"], "massas-e-risotos"], // CONFIRMAR: no papel da 1ª semana vem "calzone peito de peru"
-  ["Talharim com brócolis", ["3a", "3b"], "massas-e-risotos"],
   ["Nhoque recheado de três queijos", ["4a"], "massas-e-risotos"],
   ["Lasanha de presunto e queijo", ["4a", "2b"], "massas-e-risotos"],
   ["Yakissoba de legumes", ["5a", "5b", "5c"], "massas-e-risotos"],
@@ -258,10 +328,10 @@ const PRATOS = [
   ["Espaguete de frango", ["2b"], "massas-e-risotos"],
   ["Lasanha à margarida", ["4b"], "massas-e-risotos"], // CONFIRMAR: no papel vem "lasanha a margarida" — provavelmente à margherita
   ["Panqueca de carne", ["1b", "1c"], "massas-e-risotos"],
-  ["Rondeli de peito de peru", ["3b", "2c"], "massas-e-risotos"],
+  ["Rondeli de peito de peru", ["2c"], "massas-e-risotos"],
   ["Talharim à carbonara", ["5b"], "massas-e-risotos"],
-  ["Talharim com camarão", ["3c"], "massas-e-risotos"],
-  ["Canelone de presunto e queijo", ["3c"], "massas-e-risotos"],
+  ["Talharim com camarão", ["3a", "3b", "3c"], "massas-e-risotos"],
+  ["Canelone de presunto e queijo", ["3a", "3b", "3c"], "massas-e-risotos"],
   ["Lasanha de peito de peru", ["4c"], "massas-e-risotos"],
   ["Penne à calabresa", ["4c"], "massas-e-risotos"],
 
@@ -270,9 +340,9 @@ const PRATOS = [
   ["Batata frita", ["1a", "2a", "3a", "4a", "5a", "2b", "3b", "4b", "5b", "2c", "3c", "4c", "5c"], "fritos"],
   ["Folheado de presunto e queijo", ["1a"], "fritos"],
   ["Pastel de brócolis", ["2a", "1b"], "fritos"],
-  ["Mandioca frita", ["2a", "3b", "5b", "3c", "5c"], "fritos"],
+  ["Mandioca frita", ["2a", "3a", "3b", "5b", "3c", "5c"], "fritos"],
   ["Pastel de siri", ["4b"], "fritos"],
-  ["Pastel de queijo", ["3a"], "fritos"],
+  ["Pastel de queijo", ["3a", "3b", "3c"], "fritos"],
 
   // ── Outros ────────────────────────────────────────────────────────────
   ["Omelete de queijo branco e peito de peru", ["2a"], "outros"],
@@ -287,8 +357,6 @@ const PRATOS_HERDADOS = [
   // ── Carnes ────────────────────────────────────────────────────────────
   ["Copa-lombo com abacaxi", [1], "carnes"],
   ["Escalope ao molho madeira", [2], "carnes"],
-  ["Feijoada completa", [3], "carnes"],
-  ["Kafta", [3], "carnes"],
 
   // ── Frangos ───────────────────────────────────────────────────────────
   ["Peito assado ao molho fiorentina", [2], "frangos"],
@@ -296,13 +364,10 @@ const PRATOS_HERDADOS = [
 
   // ── Peixes e frutos do mar ────────────────────────────────────────────
   ["Peixe à dorê", [2], "peixes-e-frutos-do-mar"],
-  ["Tainha com farofa de milho", [3], "peixes-e-frutos-do-mar"],
-  ["Meca grelhada", [3], "peixes-e-frutos-do-mar"],
 
   // ── Massas e risotos ──────────────────────────────────────────────────
   ["Lasanha de quatro queijos", [2], "massas-e-risotos"],
   ["Quiche de alho-poró", [2], "massas-e-risotos"],
-  ["Canelone de brócolis ao molho branco", [3], "massas-e-risotos"],
   ["Risoto margherita", [4], "massas-e-risotos"],
 
   // ── Fritos ────────────────────────────────────────────────────────────
@@ -515,11 +580,16 @@ async function main() {
       "Feijão",
       "Couve-flor à dorê",
       "Peixe à dorê",
-      "Hambúrguer de picanha",
+      "Anchova negra à meunière",
     ]) {
       console.log("  ", nome.padEnd(38), "->", slugificar(nome));
     }
+    console.log(`\nsairiam ${REMOVIDOS.length} prato(s) do banco:`);
+    for (const { slug, motivo } of REMOVIDOS) {
+      console.log("  −", slug.padEnd(38), motivo);
+    }
     console.log("\n--dry-run: nada foi escrito.");
+
     return;
   }
 
@@ -591,7 +661,34 @@ async function main() {
         },
       });
     }
+    /*
+     * As saídas vêm DEPOIS das escritas, e a ordem importa: o renomeado precisa
+     * existir com o slug novo antes de o velho sumir, senão há um instante em que
+     * a aba de quarta não tem peixe nenhum.
+     */
+    const slugsParaApagar = REMOVIDOS.map((r) => r.slug);
+    const achados = await prisma.menuItem.findMany({
+      where: { slug: { in: slugsParaApagar } },
+      select: { slug: true },
+    });
+    const presentes = new Set(achados.map((i) => i.slug));
+    if (presentes.size) {
+      // `deleteMany` devolve CONTAGEM, não linhas — por isso a consulta acima.
+      const { count } = await prisma.menuItem.deleteMany({
+        where: { slug: { in: [...presentes] } },
+      });
+      console.log(`\n${count} prato(s) removido(s):`);
+      for (const { slug, motivo } of REMOVIDOS) {
+        if (presentes.has(slug)) console.log("  −", slug.padEnd(38), motivo);
+      }
+    }
+    const ausentes = slugsParaApagar.filter((s) => !presentes.has(s));
+    if (ausentes.length) {
+      console.log(`\n${ausentes.length} já não estava(m) no banco: ${ausentes.join(", ")}`);
+    }
+
     console.log("\nCardápio importado.");
+
   } finally {
     await prisma.$disconnect();
   }

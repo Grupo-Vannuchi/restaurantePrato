@@ -16,11 +16,18 @@ import { FooterMap } from "@/components/layout/footer-map";
 import { renderWithIntl } from "./test-utils";
 
 /**
- * O mapa aparece uma vez por página, e na página de contato ele aparece em cima.
+ * O mapa aparece uma vez por página, e na página de contato ele aparece no corpo.
  *
  * Quem abre `/contato` quer saber onde fica antes de escrever. O mapa vivia só
  * no rodapé, no fim de tudo — a informação mais procurada daquela página
  * chegando por último.
+ *
+ * ⚠️ **Ele abria a página até 24/09/2026; hoje é o segundo bloco**, depois dos
+ * canais de contato e antes do formulário, a pedido do cliente. O que esta
+ * guarda cobra não mudou e não depende da posição: o rodapé não desenha um
+ * segundo mapa em `/contato`. Se um dia o mapa sair do corpo da página, é aqui
+ * que a supressão do rodapé precisa cair junto — senão `/contato` fica sem mapa
+ * nenhum, calada.
  *
  * Subi-lo cria o problema oposto: dois mapas na mesma página, a algumas
  * centenas de pixels um do outro. Isso não informa duas vezes; informa uma vez

@@ -80,6 +80,20 @@ import { LOCAL, PORTA } from "./e2e/porta";
  * que um build feito depois do `globalTeardown` congela `/cardapio` sem as
  * fixtures.
  *
+ * ⚠️ **E "reconstruir" não basta: `.next/cache/fetch-cache` SOBREVIVE ao
+ * `next build`.** Em 23/09/2026 eu semeei, reconstruí e a página continuou sem
+ * as fixtures — nenhuma das duas causas acima, porque o banco tinha os dois
+ * registros e o `.env.production.local` não existe mais. Medido nos dois
+ * sentidos: com o cache, `/cardapio` sai com zero "Teste E2E"; apagando só
+ * `.next/cache/fetch-cache` e reconstruindo, sai com um. O `unstable_cache`
+ * lê dali e o build serve o retrato antigo sem dizer nada.
+ *
+ *   # servidor PARADO
+ *   rm -rf .next/cache/fetch-cache && npm run build
+ *
+ * `.next/cache/images` fica de fora de propósito — apagá-la com um servidor
+ * vivo trava o otimizador para sempre. Ver o AGENTS.md.
+ *
  * ⚠️ **E ao TERMINAR um ciclo, limpe antes de deixar o servidor de pé.** O
  * `globalTeardown` apaga as fixtures do banco, mas `/cardapio` é
  * pré-renderizada: a página guarda o retrato do momento do `build`, e quem abrir

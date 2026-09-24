@@ -33,20 +33,27 @@ export type ThemePalette = {
  * next-intl imprimir o nome interno no lugar do rotulo — calado, porque
  * `getMessageFallback` nao lanca.
  *
- * ⚠️ **`galeria` e `novidades` entraram em 21/09/2026, e o motivo e SEO.** As
- * duas rotas existiam, respondiam e tinham conteudo, mas só eram alcancaveis
- * pelo rodape e por um bloco da home: nenhuma delas aparecia no menu. Para quem
- * rastreia o site isso e profundidade a mais e menos caminho para chegar la; a
- * auditoria de 18/09 mediu 83 ligacoes internas com 8 a 9 por pagina, e as duas
- * ficavam na cauda. Sao conteudo real — 22 fotos autorais e a pagina de
- * novidades —, nao rota de servico.
+ * ⚠️ **Sao CINCO, e ja foram sete — a ida e a volta ficam registradas.** Em
+ * 21/09/2026 `galeria` e `novidades` entraram aqui, por linkagem interna: as
+ * duas rotas existiam e so eram alcancaveis pelo rodape. Em 23/09 sairam, a
+ * pedido do dono: **a estrutura tem de ser a do projeto irmao**, e o menu dele
+ * tem exatamente estas cinco.
+ *
+ * O que a volta custa, dito sem enfeite: `/galeria` e `/novidades` voltam a
+ * depender do rodape e de um bloco da home. E o que ela devolve: o cabecalho
+ * volta a caber numa linha — com sete itens, o menu ocupava 1.170 dos 1.280 px
+ * com o texto em 200% e empurrava o CTA 273 px para fora da tela, o que obrigou
+ * a linha a quebrar.
+ *
+ * Nao e perda de SEO mensuravel: linkagem interna pesa pouco na rubrica, e as
+ * duas rotas seguem no sitemap, no rodape e com trilha propria. Se um dia a
+ * decisao voltar a mudar, sao tres edits acoplados — este tipo, as chaves de
+ * `nav` em `pt.json` e as pastas.
  */
 export type NavKey =
   | "inicio"
   | "experiencia"
   | "cardapio"
-  | "galeria"
-  | "novidades"
   | "reservas"
   | "contato";
 
@@ -274,10 +281,6 @@ export const siteConfig: SiteConfig = {
     { key: "inicio", href: "/" },
     { key: "experiencia", href: "/experiencia" },
     { key: "cardapio", href: "/cardapio" },
-    // As duas que entraram em 21/09 — ver o aviso sobre `NavKey` acima. A ordem
-    // segue a leitura da casa: o que se come antes de quando e onde.
-    { key: "galeria", href: "/galeria" },
-    { key: "novidades", href: "/novidades" },
     { key: "reservas", href: "/reservas" },
     { key: "contato", href: "/contato" },
   ],

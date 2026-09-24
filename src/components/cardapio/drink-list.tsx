@@ -23,7 +23,13 @@ export async function DrinkList() {
     <div className="mt-10 flex flex-col gap-10">
       {drinkGroups.map((grupo) => (
         <div key={grupo.labelKey}>
-          <h3 className="font-serif text-xl font-bold tracking-tight sm:text-2xl">
+          {/* ⚠️ Um degrau abaixo do título da seção (`text-3xl sm:text-4xl`) e
+              um acima do nome da bebida — pedido do cliente em 24/09/2026, que
+              não achava os grupos ("Sucos", "Café e água", "Refrigerantes e
+              cervejas") ao percorrer o cardápio. Era `text-xl sm:text-2xl`, o
+              mesmo corpo do nome de cada item, e o olho não separava lista de
+              cabeçalho. Mesmo passo aplicado em `wine-list.tsx`. */}
+          <h3 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
             {t(grupo.labelKey)}
           </h3>
           <ul role="list" className="mt-4 overflow-hidden rounded-2xl border border-border bg-card">

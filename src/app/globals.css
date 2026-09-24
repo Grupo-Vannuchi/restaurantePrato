@@ -184,6 +184,28 @@
  * para um fallback. Verificado no navegador: resolve para o token a 45%.
  */
 .veu-de-legibilidade {
+  /*
+   * ⚠️ **A janela transparente tem um limite medido: o título do card cabe em
+   * três linhas, e a quinta reprova.**
+   *
+   * O título de `/novidades` é `absolute top-0` e cresce para BAIXO sem limite.
+   * Medido em 23/09/2026 a 1440 px, no card da foto mais clara: os dezesseis
+   * títulos de hoje ocupam 89 px — três linhas, que terminam a 47% do card,
+   * um ponto acima do início da janela. Um de cinco linhas ocupa 163 px, desce
+   * a 86% e mede **3,26:1** de branco sobre a foto, no trecho onde o véu não
+   * existe. Não há nada entre um e outro senão o comprimento do texto — e quem
+   * escreve os títulos é o cliente, pelo painel.
+   *
+   * Fica como número, não como conserto, porque o conserto é decisão de
+   * desenho: ou a janela desce, ou o título ganha limite de linhas. `npm run
+   * varre:contraste` pega o caso no dia em que ele aparecer.
+   *
+   * ⚠️ E **não foi isto** que causou a reprova de 1,87:1 vista neste mesmo dia
+   * em "Almoço perto da Catedral de Santos". Aquilo era a varredura medindo o
+   * pixel do canto arredondado do card, fora do que o card pinta; a correção
+   * está em `scripts/varre-contraste.mts`. Mexer no véu por causa dela não moveu
+   * o número, e a mudança foi desfeita.
+   */
   --veu: 45%;
   background-image: linear-gradient(
     to bottom,
