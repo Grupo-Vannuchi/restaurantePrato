@@ -203,6 +203,29 @@ export default async function CardapioPage({
             </DayTabs>
           </div>
         )}
+
+        {/* ⚠️ **A ressalva do buffet fecha a lista, e isso é pedido do cliente
+            em 24/09/2026.** A casa não quis um aviso operacional: quis dizer por
+            que o cardápio varia, e a razão é boa — o buffet é montado no dia com
+            o que chega.
+
+            Fica DEPOIS da lista de propósito, ao contrário do "Sujeito a
+            alterações." que abre a página: aquele avisa antes de alguém se
+            apegar a um prato; este explica, para quem já leu tudo, por que a
+            quarta que ele viu aqui pode não ser a quarta que ele encontrar.
+            São duas frases com dois trabalhos, e é por isso que as duas ficam.
+
+            Discreta por instrução: `text-sm` no tom secundário, sem caixa nem
+            ícone. Ela não disputa com os pratos.
+
+            Some junto com a lista: explicar por que o cardápio varia embaixo de
+            "o cardápio ainda não foi publicado" responde uma pergunta que
+            ninguém fez. */}
+        {buffet.length === 0 ? null : (
+          <p className="mx-auto mt-10 max-w-2xl text-pretty text-center text-sm leading-relaxed text-muted-foreground">
+            {t("buffetVariesNote")}
+          </p>
+        )}
       </MenuSection>
 
       {/* Massas: seção própria porque o preço é outro.
@@ -246,6 +269,20 @@ export default async function CardapioPage({
           align="left"
         >
           <DessertList />
+
+          {/* ⚠️ **Cortesia de aniversário, confirmada pelo cliente em
+              24/09/2026.** A regra é exatamente esta e não tem outra condição:
+              documento com foto, uma sobremesa. Não escrever "válido de segunda
+              a sexta", "uma por mesa" nem qualquer restrição que ninguém
+              confirmou — regra promocional inventada é promessa publicada, e
+              quem chega cobra na porta.
+
+              Fica DENTRO da seção de sobremesas porque é o que ela oferece; num
+              rodapé de página viraria letra miúda. O destaque é `bg-brand/10`,
+              superfície e não traço: `accent` como texto dá 1,92:1 e some. */}
+          <p className="mt-10 rounded-2xl border border-brand/30 bg-brand/10 px-5 py-4 text-center text-pretty font-medium leading-relaxed">
+            {t("birthdayTreat")}
+          </p>
         </MenuSection>
       ) : null}
 

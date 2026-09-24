@@ -46,7 +46,10 @@ export function WineList({ wines }: { wines: readonly Wine[] }) {
     <div className="mt-10 flex flex-col gap-10">
       {wines.map((vinho) => (
         <div key={vinho.name}>
-          <h3 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-serif text-xl font-bold tracking-tight sm:text-2xl">
+          {/* Mesmo degrau de `drink-list.tsx`, pelo mesmo motivo e na mesma
+              data — ver a nota lá. As duas listas têm grupos, e deixá-las em
+              corpos diferentes seria o cardápio mudando de régua no meio. */}
+          <h3 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-serif text-2xl font-bold tracking-tight sm:text-3xl">
             {vinho.name}
             {vinho.note ? (
               <span className="font-sans text-sm font-medium tracking-normal text-muted-foreground">

@@ -123,7 +123,12 @@ export function PastaBuilder({
               {/* `min-w-0` para as opções quebrarem em vez de empurrar a coluna
                   do número para fora da tela. */}
               <div className={`min-w-0 flex-1 pt-1.5 ${ultimo ? "" : "pb-9"}`}>
-                <h4 className="flex items-center gap-2.5 font-serif text-lg font-bold leading-snug sm:text-xl">
+                {/* ⚠️ Subiu de `text-lg sm:text-xl` em 24/09/2026, a pedido do
+                    cliente: as etapas tinham o mesmo corpo dos nomes das opções
+                    logo abaixo, e quem monta o prato perdia onde uma etapa
+                    termina e a outra começa. Agora a etapa lê como cabeçalho da
+                    lista que a segue. */}
+                <h4 className="flex items-center gap-2.5 font-serif text-xl font-bold leading-snug sm:text-2xl">
                   {/* O mesmo número da trilha, na versão de celular. Some em
                       `sm`, onde o círculo da calha assume. */}
                   <span

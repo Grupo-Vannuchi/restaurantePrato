@@ -73,7 +73,7 @@ describe("o passo a passo da ilha de massas", () => {
       (h.textContent ?? "").replace(/^\d+/, "").trim(),
     );
 
-    expect(titulos).toEqual(["Escolha a massa", "Escolha o preparo", "Escolha o molho", "Escolha os ingredientes"]);
+    expect(titulos).toEqual(["Escolha sua massa", "Método de preparo", "Escolha seu molho", "Escolha seus ingredientes"]);
   });
 });
 
@@ -116,7 +116,7 @@ describe("os adicionais da ilha", () => {
      */
     renderWithIntl(<PastaBuilder extras={[]} photos={[]} />);
 
-    expect(screen.queryByText("Adicionais")).not.toBeInTheDocument();
+    expect(screen.queryByText("Adicione uma proteína")).not.toBeInTheDocument();
     expect(screen.queryByText("Filé de frango")).not.toBeInTheDocument();
   });
 
@@ -125,7 +125,7 @@ describe("os adicionais da ilha", () => {
     // sem nunca ter rodado.
     renderWithIntl(<PastaBuilder extras={COM_PRECO} photos={[]} />);
 
-    expect(screen.getByText("Adicionais")).toBeInTheDocument();
+    expect(screen.getByText("Adicione uma proteína")).toBeInTheDocument();
     expect(screen.getByText("Filé de frango")).toBeInTheDocument();
     // U+00A0 entre "R$" e o número: é o que o Intl produz.
     expect(screen.getByText("R$ 7,50")).toBeInTheDocument();
