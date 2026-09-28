@@ -18,12 +18,15 @@ export async function GalleryPreview({ locale }: { locale: Locale }) {
   return (
     <Section id="galeria">
       <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
-        <SectionHeader
-          eyebrow={t("eyebrow")}
-          title={t("title")}
-          subtitle={t("subtitle")}
-          align="left"
-        />
+        {/* ⚠️ **Sem título nem subtítulo desde 25/09/2026, a pedido do
+            cliente:** saíram "O restaurante do dia a dia." e "Sem formalidade,
+            feito para quem trabalha duro no Centro."
+
+            O olho fica, e passa a ser o `<h2>` da seção — sem isso a galeria
+            seria a única seção da home sem cabeçalho, e sumiria do índice de
+            quem navega por títulos. Na tela nada muda: ele mantém as mesmas
+            classes. Ver o docblock de `title` em `ui/section.tsx`. */}
+        <SectionHeader eyebrow={t("eyebrow")} align="left" />
         <Link
           href="/galeria"
           className={buttonVariants({ variant: "outline", size: "sm" })}
