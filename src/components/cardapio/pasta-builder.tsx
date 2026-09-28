@@ -32,7 +32,7 @@ import { formatBRL, pastaChoices, type PastaExtra } from "@/config/menu";
  * entre uma e outra, nome em serifa. Numa página inteira de listas, um bloco de
  * pílulas arredondadas seria a coisa que não pertence.
  *
- * ⚠️ **Síncrono de propósito**, como o `MenuHero`: ele não busca nada. Um
+ * ⚠️ **Síncrono de propósito** — ele não busca nada. Um
  * componente assíncrono sem espera é um que este setup de teste não consegue
  * renderizar, e a seção ficaria sem cobertura por um `async` que não faz nada.
  *

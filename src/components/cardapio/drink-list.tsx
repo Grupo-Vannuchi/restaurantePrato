@@ -1,13 +1,24 @@
-import { getTranslations } from "next-intl/server";
-
-import { drinkGroups, formatBRL } from "@/config/menu";
+import { formatBRL, type DrinkGroup } from "@/config/menu";
 
 /**
- * As bebidas, agrupadas como no quadro do salão.
+ * As bebidas de UM grupo, como no quadro do salão.
  *
- * Estrutura de lista, igual ao resto do cardápio — e com preço em cada linha,
- * que é justamente o que separa esta seção das outras: bebida não entra no
- * valor por quilo, é cobrada à parte.
+ * ⚠️ **Era um componente só, que desenhava os três grupos e o título de cada um
+ * como `h3`. Mudou em 28/09/2026, a pedido do dono: "quero o cardápio na mesma
+ * estrutura visual do projeto irmão".**
+ *
+ * Lá cada grupo é uma SEÇÃO inteira — "Sucos", "Café e água" e "Refrigerantes e
+ * cervejas" viram letreiro, com o espaçamento de seção e a possibilidade de foto
+ * própria. Aqui eles eram subtítulos dentro de uma seção única, e o cliente já
+ * tinha reclamado disso em 24/09: ele não achava os grupos ao percorrer a
+ * página. Na época a resposta foi aumentar o corpo do `h3`; a estrutura do irmão
+ * resolve promovendo a seção, que é a correção de verdade.
+ *
+ * Então este componente perdeu o título: quem o desenha agora é a `MenuSection`
+ * que o embrulha, e o `h3` daqui viraria um segundo título do mesmo conteúdo.
+ *
+ * O preço em cada linha é o que separa esta seção das do buffet: bebida não
+ * entra no valor por quilo, é cobrada à parte.
  *
  * O volume fica sob o nome, e não colado nele, porque é ele que distingue duas
  * linhas homônimas: refrigerante de 200 ml e de 350 ml são itens diferentes,
@@ -16,44 +27,28 @@ import { drinkGroups, formatBRL } from "@/config/menu";
  * `min-w-0` no bloco de texto é o que faz o nome quebrar em vez de empurrar o
  * preço para fora da linha em telas estreitas.
  */
-export async function DrinkList() {
-  const t = await getTranslations("cardapio");
-
+export function DrinkGroupList({ group }: { group: DrinkGroup }) {
   return (
-    <div className="mt-10 flex flex-col gap-10">
-      {drinkGroups.map((grupo) => (
-        <div key={grupo.labelKey}>
-          {/* ⚠️ Um degrau abaixo do título da seção (`text-3xl sm:text-4xl`) e
-              um acima do nome da bebida — pedido do cliente em 24/09/2026, que
-              não achava os grupos ("Sucos", "Café e água", "Refrigerantes e
-              cervejas") ao percorrer o cardápio. Era `text-xl sm:text-2xl`, o
-              mesmo corpo do nome de cada item, e o olho não separava lista de
-              cabeçalho. Mesmo passo aplicado em `wine-list.tsx`. */}
-          <h3 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
-            {t(grupo.labelKey)}
-          </h3>
-          <ul role="list" className="mt-4 overflow-hidden rounded-2xl border border-border bg-card">
-            {grupo.items.map((bebida) => (
-              <li
-                key={`${bebida.name}-${bebida.volume}`}
-                className="flex items-baseline justify-between gap-4 border-b border-border px-5 py-4 last:border-b-0 sm:px-6"
-              >
-                <div className="min-w-0">
-                  <p className="font-medium">{bebida.name}</p>
-                  {bebida.volume ? (
-                    <p className="text-sm text-muted-foreground">
-                      {bebida.volume}
-                    </p>
-                  ) : null}
-                </div>
-                <p className="shrink-0 font-serif font-bold tabular-nums text-brand">
-                  {formatBRL(bebida.price)}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
+    <ul
+      role="list"
+      className="mt-10 overflow-hidden rounded-2xl border border-border bg-card"
+    >
+      {group.items.map((bebida) => (
+        <li
+          key={`${bebida.name}-${bebida.volume}`}
+          className="flex items-baseline justify-between gap-4 border-b border-border px-5 py-4 last:border-b-0 sm:px-6"
+        >
+          <div className="min-w-0">
+            <p className="font-medium">{bebida.name}</p>
+            {bebida.volume ? (
+              <p className="text-sm text-muted-foreground">{bebida.volume}</p>
+            ) : null}
+          </div>
+          <p className="shrink-0 font-serif font-bold tabular-nums text-brand">
+            {formatBRL(bebida.price)}
+          </p>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

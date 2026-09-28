@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { MenuHero } from "@/components/cardapio/menu-hero";
-import { MenuPhoto } from "@/components/cardapio/menu-photo";
 import { MenuBackdrop } from "@/components/cardapio/menu-backdrop";
 import { MenuSection } from "@/components/cardapio/menu-section";
 import { DayTabs } from "@/components/cardapio/day-tabs";
@@ -11,7 +9,7 @@ import { PriceCallout } from "@/components/cardapio/price-callout";
 import { DessertList } from "@/components/cardapio/dessert-list";
 import { PastaBuilder } from "@/components/cardapio/pasta-builder";
 import { WineList } from "@/components/cardapio/wine-list";
-import { DrinkList } from "@/components/cardapio/drink-list";
+import { DrinkGroupList } from "@/components/cardapio/drink-list";
 import { agrupadosPorCategoria, pratosDoDia, secoesDoCardapio } from "@/lib/cardapio";
 import { MenuJsonLd, RotaBreadcrumbJsonLd } from "@/components/json-ld";
 import {
@@ -25,6 +23,7 @@ import {
   precoDaMassa,
   precoDoBuffet,
 } from "@/config/menu";
+import { openingHoursLabel } from "@/config/site";
 import { weekdayNoRestaurante } from "@/lib/dates";
 import { getBuffetDishes, getPastaDishes } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
@@ -119,8 +118,6 @@ export default async function CardapioPage({
     <>
       <RotaBreadcrumbJsonLd locale={locale} rota="/cardapio" nome={tTrilha("cardapio")} />
 
-      {/* A identidade antes da lista: quem chega aqui pode ter escaneado um
-          código na mesa e nunca ter visto o site. */}
       {/* O fundo verde da página inteira. Não repita a descrição dele aqui:
           `menu-backdrop.tsx` é a fonte, e um comentário duplicado já envelheceu
           no projeto irmão — descrevia uma versão que não estava mais no ar. */}
@@ -130,16 +127,30 @@ export default async function CardapioPage({
           quem le a pagina por maquina. */}
       <MenuJsonLd locale={locale} secoes={secoesEstruturadas} />
 
-      {/* A capa assina, em faixa. Ver o docblock de `MenuHero`. */}
-      <MenuHero />
+      {/* ⚠️ **A página abre direto na lista desde 28/09/2026.** Havia aqui duas
+          peças: `MenuHero`, a faixa verde com a logo, e `MenuPhoto`, a dobra da
+          foto do churrasco com o horário. As duas saíram a pedido do dono, que
+          pediu a estrutura do projeto irmão — lá o cardápio abre no letreiro do
+          buffet, sem abertura nenhuma.
 
-      {/* E a comida ocupa a primeira dobra — "comida vende, couro nao". */}
-      <MenuPhoto />
+          O horário não se perdeu: mudou para o `note` desta seção, que é onde o
+          irmão o põe. A ressalva "sujeito a alterações" continua ao lado dos
+          preços, em `PriceCallout`, e a explicação de por que o buffet varia
+          fecha a lista mais abaixo.
 
-      {/* Coluna estreita: um cardápio é lido de cima a baixo, não varrido em
+          ⚠️ O que se perdeu foi a MARCA nesta página, e vale saber: quem escaneia
+          o código na mesa chega aqui sem nunca ter visto o site, e agora o
+          primeiro contato com o nome é o cabeçalho do site, não mais a faixa.
+
+          Coluna estreita: um cardápio é lido de cima a baixo, não varrido em
           grade. `max-w-3xl` mantém a linha na faixa confortável de leitura
           mesmo num monitor largo. */}
-      <MenuSection title={t("title")} subtitle={t("subtitle")} level={1}>
+      <MenuSection
+        title={t("title")}
+        subtitle={t("subtitle")}
+        note={openingHoursLabel() ?? undefined}
+        level={1}
+      >
         {/* Some inteiro enquanto os preços não vierem do cliente — ver
             `price-callout.tsx`. */}
         <PriceCallout buffet={precoDoBuffet()} massa={precoDaMassa()} />
@@ -286,19 +297,34 @@ export default async function CardapioPage({
         </MenuSection>
       ) : null}
 
-      {/* Bebidas: fecha a página porque é o que se pede por último. Segunda
-          seção com preço por linha, pela mesma razão da sobremesa — nenhuma
-          das duas entra no valor por quilo. */}
-      {drinkGroups.length > 0 ? (
+      {/* Bebidas: fecha a página porque é o que se pede por último. Preço por
+          linha, pela mesma razão da sobremesa — nenhuma das duas entra no valor
+          por quilo.
+
+          ⚠️ **Uma seção POR GRUPO desde 28/09/2026**, e não uma seção com os
+          grupos como subtítulo dentro. É a estrutura do projeto irmão, pedida
+          pelo dono — e resolve de verdade o que o cliente apontou em 24/09: ele
+          não achava "Sucos", "Café e água" e "Refrigerantes e cervejas" ao
+          percorrer a página. Na época a resposta foi aumentar o corpo do `h3`;
+          promover a seção é a correção que ele estava pedindo.
+
+          A âncora `bebidas` fica no primeiro grupo: nada no site aponta para
+          ela, mas link externo indexado não aparece numa busca do repositório, e
+          manter o `id` custa zero.
+
+          A ressalva de que bebida não entra no quilo vale para os três, e
+          repeti-la em cada um viraria ruído — fica no primeiro. */}
+      {drinkGroups.map((grupo, i) => (
         <MenuSection
-          id="bebidas"
-          title={t("drinksLabel")}
-          subtitle={t("drinksNote")}
+          key={grupo.labelKey}
+          id={i === 0 ? "bebidas" : undefined}
+          title={t(grupo.labelKey as "drinksSodasBeer")}
+          subtitle={i === 0 ? t("drinksNote") : undefined}
           align="left"
         >
-          <DrinkList />
+          <DrinkGroupList group={grupo} />
         </MenuSection>
-      ) : null}
+      ))}
 
       {/* Carta de vinhos: seção própria porque o vinho não é bebida de balcão.
           Tem rótulo, procedência e uma escolha por trás, e sai em três doses —

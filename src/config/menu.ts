@@ -267,10 +267,19 @@ export const drinkGroups = [
       { name: "Itubaína Retrô", volume: "355 ml", price: 10.8 },
     ],
   },
-] as const satisfies readonly {
+] as const satisfies readonly DrinkGroup[];
+
+/**
+ * Um grupo de bebidas do quadro do salão.
+ *
+ * Nomeado desde 28/09/2026, quando cada grupo virou uma seção do cardápio e
+ * `DrinkGroupList` passou a receber um deles por vez — antes a forma vivia solta
+ * na anotação de `drinkGroups` e não havia como um componente pedi-la.
+ */
+export type DrinkGroup = {
   labelKey: string;
   items: readonly Drink[];
-}[];
+};
 
 /**
  * ─────────────────────────────────────────────────────────────────────────

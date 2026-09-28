@@ -62,12 +62,18 @@ const ABERTURAS = [
     seletor: "section p",
     onde: "src/components/sections/hero-carousel.tsx",
   },
-  {
-    rota: "/cardapio",
-    nome: "a abertura do cardápio",
-    seletor: "section p",
-    onde: "src/components/cardapio/menu-hero.tsx",
-  },
+  /*
+   * ⚠️ **`/cardapio` saiu desta lista em 28/09/2026, e não porque afrouxou.**
+   * Havia ali uma dobra de foto do churrasco com o horário e a ressalva por
+   * cima, sob um véu medido — texto sobre fotografia, que é o que esta guarda
+   * cobra. O dono pediu a estrutura do projeto irmão, onde o cardápio abre
+   * direto no letreiro do buffet, e a dobra inteira saiu.
+   *
+   * A página ainda pode ganhar foto: `MenuSection` aceita uma no topo de cada
+   * seção. Mas ali a foto fica SOZINHA no quadro, sem texto por cima — não é
+   * superfície desta guarda. Se um dia voltar a haver texto sobre imagem no
+   * cardápio, a rota volta para cá.
+   */
   /*
    * As faixas de título com foto, que entraram em 10/09 quando a galeria passou
    * a mostrar só comida e o ambiente mudou de lugar. São três superfícies novas
