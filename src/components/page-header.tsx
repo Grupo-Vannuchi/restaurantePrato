@@ -32,6 +32,7 @@ export function PageHeader({
   subtitle,
   image,
   imageAlt = "",
+  fundo = "claro",
 }: {
   title: string;
   subtitle?: string;
@@ -42,14 +43,34 @@ export function PageHeader({
    */
   image?: string;
   imageAlt?: string;
+  /**
+   * Cor da faixa quando não há foto.
+   *
+   * ⚠️ **`verde` entrou em 25/09/2026, a pedido do cliente, e é superfície —
+   * não texto.** O verde da marca (`#607827`) mede 4,98:1 com branco por cima,
+   * então título e subtítulo viram claros junto, do mesmo jeito que já
+   * acontece sobre foto. É a mesma leitura que a faixa de abertura do cardápio
+   * já faz.
+   *
+   * ⚠️ Não trocar por `accent`: aquele verde é 1,92:1 com branco e some. A
+   * regra inteira está na seção *Brand & theme* do AGENTS.md.
+   *
+   * Ignorado quando há `image` — a foto manda, e o véu escuro é dela.
+   */
+  fundo?: "claro" | "verde";
 }) {
   const comFoto = Boolean(image);
+  const emVerde = !comFoto && fundo === "verde";
+  // Título e subtítulo claros em qualquer fundo escuro — foto sob véu ou verde.
+  const textoClaro = comFoto || emVerde;
 
   return (
     <div
       className={cn(
         "relative isolate border-b border-border",
-        comFoto ? "overflow-hidden" : "bg-muted/30",
+        comFoto && "overflow-hidden",
+        emVerde && "bg-brand",
+        !comFoto && !emVerde && "bg-muted/30",
       )}
     >
       {comFoto ? (
@@ -82,10 +103,18 @@ export function PageHeader({
       ) : null}
 
       <Container className="relative py-16 sm:py-20">
+        {/* ⚠️ `break-words` desde 25/09/2026, e o defeito que ele fecha é mais
+            velho que a data. Com o texto em 200% num celular de 412 px,
+            "Experiência" sozinha mede mais que a tela: 461 px de rolagem lateral
+            (WCAG 1.4.4). Enquanto a faixa tinha foto, o `overflow-hidden` da
+            imagem CORTAVA a palavra e a guarda de refluxo passava — verde por
+            fora. A faixa verde não recorta nada, e o estouro apareceu no mesmo
+            dia. `break-words` só age quando a palavra não cabe; em corpo normal
+            não muda um pixel. */}
         <h1
           className={cn(
-            "max-w-3xl text-balance text-4xl font-bold tracking-tight sm:text-5xl",
-            comFoto && "text-background",
+            "max-w-3xl break-words text-balance text-4xl font-bold tracking-tight sm:text-5xl",
+            textoClaro && "text-background",
           )}
         >
           {title}
@@ -94,7 +123,7 @@ export function PageHeader({
           <p
             className={cn(
               "mt-4 max-w-2xl text-pretty text-lg",
-              comFoto ? "text-background" : "text-muted-foreground",
+              textoClaro ? "text-background" : "text-muted-foreground",
             )}
           >
             {subtitle}

@@ -70,27 +70,50 @@ describe("texto para leitor de tela vem do catálogo", () => {
     ).toEqual([]);
   });
 
-  it("as três faixas de topo leem a descrição do catálogo", () => {
+  it("toda faixa de topo COM FOTO lê a descrição do catálogo", () => {
     /*
      * O outro lado: "cumprir" o teste acima é possível apagando o `imageAlt` —
      * e aí a foto de topo fica sem descrição nenhuma, que é pior que a descrição
-     * no lugar errado. As três páginas com foto no topo precisam passá-la.
+     * no lugar errado. Toda página com foto no topo precisa passá-la.
+     *
+     * ⚠️ **Eram TRÊS páginas até 25/09/2026, e hoje são duas.** O cliente pediu
+     * a faixa de `/experiencia` sem foto, em verde da marca — ver
+     * `page-header.tsx`. Ela saiu desta lista porque não tem mais foto para
+     * descrever, e não porque a regra afrouxou.
+     *
+     * A lista é derivada da FONTE, e não escrita à mão, justamente para não
+     * envelhecer de novo: quem tem `image=` no `PageHeader` tem de ter
+     * `imageAlt`. Apagar as duas linhas ao mesmo tempo passaria despercebido
+     * numa lista fixa; aqui a página simplesmente sai do conjunto medido, e a
+     * sentinela abaixo garante que o conjunto não fique vazio.
      */
     const catalogo = JSON.parse(
       readFileSync("src/messages/pt.json", "utf8"),
     ) as Record<string, Record<string, string>>;
 
-    const paginas = [
+    const candidatas = [
       ["src/app/[locale]/(marketing)/reservas/page.tsx", "reservas"],
       ["src/app/[locale]/(marketing)/experiencia/page.tsx", "experiencia"],
       ["src/app/[locale]/(marketing)/contato/page.tsx", "contact"],
     ] as const;
 
-    for (const [caminho, namespace] of paginas) {
+    const comFoto = candidatas.filter(([caminho]) =>
+      /<PageHeader[\s\S]*?image=/.test(readFileSync(caminho, "utf8")),
+    );
+
+    // Sentinela: sem ela, o dia em que TODAS as faixas perderem a foto este
+    // teste passa sem medir nada e ninguém nota que a guarda parou de guardar.
+    expect(
+      comFoto.length,
+      "nenhuma faixa de topo tem foto — se isso é intencional, esta guarda " +
+        "precisa mudar de alvo em vez de aprovar um conjunto vazio",
+    ).toBeGreaterThan(0);
+
+    for (const [caminho, namespace] of comFoto) {
       const fonte = readFileSync(caminho, "utf8");
       expect(
         fonte.includes('imageAlt={t("headerAlt")}'),
-        `${caminho} deixou de descrever a foto do topo`,
+        `${caminho} tem foto no topo e deixou de descrevê-la`,
       ).toBe(true);
       expect(
         (catalogo[namespace]?.headerAlt ?? "").length,

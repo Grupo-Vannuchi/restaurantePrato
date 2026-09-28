@@ -94,12 +94,39 @@ describe("a galeria mostra comida", () => {
       .map((c) => readFileSync(c, "utf8"))
       .join("\n");
 
-    const orfas = doAmbiente.filter((f) => !fontes.includes(`ambiente/${f}`));
+    /*
+     * ⚠️ **Fotos guardadas de propósito, sem consumidor.** Cada entrada precisa
+     * de motivo e data — a lista existe para a ausência ser decisão, e não
+     * arquivo esquecido.
+     *
+     * `balcao-e-salao.webp`: em 25/09/2026 o cliente pediu a faixa de
+     * `/experiencia` sem foto, em verde da marca, e essa era a única página que
+     * a usava. Ela NÃO foi apagada porque é uma das dez fotos autorais que ele
+     * entregou em 03/09 — apagar material do cliente porque um leiaute mudou
+     * hoje é perda que nenhum commit desfaz, e a decisão de cor pode voltar
+     * atrás amanhã. Se `/contato` e `/reservas` também forem para o verde,
+     * `fachada.webp` e `salao.webp` caem aqui pelo mesmo motivo, e aí vale
+     * perguntar ao dono se as fotos de ambiente ainda têm lugar no site.
+     */
+    const GUARDADAS = new Set(["balcao-e-salao.webp"]);
+
+    const orfas = doAmbiente.filter(
+      (f) => !fontes.includes(`ambiente/${f}`) && !GUARDADAS.has(f),
+    );
     expect(
       orfas,
       `Foto de ambiente sem uso: ${orfas.join(", ")}. Ela saiu da galeria em ` +
         `10/09 para virar topo de página; se não é mais usada, ou a página perdeu ` +
-        `a foto ou o arquivo ficou para trás.`,
+        `a foto ou o arquivo ficou para trás. Se a ausência for deliberada, ` +
+        `declare em GUARDADAS com motivo e data.`,
+    ).toEqual([]);
+
+    // Sentinela: uma entrada de GUARDADAS que já não existe em disco é lixo que
+    // esconde o próximo órfão de verdade.
+    const fantasmas = [...GUARDADAS].filter((f) => !doAmbiente.includes(f));
+    expect(
+      fantasmas,
+      `GUARDADAS lista foto que não existe mais: ${fantasmas.join(", ")}`,
     ).toEqual([]);
   });
 });
