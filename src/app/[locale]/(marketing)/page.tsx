@@ -53,7 +53,9 @@ export default async function HomePage({
   return (
     <>
       <Hero />
-      <MenuPreview locale={locale} />
+      {/* Sem `locale` desde 25/09: a vitrine virou três fotos fixas e deixou de
+          consultar o banco. Ver o docblock de `menu-preview.tsx`. */}
+      <MenuPreview />
       <GalleryPreview locale={locale} />
       {/* Continuação da galeria, não seção institucional. Não renderiza nada
           enquanto as credenciais não chegarem — ver `lib/instagram.ts`. */}
