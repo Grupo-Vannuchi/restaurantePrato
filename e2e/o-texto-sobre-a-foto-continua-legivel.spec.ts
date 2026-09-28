@@ -77,6 +77,18 @@ const ABERTURAS = [
    * Medidas ao entrar, com o véu atual: a pior das três dá 8,12:1. A folga é
    * grande de propósito — a foto de ambiente pode ser trocada por uma mais
    * clara sem aviso, e é a foto que manda aqui.
+   *
+   * ⚠️ **`/experiencia` não tem mais foto desde 25/09/2026** — o cliente pediu
+   * a faixa em verde da marca. Ela continua nesta lista, e continua valendo:
+   * o que a guarda mede é o fundo COMPOSTO sob o texto, seja ele fotografia sob
+   * véu ou cor chapada. Ali agora a conta é branco sobre `#607827`, que a
+   * paleta registra em **4,98:1** — folga menor que a das fotos, e é o piso da
+   * cor: `brand` com branco por cima não fica mais escuro que isso.
+   *
+   * Se `/contato` e `/reservas` forem para o verde também, esta nota passa a
+   * valer para as três e a média cai de 8,12 para perto de 4,98. Continua
+   * acima do mínimo, mas some a folga que o parágrafo acima celebra — e aí
+   * trocar a cor da marca vira decisão com consequência aqui.
    */
   {
     rota: "/reservas",

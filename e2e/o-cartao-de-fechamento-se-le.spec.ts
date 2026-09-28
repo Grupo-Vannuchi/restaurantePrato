@@ -38,7 +38,15 @@ const MINIMO_AA = 4.5;
  * (os botões). A contagem é conferida no teste, para o seletor não passar a
  * medir outra coisa em silêncio.
  */
-const CARTAO = "div.bg-brand";
+/*
+ * ⚠️ `section div.bg-brand`, e não `div.bg-brand` — desde 25/09/2026. A faixa
+ * de título de `/experiencia` virou verde da marca a pedido do cliente, e ela
+ * também é um `div.bg-brand`; com o seletor solto o "exatamente um" abaixo
+ * reprovava contando dois. O que separa os dois é estrutura, não cor: o
+ * cartão de fechamento vive dentro de um `<section>`, e o `PageHeader` é um
+ * `div` direto no `<main>`, antes de qualquer seção.
+ */
+const CARTAO = "section div.bg-brand";
 
 const PAGINAS = [
   { rota: "/", nome: "o cartão de fechamento da home" },

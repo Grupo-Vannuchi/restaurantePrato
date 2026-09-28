@@ -73,12 +73,16 @@ export default async function AboutPage({
     <>
       <RotaBreadcrumbJsonLd locale={locale} rota="/experiencia" nome={tTrilha("experiencia")} />
 
-      <PageHeader
-        title={t("title")}
-        subtitle={t("subtitle")}
-        image="/ambiente/balcao-e-salao.webp"
-        imageAlt={t("headerAlt")}
-      />
+      {/* ⚠️ **Sem foto desde 25/09/2026, a pedido do cliente: "tire a foto desse
+          background e deixe o fundo verde".** A faixa era `balcao-e-salao.webp`
+          sob um véu escuro medido.
+
+          `/contato` e `/reservas` continuam com foto — a troca foi pedida para
+          esta página, e mudar as três sem pedir seria decidir a cara do site
+          inteiro por conta própria. Se elas forem junto, é trocar `image` por
+          `fundo="verde"` em cada uma, e a foto de ambiente de cada página perde
+          o último lugar onde aparecia. */}
+      <PageHeader title={t("title")} subtitle={t("subtitle")} fundo="verde" />
 
       <Section>
         <p className="max-w-3xl text-pretty text-xl leading-relaxed">

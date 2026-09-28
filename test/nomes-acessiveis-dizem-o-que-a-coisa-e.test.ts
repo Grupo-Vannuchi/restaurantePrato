@@ -115,6 +115,19 @@ function extrairAlts(entrada: string): string[] {
 const ALT_AUTORIZADO: Record<string, string[]> = {
   // Decorativos porque o texto ao lado já diz tudo.
   "src/components/menu-item-card.tsx": ['""'], // o <h3> logo abaixo é o nome do prato
+  /*
+   * Informativas, e é a diferença que importa nesta seção. A vitrine da home
+   * mostrava cards com o NOME do prato escrito, e a foto ao lado era decoração
+   * — o texto informava. Em 25/09/2026 os nomes saíram a pedido do cliente e
+   * ficaram só as três fotos: agora elas são o conteúdo, e quem não as vê fica
+   * sem nada se o `alt` estiver vazio.
+   *
+   * ⚠️ A descrição diz o que está no quadro e não batiza corte nem preparo:
+   * "peça de carne assada", não "pernil"; "filés ao molho", não "à parmegiana".
+   * Ninguém confirmou o que é, e `alt` inventado é dado inventado como
+   * qualquer outro — só que num lugar onde ninguém revisa.
+   */
+  "src/components/sections/menu-preview.tsx": ["foto.alt"],
   "src/components/sections/testimonials.tsx": ['""'], // o nome do autor está no <p>
   "src/components/information-card.tsx": ['""'], // foto sob véu, com o <h3> por cima
   "src/components/information-gallery.tsx": ['""'], // a <figcaption> descreve a imagem
@@ -179,7 +192,15 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
   "src/components/cardapio/dessert-list.tsx": [
     't("dishImageAlt", { name: sobremesa.name })',
   ],
-  "src/components/gallery-photo-card.tsx": ['photo.caption ? "" : t("photoAlt")'],
+  /*
+   * ⚠️ Era `photo.caption ? "" : t("photoAlt")` até 25/09/2026, e a inversão é
+   * o ponto: a legenda deixou de ser DESENHADA a pedido do cliente. Enquanto a
+   * `<figcaption>` existia, o `alt` vazio era correto — a descrição estava logo
+   * abaixo, visível, e repeti-la faria o leitor de tela dizer tudo duas vezes.
+   * Sem a legenda na tela, o mesmo `alt` vazio deixaria a foto sem descrição
+   * alguma. A legenda passou a ser o `alt`.
+   */
+  "src/components/gallery-photo-card.tsx": ['photo.caption || t("photoAlt")'],
   /*
    * Informativo POR CONDIÇÃO: a primeira linha da legenda do post descreve a
    * foto melhor que qualquer rótulo genérico. Sem legenda o `alt` fica vazio e

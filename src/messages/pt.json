@@ -41,12 +41,12 @@
       "goToSlide": "Ir para o slide {n}",
       "slides": [
         {
-          "title": "A sua melhor e mais saborosa pausa do dia.",
+          "title": "Tudo o que você gosta, no mesmo prato",
           "subtitle": "Um buffet completo, sempre quentinho, com aquele tempero caseiro inconfundível, e o autêntico churrasco na brasa fatiado na hora para recarregar a energia pro expediente."
         },
         {
           "title": "Churrasco na brasa, fatiado na hora.",
-          "subtitle": "A carne sai do espeto direto no seu prato, no ritmo do almoço de quem tem hora para voltar."
+          "subtitle": "Carnes assadas no ponto, suculentas e servidas direto do espeto para o seu prato. Sabor de verdade em cada corte."
         },
         {
           "title": "A ilha de massas, montada do seu jeito.",
@@ -58,13 +58,16 @@
     },
     "cardapio": {
       "eyebrow": "Nossa comida",
-      "title": "Fartura, sabor e agilidade pro seu dia a dia.",
-      "subtitle": "Sua pausa é sagrada. Por isso o buffet é completo, fresquinho e com bastante proteína. É o almoço de responsa no Centro, sem frescura e com muito sabor."
+      "title": "Uma experiência completa à sua espera",
+      "paragraphs": [
+        "Mais do que um almoço, aqui você encontra sabor, variedade e liberdade para montar a refeição do seu jeito.",
+        "Nosso buffet conta com opções diferentes ao longo da semana, sempre com pratos frescos e combinações para todos os gostos. Para quem não abre mão de uma boa carne, os cortes são preparados na brasa e servidos no ponto certo, direto para o seu prato.",
+        "Você também pode criar sua própria combinação na Ilha de Massas, escolher entre diferentes acompanhamentos e finalizar a refeição com uma seleção especial de sobremesas.",
+        "Tudo isso em um ambiente agradável e climatizado, pensado para você aproveitar seu almoço com conforto, qualidade e muito sabor."
+      ]
     },
     "galeria": {
-      "eyebrow": "O nosso espaço",
-      "title": "O restaurante do dia a dia.",
-      "subtitle": "Sem formalidade, feito para quem trabalha duro no Centro."
+      "eyebrow": "O nosso espaço"
     },
     "testimonials": {
       "eyebrow": "Avaliações do Google",
