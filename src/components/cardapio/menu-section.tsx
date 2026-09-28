@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { Container } from "@/components/ui/container";
 
 /**
@@ -25,6 +27,8 @@ export function MenuSection({
   id,
   title,
   subtitle,
+  note,
+  photo,
   align = "center",
   level = 2,
   children,
@@ -32,6 +36,31 @@ export function MenuSection({
   id?: string;
   title: string;
   subtitle?: string;
+  /**
+   * Linha curta abaixo do subtítulo, em versalete.
+   *
+   * ⚠️ **Existe para o horário, e ele chegou aqui em 28/09/2026 vindo de outro
+   * lugar.** Até então o cardápio abria com uma faixa da marca e uma dobra de
+   * foto, e o horário morava nela. As duas saíram a pedido do dono, que pediu a
+   * estrutura do projeto irmão — lá o cardápio abre direto na seção do buffet e
+   * o horário vai no cabeçalho dela.
+   *
+   * A leitura que sustenta: quem lê "Cardápio da semana" quer saber QUE dias
+   * junto do letreiro que promete os cinco, e não trinta linhas abaixo.
+   *
+   * ⚠️ Nunca montar a frase aqui a partir de `opens`/`closes` — use
+   * `openingHoursLabel()`. A regra e o motivo estão no AGENTS.md: a linha sem a
+   * faixa de DIAS manda o visitante para a porta fechada no sábado.
+   */
+  note?: string;
+  /**
+   * Foto no topo da seção, entre o cabeçalho e o conteúdo.
+   *
+   * `object-contain` e não `cover`: estas fotos são de prato e de bebida, e
+   * recortar para preencher come justamente a borda do prato. Quem decide o
+   * enquadramento é quem fotografou.
+   */
+  photo?: { src: string; alt: string };
   /** `left` para as seções internas; o topo da página usa `center`. */
   align?: "center" | "left";
   /**
@@ -69,7 +98,32 @@ export function MenuSection({
               {subtitle}
             </p>
           ) : null}
+          {/* ⚠️ `muted-foreground`, e NÃO `brand` — o verde da marca não serve
+              de texto sobre o fundo desta página. Está escrito em
+              `menu-backdrop.tsx`, com a medida: 3,41:1 no pior tom do fundo,
+              contra 4,74:1 do `muted-foreground`. Escrevi `text-brand` aqui na
+              primeira versão e a varredura reprovou seis vezes, entre 4,19 e
+              4,23 — o número real do pixel composto, mais generoso que o pior
+              caso do docblock e ainda assim abaixo do mínimo de 4,5. */}
+          {note ? (
+            <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+              {note}
+            </p>
+          ) : null}
         </div>
+
+        {photo ? (
+          <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl">
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              sizes="(min-width: 768px) 768px, 100vw"
+              quality={50}
+              className="object-contain"
+            />
+          </div>
+        ) : null}
 
         {children}
       </Container>

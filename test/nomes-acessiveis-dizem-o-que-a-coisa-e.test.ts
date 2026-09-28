@@ -153,17 +153,24 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
    */
   "src/components/page-header.tsx": ["imageAlt"],
   /*
-   * A dobra de comida do cardapio: a foto e FUNDO, sob um veu, com o horario
-   * por cima. O texto e que informa; a foto repetida em voz alta atrasaria
-   * quem usa leitor de tela sem acrescentar nada.
+   * A foto opcional no topo de uma seção do cardápio. **Informativa**, e a
+   * diferença importa: ela não é fundo sob véu com texto por cima — é a
+   * fotografia do que a seção oferece, sozinha no quadro. Quem não a vê fica
+   * sem ela se o `alt` estiver vazio, então quem chama a seção passa a
+   * descrição.
    *
-   * ⚠️ Esta linha dizia `menu-hero.tsx` ate 21/09/2026. A abertura se dividiu
-   * em duas pecas — faixa de assinatura e dobra de comida —, e o `alt` vazio
-   * mudou de arquivo junto com a foto. O inventario pegou a troca, que e
-   * exatamente o que ele existe para fazer: `alt` novo entra aqui de
-   * proposito, e `alt` que se muda de lugar tambem.
+   * ⚠️ **Esta entrada já mudou de arquivo duas vezes, e o rastro é o ponto.**
+   * Era `menu-hero.tsx` até 21/09/2026, quando a abertura do cardápio se
+   * dividiu em faixa de assinatura e dobra de comida, e o `alt` VAZIO foi com a
+   * foto para `menu-photo.tsx`. Em 28/09 as duas peças saíram inteiras — o dono
+   * pediu a estrutura do projeto irmão, que abre o cardápio direto no letreiro
+   * —, e a única foto que restou na página é esta, que nasce com descrição.
+   *
+   * O inventário pegou as duas trocas, que é exatamente o que ele existe para
+   * fazer: `alt` novo entra aqui de propósito, e `alt` que muda de lugar
+   * também.
    */
-  "src/components/cardapio/menu-photo.tsx": ['""'],
+  "src/components/cardapio/menu-section.tsx": ["photo.alt"],
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.
   /*
