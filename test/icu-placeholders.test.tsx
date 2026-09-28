@@ -9,13 +9,20 @@ import { siteConfig } from "@/config/site";
 
 /**
  * Regressão do bug em `/experiencia`: a mensagem `experiencia.lead` tem o
- * placeholder ICU `{foundedYear}`, mas a página chamava `t.rich("lead",
+ * placeholder ICU `{foundedYear}`, mas a página chamava `t.rich(…,
  * richTags)` — só os renderizadores de `<b>`/`<i>`, nunca um valor. Sem
  * `foundedYear`, o next-intl não lança exceção (que quebraria o build):
  * ele cai no `getMessageFallback` padrão, que devolve a própria chave
  * (`"experiencia.lead"`). É por isso que o bug só aparece olhando a página
  * renderizada, e não em `npm run typecheck` nem `npm run build` — os dois
  * passam mesmo com o placeholder faltando.
+ *
+ * ⚠️ **A chave mudou de nome em 28/09/2026: era `lead`, virou `leadIntro`.** A
+ * abertura da página passou a ter três parágrafos, e só o primeiro carrega o
+ * `{foundedYear}` — os outros dois vivem num array sem placeholder nenhum.
+ * Endereçar um item de array por índice no `t.rich` é frágil, então o
+ * parágrafo com placeholder ganhou chave própria. O bug que este arquivo
+ * guarda é o mesmo; mudou o nome do alvo.
  *
  * O teste usa `createTranslator`, o mesmo motor de formatação por trás de
  * `useTranslations`/`getTranslations`, com o catálogo pt.json de verdade —
@@ -25,7 +32,7 @@ import { siteConfig } from "@/config/site";
  * não é prático, então o teste exercita a formatação real sem passar pelo
  * componente.
  */
-describe("experiencia.lead (t.rich com placeholder ICU)", () => {
+describe("experiencia.leadIntro (t.rich com placeholder ICU)", () => {
   const t = createTranslator({
     locale: "pt",
     messages,
@@ -48,23 +55,28 @@ describe("experiencia.lead (t.rich com placeholder ICU)", () => {
       ),
       "utf8",
     );
-    const callIndex = source.indexOf('t.rich("lead"');
-    expect(callIndex, 'chamada t.rich("lead", ...) não encontrada em page.tsx').toBeGreaterThan(-1);
+    const callIndex = source.indexOf('t.rich("leadIntro"');
+    expect(callIndex, 'chamada t.rich("leadIntro", ...) não encontrada em page.tsx').toBeGreaterThan(-1);
     const call = source.slice(callIndex, source.indexOf(")", callIndex) + 1);
     expect(call).toContain("foundedYear");
   });
 
   it("com foundedYear (a chamada correta), resolve o parágrafo de verdade", () => {
     const html = renderToStaticMarkup(
-      <>{t.rich("lead", { ...richTags, foundedYear: siteConfig.foundedYear })}</>,
+      <>{t.rich("leadIntro", { ...richTags, foundedYear: siteConfig.foundedYear })}</>,
     );
-    expect(html).toContain(`desde ${siteConfig.foundedYear}.`);
-    expect(html).not.toContain("experiencia.lead");
+    /* ⚠️ Cobra o ANO, e não a frase em volta dele. A versão anterior exigia
+       "desde 1998." com ponto final, e a reescrita da copy em 28/09 trocou o
+       ponto por vírgula — a asserção quebrou sem que nada de errado tivesse
+       acontecido. O que este teste prova é que o placeholder resolveu; a
+       pontuação é da copy, e copy muda. */
+    expect(html).toContain(String(siteConfig.foundedYear));
+    expect(html).not.toContain("experiencia.leadIntro");
   });
 
   it("sem foundedYear (a chamada quebrada), cai no fallback — era exatamente o bug", () => {
-    const html = renderToStaticMarkup(<>{t.rich("lead", richTags)}</>);
-    expect(html).toBe("experiencia.lead");
+    const html = renderToStaticMarkup(<>{t.rich("leadIntro", richTags)}</>);
+    expect(html).toBe("experiencia.leadIntro");
   });
 });
 
@@ -99,7 +111,7 @@ const ALLOWED: Record<string, string[]> = {
   "home.testimonials.ratingLabel": ["rating"],
   // O link de rede social do rodape, que anunciava a chave crua do objeto.
   "footer.socialLink": ["brand", "network"],
-  "experiencia.lead": ["foundedYear"],
+  "experiencia.leadIntro": ["foundedYear"],
   "novidades.imageCaption": ["title"],
   "cardapio.dayPanelHeading": ["day"],
   "cardapio.dishImageAlt": ["name"],

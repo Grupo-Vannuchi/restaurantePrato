@@ -68,6 +68,9 @@ export default async function AboutPage({
     fillYears(item),
   );
   const contactParagraphs = t.raw("contactCta.paragraphs") as string[];
+  /* Os dois parágrafos SEM placeholder da abertura — o primeiro tem o
+     `{foundedYear}` e é lido por `t.rich` lá embaixo. */
+  const leadParagraphs = t.raw("leadParagraphs") as string[];
 
   return (
     <>
@@ -84,13 +87,43 @@ export default async function AboutPage({
           o último lugar onde aparecia. */}
       <PageHeader title={t("title")} subtitle={t("subtitle")} fundo="verde" />
 
+      {/* ⚠️ **Três parágrafos desde 28/09/2026, e era um só.** O dono trouxe
+          uma copy nova para esta página, e ela vinha do projeto irmão: dois dos
+          fatos que ela afirmava estão na lista de bloqueio de
+          `test/brand-hygiene.test.ts`, o tempo de casa contradizia o ano de
+          fundação que `siteConfig` guarda, e ela encerrava o almoço com um café
+          que a carta de bebidas não tem. Esta é a mesma ESTRUTURA, reescrita só
+          com o que está confirmado para o Prato.
+
+          ⚠️ Os termos bloqueados não se repetem aqui de propósito: a varredura
+          lê `src/` inteiro e reprovou a primeira versão deste comentário por
+          citá-los para explicar a recusa. É a terceira vez que uma guarda deste
+          repositório tropeça na própria prosa, e a regra já assentada é que
+          quem cede é o texto — guarda de contaminação não aprende exceção. A
+          lista está no teste; o registro do episódio, no commit.
+
+          ⚠️ O placeholder `{foundedYear}` vive no primeiro parágrafo. Sem
+          passá-lo, o next-intl não lança erro: ele cai no fallback e imprime o
+          NOME da chave na página. `test/icu-placeholders.test.tsx` é o que
+          pega isso antes de alguém ver. */}
       <Section>
-        <p className="max-w-3xl text-pretty text-xl leading-relaxed">
-          {/* "lead" tem o placeholder ICU {foundedYear} — sem ele o next-intl
-              cai no fallback padrão (o nome literal da chave) em vez de
-              lançar um erro, então o bug só aparece olhando a página. */}
-          {t.rich("lead", { ...richTags, foundedYear: siteConfig.foundedYear })}
-        </p>
+        <div className="flex max-w-3xl flex-col gap-5">
+          {/* O primeiro parágrafo é chave PRÓPRIA, e não o índice zero do
+              array, porque só ele carrega o `{foundedYear}`. Endereçar um item
+              de array por índice no `t.rich` é frágil, e o preço do erro aqui é
+              o nome da chave impresso na página. */}
+          <p className="text-pretty text-xl leading-relaxed">
+            {t.rich("leadIntro", {
+              ...richTags,
+              foundedYear: siteConfig.foundedYear,
+            })}
+          </p>
+          {leadParagraphs.map((paragrafo) => (
+            <p key={paragrafo} className="text-pretty text-xl leading-relaxed">
+              {paragrafo}
+            </p>
+          ))}
+        </div>
       </Section>
 
       <Section className="border-y border-border bg-muted/30">
