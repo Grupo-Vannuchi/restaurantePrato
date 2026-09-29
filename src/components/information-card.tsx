@@ -74,7 +74,28 @@ export function InformationCard({
         */}
       <div aria-hidden className="veu-de-legibilidade absolute inset-0" />
 
-      <Titulo className="absolute inset-x-0 top-0 max-w-[88%] text-balance p-5 text-lg font-bold leading-snug text-white">
+      {/* ⚠️ **`line-clamp-3` desde 29/09/2026, e o motivo NÃO é o véu.**
+          Medido: um título de cinco linhas desce a 86% do card e encosta nos
+          dois botões redondos logo abaixo, que têm borda branca e ficam POR
+          CIMA do véu de legibilidade. Texto branco sobre borda branca dá
+          **2,96:1**, contra o mínimo de 4,5 — e nenhum véu conserta, porque o
+          véu está embaixo dos botões.
+
+          Isso foi medido escurecendo o véu de 45% até 75% e vendo o número não
+          se mexer (2,96 → 3,14 → 3,02 → 2,95) enquanto todos os outros cards
+          iam de 7,6 a 13,8. Três dias antes eu tinha atribuído o problema à
+          janela transparente do véu e mexido nela em falso; a janela não tem
+          nada a ver.
+
+          Com o limite, o título para em 47% do card e mede 7,6:1 — o mesmo dos
+          outros. Hoje ele não corta nada: os dezesseis títulos cabem em três
+          linhas. Ele existe para o dia em que o cliente escrever um mais longo
+          pelo painel, e o texto inteiro continua no `<h1>` da própria página.
+
+          ⚠️ A varredura de contraste NÃO pegava isto: ela media os cinco
+          primeiros pontos de cada elemento, sempre no topo. Consertada no
+          mesmo commit. */}
+      <Titulo className="absolute inset-x-0 top-0 line-clamp-3 max-w-[88%] text-balance p-5 text-lg font-bold leading-snug text-white">
         {information.title}
       </Titulo>
 

@@ -470,9 +470,32 @@ for (const rota of rotas) {
             // Fora de `main` e `footer` não é conteúdo desta varredura.
             if (!dono.closest("main") && !dono.closest("footer")) continue;
 
+            /*
+             * ⚠️ **Guarda TODOS os pontos do elemento; a escolha dos cinco
+             * acontece depois, espalhada. Esta linha guardava os cinco
+             * PRIMEIROS, e foi assim que a varredura ficou cega para o pé dos
+             * elementos altos.**
+             *
+             * A grade varre de cima para baixo, então os cinco primeiros de um
+             * elemento são sempre os do TOPO dele. Num título de card de
+             * `/novidades` com cinco linhas — 164 px de altura —, a varredura
+             * media a primeira linha e nunca chegava à última.
+             *
+             * Em 29/09 isso deixou passar um título a **2,96:1** na página
+             * inteira, com a varredura imprimindo "0 reprovas". O defeito real
+             * ficava embaixo: o texto encostava nos botões redondos do canto,
+             * que têm borda branca e ficam POR CIMA do véu de legibilidade.
+             * Texto branco sobre borda branca, e o instrumento dizendo que
+             * estava tudo bem.
+             *
+             * ⚠️ O número de pontos MEDIDOS não muda, e isso é deliberado: a
+             * lição de 15/09 — algumas dezenas de valores por passo em vez de
+             * um milhão — continua valendo. Guardar coordenadas é barato;
+             * atravessar a ponte com pixels é que não era.
+             */
             const ja = porElemento.get(dono);
             if (ja) {
-              if (ja.pontos.length < MAX_POR_ELEMENTO) ja.pontos.push([x, y]);
+              ja.pontos.push([x, y]);
               continue;
             }
             porElemento.set(dono, {
@@ -481,6 +504,48 @@ for (const rota of rotas) {
               pontos: [[x, y]],
             });
           }
+        }
+
+        /*
+         * Cinco pontos por elemento, espalhados do primeiro ao último em vez de
+         * agrupados no topo — e SÓ onde há linha de texto.
+         *
+         * ⚠️ **As duas metades nasceram juntas, e uma sem a outra piora a
+         * varredura.** Espalhar sozinho faz o último ponto cair no `padding` do
+         * elemento: o título do card de `/novidades` tem `p-5`, então os 20 px
+         * de baixo da caixa são foto sem letra nenhuma. Na primeira versão
+         * disto a varredura trocou a cegueira por um falso positivo — acusou
+         * 3,79 num título de três linhas que mede 7,6 onde há tinta.
+         *
+         * `Range.getClientRects()` devolve um retângulo por LINHA renderizada.
+         * Filtrar por eles é o que separa "dentro da caixa do elemento" de
+         * "em cima de uma linha de texto", que era a diferença que faltava.
+         *
+         * Fora do navegador isso não existe: é preciso o layout real, com a
+         * fonte carregada e a quebra de linha feita.
+         */
+        for (const [elemento, dados] of porElemento) {
+          const faixa = document.createRange();
+          faixa.selectNodeContents(elemento);
+          const linhas = [...faixa.getClientRects()].filter(
+            (r) => r.width > 2 && r.height > 2,
+          );
+          if (linhas.length) {
+            const dentro = dados.pontos.filter(([, y]) =>
+              linhas.some((r) => y >= r.top && y <= r.bottom),
+            );
+            // Se a grade não acertou linha nenhuma (texto muito fino para o
+            // passo de 14 px), fica com o que havia: medir pouco é melhor que
+            // não medir.
+            if (dentro.length) dados.pontos = dentro;
+          }
+          const todos = dados.pontos;
+          if (todos.length <= MAX_POR_ELEMENTO) continue;
+          const passo = (todos.length - 1) / (MAX_POR_ELEMENTO - 1);
+          dados.pontos = Array.from(
+            { length: MAX_POR_ELEMENTO },
+            (_, i) => todos[Math.round(i * passo)]!,
+          );
         }
 
         return [...porElemento.values()];
