@@ -168,6 +168,39 @@ export async function Footer() {
               </a>
             ) : null}
           </div>
+
+          {/* ⚠️ **As duas frases entraram em 29/09/2026, a pedido do dono, para
+              o bloco ficar igual ao do projeto irmão.** Antes havia só a fileira
+              de ícones.
+
+              Elas não repetem os ícones: dizem o que cada um faz. Um círculo com
+              o desenho do Instagram é reconhecível para quem já conhece o
+              símbolo; para quem não conhece, era um botão sem rótulo visível.
+
+              Cada uma some junto com o que ela promete — sem perfil no config,
+              sem convite para seguir; sem URL de avaliação, sem convite para
+              avaliar. O contrato é o mesmo dos ícones acima. */}
+          {siteConfig.social.instagram ? (
+            <a
+              href={siteConfig.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-fit text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            >
+              {tc("socialCta")}
+            </a>
+          ) : null}
+
+          {avaliar ? (
+            <a
+              href={avaliar}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-fit text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            >
+              {tc("reviewCta")}
+            </a>
+          ) : null}
         </div>
       </Container>
 
