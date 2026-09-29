@@ -13,7 +13,7 @@ import { ReserveButton } from "@/components/reserve-button";
 import { ClosingCta } from "@/components/sections/closing-cta";
 import { GalleryPreview } from "@/components/sections/gallery-preview";
 import { MomentosDoSalao } from "@/components/sections/momentos-do-salao";
-import { fillYears, siteConfig } from "@/config/site";
+import { fillYears, yearsInBusiness } from "@/config/site";
 import { RotaBreadcrumbJsonLd } from "@/components/json-ld";
 
 export async function generateMetadata({
@@ -68,6 +68,13 @@ export default async function AboutPage({
     fillYears(item),
   );
   const contactParagraphs = t.raw("contactCta.paragraphs") as string[];
+  const salaoItems = t.raw("salaoPreparado.items") as string[];
+  /* `fillYears` aqui pelo mesmo motivo dos itens acima: um dos marcos cita o
+     tempo de casa, e ele sai de `foundedYear` para não divergir da home. */
+  const tradicaoItems = (t.raw("tradicao.items") as string[]).map((item) =>
+    fillYears(item),
+  );
+  const brasaParagraphs = t.raw("brasa.paragraphs") as string[];
   /* Os dois parágrafos SEM placeholder da abertura — o primeiro tem o
      `{foundedYear}` e é lido por `t.rich` lá embaixo. */
   const leadParagraphs = t.raw("leadParagraphs") as string[];
@@ -113,10 +120,7 @@ export default async function AboutPage({
               de array por índice no `t.rich` é frágil, e o preço do erro aqui é
               o nome da chave impresso na página. */}
           <p className="text-pretty text-xl leading-relaxed">
-            {t.rich("leadIntro", {
-              ...richTags,
-              foundedYear: siteConfig.foundedYear,
-            })}
+            {t.rich("leadIntro", { ...richTags, years: yearsInBusiness() })}
           </p>
           {leadParagraphs.map((paragrafo) => (
             <p key={paragrafo} className="text-pretty text-xl leading-relaxed">
@@ -133,6 +137,54 @@ export default async function AboutPage({
             {t.rich("audience.intro", richTags)}
           </p>
           <CheckList items={audienceItems} />
+        </div>
+      </Section>
+
+      {/* ⚠️ **Três blocos novos em 29/09/2026: a copy do cliente veio inteira e
+          a página não tinha onde pôr.** O dono mandou o texto duas vezes; na
+          primeira eu o reescrevi em vez de trocar, e ele cobrou. Esta é a copy
+          dele, com três mudanças que eu não pude deixar idênticas e que estão
+          nomeadas no commit — nenhuma delas é gosto meu: um termo bloqueado
+          pela guarda de higiene de marca, o tempo de casa (que o site calcula
+          de `foundedYear` e publica na home, então dois números diferentes se
+          contradiriam) e os travessões, proibidos no catálogo por outra guarda.
+
+          ⚠️ O resto entrou na palavra dele, que é o que vale para dado de
+          cliente — inclusive o que eu não consigo verificar aqui: climatização,
+          os cortes do churrasco, o cafezinho e a contagem de opções. Nenhum
+          deles aparece no cardápio que o banco guarda, o que não os torna
+          falsos: o buffet cadastrado não é a lista da churrasqueira. */}
+      <Section>
+        <div className="max-w-xl">
+          <h2 className="text-2xl font-bold">{t("salaoPreparado.title")}</h2>
+          <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+            {t.rich("salaoPreparado.intro", richTags)}
+          </p>
+          <CheckList items={salaoItems} />
+        </div>
+      </Section>
+
+      <Section className="border-y border-border bg-muted/30">
+        <div className="max-w-xl">
+          <h2 className="text-2xl font-bold">{t("tradicao.title")}</h2>
+          <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+            {t.rich("tradicao.intro", richTags)}
+          </p>
+          <CheckList items={tradicaoItems} />
+          <p className="mt-8 text-pretty leading-relaxed">
+            {t.rich("tradicao.closing", richTags)}
+          </p>
+        </div>
+      </Section>
+
+      <Section>
+        <div className="flex max-w-3xl flex-col gap-5">
+          <h2 className="text-2xl font-bold text-balance">{t("brasa.title")}</h2>
+          {brasaParagraphs.map((paragrafo) => (
+            <p key={paragrafo} className="text-pretty leading-relaxed">
+              {paragrafo}
+            </p>
+          ))}
         </div>
       </Section>
 

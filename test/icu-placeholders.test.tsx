@@ -5,7 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import messages from "@/messages/pt.json";
 import { richTags } from "@/i18n/rich";
-import { siteConfig } from "@/config/site";
+import { yearsInBusiness } from "@/config/site";
 
 /**
  * Regressão do bug em `/experiencia`: a mensagem `experiencia.lead` tem o
@@ -17,7 +17,16 @@ import { siteConfig } from "@/config/site";
  * renderizada, e não em `npm run typecheck` nem `npm run build` — os dois
  * passam mesmo com o placeholder faltando.
  *
- * ⚠️ **A chave mudou de nome em 28/09/2026: era `lead`, virou `leadIntro`.** A
+ * ⚠️ **Mudou duas vezes em dois dias.** Em 28/09 a chave passou de `lead` a
+ * `leadIntro`; em 29/09 o placeholder dela passou de `{foundedYear}` a
+ * `{years}`, quando a copy do cliente substituiu "desde 1998" por "há tantos
+ * anos". O bug guardado é o mesmo; mudaram o nome do alvo e o do valor.
+ *
+ * ⚠️ **Nenhuma das duas versões escreve o número à mão**, e é esse o ponto: a
+ * copy do cliente dizia "25 anos", e a casa é de 1998. O placeholder faz a
+ * página concordar com a home, que já publica o mesmo cálculo.
+ *
+ * (histórico) A chave nasceu como `lead`: A
  * abertura da página passou a ter três parágrafos, e só o primeiro carrega o
  * `{foundedYear}` — os outros dois vivem num array sem placeholder nenhum.
  * Endereçar um item de array por índice no `t.rich` é frágil, então o
@@ -58,23 +67,23 @@ describe("experiencia.leadIntro (t.rich com placeholder ICU)", () => {
     const callIndex = source.indexOf('t.rich("leadIntro"');
     expect(callIndex, 'chamada t.rich("leadIntro", ...) não encontrada em page.tsx').toBeGreaterThan(-1);
     const call = source.slice(callIndex, source.indexOf(")", callIndex) + 1);
-    expect(call).toContain("foundedYear");
+    expect(call).toContain("years");
   });
 
-  it("com foundedYear (a chamada correta), resolve o parágrafo de verdade", () => {
+  it("com years (a chamada correta), resolve o parágrafo de verdade", () => {
     const html = renderToStaticMarkup(
-      <>{t.rich("leadIntro", { ...richTags, foundedYear: siteConfig.foundedYear })}</>,
+      <>{t.rich("leadIntro", { ...richTags, years: yearsInBusiness() })}</>,
     );
     /* ⚠️ Cobra o ANO, e não a frase em volta dele. A versão anterior exigia
        "desde 1998." com ponto final, e a reescrita da copy em 28/09 trocou o
        ponto por vírgula — a asserção quebrou sem que nada de errado tivesse
        acontecido. O que este teste prova é que o placeholder resolveu; a
        pontuação é da copy, e copy muda. */
-    expect(html).toContain(String(siteConfig.foundedYear));
+    expect(html).toContain(String(yearsInBusiness()));
     expect(html).not.toContain("experiencia.leadIntro");
   });
 
-  it("sem foundedYear (a chamada quebrada), cai no fallback — era exatamente o bug", () => {
+  it("sem years (a chamada quebrada), cai no fallback — era exatamente o bug", () => {
     const html = renderToStaticMarkup(<>{t.rich("leadIntro", richTags)}</>);
     expect(html).toBe("experiencia.leadIntro");
   });
@@ -111,7 +120,9 @@ const ALLOWED: Record<string, string[]> = {
   "home.testimonials.ratingLabel": ["rating"],
   // O link de rede social do rodape, que anunciava a chave crua do objeto.
   "footer.socialLink": ["brand", "network"],
-  "experiencia.leadIntro": ["foundedYear"],
+  "experiencia.leadIntro": ["years"],
+  // O primeiro marco da lista cita o tempo de casa; resolvido por `fillYears`.
+  "experiencia.tradicao.items.0": ["years"],
   "novidades.imageCaption": ["title"],
   "cardapio.dayPanelHeading": ["day"],
   "cardapio.dishImageAlt": ["name"],
