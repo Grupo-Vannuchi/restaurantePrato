@@ -65,8 +65,22 @@ export const legalEntity = {
    *
    * ⚠️ **Sem `https://` de propósito.** O valor entra no meio da frase ("a
    * utilização do site **X**"), e o esquema ali soaria a endereço colado da
-   * barra do navegador. O apex é o canônico: `www` redireciona para ele com
-   * 308, e é este valor que `NEXT_PUBLIC_SITE_URL` acompanha.
+   * barra do navegador.
+   *
+   * ⚠️ **Quem serve hoje é o `www`, e o apex redireciona para ele com 308** —
+   * inverteu em 25/09/2026, quando o domínio padrão da Vercel saiu do projeto e
+   * ela promoveu o `www` a principal. O dono confirmou que fica assim, e
+   * `NEXT_PUBLIC_SITE_URL` acompanha: `https://www.restauranteprato.com.br`.
+   *
+   * **O valor abaixo continua sem o `www`, e isso é certo.** Ele nomeia o
+   * DOMÍNIO, do qual o `www` é subdomínio; num documento jurídico é o domínio
+   * que se nomeia, não o host que responde. Quem entra pelo apex chega ao mesmo
+   * site, com o caminho preservado.
+   *
+   * ⚠️ Esta nota já esteve errada por quatro dias afirmando o contrário. A
+   * lição que ela guarda é a de sempre neste repositório: justificativa
+   * envelhece ao lado do código que a contradiz, e aqui ela envelheceu ao lado
+   * de uma configuração que nem no código estava.
    *
    * ⚠️ E o que NÃO está resolvido: o REGISTRO do domínio segue no CNPJ do
    * cliente ANTERIOR, e não no do Prato. Isso não invalida o texto — a empresa
