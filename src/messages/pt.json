@@ -84,24 +84,61 @@
   "experiencia": {
     "title": "A Experiência",
     "headerAlt": "O balcão do Restaurante Prato visto do salão",
-    "metaDescription": "Buffet completo, churrasco na brasa e tempero caseiro no Centro de Santos. O Restaurante Prato serve almoço de segunda a sexta, das 11h às 15h.",
+    "metaDescription": "Restaurante por quilo no Centro de Santos: churrasco na brasa, peixes, ilha de massas e buffet completo. De segunda a sexta, das 11h às 15h.",
     "subtitle": "A sua pausa merecida no coração do Centro.",
-    "lead": "O Prato foi pensado para quem valoriza o próprio tempo. O salão é dinâmico, a rotatividade é alta e não há longas esperas. A comida chega farta e sempre quente, para você recarregar as energias e voltar pontualmente ao expediente. No Centro de Santos desde {foundedYear}.",
+    "leadIntro": "Há {years} anos fazendo parte da história do Centro de Santos, o Restaurante Prato combina tradição, variedade e atenção aos detalhes para transformar o almoço em uma experiência completa.",
+    "leadParagraphs": [
+      "Com um cardápio amplo e opções que mudam ao longo da semana, a casa é o destino ideal para quem busca sabor, qualidade e praticidade na rotina.",
+      "O salão espaçoso, elegante e reservado foi planejado para oferecer conforto em diferentes ocasiões: seja para uma pausa tranquila no meio do dia, um almoço em família ou encontros profissionais."
+    ],
     "audience": {
-      "title": "Quem experimenta, não troca.",
-      "intro": "O que você encontra aqui todo dia:",
+      "title": "O que torna o almoço aqui especial",
+      "intro": "No Restaurante Prato, você encontra tudo o que precisa para montar um almoço completo, variado e do seu jeito:",
       "items": [
-        "Churrasco na brasa, com o barulho da carne chiando e aquela casquinha dourada. Os melhores cortes, todos os dias.",
-        "Buffet completo, com variedade farta de saladas, pratos quentes e guarnições para você montar o seu pratão.",
-        "Agilidade de verdade: pegou, serviu, comeu. O salão é preparado para você não perder um minuto da sua pausa.",
-        "Comida quente na bancada do início ao fim do expediente.",
-        "Ambiente acolhedor, o restaurante do dia a dia, sem formalidade, feito para quem trabalha duro no Centro."
+        "Churrasco preparado na brasa, com cortes selecionados e fatiados na hora",
+        "Peixes e frutos do mar frescos, escolhidos com cuidado",
+        "Massas preparadas na hora, com ingredientes e molho escolhidos por você",
+        "Buffet completo com saladas, frutas frescas, pratos quentes e diversas opções de massas no rechaud",
+        "Uma seleção de sobremesas para finalizar o almoço, acompanhada daquele cafezinho indispensável",
+        "Salão amplo, climatizado e agradável, com o conforto necessário para conversar com tranquilidade"
+      ]
+    },
+    "salaoPreparado": {
+      "title": "Um salão preparado para receber você",
+      "intro": "Em uma das regiões mais tradicionais e bem localizadas, atrás da prefeitura no centro de Santos. Um espaço confortável e versátil para diferentes momentos:",
+      "items": [
+        "Para quem trabalha no Centro e quer aproveitar a hora do almoço com qualidade, conforto e boa comida",
+        "Almoços de diretoria e reuniões que pedem um ambiente mais reservado",
+        "Confraternizações de equipes e encontros corporativos",
+        "Para quem prefere almoçar sozinho, com tranquilidade e sem correria",
+        "Famílias e grupos que valorizam um cardápio variado e opções para todos os gostos"
+      ]
+    },
+    "tradicao": {
+      "title": "Tradição, conforto e sabor que fazem parte da nossa história",
+      "intro": "A nossa qualidade e o compromisso com quem nos visita ajudaram a construir essa trajetória:",
+      "items": [
+        "{years} anos fazendo parte do dia a dia do Centro de Santos",
+        "Salão amplo e climatizado",
+        "Mais de 40 opções entre pratos quentes, saladas e sobremesas",
+        "Atendimento ágil e cuidadoso, respeitando o seu tempo"
+      ],
+      "closing": "Se você procura um restaurante por quilo com variedade e sabor, onde cada detalhe da refeição é levado a sério, o Restaurante Prato é o lugar certo para o seu almoço."
+    },
+    "brasa": {
+      "title": "Brasa, buffet completo e massas preparadas na hora, de segunda a sexta.",
+      "paragraphs": [
+        "O churrasco é uma das grandes marcas da casa: picanha, cupim, maminha, alcatra e outros cortes selecionados, preparados na brasa e fatiados na hora.",
+        "Para completar, o buffet também recebe opções como salmão, bacalhau, camarão e diferentes seleções da semana, escolhidas cuidadosamente pelo proprietário.",
+        "Na ilha de massas, você monta o seu prato como preferir: escolha a massa, os ingredientes e o molho, e nossa equipe prepara tudo na hora, diante de você."
       ]
     },
     "contactCta": {
-      "title": "Vem almoçar com a gente.",
+      "title": "Reserve a sua mesa",
       "paragraphs": [
-        "O buffet está servido a partir das 11h, de segunda a sexta. Chegue cedo e aproveite o salão tranquilo."
+        "Confraternizações, almoços de diretoria, encontros de equipe e eventos corporativos ganham um espaço especial no coração do Centro de Santos.",
+        "Entre em contato para combinar a data, o horário e o número de convidados. Do restante, a nossa equipe cuida para você.",
+        "A partir das 11h, tudo isso já está esperando por você."
       ]
     },
     "disclaimer": "Restaurante Prato, na R. Augusto Severo, 25, Centro, Santos/SP."
@@ -143,14 +180,14 @@
     "paymentLabel": "Formas de pagamento"
   },
   "salao": {
-    "title": "O melhor momento para vir",
-    "intro": "Cada horário do almoço tem um clima. Escolha o seu.",
-    "earlyLabel": "11h",
-    "earlyValue": "Buffet intacto, comida recém-saída do fogo e muita tranquilidade. O paraíso de quem almoça cedo.",
-    "peakLabel": "Das 12h às 13h30",
-    "peakValue": "O fluxo intenso do Centro. Mas fica tranquilo: a rotatividade é alta e a chapa não para.",
-    "lateLabel": "A partir das 13h30",
-    "lateValue": "Clima mais calmo, ideal para comer sem pressa, com reposição garantida no buffet."
+    "title": "Escolha o melhor horário para o seu almoço",
+    "intro": "Funcionamos de segunda a sexta-feira, das 11h às 15h, e cada período oferece uma experiência diferente:",
+    "earlyLabel": "11h às 12h",
+    "earlyValue": "Buffet recém-montado e mais liberdade para escolher onde sentar.",
+    "peakLabel": "12h às 13h",
+    "peakValue": "O período mais movimentado, com o salão cheio e o ritmo intenso do almoço.",
+    "lateLabel": "13h às 14h30",
+    "lateValue": "Um ambiente mais tranquilo para quem prefere comer com calma."
   },
   "contact": {
     "title": "A poucos passos de você no Centro",

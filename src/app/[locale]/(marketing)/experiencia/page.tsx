@@ -13,7 +13,7 @@ import { ReserveButton } from "@/components/reserve-button";
 import { ClosingCta } from "@/components/sections/closing-cta";
 import { GalleryPreview } from "@/components/sections/gallery-preview";
 import { MomentosDoSalao } from "@/components/sections/momentos-do-salao";
-import { fillYears, siteConfig } from "@/config/site";
+import { fillYears, yearsInBusiness } from "@/config/site";
 import { RotaBreadcrumbJsonLd } from "@/components/json-ld";
 
 export async function generateMetadata({
@@ -68,6 +68,16 @@ export default async function AboutPage({
     fillYears(item),
   );
   const contactParagraphs = t.raw("contactCta.paragraphs") as string[];
+  const salaoItems = t.raw("salaoPreparado.items") as string[];
+  /* `fillYears` aqui pelo mesmo motivo dos itens acima: um dos marcos cita o
+     tempo de casa, e ele sai de `foundedYear` para não divergir da home. */
+  const tradicaoItems = (t.raw("tradicao.items") as string[]).map((item) =>
+    fillYears(item),
+  );
+  const brasaParagraphs = t.raw("brasa.paragraphs") as string[];
+  /* Os dois parágrafos SEM placeholder da abertura — o primeiro tem o
+     `{foundedYear}` e é lido por `t.rich` lá embaixo. */
+  const leadParagraphs = t.raw("leadParagraphs") as string[];
 
   return (
     <>
@@ -84,13 +94,40 @@ export default async function AboutPage({
           o último lugar onde aparecia. */}
       <PageHeader title={t("title")} subtitle={t("subtitle")} fundo="verde" />
 
+      {/* ⚠️ **Três parágrafos desde 28/09/2026, e era um só.** O dono trouxe
+          uma copy nova para esta página, e ela vinha do projeto irmão: dois dos
+          fatos que ela afirmava estão na lista de bloqueio de
+          `test/brand-hygiene.test.ts`, o tempo de casa contradizia o ano de
+          fundação que `siteConfig` guarda, e ela encerrava o almoço com um café
+          que a carta de bebidas não tem. Esta é a mesma ESTRUTURA, reescrita só
+          com o que está confirmado para o Prato.
+
+          ⚠️ Os termos bloqueados não se repetem aqui de propósito: a varredura
+          lê `src/` inteiro e reprovou a primeira versão deste comentário por
+          citá-los para explicar a recusa. É a terceira vez que uma guarda deste
+          repositório tropeça na própria prosa, e a regra já assentada é que
+          quem cede é o texto — guarda de contaminação não aprende exceção. A
+          lista está no teste; o registro do episódio, no commit.
+
+          ⚠️ O placeholder `{foundedYear}` vive no primeiro parágrafo. Sem
+          passá-lo, o next-intl não lança erro: ele cai no fallback e imprime o
+          NOME da chave na página. `test/icu-placeholders.test.tsx` é o que
+          pega isso antes de alguém ver. */}
       <Section>
-        <p className="max-w-3xl text-pretty text-xl leading-relaxed">
-          {/* "lead" tem o placeholder ICU {foundedYear} — sem ele o next-intl
-              cai no fallback padrão (o nome literal da chave) em vez de
-              lançar um erro, então o bug só aparece olhando a página. */}
-          {t.rich("lead", { ...richTags, foundedYear: siteConfig.foundedYear })}
-        </p>
+        <div className="flex max-w-3xl flex-col gap-5">
+          {/* O primeiro parágrafo é chave PRÓPRIA, e não o índice zero do
+              array, porque só ele carrega o `{foundedYear}`. Endereçar um item
+              de array por índice no `t.rich` é frágil, e o preço do erro aqui é
+              o nome da chave impresso na página. */}
+          <p className="text-pretty text-xl leading-relaxed">
+            {t.rich("leadIntro", { ...richTags, years: yearsInBusiness() })}
+          </p>
+          {leadParagraphs.map((paragrafo) => (
+            <p key={paragrafo} className="text-pretty text-xl leading-relaxed">
+              {paragrafo}
+            </p>
+          ))}
+        </div>
       </Section>
 
       <Section className="border-y border-border bg-muted/30">
@@ -100,6 +137,54 @@ export default async function AboutPage({
             {t.rich("audience.intro", richTags)}
           </p>
           <CheckList items={audienceItems} />
+        </div>
+      </Section>
+
+      {/* ⚠️ **Três blocos novos em 29/09/2026: a copy do cliente veio inteira e
+          a página não tinha onde pôr.** O dono mandou o texto duas vezes; na
+          primeira eu o reescrevi em vez de trocar, e ele cobrou. Esta é a copy
+          dele, com três mudanças que eu não pude deixar idênticas e que estão
+          nomeadas no commit — nenhuma delas é gosto meu: um termo bloqueado
+          pela guarda de higiene de marca, o tempo de casa (que o site calcula
+          de `foundedYear` e publica na home, então dois números diferentes se
+          contradiriam) e os travessões, proibidos no catálogo por outra guarda.
+
+          ⚠️ O resto entrou na palavra dele, que é o que vale para dado de
+          cliente — inclusive o que eu não consigo verificar aqui: climatização,
+          os cortes do churrasco, o cafezinho e a contagem de opções. Nenhum
+          deles aparece no cardápio que o banco guarda, o que não os torna
+          falsos: o buffet cadastrado não é a lista da churrasqueira. */}
+      <Section>
+        <div className="max-w-xl">
+          <h2 className="text-2xl font-bold">{t("salaoPreparado.title")}</h2>
+          <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+            {t.rich("salaoPreparado.intro", richTags)}
+          </p>
+          <CheckList items={salaoItems} />
+        </div>
+      </Section>
+
+      <Section className="border-y border-border bg-muted/30">
+        <div className="max-w-xl">
+          <h2 className="text-2xl font-bold">{t("tradicao.title")}</h2>
+          <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+            {t.rich("tradicao.intro", richTags)}
+          </p>
+          <CheckList items={tradicaoItems} />
+          <p className="mt-8 text-pretty leading-relaxed">
+            {t.rich("tradicao.closing", richTags)}
+          </p>
+        </div>
+      </Section>
+
+      <Section>
+        <div className="flex max-w-3xl flex-col gap-5">
+          <h2 className="text-2xl font-bold text-balance">{t("brasa.title")}</h2>
+          {brasaParagraphs.map((paragrafo) => (
+            <p key={paragrafo} className="text-pretty leading-relaxed">
+              {paragrafo}
+            </p>
+          ))}
         </div>
       </Section>
 

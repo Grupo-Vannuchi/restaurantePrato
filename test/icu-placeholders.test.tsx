@@ -5,17 +5,33 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import messages from "@/messages/pt.json";
 import { richTags } from "@/i18n/rich";
-import { siteConfig } from "@/config/site";
+import { yearsInBusiness } from "@/config/site";
 
 /**
  * Regressão do bug em `/experiencia`: a mensagem `experiencia.lead` tem o
- * placeholder ICU `{foundedYear}`, mas a página chamava `t.rich("lead",
+ * placeholder ICU `{foundedYear}`, mas a página chamava `t.rich(…,
  * richTags)` — só os renderizadores de `<b>`/`<i>`, nunca um valor. Sem
  * `foundedYear`, o next-intl não lança exceção (que quebraria o build):
  * ele cai no `getMessageFallback` padrão, que devolve a própria chave
  * (`"experiencia.lead"`). É por isso que o bug só aparece olhando a página
  * renderizada, e não em `npm run typecheck` nem `npm run build` — os dois
  * passam mesmo com o placeholder faltando.
+ *
+ * ⚠️ **Mudou duas vezes em dois dias.** Em 28/09 a chave passou de `lead` a
+ * `leadIntro`; em 29/09 o placeholder dela passou de `{foundedYear}` a
+ * `{years}`, quando a copy do cliente substituiu "desde 1998" por "há tantos
+ * anos". O bug guardado é o mesmo; mudaram o nome do alvo e o do valor.
+ *
+ * ⚠️ **Nenhuma das duas versões escreve o número à mão**, e é esse o ponto: a
+ * copy do cliente dizia "25 anos", e a casa é de 1998. O placeholder faz a
+ * página concordar com a home, que já publica o mesmo cálculo.
+ *
+ * (histórico) A chave nasceu como `lead`: A
+ * abertura da página passou a ter três parágrafos, e só o primeiro carrega o
+ * `{foundedYear}` — os outros dois vivem num array sem placeholder nenhum.
+ * Endereçar um item de array por índice no `t.rich` é frágil, então o
+ * parágrafo com placeholder ganhou chave própria. O bug que este arquivo
+ * guarda é o mesmo; mudou o nome do alvo.
  *
  * O teste usa `createTranslator`, o mesmo motor de formatação por trás de
  * `useTranslations`/`getTranslations`, com o catálogo pt.json de verdade —
@@ -25,7 +41,7 @@ import { siteConfig } from "@/config/site";
  * não é prático, então o teste exercita a formatação real sem passar pelo
  * componente.
  */
-describe("experiencia.lead (t.rich com placeholder ICU)", () => {
+describe("experiencia.leadIntro (t.rich com placeholder ICU)", () => {
   const t = createTranslator({
     locale: "pt",
     messages,
@@ -48,23 +64,28 @@ describe("experiencia.lead (t.rich com placeholder ICU)", () => {
       ),
       "utf8",
     );
-    const callIndex = source.indexOf('t.rich("lead"');
-    expect(callIndex, 'chamada t.rich("lead", ...) não encontrada em page.tsx').toBeGreaterThan(-1);
+    const callIndex = source.indexOf('t.rich("leadIntro"');
+    expect(callIndex, 'chamada t.rich("leadIntro", ...) não encontrada em page.tsx').toBeGreaterThan(-1);
     const call = source.slice(callIndex, source.indexOf(")", callIndex) + 1);
-    expect(call).toContain("foundedYear");
+    expect(call).toContain("years");
   });
 
-  it("com foundedYear (a chamada correta), resolve o parágrafo de verdade", () => {
+  it("com years (a chamada correta), resolve o parágrafo de verdade", () => {
     const html = renderToStaticMarkup(
-      <>{t.rich("lead", { ...richTags, foundedYear: siteConfig.foundedYear })}</>,
+      <>{t.rich("leadIntro", { ...richTags, years: yearsInBusiness() })}</>,
     );
-    expect(html).toContain(`desde ${siteConfig.foundedYear}.`);
-    expect(html).not.toContain("experiencia.lead");
+    /* ⚠️ Cobra o ANO, e não a frase em volta dele. A versão anterior exigia
+       "desde 1998." com ponto final, e a reescrita da copy em 28/09 trocou o
+       ponto por vírgula — a asserção quebrou sem que nada de errado tivesse
+       acontecido. O que este teste prova é que o placeholder resolveu; a
+       pontuação é da copy, e copy muda. */
+    expect(html).toContain(String(yearsInBusiness()));
+    expect(html).not.toContain("experiencia.leadIntro");
   });
 
-  it("sem foundedYear (a chamada quebrada), cai no fallback — era exatamente o bug", () => {
-    const html = renderToStaticMarkup(<>{t.rich("lead", richTags)}</>);
-    expect(html).toBe("experiencia.lead");
+  it("sem years (a chamada quebrada), cai no fallback — era exatamente o bug", () => {
+    const html = renderToStaticMarkup(<>{t.rich("leadIntro", richTags)}</>);
+    expect(html).toBe("experiencia.leadIntro");
   });
 });
 
@@ -99,7 +120,9 @@ const ALLOWED: Record<string, string[]> = {
   "home.testimonials.ratingLabel": ["rating"],
   // O link de rede social do rodape, que anunciava a chave crua do objeto.
   "footer.socialLink": ["brand", "network"],
-  "experiencia.lead": ["foundedYear"],
+  "experiencia.leadIntro": ["years"],
+  // O primeiro marco da lista cita o tempo de casa; resolvido por `fillYears`.
+  "experiencia.tradicao.items.0": ["years"],
   "novidades.imageCaption": ["title"],
   "cardapio.dayPanelHeading": ["day"],
   "cardapio.dishImageAlt": ["name"],

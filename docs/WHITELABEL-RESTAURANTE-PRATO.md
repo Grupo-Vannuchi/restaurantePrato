@@ -71,7 +71,7 @@ e [`src/content/legal.ts`](../src/content/legal.ts) (LGPD).
 | Copy definitiva | ✅ Entregue em 19/08 e aplicada |
 | Facebook | `social` só tem Instagram; o `sameAs` sai com um item |
 | Fotos | ✅ Dez fotos autorais entraram em 03/09/2026 — topo da home, abertura do cardápio, três na ilha de massas e seis na galeria. ⚠️ **A foto de sobremesa saiu desta lista em 24/09/2026, e não por ter chegado: o cliente pediu para REMOVER a foto de sobremesa** (a instrução veio para os dois restaurantes; aqui nenhuma chegou a existir, então não houve o que remover). O campo de imagem continua opcional na linha da sobremesa e o componente continua sabendo desenhá-la — o que mudou é que ninguém está esperando por ela. Não cobrar do cliente de novo |
-| Domínio final | ✅ **No ar desde 22/09/2026: `restauranteprato.com.br`**, servido pela Vercel em `gru1`, com `www` redirecionando 308 para o apex e o caminho preservado. O `«PENDENTE»` de `src/content/legal.ts` **saiu** — `pendenciasLegais()` devolve lista vazia, e era a última pendência jurídica do projeto. ⚠️ **Falta a titularidade:** o registro segue no CNPJ do cliente anterior. Ver a nota abaixo |
+| Domínio final | ✅ **No ar desde 22/09/2026**, servido pela Vercel em `gru1`. ⚠️ **Quem responde é `www.restauranteprato.com.br`, e o apex redireciona 308 para ele, com o caminho preservado** — inverteu em 25/09, quando o domínio padrão da Vercel saiu do projeto e ela promoveu o `www` a principal; o dono confirmou que fica assim, e `NEXT_PUBLIC_SITE_URL` acompanha. O `«PENDENTE»` de `src/content/legal.ts` **saiu** — `pendenciasLegais()` devolve lista vazia, e era a última pendência jurídica do projeto. O valor no texto legal segue sem o `www` de propósito: ele nomeia o domínio, do qual o `www` é subdomínio. ⚠️ **Falta a titularidade:** o registro segue no CNPJ do cliente anterior. Ver a nota abaixo |
 | Telefone fixo | Não existe: `contact.phone` é opcional e cada CTA de ligar some sozinho |
 | Cardápio | ✅ Buffet, ilha de massas, sobremesas, bebidas e carta de vinhos estão no ar. **Falta** o preço do quilo, o da porção de massa e o dos adicionais — sem eles o aviso de preço some sozinho. Os pratos do buffet vivem no banco e entram por script versionado; sobremesas, bebidas e vinhos vivem no código |
 
@@ -163,8 +163,15 @@ novo.
 
 ## Infra — no ar desde 20/08/2026
 
-O site está publicado em **https://restaurante-prato.vercel.app**, fechado aos
-buscadores (`SITE_INDEXABLE=false`) enquanto o domínio final for `«PENDENTE»`.
+O site está publicado em **https://www.restauranteprato.com.br** e, desde
+25/09/2026, **aberto aos buscadores**: `SITE_INDEXABLE=true` e
+`NEXT_PUBLIC_SITE_URL` apontando para o `www`, com `robots.txt` liberado,
+`sitemap.xml` com 25 URLs e `/llms.txt` respondendo.
+
+⚠️ **As duas variáveis são lidas no BUILD, não em tempo de execução.** Trocar
+sem redeploy não muda nada, e redeploy sem trocar também não — foi exatamente o
+que aconteceu na primeira tentativa, e o site seguiu fechado com o painel já
+alterado na cabeça de quem mexeu.
 
 | Peça | Estado |
 |---|---|
