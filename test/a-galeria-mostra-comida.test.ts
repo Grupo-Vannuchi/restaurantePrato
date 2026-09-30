@@ -90,9 +90,23 @@ describe("a galeria mostra comida", () => {
      * Horários, Experiência e Contato perdem o topo com foto, que foi a outra
      * metade da mudança.
      */
-    const fontes = varre("src")
-      .map((c) => readFileSync(c, "utf8"))
-      .join("\n");
+    /*
+     * ⚠️ **O catálogo entra na varredura desde 30/09/2026, e sem ele a guarda
+     * acusava falso.** Até aqui ela lia só os `.tsx`, porque era assim que toda
+     * foto de ambiente era referenciada: `image="/ambiente/x.webp"` na página.
+     * Nesse dia `/reservas` ganhou um carrossel cujas quatro fotos vivem em
+     * `pt.json` — conteúdo, não leiaute, e é onde o projeto irmão as guarda
+     * também. As quatro apareceram como órfãs sendo usadas o tempo todo.
+     *
+     * Falso positivo aqui não é inofensivo: a saída de emergência que a própria
+     * mensagem sugere é declarar em GUARDADAS, e uma foto EM USO declarada como
+     * guardada desliga a verificação justamente para ela — some da página um
+     * dia e a guarda não diz nada.
+     */
+    const fontes = [
+      ...varre("src").map((c) => readFileSync(c, "utf8")),
+      readFileSync("src/messages/pt.json", "utf8"),
+    ].join("\n");
 
     /*
      * ⚠️ **Fotos guardadas de propósito, sem consumidor.** Cada entrada precisa

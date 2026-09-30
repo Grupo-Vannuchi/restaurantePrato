@@ -4,6 +4,10 @@ import { Clock, CreditCard, MapPin } from "lucide-react";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
+import {
+  PhotoCarousel,
+  type CarouselPhoto,
+} from "@/components/photo-carousel";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { ReserveButton } from "@/components/reserve-button";
 import {
@@ -37,6 +41,8 @@ export default async function ReservasPage({
   const tTrilha = await getTranslations({ locale, namespace: "nav" });
   const t = await getTranslations("reservas");
 
+  // `raw` porque `photos` e um ARRAY; `t()` devolveria a chave crua.
+  const fotos = t.raw("photos") as CarouselPhoto[];
   const hours = openingHoursLabel();
 
   return (
@@ -49,6 +55,41 @@ export default async function ReservasPage({
         image="/ambiente/salao.webp"
         imageAlt={t("headerAlt")}
       />
+
+      {/* ⚠️ **Carrossel do salão e do serviço, a pedido do dono em 30/09/2026,
+          para a página ficar com a mesma estrutura da do projeto irmão** — era
+          a única superfície de foto que lá existia e aqui não.
+
+          Abre com o BALCÃO, não com o salão, e isso é regra que o irmão
+          escreveu antes de nós: a foto do cabeçalho logo acima já é o salão, e
+          duas imagens parecidas em sequência leem como falha de carregamento.
+          Depois disso alterna serviço / salão / serviço / salão.
+
+          As quatro vivem em `pt.json` e não aqui porque são conteúdo, não
+          leiaute — mesmo lugar onde o irmão as guarda. `t.raw` porque é um
+          array; `t()` devolveria a chave. */}
+      <Section>
+        <PhotoCarousel
+          photos={fotos}
+          /*
+           * Medido na caixa DESTA página, que não é a da ilha de massas: aqui o
+           * carrossel ocupa a largura cheia do `Container` (`max-w-6xl`, 1152,
+           * com recuo de 20 px no celular e 32 de `sm` para cima), enquanto lá
+           * ele vive numa seção `max-w-3xl`. Daí 1088 px a partir de 1216 de
+           * tela, que é onde o limite do container passa a mandar. Ver a nota
+           * sobre `sizes` ser prop em `components/photo-carousel.tsx`.
+           */
+          sizes="(min-width: 1216px) 1088px, (min-width: 640px) calc(100vw - 64px), calc(100vw - 40px)"
+          labels={{
+            carousel: t("carousel"),
+            prev: t("prevPhoto"),
+            next: t("nextPhoto"),
+            // O rótulo de cada marcador é montado no cliente, que não tem o
+            // catálogo: mandamos o molde e ele troca o {n}.
+            goTo: t("goToPhoto", { n: "{n}" }),
+          }}
+        />
+      </Section>
 
       {/* Como está o salão ao longo do serviço — vem antes da seção de
          grupos porque a página passou a liderar com o horário, não com o

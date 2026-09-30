@@ -129,6 +129,9 @@ const ALLOWED: Record<string, string[]> = {
   "cardapio.pastaPortionNote": ["portion"],
   "cardapio.pastaIngredientsNote": ["n"],
   "cardapio.pastaGoToPhoto": ["n"],
+  // Mesmo molde do carrossel da ilha: o marcador e montado no cliente, que
+  // nao tem o catalogo, entao a pagina passa `n: "{n}"` e ele troca depois.
+  "reservas.goToPhoto": ["n"],
   "footer.registration": ["value"],
   "admin.dashboard.welcome": ["name"],
   "admin.leads.removeTag": ["tag"],

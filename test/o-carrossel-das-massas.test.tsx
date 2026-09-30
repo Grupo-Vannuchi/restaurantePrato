@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PastaCarousel } from "@/components/cardapio/pasta-carousel";
+import { PhotoCarousel } from "@/components/photo-carousel";
 import { renderWithIntl, screen, within } from "./test-utils";
 
 /**
@@ -39,7 +39,7 @@ const ROTULOS = {
 
 describe("o carrossel das massas", () => {
   it("mostra uma foto por slide, cada uma com texto alternativo próprio", () => {
-    renderWithIntl(<PastaCarousel photos={FOTOS} labels={ROTULOS} />);
+    renderWithIntl(<PhotoCarousel photos={FOTOS} labels={ROTULOS} sizes="100vw" />);
 
     const imagens = screen.getAllByRole("img");
     expect(imagens).toHaveLength(3);
@@ -50,7 +50,7 @@ describe("o carrossel das massas", () => {
   });
 
   it("dá um marcador por foto, e marca em qual se está", () => {
-    renderWithIntl(<PastaCarousel photos={FOTOS} labels={ROTULOS} />);
+    renderWithIntl(<PhotoCarousel photos={FOTOS} labels={ROTULOS} sizes="100vw" />);
 
     const marcadores = FOTOS.map((_, i) =>
       screen.getByRole("button", { name: `Ir para a foto ${i + 1}` }),
@@ -72,7 +72,7 @@ describe("o carrossel das massas", () => {
      * layout — não há como medir pixel aqui. `size-6` são 24 px em Tailwind, e
      * é o menor tamanho que a norma aceita.
      */
-    renderWithIntl(<PastaCarousel photos={FOTOS} labels={ROTULOS} />);
+    renderWithIntl(<PhotoCarousel photos={FOTOS} labels={ROTULOS} sizes="100vw" />);
 
     const marcador = screen.getByRole("button", { name: "Ir para a foto 1" });
     expect(marcador.className).toMatch(/\bsize-6\b/);
@@ -85,7 +85,7 @@ describe("o carrossel das massas", () => {
      * para onde a seção volta se alguém apagar duas das três fotos.
      */
     const { container } = renderWithIntl(
-      <PastaCarousel photos={[FOTOS[0]!]} labels={ROTULOS} />,
+      <PhotoCarousel photos={[FOTOS[0]!]} labels={ROTULOS} sizes="100vw" />,
     );
 
     expect(screen.queryAllByRole("button")).toHaveLength(0);
@@ -96,7 +96,7 @@ describe("o carrossel das massas", () => {
     // Sem isso o leitor de tela lê três imagens soltas e não avisa que há mais
     // adiante — a pessoa não sabe que existe algo para deslizar.
     const { container } = renderWithIntl(
-      <PastaCarousel photos={FOTOS} labels={ROTULOS} />,
+      <PhotoCarousel photos={FOTOS} labels={ROTULOS} sizes="100vw" />,
     );
 
     const raiz = container.querySelector('[aria-roledescription="carousel"]');

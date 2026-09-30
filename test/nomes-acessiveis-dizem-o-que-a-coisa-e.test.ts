@@ -189,7 +189,9 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
    * seguidas — uma pelo rótulo do link, outra pela imagem dentro dele.
    */
   "src/components/layout/logo.tsx": ['""'],
-  "src/components/cardapio/pasta-carousel.tsx": ["foto.alt"],
+  // Promovido de `cardapio/pasta-carousel.tsx` em 30/09, quando /reservas
+  // passou a usar a mesma mecanica. O alt vem de quem chama, sempre.
+  "src/components/photo-carousel.tsx": ["foto.alt"],
   /*
    * Informativo: a foto da sobremesa é a única imagem da linha, e o nome ao
    * lado dela é o próprio conteúdo — quem usa leitor de tela ouviria "imagem"

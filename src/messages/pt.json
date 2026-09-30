@@ -6,7 +6,8 @@
     "description": "Buffet completo e churrasco na brasa no Centro de Santos, na R. Augusto Severo, 25. De segunda a sexta, das 11h às 15h. Desde 1998.",
     "keywords": "almoço centro de santos, buffet centro de santos, churrasco centro de santos, restaurante centro de santos, onde almoçar no centro de santos",
     "privacyDescription": "Como o Restaurante Prato trata dados pessoais: quais dados são coletados, para quê, por quanto tempo e como exercer seus direitos.",
-    "termsDescription": "As regras de uso do site do Restaurante Prato: reservas por WhatsApp, conteúdo do cardápio, propriedade intelectual e limitações."  },
+    "termsDescription": "As regras de uso do site do Restaurante Prato: reservas por WhatsApp, conteúdo do cardápio, propriedade intelectual e limitações."
+  },
   "nav": {
     "inicio": "Início",
     "experiencia": "A Experiência",
@@ -178,7 +179,29 @@
     "practicalTitle": "Como está o salão",
     "addressLabel": "Endereço",
     "hoursLabel": "Horário",
-    "paymentLabel": "Formas de pagamento"
+    "paymentLabel": "Formas de pagamento",
+    "carousel": "Fotos do salão e do serviço",
+    "prevPhoto": "Foto anterior",
+    "nextPhoto": "Próxima foto",
+    "goToPhoto": "Ir para a foto {n}",
+    "photos": [
+      {
+        "image": "/ambiente/balcao-quente.webp",
+        "alt": "Balcão quente do Prato, com as travessas de carnes, arroz, feijão e guarnições"
+      },
+      {
+        "image": "/ambiente/salao-entrada.webp",
+        "alt": "Salão do Prato com mesas de madeira, parede de tijolo e a entrada para a rua"
+      },
+      {
+        "image": "/ambiente/balcao-frio.webp",
+        "alt": "Balcão frio do Prato, com as saladas, os legumes e os molhos"
+      },
+      {
+        "image": "/ambiente/salao-massas.webp",
+        "alt": "Mesas postas no salão do Prato, com o balcão de massas ao fundo"
+      }
+    ]
   },
   "salao": {
     "title": "Escolha o melhor horário para o seu almoço",
@@ -203,7 +226,7 @@
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",
       "address": "Endereço",
-   "landmark": "Ponto de referência"
+      "landmark": "Ponto de referência"
     },
     "form": {
       "title": "Mande uma mensagem",
