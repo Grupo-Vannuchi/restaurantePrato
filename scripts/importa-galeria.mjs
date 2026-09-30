@@ -44,6 +44,8 @@ function carregaEnv() {
  *
  * A ordem é a do próprio balcão: primeiro os frios, depois o quente, os fritos
  * por último, e um prato montado no fim — que é o resultado de tudo acima.
+ * ⚠️ Desde 30/09 TRÊS fotos abrem a lista antes dessa sequência, a pedido do
+ * dono; o motivo está junto delas, no topo do array.
  *
  * ⚠️ **Seis fotos entraram em 10/09, escolhidas de dezessete, e a curadoria é
  * a parte que importa.** O cliente mandou vinte e cinco arquivos; sete eram
@@ -65,6 +67,28 @@ function carregaEnv() {
  * cumpre esse papel e repetir faria o leitor de tela dizer tudo duas vezes.
  */
 const FOTOS = [
+  /* ⚠️ **As três primeiras entraram em 30/09/2026 e ABREM a lista por pedido
+     explícito do dono**, que apontou a faixa "O nosso espaço" da home e mandou
+     estas fotos para ela. A home renderiza `slice(0, 3)` sobre `order`
+     (`gallery-preview.tsx`), então qualquer outra posição significaria não
+     aparecer onde ele pediu — a ordem daqui é o único controle que existe.
+
+     ⚠️ **Duas delas têm o salão ao fundo, e nem o nome nem a legenda dizem
+     isso.** O primeiro rascunho chamava as duas de "-no-salao" e legendava
+     "servida no salão", porque eu tinha usado o fundo como argumento de que
+     elas casam com o TÍTULO da faixa. `test/a-galeria-mostra-comida.test.ts`
+     reprovou, e a guarda está certa: a decisão de 10/09 é que a galeria mostra
+     o que se come, e o ambiente vai para o topo de uma página. O assunto destas
+     duas é o prato; a mesa e a luz são profundidade de campo. Nomear pelo fundo
+     era transformar foto de comida em foto de lugar no único campo que o site
+     lê — e, como a legenda virou o `alt` em 25/09, quem usa leitor de tela
+     ouviria o lugar no lugar do prato.
+
+     A sequência do balcão descrita no docblock não foi desfeita — ela começa
+     logo abaixo destas três. */
+  ["travessas-do-balcao-frio.webp", "As travessas do balcão frio: brócolis, quiabo, milho e conservas"],
+  ["massa-ao-pesto-com-manjericao.webp", "Massa ao pesto, com manjericão e queijo ralado"],
+  ["penne-com-rucula-e-alcaparras.webp", "Penne com rúcula, azeitonas e alcaparras"],
   // Os frios, que é por onde o balcão começa.
   ["buffet-de-saladas.webp", "A ilha de saladas, montada no começo do almoço"],
   ["ilha-de-saladas-com-frutas.webp", "A ilha de saladas, com as frutas do dia"],
