@@ -170,27 +170,58 @@ export const pastaChoices = {
  * da semana só para a imagem aparecer — e a faixa ilustra a ILHA, não a lista
  * de terça-feira.
  *
- * A escolha é por **molhos visivelmente diferentes**: pesto verde, sugo
- * vermelho e molho branco. Três fotos do mesmo penne venderiam a ilha como se
- * ela tivesse uma opção só, e três fotos de molho vermelho fariam o mesmo.
+ * ⚠️ **A lista foi TROCADA INTEIRA em 30/09/2026, a pedido do dono**, que
+ * mandou cinco fotos novas e pediu para tirar as que estavam. Não é acréscimo:
+ * as oito anteriores — a leva profissional de 10/09 — saíram do ar de uma vez.
  *
- * As três foram trocadas em 10/09 por fotografia profissional de prato, que o
- * cliente mandou. A anterior de "três pratos numa travessa" saiu: numa faixa de
- * três quadros, uma foto que já mostra três pratos compete com as vizinhas em
- * vez de somar.
+ * ⚠️ **Elas continuam em `public/massas`, de propósito, e isto aqui é o
+ * registro de que a ausência é decisão.** O pedido foi para não aparecerem
+ * mais, não para sumirem do projeto; são material autoral entregue pelo
+ * cliente, e arquivo fora da lista não custa um byte a quem visita o site —
+ * `next/image` só serve o que alguém referencia. Os oito:
+ * `fettuccine-ao-pesto`, `fettuccine-ao-pesto-com-vinho`, `nhoque-ao-sugo`,
+ * `nhoque-ao-sugo-com-pao`, `cappelletti-ao-sugo`, `massa-ao-molho-branco`,
+ * `massa-a-bolonhesa` e `tres-massas-emplatadas`. Voltar qualquer um é
+ * acrescentar uma linha abaixo. Se um dia a decisão virar "apagar", apague
+ * também este parágrafo — lista de guardados que não guarda nada é ruído.
  *
- * `name` alimenta o texto alternativo. Sem ele as três leriam igual para quem
- * usa leitor de tela — "foto do prato" três vezes descreve uma massa repetida.
+ * A escolha é por **molhos visivelmente diferentes**, e a ORDEM faz parte
+ * dela: fotos do mesmo molho lado a lado vendem a ilha como se ela tivesse uma
+ * opção só. Com cinco fotos, três são de creme claro e sobram exatamente duas
+ * de cor forte para separá-las — por isso a sequência é clara, vermelha,
+ * clara, verde, clara, que é a única disposição sem duas iguais encostadas.
+ * Acrescentar uma sexta pede refazer essa conta, não empurrar para o fim.
+ *
+ * A primeira leva `priority` e é a de 4:3, e isso é escolha: o carrossel
+ * mostra 4:3 no celular e 16:9 no computador, e o celular é onde quase todo
+ * mundo abre o cardápio — quem escaneia o código na mesa. Uma origem 4:3
+ * preenche o quadro do celular sem corte.
+ *
+ * `name` alimenta o texto alternativo, e nomeia FORMA + MOLHO porque é isso que
+ * a ilha vende — os dois lados existem em `pastaChoices`, então o rótulo
+ * descreve o que está na foto sem afirmar prato que o restaurante não serve.
+ * Sem ele todas leriam igual para quem usa leitor de tela: "foto do prato"
+ * cinco vezes descreve uma massa repetida.
  */
 export const pastaPhotos = [
-  { photo: "/massas/fettuccine-ao-pesto.webp", name: "Fettuccine ao pesto" },
-  { photo: "/massas/nhoque-ao-sugo.webp", name: "Nhoque ao sugo" },
-  { photo: "/massas/massa-ao-molho-branco.webp", name: "Massa ao molho branco" },
-  { photo: "/massas/cappelletti-ao-sugo.webp", name: "Cappelletti ao sugo" },
-  { photo: "/massas/massa-a-bolonhesa.webp", name: "Massa à bolonhesa" },
-  { photo: "/massas/nhoque-ao-sugo-com-pao.webp", name: "Nhoque ao sugo com pão" },
-  { photo: "/massas/fettuccine-ao-pesto-com-vinho.webp", name: "Fettuccine ao pesto com vinho" },
-  { photo: "/massas/tres-massas-emplatadas.webp", name: "Três massas da ilha" },
+  { photo: "/massas/talharim-ao-molho-branco.webp", name: "Talharim ao molho branco" },
+  { photo: "/massas/nhoque-a-bolonhesa.webp", name: "Nhoque à bolonhesa" },
+  {
+    // ⚠️ Nomeia INGREDIENTE, não molho, e é a exceção à regra acima: o creme
+    // do prato tanto pode ser o "Branco" quanto o "4 queijos" da lista de
+    // molhos, e a foto não decide. Chutar um dos dois seria afirmar o que
+    // ninguém confirmou; o que se vê, se vê.
+    photo: "/massas/penne-com-rucula-e-alcaparras.webp",
+    name: "Penne com rúcula, azeitonas e alcaparras",
+  },
+  {
+    photo: "/massas/massa-ao-pesto-com-manjericao.webp",
+    name: "Massa ao pesto, com manjericão e queijo ralado",
+  },
+  {
+    photo: "/massas/ravioli-verde-ao-molho-branco.webp",
+    name: "Ravioli verde ao molho branco com pão",
+  },
 ] as const;
 
 /**
