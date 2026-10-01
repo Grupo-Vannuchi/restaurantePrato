@@ -42,10 +42,6 @@ const FOTOS = [
     src: "/vitrine/pernil-assado.webp",
     alt: "Peça de carne assada, dourada por fora, servida na travessa",
   },
-  {
-    src: "/vitrine/salada-de-frutas.webp",
-    alt: "Taça de salada de frutas com mamão, melão, maçã e morango",
-  },
 ];
 
 export async function MenuPreview() {
@@ -94,16 +90,16 @@ export async function MenuPreview() {
       </Reveal>
       {/* `sizes` conta ao navegador quanto da tela cada foto ocupa em cada
           largura — sem isso ele baixa a variante de tela cheia para uma coluna
-          de um terço. A ordem no HTML é a da leitura: prato, massa, carne, sobremesa. */}
-      <ul role="list" className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          de um terço. A ordem no HTML é a da leitura: prato, massa, carne. */}
+      <ul role="list" className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {FOTOS.map((foto, i) => (
-          <Reveal as="li" key={foto.src} delay={(i % 4) * 90}>
+          <Reveal as="li" key={foto.src} delay={(i % 3) * 90}>
             <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-border bg-muted">
               <Image
                 src={foto.src}
                 alt={foto.alt}
                 fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 quality={50}
                 className="object-cover"
               />

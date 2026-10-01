@@ -67,12 +67,20 @@ function carregaEnv() {
  * cumpre esse papel e repetir faria o leitor de tela dizer tudo duas vezes.
  */
 const FOTOS = [
-  /* ⚠️ **Duas saíram em 01/10/2026, por motivos diferentes.**
-     `travessas-do-balcao-frio`: o dono disse que é de outro projeto. Nunca
-     deveria ter entrado, e o arquivo fica em `public/galeria` só para o
-     registro não virar apagamento silencioso — não publique de novo.
-     `duas-massas-com-pao`: foi para o topo da home, que o dono pediu com
-     fotos exclusivas, e ficar nos dois lugares desfaria isso. */
+  /* ⚠️ **Três saíram em 01/10/2026, e os ARQUIVOS de duas foram APAGADOS.**
+
+     `travessas-do-balcao-frio` e, na vitrine, `salada-de-frutas`: o dono
+     identificou as duas como material de OUTRO projeto. Na primeira eu só as
+     tirei da lista e escrevi "o arquivo fica, para o registro não virar
+     apagamento silencioso" — **e isso estava errado.** Medido no ar:
+     `/galeria/travessas-do-balcao-frio.webp` respondia 200 com 149 KB. Tudo
+     que está em `public/` é servido pela URL, referenciado ou não. Tirar da
+     lista esconde a foto das páginas; não a tira do site. Para material de
+     outro cliente isso não basta, então os arquivos foram removidos — o git
+     guarda o histórico se um dia precisar provar o que havia.
+
+     `balcao-de-saladas`: foi para o slide de abertura do topo da home, que o
+     dono pediu com fotos exclusivas. Essa continua em `public/hero`. */
   /* ⚠️ **As quatro primeiras entraram em 01/10/2026, a pedido do dono, e
      ABREM a lista por pedido dele.** Vieram num lote de dezenove; as outras
      quinze já estavam publicadas e a varredura por impressão digital as pegou
@@ -134,7 +142,6 @@ const FOTOS = [
 
      Da mesma leva ficaram de FORA as que repetiam assunto já publicado —
      ver a varredura por impressão digital registrada no relatório do dia. */
-  ["balcao-de-saladas.webp", "O balcão de saladas, com a fila do churrasco ao lado"],
   ["balcao-frio-com-molhos.webp", "O balcão frio, com os molhos e os temperos na prateleira"],
   ["buffet-de-saladas.webp", "A ilha de saladas, montada no começo do almoço"],
   ["ilha-de-saladas-com-frutas.webp", "A ilha de saladas, com as frutas do dia"],
