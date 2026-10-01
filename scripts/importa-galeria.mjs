@@ -67,6 +67,12 @@ function carregaEnv() {
  * cumpre esse papel e repetir faria o leitor de tela dizer tudo duas vezes.
  */
 const FOTOS = [
+  /* ⚠️ **Duas saíram em 01/10/2026, por motivos diferentes.**
+     `travessas-do-balcao-frio`: o dono disse que é de outro projeto. Nunca
+     deveria ter entrado, e o arquivo fica em `public/galeria` só para o
+     registro não virar apagamento silencioso — não publique de novo.
+     `duas-massas-com-pao`: foi para o topo da home, que o dono pediu com
+     fotos exclusivas, e ficar nos dois lugares desfaria isso. */
   /* ⚠️ **As quatro primeiras entraram em 01/10/2026, a pedido do dono, e
      ABREM a lista por pedido dele.** Vieram num lote de dezenove; as outras
      quinze já estavam publicadas e a varredura por impressão digital as pegou
@@ -86,7 +92,6 @@ const FOTOS = [
      estação é fotografar a oferta, não o salão. Se a regra for reapertada um
      dia, é esta que sai primeiro. */
   ["balcao-das-massas.webp", "O balcão da ilha de massas, onde o prato é preparado na hora"],
-  ["duas-massas-com-pao.webp", "Fettuccine ao pesto e nhoque ao sugo, com pão"],
   /* ⚠️ A legenda NÃO nomeia a fruta, e isso é deliberado: o cardápio só tem
      refrigerante e chá em garrafa, nada que corresponda a uma bebida batida.
      Perguntei ao dono o que era e não voltou resposta. Como a legenda é o texto
@@ -113,7 +118,6 @@ const FOTOS = [
 
      A sequência do balcão descrita no docblock não foi desfeita — ela começa
      logo abaixo destas três. */
-  ["travessas-do-balcao-frio.webp", "As travessas do balcão frio: brócolis, quiabo, milho e conservas"],
   ["massa-ao-pesto-com-manjericao.webp", "Massa ao pesto, com manjericão e queijo ralado"],
   ["prato-feito-completo.webp", "Um prato montado, com arroz, bife, farofa, ovo, couve e torresmo"],
   /* ⚠️ **`balcao-quente-em-cubas` e `churrasco` saíram em 01/10/2026** para o
