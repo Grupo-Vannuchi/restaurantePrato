@@ -127,6 +127,16 @@ const FOTOS = [
      A sequência do balcão descrita no docblock não foi desfeita — ela começa
      logo abaixo destas três. */
   ["massa-ao-pesto-com-manjericao.webp", "Massa ao pesto, com manjericão e queijo ralado"],
+  /* ⚠️ **`tres-massas-da-ilha` entrou em 01/10/2026 porque o dono pediu MAIS
+     MASSA na galeria.** É a quarta foto, logo abaixo da faixa que a home
+     mostra: aparecer dentro das três primeiras colocaria duas fotos de massa
+     lado a lado lá em cima, que ele já mandou desfazer uma vez.
+
+     ⚠️ **A maior reserva de massa NÃO está aqui: são as oito fotos do
+     carrossel de `/cardapio`.** Trazer qualquer uma para cá significa a mesma
+     foto em duas páginas — não é proibido como no topo da home, mas é decisão
+     do dono, não minha. Não traga sem perguntar. */
+  ["tres-massas-da-ilha.webp", "Três massas da ilha: pesto, penne ao molho branco e nhoque ao sugo"],
   ["prato-feito-completo.webp", "Um prato montado, com arroz, bife, farofa, ovo, couve e torresmo"],
   /* ⚠️ **`balcao-quente-em-cubas` e `churrasco` saíram em 01/10/2026** para o
      topo da home, que o dono pediu com fotos exclusivas. Os ARQUIVOS
@@ -165,6 +175,7 @@ const FOTOS = [
   ["assados-e-batatas.webp", "Assados e batatas"],
   ["batatas-feijao-e-couve-flor.webp", "Batatas, feijão e couve-flor"],
   ["pernil-assado.webp", "O pernil assado, inteiro na travessa"],
+  ["balcao-quente-em-bandejas.webp", "O balcão quente, com as bandejas de carnes, ovos e guarnições"],
   // Os fritos, que fecham o balcão.
   ["salgados-fritos.webp", "Os bolinhos, fritos na hora"],
   ["salgados-variados.webp", "Os salgados do balcão"],
@@ -175,6 +186,10 @@ const FOTOS = [
   ["panquecas-com-arroz.webp", "Panquecas ao molho, com arroz e salada"],
   ["penne-com-rucula-e-alcaparras.webp", "Penne com rúcula, azeitonas e alcaparras"],
   ["file-de-frango-grelhado.webp", "Filé de frango grelhado, com salada e vinagrete"],
+  ["bife-acebolado-com-farofa.webp", "Bife acebolado, com arroz, feijão e farofa"],
+  ["file-a-milanesa-com-fritas.webp", "Filé à milanesa, com fritas, arroz e salada de maionese"],
+  ["file-de-frango-gratinado.webp", "Filé de frango gratinado, com arroz e brócolis"],
+  ["frango-ao-molho-verde.webp", "Frango ao molho verde, com arroz e vinagrete"],
 ];
 
 async function main() {
