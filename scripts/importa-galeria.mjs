@@ -67,6 +67,33 @@ function carregaEnv() {
  * cumpre esse papel e repetir faria o leitor de tela dizer tudo duas vezes.
  */
 const FOTOS = [
+  /* ⚠️ **As quatro primeiras entraram em 01/10/2026, a pedido do dono, e
+     ABREM a lista por pedido dele.** Vieram num lote de dezenove; as outras
+     quinze já estavam publicadas e a varredura por impressão digital as pegou
+     antes de duplicar — inclusive a do balcão quente, que é EXCLUSIVA do topo
+     da home e entrar aqui desfaria a exclusividade pedida no mesmo dia.
+
+     ⚠️ **A ordem das três primeiras não é só da galeria.** A faixa "O nosso
+     espaço" da home mostra `slice(0, 3)` desta lista, então quem está aqui em
+     cima aparece lá. Por isso a bebida entra entre as duas massas: sem ela, a
+     faixa mostraria dois pratos de macarrão lado a lado, que é exatamente a
+     repetição que o dono já mandou desfazer uma vez.
+
+     ⚠️ **`balcao-das-massas` é o caso de fronteira desta lista.** A decisão de
+     10/09 diz que a galeria mostra o que se come e que foto de LUGAR vai para o
+     topo de uma página — e essa mostra o balcão, sem comida no quadro. Entrou
+     porque a ilha de massas é um produto com preço próprio, e fotografar a
+     estação é fotografar a oferta, não o salão. Se a regra for reapertada um
+     dia, é esta que sai primeiro. */
+  ["balcao-das-massas.webp", "O balcão da ilha de massas, onde o prato é preparado na hora"],
+  ["duas-massas-com-pao.webp", "Fettuccine ao pesto e nhoque ao sugo, com pão"],
+  /* ⚠️ A legenda NÃO nomeia a fruta, e isso é deliberado: o cardápio só tem
+     refrigerante e chá em garrafa, nada que corresponda a uma bebida batida.
+     Perguntei ao dono o que era e não voltou resposta. Como a legenda é o texto
+     que o leitor de tela pronuncia, chutar "açaí" ou "uva" seria inventar dado
+     de cliente na voz de quem não vê a foto. */
+  ["bebida-de-frutas.webp", "Uma bebida gelada de frutas, servida em taça"],
+  ["nhoque-ao-sugo-e-pao.webp", "Nhoque ao sugo, com pão"],
   /* ⚠️ **As três primeiras entraram em 30/09/2026 e ABREM a lista por pedido
      explícito do dono**, que apontou a faixa "O nosso espaço" da home e mandou
      estas fotos para ela. A home renderiza `slice(0, 3)` sobre `order`
@@ -113,7 +140,12 @@ const FOTOS = [
   ["cenoura-ervilha-e-batata.webp", "Cenoura, ervilha e batata"],
   ["palmito-e-beterraba.webp", "Palmito e beterraba"],
   ["ovo-cenoura-e-batata-palha.webp", "Ovo, cenoura e batata palha"],
-  ["servindo-no-balcao.webp", "Montando o prato no balcão"],
+  /* ⚠️ **`servindo-no-balcao` saiu em 01/10/2026, a pedido do dono.** O
+     arquivo continua em `public/galeria` — só não é publicado. Era a única
+     foto da galeria com uma PESSOA no quadro, e a curadoria de 10/09 a tinha
+     escolhido justamente por isso ("a única que mostra gente usando o
+     lugar"). Esse argumento não vale mais: quem decide é o dono, e fica
+     registrado para ninguém a devolver citando a nota antiga. */
   // O balcão quente.
   ["buffet-quente.webp", "O buffet quente, com risoto, lasanha e batatas"],
   ["arroz-farofa-feijao.webp", "Arroz, farofa e feijão, sempre no balcão quente"],
