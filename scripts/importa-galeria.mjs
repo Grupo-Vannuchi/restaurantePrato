@@ -113,7 +113,12 @@ const FOTOS = [
   ["cenoura-ervilha-e-batata.webp", "Cenoura, ervilha e batata"],
   ["palmito-e-beterraba.webp", "Palmito e beterraba"],
   ["ovo-cenoura-e-batata-palha.webp", "Ovo, cenoura e batata palha"],
-  ["servindo-no-balcao.webp", "Montando o prato no balcão"],
+  /* ⚠️ **`servindo-no-balcao` saiu em 01/10/2026, a pedido do dono.** O
+     arquivo continua em `public/galeria` — só não é publicado. Era a única
+     foto da galeria com uma PESSOA no quadro, e a curadoria de 10/09 a tinha
+     escolhido justamente por isso ("a única que mostra gente usando o
+     lugar"). Esse argumento não vale mais: quem decide é o dono, e fica
+     registrado para ninguém a devolver citando a nota antiga. */
   // O balcão quente.
   ["buffet-quente.webp", "O buffet quente, com risoto, lasanha e batatas"],
   ["arroz-farofa-feijao.webp", "Arroz, farofa e feijão, sempre no balcão quente"],
