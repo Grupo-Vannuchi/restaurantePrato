@@ -53,8 +53,16 @@ export default async function ReservasPage({
       <PageHeader
         title={t("title")}
         subtitle={t("subtitle")}
-        image="/ambiente/salao.webp"
-        imageAlt={t("headerAlt")}
+        /* ⚠️ **Faixa verde desde 01/10/2026, a pedido do dono ("mesma
+           estrutura do fogão de ouro").** Lá o cabeçalho desta página é uma
+           faixa chapada na cor da marca, não uma foto — e faz sentido aqui por
+           outro motivo: o carrossel logo abaixo abre com o salão, igual à que
+           estava aqui. Duas imagens parecidas em sequência leem como falha de
+           carregamento.
+
+           `/ambiente/salao.webp` ficou sem consumidor e está declarada em
+           GUARDADAS, em `test/a-galeria-mostra-comida.test.ts`. */
+        fundo="verde"
       />
 
       {/* ⚠️ **Carrossel do salão e do serviço, a pedido do dono em 30/09/2026,
@@ -90,12 +98,56 @@ export default async function ReservasPage({
             goTo: t("goToPhoto", { n: "{n}" }),
           }}
         />
+        {/* ⚠️ **O convite entra logo abaixo do carrossel, como no irmão.**
+            Antes a página passava inteira sem uma só chamada para ação até a
+            faixa de eventos, lá embaixo: quem chegou para reservar tinha de
+            rolar tudo para achar como. */}
+        <div className="mt-12">
+          <ReserveButton size="lg" />
+        </div>
       </Section>
 
       {/* Como está o salão ao longo do serviço — vem antes da seção de
          grupos porque a página passou a liderar com o horário, não com o
          convite para reservar (decisão do dono, 19/08: ver o commit "UPD:
          /reservas passa a liderar com o horario"). */}
+      {/* ⚠️ **Foto de fundo desde 01/10/2026, a pedido do dono.** A faixa era
+          creme sobre creme e fechava a página sem peso nenhum.
+
+          `balcao-e-salao` e não outra: era a ÚNICA foto de ambiente sem
+          consumidor no site, declarada em `GUARDADAS` dentro de
+          `test/a-galeria-mostra-comida.test.ts` desde 25/09, quando
+          `/experiencia` trocou a foto dela por verde. Ela volta a trabalhar
+          aqui, e sai daquela lista no mesmo commit — material do cliente
+          parado é o que aquela lista existe para vigiar.
+
+          O véu é CHAPADO, e não o degradê do `page-header`: ali o texto é
+          alinhado à esquerda e o degradê escurece justamente aquele lado; aqui
+          ele é centralizado, e um degradê lateral deixaria metade da frase
+          sobre a parte clara da foto. Medido pela varredura de contraste. */}
+      <Section className="relative isolate flex min-h-[30rem] items-center overflow-hidden border-y border-border sm:min-h-[36rem]">
+        <Image
+          src="/ambiente/balcao-e-salao.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          quality={50}
+          className="-z-10 object-cover"
+        />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-foreground/82" />
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-balance text-3xl font-bold tracking-tight text-background sm:text-4xl">
+            {t("groupsTitle")}
+          </h2>
+          <p className="mt-5 text-pretty text-lg leading-relaxed text-background/85">
+            {t("groupsCopy")}
+          </p>
+          <div className="mt-8 flex justify-center">
+            <ReserveButton size="lg" message={t("groupsMessage")} />
+          </div>
+        </div>
+      </Section>
+
       <Section>
         <SectionHeader title={t("practicalTitle")} align="left" />
         <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
@@ -133,43 +185,6 @@ export default async function ReservasPage({
               `/experiencia`: uma fonte só para as seis frases. Ver o aviso em
               `components/sections/momentos-do-salao.tsx`. */}
           <MomentosDoSalao />
-        </div>
-      </Section>
-
-      {/* ⚠️ **Foto de fundo desde 01/10/2026, a pedido do dono.** A faixa era
-          creme sobre creme e fechava a página sem peso nenhum.
-
-          `balcao-e-salao` e não outra: era a ÚNICA foto de ambiente sem
-          consumidor no site, declarada em `GUARDADAS` dentro de
-          `test/a-galeria-mostra-comida.test.ts` desde 25/09, quando
-          `/experiencia` trocou a foto dela por verde. Ela volta a trabalhar
-          aqui, e sai daquela lista no mesmo commit — material do cliente
-          parado é o que aquela lista existe para vigiar.
-
-          O véu é CHAPADO, e não o degradê do `page-header`: ali o texto é
-          alinhado à esquerda e o degradê escurece justamente aquele lado; aqui
-          ele é centralizado, e um degradê lateral deixaria metade da frase
-          sobre a parte clara da foto. Medido pela varredura de contraste. */}
-      <Section className="relative isolate overflow-hidden border-y border-border">
-        <Image
-          src="/ambiente/balcao-e-salao.webp"
-          alt=""
-          fill
-          sizes="100vw"
-          quality={50}
-          className="-z-10 object-cover"
-        />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-foreground/82" />
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-balance text-3xl font-bold tracking-tight text-background sm:text-4xl">
-            {t("groupsTitle")}
-          </h2>
-          <p className="mt-5 text-pretty text-lg leading-relaxed text-background/85">
-            {t("groupsCopy")}
-          </p>
-          <div className="mt-8 flex justify-center">
-            <ReserveButton size="lg" message={t("groupsMessage")} />
-          </div>
         </div>
       </Section>
     </>

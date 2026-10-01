@@ -67,6 +67,31 @@ function carregaEnv() {
  * cumpre esse papel e repetir faria o leitor de tela dizer tudo duas vezes.
  */
 const FOTOS = [
+  /* ⚠️ **Sete fotos saíram em 01/10/2026: o dono circulou o bloco do balcão e
+     disse que repetem.** A varredura por impressão digital NÃO as acusava — o
+     par mais próximo media 16, contra o limite de suspeita de 8. Ela casa
+     composição, não assunto, e o que repetia era o assunto: seis fotos de
+     bandeja fria, quatro de frito, duas de arroz com farofa.
+
+     Agrupei por assunto e ficou a melhor de cada grupo:
+
+       frios        ficam `frios-e-palmito`, `frios-do-balcao` e
+                    `legumes-e-conservas`; saem `cenoura-ervilha-e-batata`,
+                    `palmito-e-beterraba` e `ovo-cenoura-e-batata-palha`
+       fritos       fica `salgados-fritos` e `pasteis`; saem
+                    `salgados-variados` e `pasteis-no-prato`
+       arroz        fica `arroz-farofa-feijao`; sai `arroz-farofa-e-ensopado`
+       assados      fica `assados-e-batatas`; sai `batatas-feijao-e-couve-flor`
+
+     É a mesma curadoria que a entrega de 10/09 já tinha feito uma vez, e que
+     este docblock descreve logo abaixo: das vinte e cinco que chegaram, onze
+     eram bandejas quase iguais. Ela foi feita com critério e ainda assim
+     sobrou repetição visível — o sinal de que o limite automático é piso, não
+     teto.
+
+     ⚠️ Os ARQUIVOS ficam em `public/galeria`: são fotografia autoral do
+     cliente, e ele não disse que são de outro projeto, disse que repetem.
+     Devolver qualquer uma é acrescentar a linha de volta. */
   /* ⚠️ **Três saíram em 01/10/2026, e os ARQUIVOS de duas foram APAGADOS.**
 
      `travessas-do-balcao-frio` e, na vitrine, `salada-de-frutas`: o dono
@@ -158,9 +183,6 @@ const FOTOS = [
   ["frios-e-palmito.webp", "Os frios, com palmito e couve-flor"],
   ["frios-do-balcao.webp", "As conservas e os grãos"],
   ["legumes-e-conservas.webp", "Legumes e conservas"],
-  ["cenoura-ervilha-e-batata.webp", "Cenoura, ervilha e batata"],
-  ["palmito-e-beterraba.webp", "Palmito e beterraba"],
-  ["ovo-cenoura-e-batata-palha.webp", "Ovo, cenoura e batata palha"],
   /* ⚠️ **`servindo-no-balcao` saiu em 01/10/2026, a pedido do dono.** O
      arquivo continua em `public/galeria` — só não é publicado. Era a única
      foto da galeria com uma PESSOA no quadro, e a curadoria de 10/09 a tinha
@@ -170,17 +192,13 @@ const FOTOS = [
   // O balcão quente.
   ["buffet-quente.webp", "O buffet quente, com risoto, lasanha e batatas"],
   ["arroz-farofa-feijao.webp", "Arroz, farofa e feijão, sempre no balcão quente"],
-  ["arroz-farofa-e-ensopado.webp", "Arroz, farofa e o ensopado do dia"],
   ["buffet-quente-ensopados.webp", "Os ensopados do dia"],
   ["assados-e-batatas.webp", "Assados e batatas"],
-  ["batatas-feijao-e-couve-flor.webp", "Batatas, feijão e couve-flor"],
   ["pernil-assado.webp", "O pernil assado, inteiro na travessa"],
   ["balcao-quente-em-bandejas.webp", "O balcão quente, com as bandejas de carnes, ovos e guarnições"],
   // Os fritos, que fecham o balcão.
   ["salgados-fritos.webp", "Os bolinhos, fritos na hora"],
-  ["salgados-variados.webp", "Os salgados do balcão"],
   ["pasteis.webp", "Os pastéis, fritos na hora"],
-  ["pasteis-no-prato.webp", "Pastéis servidos no prato"],
   // Um prato montado, que é o resultado de tudo acima.
   ["prato-servido.webp", "Um prato montado, com salada e batata"],
   ["panquecas-com-arroz.webp", "Panquecas ao molho, com arroz e salada"],
