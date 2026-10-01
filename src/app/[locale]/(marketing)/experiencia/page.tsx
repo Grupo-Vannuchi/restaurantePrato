@@ -92,7 +92,25 @@ export default async function AboutPage({
           inteiro por conta própria. Se elas forem junto, é trocar `image` por
           `fundo="verde"` em cada uma, e a foto de ambiente de cada página perde
           o último lugar onde aparecia. */}
-      <PageHeader title={t("title")} subtitle={t("subtitle")} fundo="verde" />
+      {/* ⚠️ **A foto voltou em 01/10/2026, a pedido do dono — e a faixa verde
+          que ela substitui tinha sido pedida por ele mesmo em 25/09.** Fica
+          registrado nesta ordem para ninguém ler a volta como esquecimento e
+          "corrigir" de novo para verde.
+
+          `salao-entrada` e não outra: o dono apontou esta. Ela saiu do
+          carrossel de /reservas no mesmo commit — a mesma foto em duas
+          páginas gasta duas vezes o que ela tem a dizer.
+
+          ⚠️ O `overflow-hidden` da foto volta junto, e ele já escondeu um
+          defeito aqui: até 25/09 ele CORTAVA "Experiência" a 200% de texto e
+          a guarda de refluxo passava verde. O `break-words` do `page-header`
+          é que resolve de fato, e continua no lugar — ver a nota de lá. */}
+      <PageHeader
+        title={t("title")}
+        subtitle={t("subtitle")}
+        image="/ambiente/salao-entrada.webp"
+        imageAlt={t("headerAlt")}
+      />
 
       {/* ⚠️ **Três parágrafos desde 28/09/2026, e era um só.** O dono trouxe
           uma copy nova para esta página, e ela vinha do projeto irmão: dois dos
@@ -130,61 +148,80 @@ export default async function AboutPage({
         </div>
       </Section>
 
+      {/* ⚠️ **Dois blocos por linha desde 01/10/2026, a pedido do dono: "iguais
+          do fogão de ouro".** Lá os quatro blocos de tópicos vivem em duas
+          grades `lg:grid-cols-2`, e aqui cada um ocupava uma seção inteira —
+          quatro faixas empilhadas, com o leitor rolando por uma coluna de
+          `max-w-xl` num espaço de 1152.
+
+          ⚠️ **O irmão tem QUATRO listas e o Prato tem TRÊS.** Falta aqui o
+          equivalente a "O melhor momento para você": a copy que o dono entregou
+          em 29/09 não trazia esse bloco, e inventá-lo para fechar a simetria
+          seria escrever texto de cliente. Por isso a segunda linha pareia a
+          lista restante com o bloco da brasa, que é texto corrido — o que fecha
+          as duas linhas sem deixar meia fila vazia, que é como um card órfão
+          lê: erro de carregamento.
+
+          O `max-w-xl` de cada bloco fica: ele é a medida de leitura confortável,
+          e agora cabem dois lado a lado em vez de um com metade da tela em
+          branco. */}
       <Section className="border-y border-border bg-muted/30">
-        <div className="max-w-xl">
-          <h2 className="text-2xl font-bold">{t("audience.title")}</h2>
-          <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
-            {t.rich("audience.intro", richTags)}
-          </p>
-          <CheckList items={audienceItems} />
-        </div>
-      </Section>
-
-      {/* ⚠️ **Três blocos novos em 29/09/2026: a copy do cliente veio inteira e
-          a página não tinha onde pôr.** O dono mandou o texto duas vezes; na
-          primeira eu o reescrevi em vez de trocar, e ele cobrou. Esta é a copy
-          dele, com três mudanças que eu não pude deixar idênticas e que estão
-          nomeadas no commit — nenhuma delas é gosto meu: um termo bloqueado
-          pela guarda de higiene de marca, o tempo de casa (que o site calcula
-          de `foundedYear` e publica na home, então dois números diferentes se
-          contradiriam) e os travessões, proibidos no catálogo por outra guarda.
-
-          ⚠️ O resto entrou na palavra dele, que é o que vale para dado de
-          cliente — inclusive o que eu não consigo verificar aqui: climatização,
-          os cortes do churrasco, o cafezinho e a contagem de opções. Nenhum
-          deles aparece no cardápio que o banco guarda, o que não os torna
-          falsos: o buffet cadastrado não é a lista da churrasqueira. */}
-      <Section>
-        <div className="max-w-xl">
-          <h2 className="text-2xl font-bold">{t("salaoPreparado.title")}</h2>
-          <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
-            {t.rich("salaoPreparado.intro", richTags)}
-          </p>
-          <CheckList items={salaoItems} />
-        </div>
-      </Section>
-
-      <Section className="border-y border-border bg-muted/30">
-        <div className="max-w-xl">
-          <h2 className="text-2xl font-bold">{t("tradicao.title")}</h2>
-          <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
-            {t.rich("tradicao.intro", richTags)}
-          </p>
-          <CheckList items={tradicaoItems} />
-          <p className="mt-8 text-pretty leading-relaxed">
-            {t.rich("tradicao.closing", richTags)}
-          </p>
-        </div>
-      </Section>
-
-      <Section>
-        <div className="flex max-w-3xl flex-col gap-5">
-          <h2 className="text-2xl font-bold text-balance">{t("brasa.title")}</h2>
-          {brasaParagraphs.map((paragrafo) => (
-            <p key={paragrafo} className="text-pretty leading-relaxed">
-              {paragrafo}
+        <div className="grid gap-12 lg:grid-cols-2">
+          <div className="max-w-xl">
+            <h2 className="text-2xl font-bold">{t("audience.title")}</h2>
+            <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+              {t.rich("audience.intro", richTags)}
             </p>
-          ))}
+            <CheckList items={audienceItems} />
+          </div>
+
+          {/* ⚠️ **Três blocos novos em 29/09/2026: a copy do cliente veio inteira
+              e a página não tinha onde pôr.** O dono mandou o texto duas vezes;
+              na primeira eu o reescrevi em vez de trocar, e ele cobrou. Esta é a
+              copy dele, com três mudanças que eu não pude deixar idênticas e que
+              estão nomeadas no commit — nenhuma delas é gosto meu: um termo
+              bloqueado pela guarda de higiene de marca, o tempo de casa (que o
+              site calcula de `foundedYear` e publica na home, então dois números
+              diferentes se contradiriam) e os travessões, proibidos no catálogo
+              por outra guarda.
+
+              ⚠️ O resto entrou na palavra dele, que é o que vale para dado de
+              cliente — inclusive o que eu não consigo verificar aqui:
+              climatização, os cortes do churrasco, o cafezinho e a contagem de
+              opções. Nenhum deles aparece no cardápio que o banco guarda, o que
+              não os torna falsos: o buffet cadastrado não é a lista da
+              churrasqueira. */}
+          <div className="max-w-xl">
+            <h2 className="text-2xl font-bold">{t("salaoPreparado.title")}</h2>
+            <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+              {t.rich("salaoPreparado.intro", richTags)}
+            </p>
+            <CheckList items={salaoItems} />
+          </div>
+        </div>
+      </Section>
+
+      <Section>
+        <div className="grid gap-12 lg:grid-cols-2">
+          <div className="max-w-xl">
+            <h2 className="text-2xl font-bold">{t("tradicao.title")}</h2>
+            <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+              {t.rich("tradicao.intro", richTags)}
+            </p>
+            <CheckList items={tradicaoItems} />
+            <p className="mt-8 text-pretty leading-relaxed">
+              {t.rich("tradicao.closing", richTags)}
+            </p>
+          </div>
+
+          <div className="flex max-w-xl flex-col gap-5">
+            <h2 className="text-balance text-2xl font-bold">{t("brasa.title")}</h2>
+            {brasaParagraphs.map((paragrafo) => (
+              <p key={paragrafo} className="text-pretty leading-relaxed">
+                {paragrafo}
+              </p>
+            ))}
+          </div>
         </div>
       </Section>
 

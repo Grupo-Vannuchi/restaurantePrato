@@ -88,8 +88,23 @@ const FOTOS = [
      logo abaixo destas três. */
   ["travessas-do-balcao-frio.webp", "As travessas do balcão frio: brócolis, quiabo, milho e conservas"],
   ["massa-ao-pesto-com-manjericao.webp", "Massa ao pesto, com manjericão e queijo ralado"],
-  ["penne-com-rucula-e-alcaparras.webp", "Penne com rúcula, azeitonas e alcaparras"],
+  ["prato-feito-completo.webp", "Um prato montado, com arroz, bife, farofa, ovo, couve e torresmo"],
+  /* ⚠️ **`balcao-quente-em-cubas` e `churrasco` saíram em 01/10/2026** para o
+     topo da home, que o dono pediu com fotos exclusivas. Os ARQUIVOS
+     continuam em `public/galeria` — só não entram na galeria. Devolver é
+     acrescentar a linha de volta, e aí o topo deixa de ser exclusivo. */
   // Os frios, que é por onde o balcão começa.
+  /* ⚠️ **Seis fotos entraram em 01/10/2026**, da leva que o dono mandou. Elas
+     se encaixam na sequência do balcão descrita no docblock em vez de abrir a
+     lista: três são o próprio balcão (frio, saladas, quente em cubas) e três
+     são prato pronto, que é onde a sequência termina. As três que abrem a
+     lista continuam sendo as de 30/09, porque é a faixa da home que elas
+     servem.
+
+     Da mesma leva ficaram de FORA as que repetiam assunto já publicado —
+     ver a varredura por impressão digital registrada no relatório do dia. */
+  ["balcao-de-saladas.webp", "O balcão de saladas, com a fila do churrasco ao lado"],
+  ["balcao-frio-com-molhos.webp", "O balcão frio, com os molhos e os temperos na prateleira"],
   ["buffet-de-saladas.webp", "A ilha de saladas, montada no começo do almoço"],
   ["ilha-de-saladas-com-frutas.webp", "A ilha de saladas, com as frutas do dia"],
   ["frios-e-palmito.webp", "Os frios, com palmito e couve-flor"],
@@ -107,7 +122,6 @@ const FOTOS = [
   ["assados-e-batatas.webp", "Assados e batatas"],
   ["batatas-feijao-e-couve-flor.webp", "Batatas, feijão e couve-flor"],
   ["pernil-assado.webp", "O pernil assado, inteiro na travessa"],
-  ["churrasco.webp", "O churrasco na brasa, fatiado na hora"],
   // Os fritos, que fecham o balcão.
   ["salgados-fritos.webp", "Os bolinhos, fritos na hora"],
   ["salgados-variados.webp", "Os salgados do balcão"],
@@ -115,11 +129,32 @@ const FOTOS = [
   ["pasteis-no-prato.webp", "Pastéis servidos no prato"],
   // Um prato montado, que é o resultado de tudo acima.
   ["prato-servido.webp", "Um prato montado, com salada e batata"],
+  ["panquecas-com-arroz.webp", "Panquecas ao molho, com arroz e salada"],
+  ["penne-com-rucula-e-alcaparras.webp", "Penne com rúcula, azeitonas e alcaparras"],
+  ["file-de-frango-grelhado.webp", "Filé de frango grelhado, com salada e vinagrete"],
 ];
 
 async function main() {
   carregaEnv();
 
+  /*
+   * ⚠️ **Arquivo repetido na lista, que em 01/10/2026 eu mesmo causei.** Ao
+   * mover uma foto de posição, a entrada antiga ficou para trás e `FOTOS`
+   * passou a citar `prato-feito-completo` duas vezes.
+   *
+   * `createMany` teria publicado AS DUAS, com `order` diferente — a mesma
+   * foto em dois pontos da galeria, e o script relatando sucesso. Não é
+   * erro de banco: `GalleryPhoto` não tem chave única além do id, que é
+   * exatamente o motivo de este script apagar e reinserir em vez de fazer
+   * upsert. A lista é a única fonte de verdade, então é aqui que se confere.
+   */
+  const vistos = new Set();
+  const repetidos = [...new Set(FOTOS.map(([a]) => a).filter((a) => vistos.size === vistos.add(a).size))];
+  if (repetidos.length) {
+    console.error("Arquivo citado mais de uma vez em FOTOS:");
+    for (const a of repetidos) console.error("  ✗", a);
+    process.exit(1);
+  }
   const faltando = FOTOS.filter(([arquivo]) => !existsSync(`public${PREFIXO}${arquivo}`));
   if (faltando.length) {
     // Sem isto o banco apontaria para arquivos que não existem, e a galeria

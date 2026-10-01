@@ -6,28 +6,28 @@ import { Section, SectionHeader } from "@/components/ui/section";
 import { Reveal } from "@/components/ui/reveal";
 import { buttonVariants } from "@/components/ui/button";
 
-/**
- * As três fotos da vitrine.
+/*
+ * ⚠️ **Quatro fotos desde 01/10/2026, a pedido do dono**, e a ordem é a que ele
+ * ditou: prato de comida, massa, carne, sobremesa.
  *
- * ⚠️ **Aqui havia uma grade de cards com NOME de prato, vinda do banco, e ela
- * saiu em 25/09/2026 a pedido do cliente: "tire esses textos e coloque as
- * imagens".** Cada card trazia o nome do prato e as etiquetas de dia da semana
- * — "Arroz · Segunda, Terça, Quarta, Quinta, Sexta" —, que é a informação que
- * `/cardapio` já dá inteira, por dia, e com o cardápio do dia certo.
+ * A grade vai a QUATRO colunas junto. Com três colunas a quarta foto ficaria
+ * sozinha numa segunda fila, e card solto numa linha vazia lê como erro de
+ * carregamento. O `sizes` acompanha: ele descreve a caixa, e prometer um terço
+ * da tela quando ela ocupa um quarto faz o navegador baixar a variante maior.
  *
- * Com os cards foi junto a consulta `getMenu()`: esta seção deixou de tocar o
- * banco. É a terceira consulta que a home perde, e pela terceira razão
- * diferente — as duas anteriores foram o menu de categorias em 31/08 e o do
- * cabeçalho em 24/09.
+ * ⚠️ **A foto de carne trocou, e a antiga era repetida.** `carne-assada` e a
+ * `pernil-assado` da galeria são a MESMA fotografia (distância 1 na impressão
+ * digital) — a peça assada aparecia duas vezes no site sem ninguém ter
+ * decidido isso. O arquivo foi apagado daqui; a foto continua publicada na
+ * galeria, então nada do cliente se perdeu.
  *
- * ⚠️ `MenuItemCard` e `pratosDaVitrine` ficaram **sem nenhum consumidor**. Não
- * os apaguei junto: remover componente e biblioteca com os testes deles é
- * decisão maior do que a que foi pedida, e desfazer depois custa mais do que
- * apagar. Está reportado para o dono decidir.
+ * ⚠️ **A carne de hoje também aparece no topo da home e na galeria**, e isso é
+ * escolha por falta de opção, não por gosto: nenhuma das fotos entregues até
+ * 01/10 mostra um corte de carne que se leia num card pequeno, fora esta. Se
+ * chegar uma inédita, troque — é uma linha.
  *
- * As fotos são do próprio restaurante, entregues em 25/09. O texto alternativo
- * descreve o que está no quadro sem batizar corte nem preparo que ninguém
- * confirmou — é foto de vitrine, não legenda de cardápio.
+ * O texto alternativo descreve o que está no quadro sem batizar corte nem
+ * preparo que ninguém confirmou — é foto de vitrine, não legenda de cardápio.
  */
 const FOTOS = [
   {
@@ -35,7 +35,11 @@ const FOTOS = [
     alt: "Prato montado com filés ao molho, folhas verdes, cenoura ralada e salada de tomate, sobre a mesa do salão",
   },
   {
-    src: "/vitrine/carne-assada.webp",
+    src: "/vitrine/fettuccine-ao-pesto.webp",
+    alt: "Fettuccine ao pesto, com manjericão e queijo ralado",
+  },
+  {
+    src: "/vitrine/pernil-assado.webp",
     alt: "Peça de carne assada, dourada por fora, servida na travessa",
   },
   {
@@ -90,16 +94,16 @@ export async function MenuPreview() {
       </Reveal>
       {/* `sizes` conta ao navegador quanto da tela cada foto ocupa em cada
           largura — sem isso ele baixa a variante de tela cheia para uma coluna
-          de um terço. A ordem no HTML é a da leitura: prato, carne, sobremesa. */}
-      <ul role="list" className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          de um terço. A ordem no HTML é a da leitura: prato, massa, carne, sobremesa. */}
+      <ul role="list" className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {FOTOS.map((foto, i) => (
-          <Reveal as="li" key={foto.src} delay={(i % 3) * 90}>
+          <Reveal as="li" key={foto.src} delay={(i % 4) * 90}>
             <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-border bg-muted">
               <Image
                 src={foto.src}
                 alt={foto.alt}
                 fill
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                 quality={50}
                 className="object-cover"
               />

@@ -273,6 +273,32 @@ export const siteConfig: SiteConfig = {
   // Instagram confirmado em 19/08/2026; alimenta `sameAs` no structured data e
   // a lista de redes do rodapé, que itera este objeto genericamente.
   // ⚠️ PENDENTE: Facebook. Enquanto ausente, sai do grafo sozinho.
+  /**
+   * Link do perfil do restaurante no Google, para o convite de avaliação.
+   *
+   * ⚠️ **Confirmado pelo dono em 01/10/2026, e o caminho importa.** O formulário
+   * direto (`search.google.com/local/writereview?placeid=…`) NÃO funcionou com o
+   * identificador deste estabelecimento — ele testou e voltou. Este leva à ficha
+   * do Google, onde o botão de avaliar fica a um clique. Um clique a mais, mas
+   * verificado em vez de suposto.
+   *
+   * ⚠️ **Os parâmetros de rastreio foram REMOVIDOS da URL que ele enviou**, e
+   * isso não é limpeza cosmética. A original trazia `entry=ttu` e
+   * `g_ep=EgoyMDI2MDkyOC4w…`, um token de sessão com carimbo de data. Este valor
+   * é consumido pelo RODAPÉ, que aparece em toda página — o lixo iria para o
+   * HTML público do site inteiro. É o mesmo defeito de 17/09, quando o link
+   * colado da barra do navegador levou junto o tamanho da janela e ids de
+   * sessão; `reviewLink()` ganhou validação por causa dele e recusa aquele
+   * formato, mas não tem como recusar ESTE — `entry` e `g_ep` são parâmetros
+   * comuns de URL do Maps. A limpeza é manual, e por isso está escrita aqui.
+   *
+   * O que identifica o estabelecimento é `0x94ce05001804bbeb:0x26641c4685cfbba3`
+   * dentro do `data=`. Se um dia a URL precisar ser refeita, é esse par que tem
+   * de sobreviver — o resto é posição de mapa.
+   */
+  reviewUrl:
+    "https://www.google.com/maps/place/Restaurante+Prato/@-23.9345367,-46.3281433,975m/data=!3m1!1e3!4m6!3m5!1s0x94ce05001804bbeb:0x26641c4685cfbba3!8m2!3d-23.9337634!4d-46.3276285!16s%2Fg%2F11zfm0_j0n",
+
   social: {
     instagram: "https://instagram.com/restaurante.prato",
   },
@@ -528,29 +554,35 @@ export function phoneLink(): string | null {
 }
 
 /**
- * As fotos autorais da casa, servidas de `public/` — o carrossel do topo e o
- * dado estruturado leem daqui.
+ * As fotos do topo da home, **na ordem dos slides da copy** — e essa frase é a
+ * correção de um defeito real.
  *
- * Chegaram do cliente em 03/09/2026: fotografadas no salão, no balcão e na
- * brasa do próprio Prato. Nada de banco de imagens — foto genérica de buffet
- * descreveria outro restaurante.
+ * ⚠️ **`hero.tsx` casa foto com slide por ÍNDICE** (`heroPhotos[i % length]`).
+ * Em 01/10/2026 esta lista tinha QUATRO fotos para TRÊS slides: a fachada
+ * entrou na frente, tudo deslizou uma casa e o slide do churrasco passou a
+ * mostrar o buffet, o da ilha de massas passou a mostrar o churrasco e a quarta
+ * foto nunca apareceu. Nada falha quando os números divergem — o `%` enrola
+ * calado. **Mexeu aqui, confira a copy de `home.hero.slides`.**
  *
- * São três, uma por slide da copy em `home.hero.slides`, e cada uma ilustra o
- * que a sua frase promete: o buffet quente, o churrasco na brasa e a ilha de
- * massas. A primeira é o LCP da home.
- *
- * ⚠️ **Elas moraram dentro de `hero.tsx` até 21/09/2026, e saíram por terem
- * ganhado um segundo consumidor.** O `Restaurant` passou a oferecê-las ao
- * Google — que recomenda mais de uma foto no resultado rico de restaurante —, e
- * duas cópias da mesma lista seriam duas chances de uma delas não acompanhar a
- * troca de uma foto. Mesmo motivo de `mapLink()`.
+ * ⚠️ **Exclusivas do topo, a pedido do dono (01/10/2026).** Nenhuma destas
+ * aparece em outro lugar do site, e manter assim custa:
+ * - `balcao-quente` saiu da galeria para vir para cá;
+ * - `churrasco-na-brasa` saiu da galeria E do card de carne da vitrine. É a
+ *   ÚNICA foto de churrasco que o projeto tem, então a vitrine ficou com a
+ *   peça assada — a mesma que o dono tinha pedido para trocar. Uma foto nova
+ *   de carne desfaz esse nó;
+ * - a fachada saiu do topo porque ela também é o cabeçalho de `/contato`.
  *
  * Para acrescentar slides: solte o WebP em `public/hero`, mantenha o peso na
- * faixa (~100–230 KB) e liste aqui, na ordem da copy.
+ * faixa (~100–230 KB) e liste aqui, **na ordem da copy** — uma foto a mais sem
+ * um slide a mais volta a produzir o descasamento acima.
  */
 export const heroPhotos: readonly string[] = [
-  "/hero/buffet-quente.webp",
+  // slide 0 — "Tudo o que você gosta, no mesmo prato"
+  "/hero/balcao-quente.webp",
+  // slide 1 — "Churrasco na brasa, fatiado na hora."
   "/hero/churrasco-na-brasa.webp",
+  // slide 2 — "A ilha de massas, montada do seu jeito."
   "/hero/ilha-de-massas.webp",
 ];
 

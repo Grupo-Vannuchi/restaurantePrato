@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Clock, CreditCard, MapPin } from "lucide-react";
 import { resolveLocale } from "@/i18n/routing";
@@ -135,14 +136,35 @@ export default async function ReservasPage({
         </div>
       </Section>
 
-      {/* Reservas para grupos e eventos — o único convite de reserva que
-         sobra na página; o botão avulso do topo foi removido de propósito. */}
-      <Section className="border-y border-border bg-muted/30">
+      {/* ⚠️ **Foto de fundo desde 01/10/2026, a pedido do dono.** A faixa era
+          creme sobre creme e fechava a página sem peso nenhum.
+
+          `balcao-e-salao` e não outra: era a ÚNICA foto de ambiente sem
+          consumidor no site, declarada em `GUARDADAS` dentro de
+          `test/a-galeria-mostra-comida.test.ts` desde 25/09, quando
+          `/experiencia` trocou a foto dela por verde. Ela volta a trabalhar
+          aqui, e sai daquela lista no mesmo commit — material do cliente
+          parado é o que aquela lista existe para vigiar.
+
+          O véu é CHAPADO, e não o degradê do `page-header`: ali o texto é
+          alinhado à esquerda e o degradê escurece justamente aquele lado; aqui
+          ele é centralizado, e um degradê lateral deixaria metade da frase
+          sobre a parte clara da foto. Medido pela varredura de contraste. */}
+      <Section className="relative isolate overflow-hidden border-y border-border">
+        <Image
+          src="/ambiente/balcao-e-salao.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          quality={50}
+          className="-z-10 object-cover"
+        />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-foreground/82" />
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="text-balance text-3xl font-bold tracking-tight text-background sm:text-4xl">
             {t("groupsTitle")}
           </h2>
-          <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
+          <p className="mt-5 text-pretty text-lg leading-relaxed text-background/85">
             {t("groupsCopy")}
           </p>
           <div className="mt-8 flex justify-center">

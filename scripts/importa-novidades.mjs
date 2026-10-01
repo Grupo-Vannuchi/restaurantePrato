@@ -172,6 +172,19 @@ async function main() {
         content: { pt: pagina.content },
         order: i,
         published: true,
+        /*
+         * ⚠️ **`featured` faltava aqui, e o JSON o declarava desde sempre.**
+         * Em 01/10/2026 marquei três páginas como destaque no arquivo
+         * versionado, rodei a carga, ela imprimiu "Páginas importadas" e o
+         * banco continuou com ZERO destaques — o campo simplesmente não
+         * entrava no payload. O menu ☰ do cabeçalho lê exatamente esse campo,
+         * então ele ficava vazio sem nada acusar.
+         *
+         * `Boolean(...)` e não `pagina.featured`: sem o valor explícito, o
+         * `update` do upsert deixaria o antigo de pé, e DESmarcar uma página
+         * no JSON não teria efeito nenhum — o mesmo silêncio, ao contrário.
+         */
+        featured: Boolean(pagina.featured),
       };
       await prisma.information.upsert({
         where: { slug: pagina.slug },

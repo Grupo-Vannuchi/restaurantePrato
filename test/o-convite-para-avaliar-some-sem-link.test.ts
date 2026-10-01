@@ -5,28 +5,51 @@ import { reviewLink, siteConfig } from "@/config/site";
 /**
  * O convite para avaliar no Google só existe quando há para onde mandar.
  *
- * O restaurante ainda não passou o link da própria página no Google. Enquanto
- * não passar, o botão "Deixe sua avaliação aqui" não pode aparecer em lugar
- * nenhum — um botão que leva a `undefined` é pior que botão nenhum: quem clica
- * cai numa página de erro e conclui que o site está quebrado.
+ * ⚠️ **O link CHEGOU em 01/10/2026, e este bloco mudou de alvo em vez de sumir.**
+ * Até essa data `reviewUrl` era `undefined` e o teste de abertura afirmava
+ * exatamente isso. Agora ele afirma o contrário — mas o contrato que importa
+ * continua sendo o mesmo, e é o que as outras asserções guardam: sem link, o
+ * convite some; com link sujo, ele é recusado.
  *
- * É o mesmo contrato de `whatsappLink()` e de `telLink()`, que já vivem neste
- * arquivo pelo mesmo motivo: dado de cliente que ainda não chegou vira `null`,
- * e cada chamador trata o `null` fazendo o elemento sumir. Foi assim que os
- * botões de ligar sumiram sozinhos quando ficou claro que o Prato não tem
- * telefone fixo.
- *
- * ⚠️ **O caminho COM link é testado hoje, e é esse o ponto de o ajudante
- * receber a URL por parâmetro.** Lendo `siteConfig` direto, este teste só
- * conseguiria exercitar o estado atual — sem link — e o dia da estreia do botão
- * seria o dia em que ninguém nunca o viu funcionar. Mesma decisão do
- * `PriceCallout`, do `PastaBuilder` e do `WineList`.
+ * ⚠️ **O que o dono entregou tinha rastreio, e a limpeza foi MANUAL.** A URL
+ * veio do Maps com `entry=ttu` e `g_ep=…`, um token de sessão com carimbo de
+ * data. `reviewLink()` não recusa isso — `entry` e `g_ep` são parâmetros
+ * comuns de URL do Maps, e recusá-los recusaria o link inteiro. Por isso existe
+ * o teste "não publica rastreio de sessão": ele vigia o VALOR configurado, não
+ * o ajudante, que é onde esse lixo pode voltar a entrar sem ninguém notar.
  */
 describe("o link de avaliação", () => {
-  it("é null enquanto o cliente não passa a página do Google", () => {
+  it("existe e aponta para a ficha do restaurante", () => {
     // O estado de hoje, lido da configuração de verdade.
-    expect(siteConfig.reviewUrl).toBeUndefined();
-    expect(reviewLink()).toBeNull();
+    expect(siteConfig.reviewUrl).toBeDefined();
+    expect(reviewLink()).not.toBeNull();
+    /*
+     * O par hexadecimal é o que identifica ESTE estabelecimento no Google. Sem
+     * esta linha o teste passaria com qualquer URL do Maps — inclusive uma de
+     * outro restaurante, que é o erro que ninguém percebe porque a página abre
+     * normalmente e só o visitante que foi avaliar descobre.
+     */
+    expect(reviewLink()).toContain("0x94ce05001804bbeb:0x26641c4685cfbba3");
+  });
+
+  it("não publica rastreio de sessão no rodapé de toda página", () => {
+    const url = reviewLink() ?? "";
+    for (const sujeira of ["g_ep=", "entry=ttu", "sxsrf=", "biw=", "bih=", "ei=", "gs_lp="]) {
+      expect(url, `o link de avaliação carrega ${sujeira}`).not.toContain(sujeira);
+    }
+  });
+
+  it("some do site quando o link é retirado", () => {
+    /*
+     * ⚠️ **`reviewLink(undefined)` NÃO exercita a ausência**, e eu caí nessa
+     * ao reescrever este arquivo em 01/10. O parâmetro tem valor padrão
+     * (`siteConfig.reviewUrl`), então `undefined` cai justamente no estado de
+     * hoje e o teste passava a afirmar o contrário do que o nome dizia.
+     *
+     * Cadeia vazia é o que de fato representa o campo apagado — e é o modo
+     * mais provável de alguém "retirar" o link sem remover a chave.
+     */
+    expect(reviewLink("")).toBeNull();
   });
 
   it("devolve a URL quando ela existir", () => {

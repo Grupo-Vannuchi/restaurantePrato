@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
@@ -25,8 +25,6 @@ export type HeroCarouselLabels = {
   next: string;
   /** One "Go to slide N" label per slide. */
   goTo: string[];
-  pause: string;
-  play: string;
 };
 
 /**
@@ -279,21 +277,9 @@ export function HeroCarousel({
             <div className="absolute bottom-2.5 right-3 z-10 flex gap-2 sm:right-5">
               <button
                 type="button"
-                onClick={() => setPausadoPelaPessoa((v) => !v)}
-                aria-label={pausadoPelaPessoa ? labels.play : labels.pause}
-                className="inline-flex size-11 items-center justify-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur transition-colors hover:bg-background"
-              >
-                {pausadoPelaPessoa ? (
-                  <Play className="size-5" />
-                ) : (
-                  <Pause className="size-5" />
-                )}
-              </button>
-              <button
-                type="button"
                 onClick={() => go(index - 1)}
                 aria-label={labels.prev}
-                className="inline-flex size-11 items-center justify-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur transition-colors hover:bg-background"
+                className="inline-flex size-11 items-center justify-center rounded-full border border-white/30 bg-black/40 text-background backdrop-blur transition-colors hover:bg-black/60"
               >
                 <ChevronLeft className="size-6" />
               </button>
@@ -301,7 +287,7 @@ export function HeroCarousel({
                 type="button"
                 onClick={() => go(index + 1)}
                 aria-label={labels.next}
-                className="inline-flex size-11 items-center justify-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur transition-colors hover:bg-background"
+                className="inline-flex size-11 items-center justify-center rounded-full border border-white/30 bg-black/40 text-background backdrop-blur transition-colors hover:bg-black/60"
               >
                 <ChevronRight className="size-6" />
               </button>

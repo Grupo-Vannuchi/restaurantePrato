@@ -203,21 +203,35 @@ export const pastaChoices = {
  * Sem ele todas leriam igual para quem usa leitor de tela: "foto do prato"
  * cinco vezes descreve uma massa repetida.
  */
+/* ⚠️ **`tortellini-ao-sugo-com-carne` saiu desta lista em 01/10/2026** para o
+   topo da home, que o dono pediu com fotos exclusivas. O arquivo continua em
+   `public/massas` — só não é publicado aqui. Devolver é acrescentar a entrada
+   de volta, e aí o topo deixa de ser exclusivo. */
 export const pastaPhotos = [
   { photo: "/massas/talharim-ao-molho-branco.webp", name: "Talharim ao molho branco" },
-  { photo: "/massas/nhoque-a-bolonhesa.webp", name: "Nhoque à bolonhesa" },
   {
-    // ⚠️ Nomeia INGREDIENTE, não molho, e é a exceção à regra acima: o creme
-    // do prato tanto pode ser o "Branco" quanto o "4 queijos" da lista de
-    // molhos, e a foto não decide. Chutar um dos dois seria afirmar o que
-    // ninguém confirmou; o que se vê, se vê.
+    photo: "/massas/espaguete-a-bolonhesa.webp",
+    name: "Espaguete à bolonhesa, com ervilha e milho",
+  },
+  {
+    // ⚠️ Nomeia INGREDIENTE, não molho: o creme tanto pode ser o "Branco"
+    // quanto o "4 queijos" da lista, e a foto não decide.
     photo: "/massas/penne-com-rucula-e-alcaparras.webp",
     name: "Penne com rúcula, azeitonas e alcaparras",
+  },
+  {
+    photo: "/massas/fettuccine-com-pimenta-biquinho.webp",
+    name: "Fettuccine com pimenta biquinho e azeitonas",
   },
   {
     photo: "/massas/massa-ao-pesto-com-manjericao.webp",
     name: "Massa ao pesto, com manjericão e queijo ralado",
   },
+  {
+    photo: "/massas/ravioli-verde-com-presunto.webp",
+    name: "Ravioli verde com presunto e cebolinha",
+  },
+  { photo: "/massas/nhoque-a-bolonhesa.webp", name: "Nhoque à bolonhesa" },
   {
     photo: "/massas/ravioli-verde-ao-molho-branco.webp",
     name: "Ravioli verde ao molho branco com pão",
