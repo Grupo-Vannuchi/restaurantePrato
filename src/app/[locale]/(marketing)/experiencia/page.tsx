@@ -2,6 +2,7 @@ import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 import { richTags } from "@/i18n/rich";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowRight, Check } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -224,6 +225,32 @@ export default async function AboutPage({
           </div>
         </div>
       </Section>
+
+      {/* ⚠️ **Faixa da fachada entre as seções, a pedido do dono em
+          01/10/2026.** Entre os blocos de tópicos e os horários havia um vão
+          de texto puro: a página descia de uma lista para outra sem nada que
+          deixasse o olho respirar.
+
+          `fachada-faixa` e não a `fachada` do cabeçalho de `/contato`: aquela
+          vem recortada de 0 a 620 da origem para a placa ficar no centro de
+          uma faixa de 4,55:1, e numa faixa larga como esta o mesmo arquivo
+          cortaria diferente. Esta sai da fotografia ANGULADA, que estava sem
+          uso desde que a frontal a substituiu — a diagonal dá profundidade
+          numa faixa baixa, e as duas páginas deixam de mostrar o mesmo quadro.
+
+          Decorativa: `alt=""`. Tudo o que ela diz já está na copy acima e no
+          endereço do rodapé; descrevê-la faria o leitor de tela anunciar uma
+          imagem entre dois blocos de texto que não dependem dela. */}
+      <div className="relative h-56 w-full overflow-hidden sm:h-72 lg:h-80">
+        <Image
+          src="/ambiente/fachada-faixa.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          quality={50}
+          className="object-cover"
+        />
+      </div>
 
       {/*
        * Os três momentos do salão, a MESMA lista que `/reservas` mostra na

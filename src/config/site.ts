@@ -579,7 +579,7 @@ export function phoneLink(): string | null {
  */
 export const heroPhotos: readonly string[] = [
   // slide 0 — "Tudo o que você gosta, no mesmo prato"
-  "/hero/balcao-quente.webp",
+  "/hero/balcao-de-saladas.webp",
   // slide 1 — "Churrasco na brasa, fatiado na hora."
   "/hero/churrasco-na-brasa.webp",
   // slide 2 — "A ilha de massas, montada do seu jeito."

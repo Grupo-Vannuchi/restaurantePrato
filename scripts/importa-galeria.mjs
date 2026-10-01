@@ -67,6 +67,45 @@ function carregaEnv() {
  * cumpre esse papel e repetir faria o leitor de tela dizer tudo duas vezes.
  */
 const FOTOS = [
+  /* ⚠️ **Sete fotos saíram em 01/10/2026: o dono circulou o bloco do balcão e
+     disse que repetem.** A varredura por impressão digital NÃO as acusava — o
+     par mais próximo media 16, contra o limite de suspeita de 8. Ela casa
+     composição, não assunto, e o que repetia era o assunto: seis fotos de
+     bandeja fria, quatro de frito, duas de arroz com farofa.
+
+     Agrupei por assunto e ficou a melhor de cada grupo:
+
+       frios        ficam `frios-e-palmito`, `frios-do-balcao` e
+                    `legumes-e-conservas`; saem `cenoura-ervilha-e-batata`,
+                    `palmito-e-beterraba` e `ovo-cenoura-e-batata-palha`
+       fritos       fica `salgados-fritos` e `pasteis`; saem
+                    `salgados-variados` e `pasteis-no-prato`
+       arroz        fica `arroz-farofa-feijao`; sai `arroz-farofa-e-ensopado`
+       assados      fica `assados-e-batatas`; sai `batatas-feijao-e-couve-flor`
+
+     É a mesma curadoria que a entrega de 10/09 já tinha feito uma vez, e que
+     este docblock descreve logo abaixo: das vinte e cinco que chegaram, onze
+     eram bandejas quase iguais. Ela foi feita com critério e ainda assim
+     sobrou repetição visível — o sinal de que o limite automático é piso, não
+     teto.
+
+     ⚠️ Os ARQUIVOS ficam em `public/galeria`: são fotografia autoral do
+     cliente, e ele não disse que são de outro projeto, disse que repetem.
+     Devolver qualquer uma é acrescentar a linha de volta. */
+  /* ⚠️ **Três saíram em 01/10/2026, e os ARQUIVOS de duas foram APAGADOS.**
+
+     `travessas-do-balcao-frio` e, na vitrine, `salada-de-frutas`: o dono
+     identificou as duas como material de OUTRO projeto. Na primeira eu só as
+     tirei da lista e escrevi "o arquivo fica, para o registro não virar
+     apagamento silencioso" — **e isso estava errado.** Medido no ar:
+     `/galeria/travessas-do-balcao-frio.webp` respondia 200 com 149 KB. Tudo
+     que está em `public/` é servido pela URL, referenciado ou não. Tirar da
+     lista esconde a foto das páginas; não a tira do site. Para material de
+     outro cliente isso não basta, então os arquivos foram removidos — o git
+     guarda o histórico se um dia precisar provar o que havia.
+
+     `balcao-de-saladas`: foi para o slide de abertura do topo da home, que o
+     dono pediu com fotos exclusivas. Essa continua em `public/hero`. */
   /* ⚠️ **As quatro primeiras entraram em 01/10/2026, a pedido do dono, e
      ABREM a lista por pedido dele.** Vieram num lote de dezenove; as outras
      quinze já estavam publicadas e a varredura por impressão digital as pegou
@@ -86,7 +125,6 @@ const FOTOS = [
      estação é fotografar a oferta, não o salão. Se a regra for reapertada um
      dia, é esta que sai primeiro. */
   ["balcao-das-massas.webp", "O balcão da ilha de massas, onde o prato é preparado na hora"],
-  ["duas-massas-com-pao.webp", "Fettuccine ao pesto e nhoque ao sugo, com pão"],
   /* ⚠️ A legenda NÃO nomeia a fruta, e isso é deliberado: o cardápio só tem
      refrigerante e chá em garrafa, nada que corresponda a uma bebida batida.
      Perguntei ao dono o que era e não voltou resposta. Como a legenda é o texto
@@ -113,8 +151,17 @@ const FOTOS = [
 
      A sequência do balcão descrita no docblock não foi desfeita — ela começa
      logo abaixo destas três. */
-  ["travessas-do-balcao-frio.webp", "As travessas do balcão frio: brócolis, quiabo, milho e conservas"],
   ["massa-ao-pesto-com-manjericao.webp", "Massa ao pesto, com manjericão e queijo ralado"],
+  /* ⚠️ **`tres-massas-da-ilha` entrou em 01/10/2026 porque o dono pediu MAIS
+     MASSA na galeria.** É a quarta foto, logo abaixo da faixa que a home
+     mostra: aparecer dentro das três primeiras colocaria duas fotos de massa
+     lado a lado lá em cima, que ele já mandou desfazer uma vez.
+
+     ⚠️ **A maior reserva de massa NÃO está aqui: são as oito fotos do
+     carrossel de `/cardapio`.** Trazer qualquer uma para cá significa a mesma
+     foto em duas páginas — não é proibido como no topo da home, mas é decisão
+     do dono, não minha. Não traga sem perguntar. */
+  ["tres-massas-da-ilha.webp", "Três massas da ilha: pesto, penne ao molho branco e nhoque ao sugo"],
   ["prato-feito-completo.webp", "Um prato montado, com arroz, bife, farofa, ovo, couve e torresmo"],
   /* ⚠️ **`balcao-quente-em-cubas` e `churrasco` saíram em 01/10/2026** para o
      topo da home, que o dono pediu com fotos exclusivas. Os ARQUIVOS
@@ -130,16 +177,12 @@ const FOTOS = [
 
      Da mesma leva ficaram de FORA as que repetiam assunto já publicado —
      ver a varredura por impressão digital registrada no relatório do dia. */
-  ["balcao-de-saladas.webp", "O balcão de saladas, com a fila do churrasco ao lado"],
   ["balcao-frio-com-molhos.webp", "O balcão frio, com os molhos e os temperos na prateleira"],
   ["buffet-de-saladas.webp", "A ilha de saladas, montada no começo do almoço"],
   ["ilha-de-saladas-com-frutas.webp", "A ilha de saladas, com as frutas do dia"],
   ["frios-e-palmito.webp", "Os frios, com palmito e couve-flor"],
   ["frios-do-balcao.webp", "As conservas e os grãos"],
   ["legumes-e-conservas.webp", "Legumes e conservas"],
-  ["cenoura-ervilha-e-batata.webp", "Cenoura, ervilha e batata"],
-  ["palmito-e-beterraba.webp", "Palmito e beterraba"],
-  ["ovo-cenoura-e-batata-palha.webp", "Ovo, cenoura e batata palha"],
   /* ⚠️ **`servindo-no-balcao` saiu em 01/10/2026, a pedido do dono.** O
      arquivo continua em `public/galeria` — só não é publicado. Era a única
      foto da galeria com uma PESSOA no quadro, e a curadoria de 10/09 a tinha
@@ -149,21 +192,22 @@ const FOTOS = [
   // O balcão quente.
   ["buffet-quente.webp", "O buffet quente, com risoto, lasanha e batatas"],
   ["arroz-farofa-feijao.webp", "Arroz, farofa e feijão, sempre no balcão quente"],
-  ["arroz-farofa-e-ensopado.webp", "Arroz, farofa e o ensopado do dia"],
   ["buffet-quente-ensopados.webp", "Os ensopados do dia"],
   ["assados-e-batatas.webp", "Assados e batatas"],
-  ["batatas-feijao-e-couve-flor.webp", "Batatas, feijão e couve-flor"],
   ["pernil-assado.webp", "O pernil assado, inteiro na travessa"],
+  ["balcao-quente-em-bandejas.webp", "O balcão quente, com as bandejas de carnes, ovos e guarnições"],
   // Os fritos, que fecham o balcão.
   ["salgados-fritos.webp", "Os bolinhos, fritos na hora"],
-  ["salgados-variados.webp", "Os salgados do balcão"],
   ["pasteis.webp", "Os pastéis, fritos na hora"],
-  ["pasteis-no-prato.webp", "Pastéis servidos no prato"],
   // Um prato montado, que é o resultado de tudo acima.
   ["prato-servido.webp", "Um prato montado, com salada e batata"],
   ["panquecas-com-arroz.webp", "Panquecas ao molho, com arroz e salada"],
   ["penne-com-rucula-e-alcaparras.webp", "Penne com rúcula, azeitonas e alcaparras"],
   ["file-de-frango-grelhado.webp", "Filé de frango grelhado, com salada e vinagrete"],
+  ["bife-acebolado-com-farofa.webp", "Bife acebolado, com arroz, feijão e farofa"],
+  ["file-a-milanesa-com-fritas.webp", "Filé à milanesa, com fritas, arroz e salada de maionese"],
+  ["file-de-frango-gratinado.webp", "Filé de frango gratinado, com arroz e brócolis"],
+  ["frango-ao-molho-verde.webp", "Frango ao molho verde, com arroz e vinagrete"],
 ];
 
 async function main() {

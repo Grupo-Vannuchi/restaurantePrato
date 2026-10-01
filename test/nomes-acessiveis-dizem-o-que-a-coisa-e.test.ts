@@ -179,6 +179,13 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
    * alt de quem chama justamente porque LÁ a foto muda por página.
    */
   "src/app/[locale]/(marketing)/reservas/page.tsx": ["\"\""],
+  /*
+   * Decorativa: a faixa da fachada entre as seções da Experiência é respiro
+   * visual. O endereço já está na copy e no rodapé; descrevê-la faria o leitor
+   * de tela anunciar uma imagem entre dois blocos de texto que não dependem
+   * dela. Mesma decisão da foto de fundo em /reservas, logo acima.
+   */
+  "src/app/[locale]/(marketing)/experiencia/page.tsx": ["\"\""],
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.
   /*

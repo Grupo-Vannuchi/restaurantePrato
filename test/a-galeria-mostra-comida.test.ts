@@ -113,16 +113,19 @@ describe("a galeria mostra comida", () => {
      * de motivo e data — a lista existe para a ausência ser decisão, e não
      * arquivo esquecido.
      *
-     * ⚠️ **A lista está VAZIA desde 01/10/2026, e isso é o estado saudável.**
-     * `balcao-e-salao.webp` era a única entrada: ficou parada de 25/09, quando
-     * `/experiencia` trocou a foto dela por verde, até 01/10, quando a faixa
-     * de grupos e eventos de `/reservas` ganhou foto de fundo e pediu
-     * justamente uma de ambiente sem uso. Voltou a trabalhar.
+     * `salao.webp`: era o cabeçalho de `/reservas` até 01/10/2026, quando o
+     * dono pediu a faixa verde ali, "na mesma estrutura do fogão de ouro".
+     * Ficou sem consumidor no mesmo dia em que `balcao-e-salao` ganhou um — a
+     * lista esvaziou e voltou a encher em poucas horas, o que é o
+     * comportamento esperado: ela registra o que está parado AGORA, não um
+     * veredito permanente.
      *
-     * Lista vazia não desliga nada: a verificação abaixo continua varrendo a
-     * pasta inteira. Uma entrada só entra aqui com motivo e data.
+     * NÃO foi apagada: é uma das dez fotos autorais entregues em 03/09.
+     * Material do cliente só sai do disco quando ELE diz que é de outro
+     * projeto — foi o caso de `travessas-do-balcao-frio` e da salada de
+     * frutas, apagadas no mesmo dia por esse motivo e não por desuso.
      */
-    const GUARDADAS = new Set<string>([]);
+    const GUARDADAS = new Set<string>(["salao.webp"]);
 
     const orfas = doAmbiente.filter(
       (f) => !fontes.includes(`ambiente/${f}`) && !GUARDADAS.has(f),
