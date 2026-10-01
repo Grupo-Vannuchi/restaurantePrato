@@ -44,6 +44,21 @@ export type CarouselLabels = {
  * rolagem. Assim os marcadores continuam certos quando a pessoa desliza com o
  * dedo, que é como a maioria vai usar isto.
  *
+ * ⚠️ **A fileira de marcadores QUEBRA linha, e é o que sustenta os 24 px.**
+ * Item de flex encolhe por padrão, então a fileira nunca estourava a tela: ela
+ * espremia os botões. Medido em 30/09, com a ilha de massas em onze fotos: o
+ * alvo caiu para **21,8 px** numa tela de 320 — abaixo do mínimo, sem
+ * transbordo, sem aviso e sem falhar a guarda de refluxo, que só olha rolagem
+ * lateral. `flex-wrap` mais `shrink-0` passam a gastar uma segunda LINHA em vez
+ * de gastar o alvo.
+ *
+ * ⚠️ **Hoje nenhum consumidor chega a quebrar linha, e isso não desfaz a
+ * correção.** No mesmo dia o dono trocou a lista inteira das massas por cinco
+ * fotos, e cinco marcadores cabem em qualquer largura. O número que motivou a
+ * medição não sobreviveu ao dia; o defeito sim — ele volta na sexta foto de
+ * qualquer carrossel, calado como voltou da primeira vez. Não "limpe" isto por
+ * não ver efeito na tela.
+ *
  * ⚠️ **Os marcadores têm 24 px de alvo com 8 px de tinta, e isso é divergência
  * deliberada do projeto irmão.** Lá eles são `size-2` — 8 px no total, um terço
  * do mínimo da WCAG 2.5.8. Num celular o dedo cobre uns 40 px, então errar o
@@ -156,7 +171,7 @@ export function Carousel({
             <ChevronRight className="size-5" aria-hidden />
           </button>
 
-          <div className="mt-4 flex justify-center gap-1">
+          <div className="mt-4 flex flex-wrap justify-center gap-1">
             {Array.from({ length: count }, (_, i) => (
               <button
                 key={i}
@@ -166,7 +181,7 @@ export function Carousel({
                 aria-current={i === atual}
                 // 24 px de alvo (`size-6`) com 8 px de tinta dentro — ver a nota
                 // sobre a WCAG 2.5.8 no topo do arquivo.
-                className="flex size-6 items-center justify-center rounded-full"
+                className="flex size-6 shrink-0 items-center justify-center rounded-full"
               >
                 <span
                   aria-hidden

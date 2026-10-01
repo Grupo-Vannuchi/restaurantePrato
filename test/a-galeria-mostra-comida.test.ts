@@ -90,25 +90,39 @@ describe("a galeria mostra comida", () => {
      * Horários, Experiência e Contato perdem o topo com foto, que foi a outra
      * metade da mudança.
      */
-    const fontes = varre("src")
-      .map((c) => readFileSync(c, "utf8"))
-      .join("\n");
+    /*
+     * ⚠️ **O catálogo entra na varredura desde 30/09/2026, e sem ele a guarda
+     * acusava falso.** Até aqui ela lia só os `.tsx`, porque era assim que toda
+     * foto de ambiente era referenciada: `image="/ambiente/x.webp"` na página.
+     * Nesse dia `/reservas` ganhou um carrossel cujas quatro fotos vivem em
+     * `pt.json` — conteúdo, não leiaute, e é onde o projeto irmão as guarda
+     * também. As quatro apareceram como órfãs sendo usadas o tempo todo.
+     *
+     * Falso positivo aqui não é inofensivo: a saída de emergência que a própria
+     * mensagem sugere é declarar em GUARDADAS, e uma foto EM USO declarada como
+     * guardada desliga a verificação justamente para ela — some da página um
+     * dia e a guarda não diz nada.
+     */
+    const fontes = [
+      ...varre("src").map((c) => readFileSync(c, "utf8")),
+      readFileSync("src/messages/pt.json", "utf8"),
+    ].join("\n");
 
     /*
      * ⚠️ **Fotos guardadas de propósito, sem consumidor.** Cada entrada precisa
      * de motivo e data — a lista existe para a ausência ser decisão, e não
      * arquivo esquecido.
      *
-     * `balcao-e-salao.webp`: em 25/09/2026 o cliente pediu a faixa de
-     * `/experiencia` sem foto, em verde da marca, e essa era a única página que
-     * a usava. Ela NÃO foi apagada porque é uma das dez fotos autorais que ele
-     * entregou em 03/09 — apagar material do cliente porque um leiaute mudou
-     * hoje é perda que nenhum commit desfaz, e a decisão de cor pode voltar
-     * atrás amanhã. Se `/contato` e `/reservas` também forem para o verde,
-     * `fachada.webp` e `salao.webp` caem aqui pelo mesmo motivo, e aí vale
-     * perguntar ao dono se as fotos de ambiente ainda têm lugar no site.
+     * ⚠️ **A lista está VAZIA desde 01/10/2026, e isso é o estado saudável.**
+     * `balcao-e-salao.webp` era a única entrada: ficou parada de 25/09, quando
+     * `/experiencia` trocou a foto dela por verde, até 01/10, quando a faixa
+     * de grupos e eventos de `/reservas` ganhou foto de fundo e pediu
+     * justamente uma de ambiente sem uso. Voltou a trabalhar.
+     *
+     * Lista vazia não desliga nada: a verificação abaixo continua varrendo a
+     * pasta inteira. Uma entrada só entra aqui com motivo e data.
      */
-    const GUARDADAS = new Set(["balcao-e-salao.webp"]);
+    const GUARDADAS = new Set<string>([]);
 
     const orfas = doAmbiente.filter(
       (f) => !fontes.includes(`ambiente/${f}`) && !GUARDADAS.has(f),

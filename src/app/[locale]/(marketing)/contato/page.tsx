@@ -10,12 +10,12 @@ import { PageHeader } from "@/components/page-header";
 import { Section } from "@/components/ui/section";
 import { ContactForm } from "@/components/forms/contact-form";
 import { MapEmbed } from "@/components/layout/map-embed";
-import { ReserveButton } from "@/components/reserve-button";
+import { Link } from "@/i18n/navigation";
+import { buttonVariants } from "@/components/ui/button";
 import {
   mapEmbedUrl,
   openingHoursLabel,
   phoneLink,
-  reviewLink,
   siteConfig,
   whatsappLink,
   mapLink,
@@ -47,7 +47,6 @@ export default async function ContactPage({
   const t = await getTranslations("contact");
   const tRodape = await getTranslations("footer");
   const tComum = await getTranslations("common");
-  const avaliar = reviewLink();
   const { contact } = siteConfig;
 
   const whatsapp = whatsappLink();
@@ -142,6 +141,15 @@ export default async function ContactPage({
       <PageHeader
         title={t("title")}
         subtitle={t("subtitle")}
+        /* ⚠️ **Recortada para a PLACA ficar no centro vertical, em 01/10/2026.
+           O dono pediu uma fachada que mostrasse o nome, e trocar o arquivo
+           sozinho não resolvia.** A faixa do cabeçalho é de ~5:1 e usa
+           `object-cover`: ela preserva só a fatia do meio, e nas duas fotos
+           anteriores a placa ficava no terço de cima — cortada fora, sobrando
+           toldo. O arquivo em `public/ambiente` já vem recortado de 0 a 620 da
+           origem, o que põe a placa no meio e a mantém em qualquer largura.
+           Mexer no `object-position` resolveria só aqui e mudaria um
+           componente que /reservas e /experiencia também usam. */
         image="/ambiente/fachada.webp"
         imageAlt={t("headerAlt")}
       />
@@ -161,66 +169,101 @@ export default async function ContactPage({
           `footer-map.tsx`. O título vem do namespace do rodapé de propósito: é a
           mesma frase, e duplicá-la criaria dois lugares para manter. */}
       <Section>
-        <h2 className="text-lg font-semibold">{t("infoTitle")}</h2>
-        {/* Os canais eram uma coluna estreita; soltos na largura da página
-            precisam de grade, senão viram uma fileira única de itens curtos com
-            um rio de espaço em branco à direita. */}
-        <ul role="list" className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* ⚠️ **Serifada e maior desde 01/10/2026, a pedido do dono: "a mesma
+            estrutura do fogão de ouro".** Lá este título é `font-serif` em
+            2xl/3xl; aqui era `text-lg font-semibold`, do tamanho de um rótulo,
+            e não lia como abertura de seção. */}
+        {/* ⚠️ **`mx-auto` a pedido do dono, 01/10/2026.** O título e a lista
+            tinham `max-w-3xl` SEM centralizar, então o bloco encostava à
+            esquerda de um container de 1152 enquanto os botões logo abaixo já
+            vinham centralizados — o conjunto lia torto. O texto dentro segue
+            alinhado à esquerda, como no projeto irmão: o que se centraliza é o
+            BLOCO, não a leitura. Centralizar rótulo e valor desalinharia as
+            duas colunas da ficha, que é o que a torna varrível. */}
+        <div className="mx-auto max-w-3xl">
+        <h2 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">
+          {t("infoTitle")}
+        </h2>
+
+        {/* ⚠️ **Era uma grade de três cartões; virou lista de rótulo à esquerda
+            e valor à direita, como a do irmão.** A grade espalhava cinco itens
+            curtos por três colunas e deixava a última fila pela metade. A
+            lista ocupa a largura toda sem buraco e lê como uma ficha: a pessoa
+            varre os rótulos de cima a baixo e para no que procura.
+
+            `max-w-3xl` porque rótulo e valor nas pontas de 1152 px separam os
+            dois por meia tela, e aí a linha deixa de ser um par.
+
+            Os pares quebram em duas linhas no celular (`sm:flex-row`): lado a
+            lado numa tela de 320, o e-mail não caberia. O `min-w-0` com o
+            `break-words` continua sendo o par que impede a palavra única do
+            e-mail de empurrar a página — era defeito real, não precaução. */}
+        <ul role="list" className="mt-8 divide-y divide-border border-y border-border">
           {channels.map((channel) => (
-            <li key={channel.label} className="flex gap-3">
-              <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
-                <channel.icon className="size-5" />
-              </span>
-              {/* `min-w-0` autoriza esta coluna a encolher abaixo do
-                  conteúdo dela; sem isso o e-mail, que é uma palavra só,
-                  define a largura mínima da linha e empurra a página. O
-                  `break-words` nos valores é o outro lado do mesmo par —
-                  um sem o outro não resolve. */}
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {channel.label}
-                </p>
-                {channel.href ? (
-                  <a
-                    href={channel.href}
-                    target={channel.href.startsWith("http") ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                    className="break-words text-sm transition-colors hover:text-brand"
-                  >
+            <li key={channel.label}>
+              {channel.href ? (
+                <a
+                  href={channel.href}
+                  target={channel.href.startsWith("http") ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  className="flex flex-col gap-1 py-4 transition-colors hover:text-brand focus-visible:text-brand sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+                >
+                  <span className="flex items-center gap-3 text-sm text-muted-foreground">
+                    <channel.icon className="size-4 shrink-0 text-brand" aria-hidden />
+                    {channel.label}
+                  </span>
+                  <span className="min-w-0 break-words text-sm sm:text-right">
                     {channel.value}
-                  </a>
-                ) : (
-                  <p className="text-sm">{channel.value}</p>
-                )}
-              </div>
+                  </span>
+                </a>
+              ) : (
+                <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+                  <span className="flex items-center gap-3 text-sm text-muted-foreground">
+                    <channel.icon className="size-4 shrink-0 text-brand" aria-hidden />
+                    {channel.label}
+                  </span>
+                  <span className="min-w-0 break-words text-sm sm:text-right">
+                    {channel.value}
+                  </span>
+                </div>
+              )}
             </li>
           ))}
         </ul>
-        {/* Empilhados no celular, em linha a partir do `sm`: soltos na largura
-            da página eles ficariam um por linha com a página inteira vazia ao
-            lado. */}
-        <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
-          <ReserveButton />
-          <a
-            href={mapsLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-medium text-brand underline-offset-4 hover:underline"
-          >
-            {t("route")}
-          </a>
-          {/* Convite para avaliar no Google. Sai da configuração, nunca
-              escrito aqui, e só aparece quando há URL — sem página no
-              Google, sem botão. Mesmo contrato dos botões de ligar, que
-              somem porque o restaurante não tem telefone fixo. */}
-          {avaliar ? (
+        </div>
+        {/* ⚠️ **Dois botões centralizados desde 01/10/2026, a pedido do dono:
+            "a mesma estrutura do fogão de ouro".** Aqui eram três coisas
+            alinhadas à esquerda com pesos diferentes — um botão e dois links de
+            texto — e o olho não achava a ação principal.
+
+            ⚠️ **O primeiro leva a `/reservas`, e NÃO abre o WhatsApp.** É a
+            decisão que o irmão tomou em 24/09: quem clica aqui quer saber
+            horário e como funciona antes de mandar mensagem, e a página
+            responde isso. O atalho direto não se perdeu — é o segundo botão.
+
+            ⚠️ **O convite para avaliar no Google saiu deste par.** Ele continua
+            no rodapé, onde esse tipo de pedido incomoda menos; aqui ocupava o
+            lugar da ação que a página existe para oferecer. Mesma decisão do
+            irmão, e o link do mapa saiu junto: o próprio mapa logo abaixo já
+            tem o "Abrir no Maps". */}
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <Link href="/reservas" className={buttonVariants({ size: "lg" })}>
+            {tComum("reserveTable")}
+          </Link>
+          {/* Guardado na const acima: `whatsappLink()` devolve `string | null`,
+              e chamá-la de novo faria o TypeScript perder o estreitamento que
+              este `if` acabou de fazer. Sem número configurado, o botão some —
+              mesmo contrato dos CTAs de ligar, que somem porque a casa não tem
+              telefone fixo. */}
+          {whatsapp ? (
             <a
-              href={avaliar}
+              href={whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-brand underline-offset-4 hover:underline"
+              className={buttonVariants({ variant: "outline", size: "lg" })}
             >
-              {tComum("reviewCta")}
+              <MessageCircle className="size-5" aria-hidden />
+              {tComum("contactUs")}
             </a>
           ) : null}
         </div>
@@ -234,7 +277,9 @@ export default async function ContactPage({
 
       {/* A mesma largura do mapa, e não a da página: um formulário de 1280 px
           põe o rótulo de um campo a meia tela do campo seguinte. */}
-      <Section>
+      {/* Fundo apagado e borda no topo, como no irmão: separa o formulário
+          do mapa sem precisar de título. */}
+      <Section className="border-t border-border bg-muted/30">
         <div className="mx-auto max-w-3xl">
           <ContactForm />
         </div>

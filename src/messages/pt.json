@@ -6,7 +6,8 @@
     "description": "Buffet completo e churrasco na brasa no Centro de Santos, na R. Augusto Severo, 25. De segunda a sexta, das 11h às 15h. Desde 1998.",
     "keywords": "almoço centro de santos, buffet centro de santos, churrasco centro de santos, restaurante centro de santos, onde almoçar no centro de santos",
     "privacyDescription": "Como o Restaurante Prato trata dados pessoais: quais dados são coletados, para quê, por quanto tempo e como exercer seus direitos.",
-    "termsDescription": "As regras de uso do site do Restaurante Prato: reservas por WhatsApp, conteúdo do cardápio, propriedade intelectual e limitações."  },
+    "termsDescription": "As regras de uso do site do Restaurante Prato: reservas por WhatsApp, conteúdo do cardápio, propriedade intelectual e limitações."
+  },
   "nav": {
     "inicio": "Início",
     "experiencia": "A Experiência",
@@ -29,7 +30,8 @@
     "viewAllGallery": "Ver toda a galeria",
     "viewAllMenu": "Ver toda a gastronomia",
     "sendWhatsapp": "Chamar no WhatsApp",
-    "loading": "Carregando…"
+    "loading": "Carregando…",
+    "contactUs": "Fale conosco"
   },
   "home": {
     "hero": {
@@ -53,9 +55,7 @@
           "title": "A ilha de massas, montada do seu jeito.",
           "subtitle": "Você escolhe a massa, o preparo, o molho e os ingredientes do dia. Preço próprio, à parte do buffet."
         }
-      ],
-      "pauseSlides": "Pausar a troca automática de slides",
-      "playSlides": "Retomar a troca automática de slides"
+      ]
     },
     "cardapio": {
       "eyebrow": "Nossa comida",
@@ -84,7 +84,7 @@
   },
   "experiencia": {
     "title": "A Experiência",
-    "headerAlt": "O balcão do Restaurante Prato visto do salão",
+    "headerAlt": "Salão do Prato com as mesas postas, as colunas de tijolo e as janelas que dão para a rua",
     "metaDescription": "Restaurante por quilo no Centro de Santos: churrasco na brasa, peixes, ilha de massas e buffet completo. De segunda a sexta, das 11h às 15h.",
     "subtitle": "A sua pausa merecida no coração do Centro.",
     "leadIntro": "Há {years} anos fazendo parte da história do Centro de Santos, o Restaurante Prato combina tradição, variedade e atenção aos detalhes para transformar o almoço em uma experiência completa.",
@@ -178,7 +178,33 @@
     "practicalTitle": "Como está o salão",
     "addressLabel": "Endereço",
     "hoursLabel": "Horário",
-    "paymentLabel": "Formas de pagamento"
+    "paymentLabel": "Formas de pagamento",
+    "carousel": "Fotos do salão e do serviço",
+    "prevPhoto": "Foto anterior",
+    "nextPhoto": "Próxima foto",
+    "goToPhoto": "Ir para a foto {n}",
+    "photos": [
+      {
+        "image": "/ambiente/balcao-quente.webp",
+        "alt": "Balcão quente do Prato, com as travessas de carnes, arroz, feijão e guarnições"
+      },
+      {
+        "image": "/ambiente/salao-buffet.webp",
+        "alt": "Salão do Prato visto do balcão, com as luminárias e as mesas ao fundo"
+      },
+      {
+        "image": "/ambiente/balcao-frio.webp",
+        "alt": "Balcão frio do Prato, com as saladas, os legumes e os molhos"
+      },
+      {
+        "image": "/ambiente/salao-massas.webp",
+        "alt": "Mesas postas no salão do Prato, com o balcão de massas ao fundo"
+      },
+      {
+        "image": "/ambiente/salao-janelas.webp",
+        "alt": "Mesas do salão do Prato junto às janelas que dão para a rua"
+      }
+    ]
   },
   "salao": {
     "title": "Escolha o melhor horário para o seu almoço",
@@ -203,7 +229,7 @@
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",
       "address": "Endereço",
-   "landmark": "Ponto de referência"
+      "landmark": "Ponto de referência"
     },
     "form": {
       "title": "Mande uma mensagem",

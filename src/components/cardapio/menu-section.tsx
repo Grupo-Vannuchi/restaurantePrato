@@ -81,32 +81,45 @@ export function MenuSection({
   const Titulo = level === 1 ? "h1" : "h2";
 
   return (
-    <section id={id} className="scroll-mt-24 pb-12 sm:pb-16">
+    <section id={id} className="scroll-mt-24 pb-12 pt-12 sm:pb-16 sm:pt-16">
       <Container className="max-w-3xl">
+        {/* ⚠️ **Cartão desde 01/10/2026, a pedido do dono: "a mesma estrutura
+            do fogão de ouro, mas com as cores e as informações do Prato".** Lá
+            o cabeçalho da seção é um cartão arredondado e escuro sobre o fundo
+            da página; aqui o texto flutuava solto sobre o verde.
+
+            ⚠️ **A cor é a do Prato, não a do irmão.** Lá o cartão é marrom,
+            tirado da paleta de couro daquele restaurante. Aqui ele é o verde
+            da marca — copiar o marrom de lá traria a marca do outro cliente
+            junto com o leiaute. (A primeira versão usou o near-black; o dono
+            pediu verde no mesmo dia.)
+
+            ⚠️ **Nada aqui dentro tem opacidade, e isso é medida, não estilo.**
+            Branco sobre `brand` dá 4,80:1 — folga de três décimos sobre o
+            mínimo de 4,5. `text-background/85` já cairia abaixo. A hierarquia
+            sai do TAMANHO (5xl / 2xl / sm em caixa alta), que é a mesma lição
+            que o `Fact` de `/reservas` aprendeu reprovando em 4,25:1.
+
+            ⚠️ Também não entra `text-muted-foreground`: aquele tom foi medido
+            contra o fundo CLARO da página e some sobre o cartão. A varredura
+            de contraste é quem assina. */}
         <div
-          className={`flex flex-col gap-3 pt-12 sm:pt-16 ${
+          className={`flex flex-col gap-4 mb-12 rounded-2xl bg-brand px-6 py-8 sm:mb-16 sm:px-10 sm:py-10 ${
             centrado ? "items-center text-center" : "items-start"
           }`}
         >
-          <Titulo className="font-serif text-3xl font-bold tracking-tight sm:text-4xl">
+          <Titulo className="text-balance font-serif text-4xl font-bold tracking-tight text-background sm:text-5xl">
             {title}
           </Titulo>
           {subtitle ? (
             <p
-              className={`text-pretty text-lg sm:text-xl text-muted-foreground ${centrado ? "max-w-xl" : ""}`}
+              className={`text-pretty text-xl text-background sm:text-2xl ${centrado ? "max-w-xl" : ""}`}
             >
               {subtitle}
             </p>
           ) : null}
-          {/* ⚠️ `muted-foreground`, e NÃO `brand` — o verde da marca não serve
-              de texto sobre o fundo desta página. Está escrito em
-              `menu-backdrop.tsx`, com a medida: 3,41:1 no pior tom do fundo,
-              contra 4,74:1 do `muted-foreground`. Escrevi `text-brand` aqui na
-              primeira versão e a varredura reprovou seis vezes, entre 4,19 e
-              4,23 — o número real do pixel composto, mais generoso que o pior
-              caso do docblock e ainda assim abaixo do mínimo de 4,5. */}
           {note ? (
-            <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+            <p className="text-sm font-medium uppercase tracking-widest text-background">
               {note}
             </p>
           ) : null}

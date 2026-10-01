@@ -75,13 +75,40 @@ afterEach(() => {
 });
 
 describe("o carrossel do topo com mais de um slide", () => {
-  it("oferece um jeito de parar o giro", () => {
-    // WCAG 2.2.2. `hover` não conta: toque não tem hover.
+  /*
+   * ⚠️ **O botão de pausa saiu em 01/10/2026, a pedido do dono ("igual ao do
+   * fogão de ouro"), e a guarda mudou de alvo em vez de sumir.**
+   *
+   * O que ela protege continua sendo o mesmo: um carrossel que gira sozinho
+   * não pode prender quem está lendo (WCAG 2.2.2). O que mudou é o MECANISMO —
+   * e ele já existia antes do botão: `go()` liga `pausadoPelaPessoa`, então
+   * qualquer seta ou marcador interrompe o giro em definitivo, não só até o
+   * próximo tique.
+   *
+   * ⚠️ **Isso é mais fraco que o botão, e o registro existe para a escolha não
+   * passar por acidente.** Um controle rotulado "pausar" se anuncia; uma seta
+   * que, de quebra, também pausa não se anuncia. Quem chega de leitor de tela
+   * ou de toque e quer apenas PARAR precisa descobrir que avançar resolve.
+   * Vale a pena revisitar se o projeto voltar a fazer auditoria de
+   * acessibilidade — ou trocar o autoplay por nenhum, que dispensa o critério
+   * inteiro e mantém o desenho que o dono pediu.
+   */
+  it("qualquer controle interrompe o giro em definitivo", () => {
     montar();
-    expect(
-      screen.getByRole("button", { name: /pausar/i }),
-      "não há controle de pausa no carrossel",
-    ).toBeInTheDocument();
+    act(() => {
+      screen.getByRole("button", { name: /próximo|proximo/i }).click();
+    });
+    // 20s são mais de três tiques de 6s: se o giro tivesse só adiado, o título
+    // teria passado do slide 1.
+    act(() => void vi.advanceTimersByTime(20000));
+    expect(tituloVisivelParaLeitor()).toHaveTextContent(SLIDES[1]!.title);
+  });
+
+  it("não existe mais botão de pausa — e isso é decisão, não regressão", () => {
+    // Sentinela ao contrário: se alguém reintroduzir o botão sem atualizar a
+    // nota acima, este teste avisa que a decisão de 01/10 foi desfeita.
+    montar();
+    expect(screen.queryByRole("button", { name: /pausar|retomar/i })).toBeNull();
   });
 
   it("gira sozinho enquanto ninguém pede para parar", () => {
@@ -91,15 +118,6 @@ describe("o carrossel do topo com mais de um slide", () => {
     expect(tituloVisivelParaLeitor()).toHaveTextContent(SLIDES[0]!.title);
     act(() => void vi.advanceTimersByTime(6500));
     expect(tituloVisivelParaLeitor()).toHaveTextContent(SLIDES[1]!.title);
-  });
-
-  it("para de verdade quando a pessoa pausa", () => {
-    montar();
-    act(() => {
-      screen.getByRole("button", { name: /pausar/i }).click();
-    });
-    act(() => void vi.advanceTimersByTime(20000));
-    expect(tituloVisivelParaLeitor()).toHaveTextContent(SLIDES[0]!.title);
   });
 
   it("mantém um <h1> na árvore de acessibilidade a cada instante", () => {

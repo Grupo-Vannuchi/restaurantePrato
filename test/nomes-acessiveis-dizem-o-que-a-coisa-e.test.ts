@@ -171,6 +171,14 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
    * também.
    */
   "src/components/cardapio/menu-section.tsx": ["photo.alt"],
+  /*
+   * Decorativa: a foto do salão atrás da faixa de grupos e eventos é fundo,
+   * não conteúdo. Toda informação dela já está no `<h2>` e no parágrafo por
+   * cima; descrevê-la faria o leitor de tela anunciar uma imagem antes de um
+   * texto que não depende dela. Mesma decisão do `page-header`, que recebe o
+   * alt de quem chama justamente porque LÁ a foto muda por página.
+   */
+  "src/app/[locale]/(marketing)/reservas/page.tsx": ["\"\""],
   "src/app/[locale]/(marketing)/novidades/[slug]/page.tsx": ['""'], // capa; o <h1> vem abaixo
   // Informativo: sem legenda, o `alt` é a única descrição que existe.
   /*
@@ -189,7 +197,9 @@ const ALT_AUTORIZADO: Record<string, string[]> = {
    * seguidas — uma pelo rótulo do link, outra pela imagem dentro dele.
    */
   "src/components/layout/logo.tsx": ['""'],
-  "src/components/cardapio/pasta-carousel.tsx": ["foto.alt"],
+  // Promovido de `cardapio/pasta-carousel.tsx` em 30/09, quando /reservas
+  // passou a usar a mesma mecanica. O alt vem de quem chama, sempre.
+  "src/components/photo-carousel.tsx": ["foto.alt"],
   /*
    * Informativo: a foto da sobremesa é a única imagem da linha, e o nome ao
    * lado dela é o próprio conteúdo — quem usa leitor de tela ouviria "imagem"

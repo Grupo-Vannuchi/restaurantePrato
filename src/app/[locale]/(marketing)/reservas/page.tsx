@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Clock, CreditCard, MapPin } from "lucide-react";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 import { PageHeader } from "@/components/page-header";
+import {
+  PhotoCarousel,
+  type CarouselPhoto,
+} from "@/components/photo-carousel";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { ReserveButton } from "@/components/reserve-button";
 import {
@@ -37,6 +42,8 @@ export default async function ReservasPage({
   const tTrilha = await getTranslations({ locale, namespace: "nav" });
   const t = await getTranslations("reservas");
 
+  // `raw` porque `photos` e um ARRAY; `t()` devolveria a chave crua.
+  const fotos = t.raw("photos") as CarouselPhoto[];
   const hours = openingHoursLabel();
 
   return (
@@ -49,6 +56,41 @@ export default async function ReservasPage({
         image="/ambiente/salao.webp"
         imageAlt={t("headerAlt")}
       />
+
+      {/* ⚠️ **Carrossel do salão e do serviço, a pedido do dono em 30/09/2026,
+          para a página ficar com a mesma estrutura da do projeto irmão** — era
+          a única superfície de foto que lá existia e aqui não.
+
+          Abre com o BALCÃO, não com o salão, e isso é regra que o irmão
+          escreveu antes de nós: a foto do cabeçalho logo acima já é o salão, e
+          duas imagens parecidas em sequência leem como falha de carregamento.
+          Depois disso alterna serviço / salão / serviço / salão.
+
+          As quatro vivem em `pt.json` e não aqui porque são conteúdo, não
+          leiaute — mesmo lugar onde o irmão as guarda. `t.raw` porque é um
+          array; `t()` devolveria a chave. */}
+      <Section>
+        <PhotoCarousel
+          photos={fotos}
+          /*
+           * Medido na caixa DESTA página, que não é a da ilha de massas: aqui o
+           * carrossel ocupa a largura cheia do `Container` (`max-w-6xl`, 1152,
+           * com recuo de 20 px no celular e 32 de `sm` para cima), enquanto lá
+           * ele vive numa seção `max-w-3xl`. Daí 1088 px a partir de 1216 de
+           * tela, que é onde o limite do container passa a mandar. Ver a nota
+           * sobre `sizes` ser prop em `components/photo-carousel.tsx`.
+           */
+          sizes="(min-width: 1216px) 1088px, (min-width: 640px) calc(100vw - 64px), calc(100vw - 40px)"
+          labels={{
+            carousel: t("carousel"),
+            prev: t("prevPhoto"),
+            next: t("nextPhoto"),
+            // O rótulo de cada marcador é montado no cliente, que não tem o
+            // catálogo: mandamos o molde e ele troca o {n}.
+            goTo: t("goToPhoto", { n: "{n}" }),
+          }}
+        />
+      </Section>
 
       {/* Como está o salão ao longo do serviço — vem antes da seção de
          grupos porque a página passou a liderar com o horário, não com o
@@ -94,14 +136,35 @@ export default async function ReservasPage({
         </div>
       </Section>
 
-      {/* Reservas para grupos e eventos — o único convite de reserva que
-         sobra na página; o botão avulso do topo foi removido de propósito. */}
-      <Section className="border-y border-border bg-muted/30">
+      {/* ⚠️ **Foto de fundo desde 01/10/2026, a pedido do dono.** A faixa era
+          creme sobre creme e fechava a página sem peso nenhum.
+
+          `balcao-e-salao` e não outra: era a ÚNICA foto de ambiente sem
+          consumidor no site, declarada em `GUARDADAS` dentro de
+          `test/a-galeria-mostra-comida.test.ts` desde 25/09, quando
+          `/experiencia` trocou a foto dela por verde. Ela volta a trabalhar
+          aqui, e sai daquela lista no mesmo commit — material do cliente
+          parado é o que aquela lista existe para vigiar.
+
+          O véu é CHAPADO, e não o degradê do `page-header`: ali o texto é
+          alinhado à esquerda e o degradê escurece justamente aquele lado; aqui
+          ele é centralizado, e um degradê lateral deixaria metade da frase
+          sobre a parte clara da foto. Medido pela varredura de contraste. */}
+      <Section className="relative isolate overflow-hidden border-y border-border">
+        <Image
+          src="/ambiente/balcao-e-salao.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          quality={50}
+          className="-z-10 object-cover"
+        />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-foreground/82" />
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="text-balance text-3xl font-bold tracking-tight text-background sm:text-4xl">
             {t("groupsTitle")}
           </h2>
-          <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
+          <p className="mt-5 text-pretty text-lg leading-relaxed text-background/85">
             {t("groupsCopy")}
           </p>
           <div className="mt-8 flex justify-center">

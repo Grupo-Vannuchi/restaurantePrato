@@ -101,7 +101,12 @@ export function Header({
             <Link
               key={item.key}
               href={item.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              /* ⚠️ **Negrito a pedido do dono, 01/10/2026 — e `font-semibold`,
+                 não `font-bold`.** A fonte do corpo tem 700 disponível, mas a
+                 600 é a que ainda deixa o botão verde "Falar com o
+                 restaurante", ao lado, ser o elemento mais pesado da barra.
+                 Em 700 os cinco links competem com ele. */
+              className="text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
             >
               {t(item.key)}
             </Link>
@@ -143,7 +148,7 @@ export function Header({
                 key={item.key}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-2 py-2.5 text-base font-medium hover:bg-muted"
+                className="rounded-md px-2 py-2.5 text-base font-semibold hover:bg-muted"
               >
                 {t(item.key)}
               </Link>
