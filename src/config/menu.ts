@@ -192,10 +192,17 @@ export const pastaChoices = {
  * clara, verde, clara, que é a única disposição sem duas iguais encostadas.
  * Acrescentar uma sexta pede refazer essa conta, não empurrar para o fim.
  *
- * A primeira leva `priority` e é a de 4:3, e isso é escolha: o carrossel
- * mostra 4:3 no celular e 16:9 no computador, e o celular é onde quase todo
- * mundo abre o cardápio — quem escaneia o código na mesa. Uma origem 4:3
- * preenche o quadro do celular sem corte.
+ * A primeira leva `priority`, e a regra dela MUDOU em 02/10/2026 porque o
+ * dono tirou justamente a foto que a cumpria.
+ *
+ * O carrossel mostra 4:3 no celular e 16:9 no computador, e o celular é onde
+ * quase todo mundo abre o cardápio — quem escaneia o código na mesa. A regra
+ * antiga era "a primeira é a de 4:3", porque ela preenche o quadro do celular
+ * sem corte. `talharim-ao-molho-branco` era a única 4:3 e saiu.
+ *
+ * A regra agora é **a mais próxima de 4:3 entre as que restam**: as seis são
+ * 3:2 ou 16:9, e 3:2 perde menos no corte do celular. Daí a de 3:2 na frente.
+ * Se entrar uma 4:3, ela volta a ser a primeira.
  *
  * `name` alimenta o texto alternativo, e nomeia FORMA + MOLHO porque é isso que
  * a ilha vende — os dois lados existem em `pastaChoices`, então o rótulo
@@ -208,7 +215,6 @@ export const pastaChoices = {
    `public/massas` — só não é publicado aqui. Devolver é acrescentar a entrada
    de volta, e aí o topo deixa de ser exclusivo. */
 export const pastaPhotos = [
-  { photo: "/massas/talharim-ao-molho-branco.webp", name: "Talharim ao molho branco" },
   {
     photo: "/massas/espaguete-a-bolonhesa.webp",
     name: "Espaguete à bolonhesa, com ervilha e milho",
@@ -232,10 +238,6 @@ export const pastaPhotos = [
     name: "Ravioli verde com presunto e cebolinha",
   },
   { photo: "/massas/nhoque-a-bolonhesa.webp", name: "Nhoque à bolonhesa" },
-  {
-    photo: "/massas/ravioli-verde-ao-molho-branco.webp",
-    name: "Ravioli verde ao molho branco com pão",
-  },
 ] as const;
 
 /**
@@ -365,15 +367,37 @@ export type Dessert = {
 export const desserts: readonly Dessert[] = [
   { name: "Salada de frutas", note: "220 g · para viagem R$ 8,50", price: 8.0 },
   { name: "Meia porção de salada de frutas", note: "Para viagem R$ 13,00", price: 11.0 },
-  { name: "Gelatina", note: "120 ml · limão, morango ou uva", price: 3.5 },
-  { name: "Gelatina zero", note: "Morango ou uva", price: 4.0 },
-  { name: "Mousse de chocolate", note: "Chocolate meio amargo", price: 16.0 },
+  {
+    name: "Mousse de chocolate",
+    note: "Chocolate meio amargo",
+    price: 16.0,
+    photo: "/sobremesas/mousse-de-chocolate.webp",
+  },
+  {
+    name: "Gelatina",
+    note: "120 ml · limão, morango ou uva",
+    price: 3.5,
+    // Três copinhos na foto: limão, morango e uva — os três sabores que a
+    // linha nomeia. A `zero` tem dois, que são os dois dela.
+    photo: "/sobremesas/gelatina.webp",
+  },
+  {
+    name: "Petit gateau com sorvete",
+    note: "Sorvete de creme ou flocos",
+    price: 20.0,
+    photo: "/sobremesas/petit-gateau-com-sorvete.webp",
+  },
   { name: "Creme de papaia com cassis", price: 18.0 },
-  { name: "Petit gateau com sorvete", note: "Sorvete de creme ou flocos", price: 20.0 },
-  { name: "Brownie com sorvete", note: "Sorvete de creme ou flocos", price: 20.0 },
-  { name: "Pudim", note: "Pedaço", price: 16.0 },
   { name: "Torta holandesa", price: 16.0 },
-  { name: "Torta de limão", price: 16.0 },
+  { name: "Gelatina zero", note: "Morango ou uva", price: 4.0, photo: "/sobremesas/gelatina-zero.webp" },
+  { name: "Pudim", note: "Pedaço", price: 16.0 },
+  { name: "Torta de limão", price: 16.0, photo: "/sobremesas/torta-de-limao.webp" },
+  {
+    name: "Brownie com sorvete",
+    note: "Sorvete de creme ou flocos",
+    price: 20.0,
+    photo: "/sobremesas/brownie-com-sorvete.webp",
+  },
 ];
 
 /**

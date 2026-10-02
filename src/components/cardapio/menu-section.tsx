@@ -108,7 +108,25 @@ export function MenuSection({
             centrado ? "items-center text-center" : "items-start"
           }`}
         >
-          <Titulo className="text-balance font-serif text-4xl font-bold tracking-tight text-background sm:text-5xl">
+          {/* ⚠️ **`break-words` desde 02/10/2026, e o defeito é meu, de um dia
+              antes.** Ao virar cartão em 01/10 o título subiu de `text-3xl`
+              para `text-4xl`. Medido a 200% de texto numa tela de 320:
+              "Ilha de massas — R$ 41,90" alcança 367 px e empurra a página
+              para o lado (WCAG 1.4.10).
+
+              `text-balance` não resolve: ele reparte as linhas, não quebra
+              palavra. É a mesma lição do `page-header`, onde "Experiência"
+              sozinha media mais que a tela. `break-words` só age quando não
+              cabe; em corpo normal não muda um pixel.
+
+              ⚠️ **E `break-words` SOZINHO não bastou** — medi. O título é
+              filho direto de um flex em coluna, então ele se dimensiona pelo
+              próprio conteúdo e nunca chega a ser apertado: "Sobremesas",
+              uma palavra só, alcançava 506 px numa tela de 412. `w-full`
+              prende a largura à do cartão, e aí a quebra tem contra o que
+              agir. É o mesmo par `min-w-0`/`break-words` que o rodapé usa
+              para o e-mail — um sem o outro não resolve. */}
+          <Titulo className="w-full text-balance break-words font-serif text-4xl font-bold tracking-tight text-background sm:text-5xl">
             {title}
           </Titulo>
           {subtitle ? (

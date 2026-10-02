@@ -31,6 +31,15 @@ describe("horário de funcionamento", () => {
   });
 });
 
+/*
+ * ⚠️ **Os dias passaram a sair POR EXTENSO em 02/10/2026**, a pedido do dono —
+ * eram "seg", "sex". Estes quatro casos quebraram junto e foram atualizados;
+ * eles medem o FORMATO da linha, que é exatamente o que mudou.
+ *
+ * O que NÃO mudou e continua sendo o ponto deles: a linha sempre inclui a faixa
+ * de DIAS. Publicar "das 11h às 15h" sozinho diz ao leitor que a casa abre no
+ * sábado, e esse foi um defeito real deste projeto.
+ */
 describe("openingHoursLabel", () => {
   it("devolve null quando não há horário nenhum (fork novo, campo omitido)", () => {
     // Diferente do teste acima (que testa `ordered.length === 0`), este mira o
@@ -62,7 +71,7 @@ describe("openingHoursLabel", () => {
         opens: "11:00",
         closes: "15:00",
       }),
-    ).toBe("Seg a sex, das 11h às 15h");
+    ).toBe("Segunda a sexta, das 11h às 15h");
   });
 
   it("nomeia um único dia sem inventar intervalo", () => {
@@ -72,7 +81,7 @@ describe("openingHoursLabel", () => {
         opens: "11:00",
         closes: "15:00",
       }),
-    ).toBe("Sáb, das 11h às 15h");
+    ).toBe("Sábado, das 11h às 15h");
   });
 
   it("lista dias não contíguos em vez de fingir que são um intervalo", () => {
@@ -82,7 +91,7 @@ describe("openingHoursLabel", () => {
         opens: "11:00",
         closes: "15:00",
       }),
-    ).toBe("Seg, qua, sex, das 11h às 15h");
+    ).toBe("Segunda, quarta, sexta, das 11h às 15h");
   });
 
   it("preserva os minutos quando o horário não fecha na hora cheia", () => {
@@ -92,7 +101,7 @@ describe("openingHoursLabel", () => {
         opens: "11:30",
         closes: "15:45",
       }),
-    ).toBe("Seg, das 11h30 às 15h45");
+    ).toBe("Segunda, das 11h30 às 15h45");
   });
 
   it("nunca publica horário sem dizer em que dias", () => {
@@ -101,7 +110,7 @@ describe("openingHoursLabel", () => {
     // abre todo dia — e manda a pessoa para a porta fechada no sábado.
     const label = openingHoursLabel();
     if (label !== null) {
-      expect(label).toMatch(/seg|ter|qua|qui|sex|sáb|dom/i);
+      expect(label).toMatch(/segunda|terça|quarta|quinta|sexta|sábado|domingo/i);
     }
   });
 });
