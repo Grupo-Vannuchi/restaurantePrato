@@ -26,8 +26,24 @@
   --color-border: var(--border);
   --color-border-field: var(--border-field);
 
-  --font-sans:
-    var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* ⚠️ **UMA família no site inteiro desde 02/10/2026, a pedido do dono:
+     "uma fonte parecida com a da fachada no site todo".** Até aqui o corpo
+     era Geist (sem serifa) e só os títulos usavam a Literata.
+
+     A escolha da Literata já tinha sido feita em 18/09 CONTRA a placa da
+     fachada — altura-x grande, bojos quase circulares, serifa em cunha
+     discreta —, então estendê-la ao corpo não escolhe nada de novo: aplica
+     a mesma decisão ao resto da página. E ela foi desenhada para leitura em
+     tela em corpo pequeno, que é por onde um serif costuma falhar.
+
+     O token continua chamando-se `--font-sans` porque dezenas de
+     componentes usam o utilitário `font-sans` do Tailwind; renomeá-los
+     seria churn sem efeito. O que ele serve, hoje, é a serifa.
+
+     ⚠️ Geist saiu do `layout.tsx` no mesmo commit. Fonte declarada e não
+     usada é peso que o visitante baixa e nunca vê — `test/peso-morto.ts`
+     existe por causa disso. */
+  --font-sans: var(--font-serif-display), ui-serif, Georgia, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-serif: var(--font-serif-display), ui-serif, Georgia, serif;
 

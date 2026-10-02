@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Literata } from "next/font/google";
+import { Literata } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import {
   getMessages,
@@ -14,7 +14,7 @@ import { baseOpenGraph } from "@/lib/seo";
 import { locales, routing, resolveLocale } from "@/i18n/routing";
 import "../globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+
 /**
  * A serifa dos títulos — escolhida para casar com a LOGO, e não por gênero.
  *
@@ -117,7 +117,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${serifaDeTitulo.variable} h-full`}
+      className={`${serifaDeTitulo.variable} h-full`}
     >
       <head>
         {/* Abre a conexão com o servidor de imagens ANTES de a primeira foto
