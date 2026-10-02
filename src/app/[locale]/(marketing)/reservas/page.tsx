@@ -143,7 +143,14 @@ export default async function ReservasPage({
             {t("groupsCopy")}
           </p>
           <div className="mt-8 flex justify-center">
-            <ReserveButton size="lg" message={t("groupsMessage")} />
+            {/* Rótulo PRÓPRIO, a pedido do dono em 02/10: o padrão do botão é
+                "Fazer minha reserva", que fala de mesa para uma pessoa. Esta
+                faixa é de grupos e eventos, e o convite muda junto. */}
+            <ReserveButton
+              size="lg"
+              label={t("groupsButton")}
+              message={t("groupsMessage")}
+            />
           </div>
         </div>
       </Section>

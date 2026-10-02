@@ -1,7 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { WEEKDAYS, type Weekday } from "@/config/menu";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
+import { WEEKDAYS, isWeekday, type Weekday } from "@/config/menu";
+import { weekdayNoRestaurante } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 
 /**
@@ -54,12 +61,52 @@ export function DayTabs({
   children: ReactNode[];
 }) {
   const [escolhido, setEscolhido] = useState<Weekday | null>(null);
+
+  /*
+   * ⚠️ **"Hoje" NÃO pode vir só do servidor, e o defeito apareceu em
+   * 02/10/2026: numa sexta o cardápio abria na QUINTA.**
+   *
+   * `/cardapio` é gerada estaticamente, então `weekdayNoRestaurante()` roda
+   * no BUILD e o dia fica congelado no HTML. O último build tinha sido na
+   * véspera; o site passou a sexta inteira dizendo que era quinta — sem erro,
+   * sem aviso, com a lista errada selecionada e o selo "Hoje" na aba errada.
+   *
+   * Não dá para resolver tirando a página do modo estático: as 31 páginas
+   * pré-renderizadas sustentam a decisão da CSP (ADR-0004), e `force-dynamic`
+   * aqui derrubaria todas.
+   *
+   * ⚠️ **`useSyncExternalStore`, e não `useState` + `useEffect`.** A primeira
+   * versão lia o dia num efeito e chamava `setState`; o lint reprovou, com
+   * razão — `setState` síncrono dentro de efeito dispara renderização em
+   * cascata. Esta API existe exatamente para isto: o terceiro argumento é o
+   * que o SERVIDOR responde (o palpite do build, que também é o que a
+   * hidratação usa, então os dois HTML batem) e o segundo é o que o NAVEGADOR
+   * responde logo em seguida.
+   *
+   * O `subscribe` não assina nada de propósito: o dia só vira à meia-noite, e
+   * ninguém deixa o cardápio de um restaurante de almoço aberto atravessando
+   * a virada. Se um dia isso importar, é aqui que entra um relógio.
+   *
+   * `getSnapshot` devolve NÚMERO, não objeto — React compara por identidade e
+   * um objeto novo a cada chamada entraria em laço infinito.
+   *
+   * Quem navega sem JavaScript continua vendo o dia do build, e é por isso
+   * que a rota também ganhou `revalidate`: limita o quanto ele envelhece.
+   */
+  const hoje = useSyncExternalStore(
+    () => () => {},
+    () => {
+      const dia = weekdayNoRestaurante();
+      return isWeekday(dia) ? dia : null;
+    },
+    () => (today as Weekday | null),
+  );
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const listaRef = useRef<HTMLDivElement | null>(null);
 
   // A escolha da pessoa manda; sem ela, hoje; no fim de semana, segunda — abrir
   // em branco seria pior que abrir no primeiro dia útil.
-  const ativo = escolhido ?? (today as Weekday | null) ?? WEEKDAYS[0];
+  const ativo = escolhido ?? hoje ?? WEEKDAYS[0];
 
   /*
    * ⚠️ **Traz a aba ativa para dentro da faixa visível do rolador.**
@@ -150,7 +197,7 @@ export function DayTabs({
               )}
             >
               {labels[dia]}
-              {today === dia ? (
+              {hoje === dia ? (
                 /*
                  * ⚠️ **Par SÓLIDO nos dois estados, e é medição, não gosto.**
                  *

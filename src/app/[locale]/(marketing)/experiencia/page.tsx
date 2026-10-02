@@ -234,9 +234,10 @@ export default async function AboutPage({
           `fachada-faixa` e não a `fachada` do cabeçalho de `/contato`: aquela
           vem recortada de 0 a 620 da origem para a placa ficar no centro de
           uma faixa de 4,55:1, e numa faixa larga como esta o mesmo arquivo
-          cortaria diferente. Esta sai da fotografia ANGULADA, que estava sem
-          uso desde que a frontal a substituiu — a diagonal dá profundidade
-          numa faixa baixa, e as duas páginas deixam de mostrar o mesmo quadro.
+          cortaria diferente. Esta sai da fotografia FRONTAL, a pedido do dono
+          em 02/10 — a primeira versão usava a angulada, que estava sem uso. O
+          recorte é próprio: a placa fica em y 192..415 na origem, e partir de
+          y=16 com 576 de altura a põe no centro desta faixa de 8:3.
 
           Decorativa: `alt=""`. Tudo o que ela diz já está na copy acima e no
           endereço do rodapé; descrevê-la faria o leitor de tela anunciar uma

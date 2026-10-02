@@ -29,6 +29,25 @@ import { getBuffetDishes, getPastaDishes } from "@/lib/queries";
 import { resolveLocale } from "@/i18n/routing";
 import { localeMetadata } from "@/lib/seo";
 
+/*
+ * ⚠️ **A rota revalida de hora em hora por causa do DIA, não do cardápio.**
+ *
+ * Em 02/10/2026 o site passou uma sexta-feira inteira abrindo na QUINTA: esta
+ * página é gerada estaticamente, `weekdayNoRestaurante()` roda no build, e o
+ * último build tinha sido na véspera. Sem erro, sem aviso — a lista errada
+ * selecionada e o selo "Hoje" na aba errada.
+ *
+ * O conserto de verdade está em `day-tabs.tsx`, que recalcula o dia no
+ * NAVEGADOR depois de montar. Este `revalidate` é o segundo cinto, para quem
+ * navega sem JavaScript: limita a quanto o dia do build pode envelhecer.
+ *
+ * Uma hora, e não um dia: o cardápio em si muda pouco, mas o DIA vira à
+ * meia-noite, e um visitante do almoço não pode herdar a aba de ontem.
+ *
+ * ⚠️ Não troque isto por `force-dynamic`. As 31 páginas pré-renderizadas são
+ * o que sustenta a decisão da CSP — ver ADR-0004.
+ */
+export const revalidate = 3600;
 export async function generateMetadata({
   params,
 }: {

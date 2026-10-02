@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 import { DayTabs } from "@/components/cardapio/day-tabs";
 import { renderWithIntl, screen, userEvent, within } from "./test-utils";
@@ -40,7 +40,32 @@ const TITULOS = {
   5: "Buffet de Sexta",
 };
 
+/*
+ * ⚠️ **O dia agora vem do RELÓGIO, não só da prop — e foi por isso que estes
+ * testes quebraram em 02/10/2026.**
+ *
+ * `DayTabs` recalcula o dia no navegador depois de montar, porque
+ * `/cardapio` é estática e o valor do servidor congela no build (a sexta que
+ * o site passou inteira dizendo ser quinta). A prop virou o palpite inicial,
+ * e quem manda é `Date` dentro do fuso do restaurante.
+ *
+ * Então um teste que quer fixar o dia precisa fixar o RELÓGIO. Fixar só a
+ * prop passaria a medir um caminho que o visitante nunca percorre.
+ *
+ * As datas abaixo são meio-dia em São Paulo (15:00 UTC), longe das bordas:
+ * meia-noite UTC cairia no dia anterior aqui e o teste mediria outro dia sem
+ * ninguém notar.
+ */
+function fixarDia(diaUtil: 1 | 2 | 3 | 4 | 5 | 6 | 7) {
+  // 05/10/2026 é uma segunda-feira; somar leva ao dia desejado.
+  const data = new Date(Date.UTC(2026, 9, 4 + diaUtil, 15, 0, 0));
+  vi.setSystemTime(data);
+}
+
 function montar(hoje: number | null = null) {
+  // Sem dia pedido, o relógio vai para o sábado: nenhum dia útil ativo por
+  // hoje, que é o estado em que a prop manda sozinha.
+  fixarDia((hoje ?? 6) as 1 | 2 | 3 | 4 | 5 | 6 | 7);
   return renderWithIntl(
     <DayTabs
       labels={ROTULOS}
@@ -55,6 +80,15 @@ function montar(hoje: number | null = null) {
     </DayTabs>,
   );
 }
+
+beforeEach(() => {
+  // `shouldAdvanceTime` para o `userEvent` não travar esperando o relógio.
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 const abas = () => screen.getAllByRole("tab");
 
@@ -127,5 +161,41 @@ describe("as abas de dia do cardápio", () => {
     montar(null);
     expect(abas()[0]).toHaveAttribute("aria-selected", "true");
     expect(screen.queryByText("hoje")).toBeNull();
+  });
+
+  /*
+   * ⚠️ **A guarda do defeito de 02/10/2026: o dia do SERVIDOR estava velho e
+   * nada acusava.**
+   *
+   * `/cardapio` é gerada estaticamente, então `weekdayNoRestaurante()` roda no
+   * build. O último build tinha sido na quinta; o site passou a sexta inteira
+   * abrindo na quinta, com a lista errada selecionada e o selo "Hoje" na aba
+   * errada. Build verde, página 200, zero reprovas em tudo que se media.
+   *
+   * Este teste monta com a prop MENTINDO de propósito — o servidor diz quinta,
+   * o relógio diz sexta — e exige que o navegador vença. É o caminho que o
+   * visitante percorre todo dia depois da meia-noite.
+   */
+  it("corrige o dia quando o servidor ficou para trás", async () => {
+    fixarDia(5);
+    renderWithIntl(
+      <DayTabs
+        labels={ROTULOS}
+        panelHeadings={TITULOS}
+        todayLabel="hoje"
+        selectorLabel="Dia da semana"
+        today={4}
+      >
+        {[1, 2, 3, 4, 5].map((d) => (
+          <p key={d}>Cardápio do dia {d}</p>
+        ))}
+      </DayTabs>,
+    );
+    const [, , , quinta, sexta] = screen.getAllByRole("tab");
+    expect(sexta, "a sexta deveria estar selecionada").toHaveAttribute("aria-selected", "true");
+    expect(quinta, "a quinta ficou selecionada com o dia do build").toHaveAttribute("aria-selected", "false");
+    // E o selo "hoje" acompanha: ele é o que a pessoa lê, não o `aria-selected`.
+    expect(within(sexta!).queryByText("hoje"), "o selo ficou na aba errada").not.toBeNull();
+    expect(within(quinta!).queryByText("hoje")).toBeNull();
   });
 });
