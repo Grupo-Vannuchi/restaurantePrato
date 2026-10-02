@@ -101,12 +101,20 @@ export function Header({
             <Link
               key={item.key}
               href={item.href}
-              /* ⚠️ **Negrito a pedido do dono, 01/10/2026 — e `font-semibold`,
-                 não `font-bold`.** A fonte do corpo tem 700 disponível, mas a
-                 600 é a que ainda deixa o botão verde "Falar com o
-                 restaurante", ao lado, ser o elemento mais pesado da barra.
-                 Em 700 os cinco links competem com ele. */
-              className="text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+              /* ⚠️ **Em DESTAQUE desde 02/10/2026, a pedido do dono: a classe
+                 inteira do projeto irmão.** O que destaca é a COR, não só o
+                 peso: eles estavam em `muted-foreground`, o tom apagado, e
+                 passam a `foreground`.
+
+                 ⚠️ Isto desfaz um argumento meu de 01/10. Eu tinha escolhido
+                 `font-semibold` para os cinco links não competirem com o botão
+                 verde ao lado, que é a ação da barra. O dono pediu o do irmão
+                 duas vezes; a decisão é dele, e fica registrada para ninguém
+                 "corrigir" de volta citando o raciocínio antigo.
+
+                 `hover:text-brand` e `lg:text-base` vêm junto porque são da
+                 mesma classe de lá — meia cópia seria pior que nenhuma. */
+              className="text-sm font-bold text-foreground transition-colors duration-300 hover:text-brand lg:text-base"
             >
               {t(item.key)}
             </Link>
@@ -148,7 +156,7 @@ export function Header({
                 key={item.key}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-2 py-2.5 text-base font-semibold hover:bg-muted"
+                className="rounded-md px-2 py-2.5 text-base font-bold hover:bg-muted"
               >
                 {t(item.key)}
               </Link>

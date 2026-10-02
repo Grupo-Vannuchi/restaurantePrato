@@ -204,7 +204,8 @@
         "image": "/ambiente/salao-janelas.webp",
         "alt": "Mesas do salão do Prato junto às janelas que dão para a rua"
       }
-    ]
+    ],
+    "groupsButton": "Reservar nosso espaço"
   },
   "salao": {
     "title": "Escolha o melhor horário para o seu almoço",
@@ -590,7 +591,7 @@
   },
   "cardapio": {
     "title": "Cardápio da semana",
-    "subtitle": "O que sai em cada dia, de segunda a sexta.",
+    "subtitle": "As opções preparadas para cada dia estão sujeitas a alterações.",
     "metaDescription": "O cardápio da semana do Restaurante Prato: buffet por quilo e ilha de massas, de segunda a sexta, no Centro de Santos. Veja o que sai em cada dia.",
     "daySelectorLabel": "Escolha o dia",
     "today": "Hoje",
