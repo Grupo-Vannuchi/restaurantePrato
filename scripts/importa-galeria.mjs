@@ -124,13 +124,15 @@ const FOTOS = [
      porque a ilha de massas é um produto com preço próprio, e fotografar a
      estação é fotografar a oferta, não o salão. Se a regra for reapertada um
      dia, é esta que sai primeiro. */
-  ["balcao-das-massas.webp", "O balcão da ilha de massas, onde o prato é preparado na hora"],
   /* ⚠️ A legenda NÃO nomeia a fruta, e isso é deliberado: o cardápio só tem
      refrigerante e chá em garrafa, nada que corresponda a uma bebida batida.
      Perguntei ao dono o que era e não voltou resposta. Como a legenda é o texto
      que o leitor de tela pronuncia, chutar "açaí" ou "uva" seria inventar dado
      de cliente na voz de quem não vê a foto. */
+  ["tres-massas-da-ilha.webp", "Três massas da ilha: pesto, penne ao molho branco e nhoque ao sugo"],
   ["bebida-de-frutas.webp", "Uma bebida gelada de frutas, servida em taça"],
+  ["prato-feito-completo.webp", "Um prato montado, com arroz, bife, farofa, ovo, couve e torresmo"],
+  ["balcao-das-massas.webp", "O balcão da ilha de massas, onde o prato é preparado na hora"],
   ["nhoque-ao-sugo-e-pao.webp", "Nhoque ao sugo, com pão"],
   /* ⚠️ **As três primeiras entraram em 30/09/2026 e ABREM a lista por pedido
      explícito do dono**, que apontou a faixa "O nosso espaço" da home e mandou
@@ -161,8 +163,6 @@ const FOTOS = [
      carrossel de `/cardapio`.** Trazer qualquer uma para cá significa a mesma
      foto em duas páginas — não é proibido como no topo da home, mas é decisão
      do dono, não minha. Não traga sem perguntar. */
-  ["tres-massas-da-ilha.webp", "Três massas da ilha: pesto, penne ao molho branco e nhoque ao sugo"],
-  ["prato-feito-completo.webp", "Um prato montado, com arroz, bife, farofa, ovo, couve e torresmo"],
   /* ⚠️ **`balcao-quente-em-cubas` e `churrasco` saíram em 01/10/2026** para o
      topo da home, que o dono pediu com fotos exclusivas. Os ARQUIVOS
      continuam em `public/galeria` — só não entram na galeria. Devolver é

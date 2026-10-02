@@ -186,9 +186,21 @@ export function PastaBuilder({
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-2 text-pretty leading-relaxed text-muted-foreground">
-                    {passo.nota}
-                  </p>
+                  /* ⚠️ **Dentro do mesmo contêiner das opções desde
+                     02/10/2026, a pedido do dono ("igual ao fogão de ouro").**
+                     A nota é a resposta do passo 4, assim como a lista é a
+                     resposta dos passos 1 a 3 — e saía como texto solto, sem
+                     a chapa. Na trilha numerada isso lia como comentário
+                     sobre o passo, não como o conteúdo dele.
+
+                     `bg-card` e as mesmas bordas e cantos da lista acima: o
+                     passo 4 passa a ter o mesmo peso visual dos outros três,
+                     que é o que a numeração promete. */
+                  <div className="mt-4 rounded-2xl border border-border bg-card px-4 py-4 sm:px-6">
+                    <p className="text-pretty leading-relaxed text-muted-foreground">
+                      {passo.nota}
+                    </p>
+                  </div>
                 )}
               </div>
             </li>

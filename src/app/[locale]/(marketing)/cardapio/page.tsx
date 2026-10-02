@@ -273,7 +273,6 @@ export default async function CardapioPage({
         id="massas"
         title={precoMassa ? `${t("pastaLabel")} — ${precoMassa}` : t("pastaLabel")}
         subtitle={t("pastaNote")}
-        align="left"
       >
 
         {/* Massas cadastradas no painel, quando houver. O passo a passo abaixo
@@ -296,9 +295,28 @@ export default async function CardapioPage({
         <MenuSection
           title={t("dessertsLabel")}
           subtitle={t("dessertsNote")}
-          align="left"
         >
           <DessertList />
+
+          {/* ⚠️ **A ressalva desceu do SUBTÍTULO para cá em 02/10/2026.**
+              Ela ocupava o espaço logo abaixo do letreiro, em `text-xl
+              sm:text-2xl` dentro da chapa — a primeira coisa que se lia sob
+              "Sobremesas", em corpo quase de manchete, era um aviso de
+              cobrança. E a frase era IDÊNTICA à das bebidas, o que lê como
+              carimbo jurídico em vez de alguém falando.
+
+              A informação fica: num restaurante por quilo a dúvida é real, e
+              o atrito que ela evita acontece na balança. Mas é confirmação,
+              não revelação — cada linha da lista já mostra o próprio preço.
+
+              ⚠️ `text-muted-foreground`, e não um token de apoio solto: esta
+              frase cai direto sobre o fundo do cardápio, fora de qualquer
+              `bg-card`, e é esse o tom que `menu-backdrop.tsx` mediu ali —
+              4,74:1, contra 3,41:1 do verde da marca. Medido de novo depois
+              da mudança, não herdado do token. */}
+          <p className="mt-6 text-sm text-muted-foreground">
+            {t("dessertsPriceNote")}
+          </p>
 
           {/* ⚠️ **Cortesia de aniversário, confirmada pelo cliente em
               24/09/2026.** A regra é exatamente esta e não tem outra condição:
@@ -331,17 +349,29 @@ export default async function CardapioPage({
           ela, mas link externo indexado não aparece numa busca do repositório, e
           manter o `id` custa zero.
 
-          A ressalva de que bebida não entra no quilo vale para os três, e
-          repeti-la em cada um viraria ruído — fica no primeiro. */}
+          ⚠️ A ressalva de preço saiu do subtítulo em 02/10 e virou corpo
+          miúdo abaixo da lista — ver a nota junto dela. O comentário antigo
+          dizia que ela "vale para os três" e ficava "no primeiro": eram três
+          grupos no irmão, e aqui sempre houve um só. */}
       {drinkGroups.map((grupo, i) => (
         <MenuSection
           key={grupo.labelKey}
           id={i === 0 ? "bebidas" : undefined}
           title={t(grupo.labelKey as "drinksSodasBeer")}
-          subtitle={i === 0 ? t("drinksNote") : undefined}
-          align="left"
+          subtitle={t("drinksNote")}
         >
           <DrinkGroupList group={grupo} />
+
+          {/* ⚠️ **Sem `i === 0` aqui, e isso é correção de um condicional que
+              nunca distinguiu nada.** O Prato tem UM grupo de bebidas; o
+              `i === 0` do subtítulo vinha do projeto irmão, que tem vários.
+              Condicional que sempre dá o mesmo resultado esconde a intenção e
+              engana quem lê. O `id` abaixo mantém o seu porque ele existe para
+              a âncora cair no primeiro, e isso continua valendo se um segundo
+              grupo aparecer. */}
+          <p className="mt-6 text-sm text-muted-foreground">
+            {t("drinksPriceNote")}
+          </p>
         </MenuSection>
       ))}
 
@@ -356,7 +386,6 @@ export default async function CardapioPage({
       <MenuSection
         title={t("winesLabel")}
         subtitle={t("winesNote")}
-        align="left"
       >
         {/* A foto abre a seção, como no projeto irmão: vinho é escolha, e uma
             garrafa na mesa do salão diz isso melhor que uma lista de preços.

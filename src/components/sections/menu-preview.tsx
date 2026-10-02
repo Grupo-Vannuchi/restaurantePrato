@@ -7,8 +7,19 @@ import { Reveal } from "@/components/ui/reveal";
 import { buttonVariants } from "@/components/ui/button";
 
 /*
- * ⚠️ **Quatro fotos desde 01/10/2026, a pedido do dono**, e a ordem é a que ele
- * ditou: prato de comida, massa, carne, sobremesa.
+ * ⚠️ **Quatro fotos, na ordem que o dono ditou: prato de comida, massa,
+ * carne, sobremesa.**
+ *
+ * A quarta já existiu em 01/10 e era a salada de frutas, que ele identificou
+ * no mesmo dia como sobremesa do OUTRO restaurante. O arquivo foi apagado, e
+ * não só desreferenciado: `public/` é servido pela URL, referenciado ou não.
+ * O cartão ficou de fora por um dia, até as fotos de sobremesa do Prato
+ * chegarem em 02/10 — a que entrou é dele.
+ *
+ * ⚠️ Esta é 16:9, recortada da MESMA origem que a miniatura quadrada de
+ * `public/sobremesas`. Dois recortes do mesmo arquivo, e não um reaproveitado:
+ * a miniatura da lista do cardápio é `size-24` e o cartão daqui é uma faixa.
+ *
  *
  * A grade vai a QUATRO colunas junto. Com três colunas a quarta foto ficaria
  * sozinha numa segunda fila, e card solto numa linha vazia lê como erro de
@@ -41,6 +52,15 @@ const FOTOS = [
   {
     src: "/vitrine/pernil-assado.webp",
     alt: "Peça de carne assada, dourada por fora, servida na travessa",
+  },
+  {
+    /* ⚠️ Terceira foto neste cartão em 02/10: petit gateau, torta de limão e
+       enfim o brownie, escolhido pelo dono. As trocas foram de gosto dele, e
+       o critério que eu vinha usando — contraste de tom com os três cartões
+       ao lado — perdeu para isso, que é como tem de ser. Fica registrado só
+       para ninguém "corrigir" de volta citando o raciocínio do tom. */
+    src: "/vitrine/brownie-com-sorvete.webp",
+    alt: "Brownie de chocolate com bola de sorvete de creme e calda",
   },
 ];
 
@@ -91,15 +111,15 @@ export async function MenuPreview() {
       {/* `sizes` conta ao navegador quanto da tela cada foto ocupa em cada
           largura — sem isso ele baixa a variante de tela cheia para uma coluna
           de um terço. A ordem no HTML é a da leitura: prato, massa, carne. */}
-      <ul role="list" className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <ul role="list" className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {FOTOS.map((foto, i) => (
-          <Reveal as="li" key={foto.src} delay={(i % 3) * 90}>
+          <Reveal as="li" key={foto.src} delay={(i % 4) * 90}>
             <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-border bg-muted">
               <Image
                 src={foto.src}
                 alt={foto.alt}
                 fill
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                 quality={50}
                 className="object-cover"
               />
