@@ -395,15 +395,29 @@ const DAY_ORDER: OpeningHours["days"] = [
   "Sunday",
 ];
 
-/** Rótulo curto em português de cada dia da semana. */
+/**
+ * Nome de cada dia da semana, POR EXTENSO.
+ *
+ * ⚠️ **Eram abreviados até 02/10/2026** ("seg", "sex"), e o dono pediu a forma
+ * inteira. Mudar aqui muda nos CINCO consumidores de uma vez — cardápio,
+ * contato, horários, rodapé e `llms.txt` — e é assim que tem de ser: o
+ * AGENTS.md proíbe montar a linha de horário à mão justamente para não existir
+ * dois formatos do mesmo fato. "Seg a sex" no rodapé e "Segunda a sexta" no
+ * cardápio seria a mesma casa falando de dois jeitos.
+ *
+ * O custo é largura: a linha passa de 25 para 31 caracteres, e o rodapé é a
+ * coluna mais estreita do site. Medido depois da troca — ela quebra em duas
+ * linhas e não empurra a página, porque a palavra mais longa ("Segunda") tem 7
+ * caracteres contra os 21 do e-mail, que é quem define o pior caso ali.
+ */
 const DAY_LABELS: Record<OpeningHours["days"][number], string> = {
-  Monday: "seg",
-  Tuesday: "ter",
-  Wednesday: "qua",
-  Thursday: "qui",
-  Friday: "sex",
-  Saturday: "sáb",
-  Sunday: "dom",
+  Monday: "segunda",
+  Tuesday: "terça",
+  Wednesday: "quarta",
+  Thursday: "quinta",
+  Friday: "sexta",
+  Saturday: "sábado",
+  Sunday: "domingo",
 };
 
 /** "11:00" → "11h"; "11:30" → "11h30". */
