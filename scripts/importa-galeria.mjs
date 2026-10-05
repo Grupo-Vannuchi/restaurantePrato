@@ -176,6 +176,7 @@ const FOTOS = [
   ["massa-ao-pesto-com-manjericao.webp", "Massa ao pesto, com manjericão e queijo ralado"],
   ["frango-ao-molho-verde.webp", "Frango ao molho verde, com arroz e vinagrete"],
   ["frios-do-balcao.webp", "As conservas e os grãos"],
+  ["linguica-na-brasa.webp", "Linguiça assando na brasa, no espeto"],
   ["penne-com-rucula-e-alcaparras.webp", "Penne com rúcula, azeitonas e alcaparras"],
   ["assados-e-batatas.webp", "Assados e batatas"],
   ["pasteis.webp", "Os pastéis, fritos na hora"],
@@ -190,6 +191,7 @@ const FOTOS = [
   ["frios-e-palmito.webp", "Os frios, com palmito e couve-flor"],
   // Um prato montado, que é o resultado de tudo acima.
   ["prato-servido.webp", "Um prato montado, com salada e batata"],
+  ["corte-dourado-na-brasa.webp", "Corte dourado no espeto, pronto para fatiar"],
   ["file-a-milanesa-com-fritas.webp", "Filé à milanesa, com fritas, arroz e salada de maionese"],
   ["balcao-quente-em-bandejas.webp", "O balcão quente, com as bandejas de carnes, ovos e guarnições"],
   ["file-de-frango-grelhado.webp", "Filé de frango grelhado, com salada e vinagrete"],
@@ -198,6 +200,7 @@ const FOTOS = [
   // Os fritos, que fecham o balcão.
   ["salgados-fritos.webp", "Os bolinhos, fritos na hora"],
   ["legumes-e-conservas.webp", "Legumes e conservas"],
+  ["corte-selado-na-brasa.webp", "Corte selado na brasa, no espeto"],
   /* ⚠️ **`tres-massas-da-ilha` entrou em 01/10/2026 porque o dono pediu MAIS
      MASSA na galeria.** É a quarta foto, logo abaixo da faixa que a home
      mostra: aparecer dentro das três primeiras colocaria duas fotos de massa

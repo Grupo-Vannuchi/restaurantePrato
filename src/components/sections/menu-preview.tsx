@@ -50,8 +50,14 @@ const FOTOS = [
     alt: "Fettuccine ao pesto, com manjericão e queijo ralado",
   },
   {
-    src: "/vitrine/pernil-assado.webp",
-    alt: "Peça de carne assada, dourada por fora, servida na travessa",
+    /* ⚠️ **Foto de carne PRÓPRIA desde 05/10/2026 — antes não havia.** Este
+       cartão passou por três fotos sem acertar: o churrasco do topo (que
+       saiu por virar exclusivo da home), a peça assada, que o dono pediu
+       para trocar DUAS vezes, e a peça assada de novo, porque não existia
+       outra carne no projeto inteiro. As cinco fotos da churrasqueira que
+       chegaram hoje fecham isso. */
+    src: "/vitrine/carne-na-brasa.webp",
+    alt: "Peça de carne no espeto, dourada na brasa, com a capa de gordura",
   },
   {
     /* ⚠️ Terceira foto neste cartão em 02/10: petit gateau, torta de limão e
