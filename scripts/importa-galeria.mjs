@@ -66,6 +66,26 @@ function carregaEnv() {
  * legenda, o `alt` da imagem fica vazio de propósito, porque a legenda já
  * cumpre esse papel e repetir faria o leitor de tela dizer tudo duas vezes.
  */
+/*
+ * ⚠️ **A ORDEM desta lista passou a ser calculada em 05/10/2026**, a pedido do
+ * dono: "mistura mais, tem muita foto parecida".
+ *
+ * Antes ela era narrativa — a sequência do balcão: frios, quente, fritos,
+ * prato montado. Lia bem no papel e agrupava na tela justamente o que se
+ * parece, porque fotos do mesmo ponto do balcão saem parecidas.
+ *
+ * Agora é ganância por dissemelhança: a cada passo entra a foto mais distante
+ * das DUAS últimas colocadas, pela impressão digital. Medido: a vizinhança
+ * mais parecida da galeria saiu de 18 para 25 (quanto maior, mais diferentes).
+ *
+ * ⚠️ **As três primeiras NÃO entram no cálculo.** Elas são a faixa "O nosso
+ * espaço" da home (`slice(0, 3)` em `gallery-preview.tsx`), escolhidas a dedo
+ * e já de assuntos diferentes. Deixar o algoritmo mexer nelas trocaria uma
+ * decisão do dono por uma conta.
+ *
+ * Acrescentou foto? A ordem não se recalcula sozinha — ponha onde a vizinhança
+ * não repetir assunto, ou rode a conta de novo.
+ */
 const FOTOS = [
   /* ⚠️ **Sete fotos saíram em 01/10/2026: o dono circulou o bloco do balcão e
      disse que repetem.** A varredura por impressão digital NÃO as acusava — o
@@ -132,7 +152,7 @@ const FOTOS = [
   ["tres-massas-da-ilha.webp", "Três massas da ilha: pesto, penne ao molho branco e nhoque ao sugo"],
   ["bebida-de-frutas.webp", "Uma bebida gelada de frutas, servida em taça"],
   ["prato-feito-completo.webp", "Um prato montado, com arroz, bife, farofa, ovo, couve e torresmo"],
-  ["balcao-das-massas.webp", "O balcão da ilha de massas, onde o prato é preparado na hora"],
+  ["buffet-de-saladas.webp", "A ilha de saladas, montada no começo do almoço"],
   ["nhoque-ao-sugo-e-pao.webp", "Nhoque ao sugo, com pão"],
   /* ⚠️ **As três primeiras entraram em 30/09/2026 e ABREM a lista por pedido
      explícito do dono**, que apontou a faixa "O nosso espaço" da home e mandou
@@ -154,6 +174,30 @@ const FOTOS = [
      A sequência do balcão descrita no docblock não foi desfeita — ela começa
      logo abaixo destas três. */
   ["massa-ao-pesto-com-manjericao.webp", "Massa ao pesto, com manjericão e queijo ralado"],
+  ["frango-ao-molho-verde.webp", "Frango ao molho verde, com arroz e vinagrete"],
+  ["frios-do-balcao.webp", "As conservas e os grãos"],
+  ["penne-com-rucula-e-alcaparras.webp", "Penne com rúcula, azeitonas e alcaparras"],
+  ["assados-e-batatas.webp", "Assados e batatas"],
+  ["pasteis.webp", "Os pastéis, fritos na hora"],
+  /* ⚠️ **`servindo-no-balcao` saiu em 01/10/2026, a pedido do dono.** O
+     arquivo continua em `public/galeria` — só não é publicado. Era a única
+     foto da galeria com uma PESSOA no quadro, e a curadoria de 10/09 a tinha
+     escolhido justamente por isso ("a única que mostra gente usando o
+     lugar"). Esse argumento não vale mais: quem decide é o dono, e fica
+     registrado para ninguém a devolver citando a nota antiga. */
+  // O balcão quente.
+  ["buffet-quente-ensopados.webp", "Os ensopados do dia"],
+  ["frios-e-palmito.webp", "Os frios, com palmito e couve-flor"],
+  // Um prato montado, que é o resultado de tudo acima.
+  ["prato-servido.webp", "Um prato montado, com salada e batata"],
+  ["file-a-milanesa-com-fritas.webp", "Filé à milanesa, com fritas, arroz e salada de maionese"],
+  ["balcao-quente-em-bandejas.webp", "O balcão quente, com as bandejas de carnes, ovos e guarnições"],
+  ["file-de-frango-grelhado.webp", "Filé de frango grelhado, com salada e vinagrete"],
+  ["panquecas-com-arroz.webp", "Panquecas ao molho, com arroz e salada"],
+  ["balcao-das-massas.webp", "O balcão da ilha de massas, onde o prato é preparado na hora"],
+  // Os fritos, que fecham o balcão.
+  ["salgados-fritos.webp", "Os bolinhos, fritos na hora"],
+  ["legumes-e-conservas.webp", "Legumes e conservas"],
   /* ⚠️ **`tres-massas-da-ilha` entrou em 01/10/2026 porque o dono pediu MAIS
      MASSA na galeria.** É a quarta foto, logo abaixo da faixa que a home
      mostra: aparecer dentro das três primeiras colocaria duas fotos de massa
@@ -178,36 +222,10 @@ const FOTOS = [
      Da mesma leva ficaram de FORA as que repetiam assunto já publicado —
      ver a varredura por impressão digital registrada no relatório do dia. */
   ["balcao-frio-com-molhos.webp", "O balcão frio, com os molhos e os temperos na prateleira"],
-  ["buffet-de-saladas.webp", "A ilha de saladas, montada no começo do almoço"],
-  ["ilha-de-saladas-com-frutas.webp", "A ilha de saladas, com as frutas do dia"],
-  ["frios-e-palmito.webp", "Os frios, com palmito e couve-flor"],
-  ["frios-do-balcao.webp", "As conservas e os grãos"],
-  ["legumes-e-conservas.webp", "Legumes e conservas"],
-  /* ⚠️ **`servindo-no-balcao` saiu em 01/10/2026, a pedido do dono.** O
-     arquivo continua em `public/galeria` — só não é publicado. Era a única
-     foto da galeria com uma PESSOA no quadro, e a curadoria de 10/09 a tinha
-     escolhido justamente por isso ("a única que mostra gente usando o
-     lugar"). Esse argumento não vale mais: quem decide é o dono, e fica
-     registrado para ninguém a devolver citando a nota antiga. */
-  // O balcão quente.
-  ["buffet-quente.webp", "O buffet quente, com risoto, lasanha e batatas"],
-  ["arroz-farofa-feijao.webp", "Arroz, farofa e feijão, sempre no balcão quente"],
-  ["buffet-quente-ensopados.webp", "Os ensopados do dia"],
-  ["assados-e-batatas.webp", "Assados e batatas"],
-  ["pernil-assado.webp", "O pernil assado, inteiro na travessa"],
-  ["balcao-quente-em-bandejas.webp", "O balcão quente, com as bandejas de carnes, ovos e guarnições"],
-  // Os fritos, que fecham o balcão.
-  ["salgados-fritos.webp", "Os bolinhos, fritos na hora"],
-  ["pasteis.webp", "Os pastéis, fritos na hora"],
-  // Um prato montado, que é o resultado de tudo acima.
-  ["prato-servido.webp", "Um prato montado, com salada e batata"],
-  ["panquecas-com-arroz.webp", "Panquecas ao molho, com arroz e salada"],
-  ["penne-com-rucula-e-alcaparras.webp", "Penne com rúcula, azeitonas e alcaparras"],
-  ["file-de-frango-grelhado.webp", "Filé de frango grelhado, com salada e vinagrete"],
   ["bife-acebolado-com-farofa.webp", "Bife acebolado, com arroz, feijão e farofa"],
-  ["file-a-milanesa-com-fritas.webp", "Filé à milanesa, com fritas, arroz e salada de maionese"],
+  ["ilha-de-saladas-com-frutas.webp", "A ilha de saladas, com as frutas do dia"],
+  ["pernil-assado.webp", "O pernil assado, inteiro na travessa"],
   ["file-de-frango-gratinado.webp", "Filé de frango gratinado, com arroz e brócolis"],
-  ["frango-ao-molho-verde.webp", "Frango ao molho verde, com arroz e vinagrete"],
 ];
 
 async function main() {
