@@ -256,7 +256,7 @@ export const pastaPhotos = [
  */
 export const pastaExtras: readonly PastaExtra[] = [
   { name: "Filé de frango", weight: "110 gramas", price: 7.5 },
-  { name: "Bife de alcatra", weight: "120 gramas", price: 8.5 },
+  { name: "Bife de alcatra", weight: "120 gramas", price: 9.49 },
 ];
 
 /**
@@ -300,6 +300,21 @@ export type Drink = { name: string; volume: string; price: number };
 export const drinkGroups = [
   {
     /** O rótulo do grupo é interface e vem do catálogo; o nome da bebida, não. */
+    /*
+     * ⚠️ **O rótulo deixou de dizer "cerveja" em 05/10/2026, e isso NÃO é a
+     * casa parar de vender cerveja.**
+     *
+     * Ele prometia um produto que a lista não entrega: as dez linhas abaixo
+     * são refrigerante, chá, águas saborizadas e a Itubaína — nenhuma cerveja.
+     * A Heineken existe no quadro do salão e não tem etiqueta de preço, e
+     * neste cardápio o preço é por linha: uma cerveja sem valor no meio de
+     * nove com valor lê como INCLUSA, que é o engano caro. Mesma razão pela
+     * qual a ilha de massas esperou o preço antes de aparecer.
+     *
+     * Então: ou entra a cerveja, ou o rótulo para de prometê-la. Enquanto o
+     * preço não vier, vale o segundo. **Chegando o preço, voltam os dois numa
+     * linha só** — o item aqui e o "& cerveja" no rótulo.
+     */
     labelKey: "drinksSodasBeer",
     items: [
       { name: "Refrigerante", volume: "200 ml", price: 5.6 },

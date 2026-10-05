@@ -331,6 +331,24 @@ export default async function CardapioPage({
           <p className="mt-10 rounded-2xl border border-brand/30 bg-brand/10 px-5 py-4 text-center text-pretty font-medium leading-relaxed">
             {t("birthdayTreat")}
           </p>
+
+          {/* ⚠️ **A taxa de embalagem, confirmada pelo dono em 05/10/2026:
+              R$ 2,00.** Até aqui o projeto NÃO tinha essa linha, e o motivo
+              estava escrito: o irmão publica a dele, e copiar preço do outro
+              restaurante é o erro que este repositório existe para evitar.
+
+              ⚠️ **Ela CONTRADIZ a observação da porção inteira, e isso está
+              reportado ao dono.** A linha diz "220 g · para viagem R$ 8,50"
+              sobre um item de R$ 8,00 — meio real, não dois. A meia porção
+              fecha certo: R$ 11,00 mais R$ 2,00 dá os R$ 13,00 publicados.
+              Enquanto ele não disser qual das duas está velha, as duas ficam:
+              são dado DELE, e escolher uma por dedução seria inventar preço.
+
+              Mesmo desenho do cartão de aniversário: `bg-brand/10` é
+              superfície, não traço — `accent` como texto dá 1,92:1. */}
+          <p className="mt-4 rounded-2xl border border-brand/30 bg-brand/10 px-5 py-4 text-center text-pretty font-medium leading-relaxed">
+            {t("dessertsTakeaway")}
+          </p>
         </MenuSection>
       ) : null}
 

@@ -114,12 +114,14 @@ export default async function ReservasPage({
       {/* ⚠️ **Foto de fundo desde 01/10/2026, a pedido do dono.** A faixa era
           creme sobre creme e fechava a página sem peso nenhum.
 
-          `balcao-e-salao` e não outra: era a ÚNICA foto de ambiente sem
-          consumidor no site, declarada em `GUARDADAS` dentro de
-          `test/a-galeria-mostra-comida.test.ts` desde 25/09, quando
-          `/experiencia` trocou a foto dela por verde. Ela volta a trabalhar
-          aqui, e sai daquela lista no mesmo commit — material do cliente
-          parado é o que aquela lista existe para vigiar.
+          ⚠️ **`salao` desde 05/10/2026, a pedido do dono: ele quis uma foto
+          do SALÃO aqui.** A faixa usava `balcao-e-salao`, que mostra o
+          balcão frio em primeiro plano — e numa seção que convida a reservar
+          espaço para um grupo, o que precisa aparecer é o lugar de sentar.
+
+          As duas trocaram de papel: `salao` estava em GUARDADAS desde 01/10,
+          quando o cabeçalho desta página virou faixa verde, e `balcao-e-salao`
+          entra lá no lugar dela. A lista registra o que está parado AGORA.
 
           O véu é CHAPADO, e não o degradê do `page-header`: ali o texto é
           alinhado à esquerda e o degradê escurece justamente aquele lado; aqui
@@ -127,7 +129,7 @@ export default async function ReservasPage({
           sobre a parte clara da foto. Medido pela varredura de contraste. */}
       <Section className="relative isolate flex min-h-[30rem] items-center overflow-hidden border-y border-border sm:min-h-[36rem]">
         <Image
-          src="/ambiente/balcao-e-salao.webp"
+          src="/ambiente/salao.webp"
           alt=""
           fill
           sizes="100vw"
