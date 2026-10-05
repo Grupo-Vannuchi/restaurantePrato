@@ -605,7 +605,7 @@
     "pastaNote": "Preço fechado por porção, de segunda a sexta, com diferentes opções de massas e molhos.",
     "subjectToChange": "Sujeito a alterações.",
     "buffetVariesNote": "Nosso buffet é preparado diariamente com ingredientes frescos. Por isso, algumas opções do cardápio podem variar conforme a disponibilidade dos ingredientes e o preparo do dia.",
-    "pastaBuild": "Monte seu prato",
+    "pastaBuild": "Monte sua massa",
     "pastaPortionNote": "Porção de {portion}, montada e servida na hora.",
     "pastaShapes": "Escolha sua massa",
     "pastaPreparation": "Método de preparo",
@@ -620,7 +620,7 @@
     "dessertsLabel": "Sobremesas",
     "birthdayTreat": "É seu aniversário? Apresente um documento com foto e ganhe uma sobremesa.",
     "drinksLabel": "Bebidas",
-    "drinksSodasBeer": "Refris & cerveja",
+    "drinksSodasBeer": "Refrigerantes e águas",
     "winesLabel": "Carta de vinhos",
     "winesNote": "Servidos em taça, meia taça ou garrafa.",
     "winesPending": "A carta está sendo digitada. Pergunte ao garçom os rótulos do dia.",
@@ -631,10 +631,11 @@
     "weekday4": "Quinta",
     "weekday5": "Sexta",
     "weekOfTitle": "Pratos da semana",
-    "dessertsNote": "Onze opções para fechar o almoço, da gelatina ao petit gateau servido com sorvete.",
-    "drinksNote": "Geladas, da garrafa: refrigerantes, chá, águas saborizadas e a Itubaína Retrô.",
+    "dessertsNote": "Pudim de leite, tortas e petit gateau para fechar o almoço.",
+    "drinksNote": "Geladas, da garrafa: refrigerantes, águas saborizadas e a Itubaína Retrô.",
     "dessertsPriceNote": "Cada sobremesa tem o seu preço, fora do quilo.",
-    "drinksPriceNote": "Cada bebida tem o seu preço, fora do quilo."
+    "drinksPriceNote": "Cada bebida tem o seu preço, fora do quilo.",
+    "dessertsTakeaway": "Embalagem para viagem da salada de frutas: R$ 2,00."
   },
   "instagram": {
     "follow": "Seguir no Instagram"

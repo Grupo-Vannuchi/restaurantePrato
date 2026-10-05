@@ -117,12 +117,16 @@ describe("os adicionais da ilha de massas", () => {
    *
    * Os dois valores chegaram em 17/09/2026: filé de frango R$ 7,50 e bife de
    * alcatra R$ 8,50. Os gramas já estavam confirmados desde 03/09, com a
+   * ⚠️ **O bife de alcatra passou a R$ 9,49 em 05/10/2026**, informado pelo
+   * dono. O valor fica aqui duplicado de propósito: este teste existe para que
+   * uma troca de preço seja DELIBERADA. Mudar o `config` sem mudar esta linha
+   * reprova, e é esse o ponto — preço de cliente não muda por refatoração.
    * composição da ilha.
    */
   it("são os dois que o cliente confirmou, com peso e preço", () => {
     expect(pastaExtras.map((e) => [e.name, e.weight, e.price])).toEqual([
       ["Filé de frango", "110 gramas", 7.5],
-      ["Bife de alcatra", "120 gramas", 8.5],
+      ["Bife de alcatra", "120 gramas", 9.49],
     ]);
   });
 

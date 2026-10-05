@@ -113,19 +113,19 @@ describe("a galeria mostra comida", () => {
      * de motivo e data — a lista existe para a ausência ser decisão, e não
      * arquivo esquecido.
      *
-     * `salao.webp`: era o cabeçalho de `/reservas` até 01/10/2026, quando o
-     * dono pediu a faixa verde ali, "na mesma estrutura do fogão de ouro".
-     * Ficou sem consumidor no mesmo dia em que `balcao-e-salao` ganhou um — a
-     * lista esvaziou e voltou a encher em poucas horas, o que é o
-     * comportamento esperado: ela registra o que está parado AGORA, não um
-     * veredito permanente.
+     * `balcao-e-salao.webp`: em 05/10/2026 o dono pediu uma foto do SALÃO na
+     * faixa de grupos de `/reservas`, e ela mostrava o balcão frio em
+     * primeiro plano. Saiu, e `salao.webp` entrou no lugar — as duas
+     * trocaram de papel, porque era `salao` que estava aqui desde 01/10.
      *
-     * NÃO foi apagada: é uma das dez fotos autorais entregues em 03/09.
-     * Material do cliente só sai do disco quando ELE diz que é de outro
-     * projeto — foi o caso de `travessas-do-balcao-frio` e da salada de
-     * frutas, apagadas no mesmo dia por esse motivo e não por desuso.
+     * ⚠️ Esta lista já esvaziou e voltou a encher três vezes em cinco dias.
+     * Isso é o comportamento certo: ela registra o que está parado AGORA, e
+     * não um veredito sobre a foto. Entrada aqui não é descarte.
+     *
+     * NÃO foi apagada: é das dez fotos autorais entregues em 03/09. Material
+     * do cliente só sai do disco quando ELE diz que é de outro projeto.
      */
-    const GUARDADAS = new Set<string>(["salao.webp"]);
+    const GUARDADAS = new Set<string>(["balcao-e-salao.webp"]);
 
     const orfas = doAmbiente.filter(
       (f) => !fontes.includes(`ambiente/${f}`) && !GUARDADAS.has(f),
