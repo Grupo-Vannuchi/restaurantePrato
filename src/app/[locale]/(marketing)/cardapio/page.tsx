@@ -10,7 +10,7 @@ import { DessertList } from "@/components/cardapio/dessert-list";
 import { PastaBuilder } from "@/components/cardapio/pasta-builder";
 import { WineList } from "@/components/cardapio/wine-list";
 import { DrinkGroupList } from "@/components/cardapio/drink-list";
-import { agrupadosPorCategoria, pratosDoDia, secoesDoCardapio } from "@/lib/cardapio";
+import { pratosDoDia, secoesDoCardapio } from "@/lib/cardapio";
 import { MenuJsonLd, RotaBreadcrumbJsonLd } from "@/components/json-ld";
 import {
   WEEKDAYS,
@@ -195,39 +195,35 @@ export default async function CardapioPage({
                   );
                 }
                 return (
-                  <div key={dia} className="flex flex-col gap-8">
-                    {agrupadosPorCategoria(pratos).map((grupo) => (
-                      <section key={grupo.categoria.slug}>
-                        {/* ⚠️ **`h3` desde 14/09, e o comentário anterior aqui
-                            defendia `h2` com um argumento que era certo na
-                            época:** acima só existia o `h1` da página, então
-                            `h3` pularia um nível e empataria a categoria com os
-                            pratos.
+                  /* ⚠️ **As categorias saíram da tela em 05/10/2026, a pedido
+                     do dono ("deixa tudo igual ao fogão de ouro").** O buffet
+                     do dia era seis seções — Acompanhamentos, Carnes, Frangos,
+                     Peixes, Massas, Fritos — cada uma com letreiro e cartão
+                     próprios. Agora é UMA lista, como lá.
 
-                            O que mudou é que o DIA passou a ter título. A
-                            árvore agora é página → dia → categoria → prato, e a
-                            categoria ocupa o terceiro degrau sem pular nada.
-                            Antes, as seis categorias do dia ficavam no mesmo
-                            nível de "Sobremesas" e "Ilha de massas", que são
-                            seções inteiras do cardápio — a estrutura afirmava
-                            que uma prateleira do buffet pesa o mesmo que elas.
+                     ⚠️ **As categorias continuam no BANCO e governam a ordem.**
+                     `pratosDoDia` devolve na ordem delas, então a lista segue
+                     saindo acompanhamento, carne, frango, peixe, massa, frito —
+                     só que sem anunciar. Quem olhar o admin vai ver as seis, e
+                     isso não é inconsistência: elas organizam a carga e o dado
+                     estruturado, que é outro público.
 
-                            O tamanho do texto não mudou: nível de título é
-                            estrutura, tamanho é desenho. */}
-                        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                          {grupo.categoria.name}
-                        </h3>
-                        <ul role="list" className="overflow-hidden rounded-2xl border border-border bg-card">
-                          {grupo.pratos.map((prato) => (
-                            // Quarto degrau: dia → categoria → prato. Na ilha
-                            // de massas, mais abaixo, a linha fica direto sob a
-                            // seção e mantém o padrão `h3`.
-                            <DishRow key={prato.id} dish={prato} nivel={4} />
-                          ))}
-                        </ul>
-                      </section>
+                     ⚠️ O prato volta a `h3`: a árvore era página → dia →
+                     categoria → prato, e sem o degrau do meio o `h4` pularia
+                     um nível. Nível de título é estrutura, não desenho.
+
+                     `text-card-foreground` fixa o texto contra o creme do
+                     cartão — sem ele herdaria o creme do texto solto da página
+                     (ver `MenuBackdrop`) e sumiria. */
+                  <ul
+                    key={dia}
+                    role="list"
+                    className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground"
+                  >
+                    {pratos.map((prato) => (
+                      <DishRow key={prato.id} dish={prato} />
                     ))}
-                  </div>
+                  </ul>
                 );
               })}
             </DayTabs>
