@@ -113,8 +113,6 @@ function extrairAlts(entrada: string): string[] {
  * redundantes apareceram.
  */
 const ALT_AUTORIZADO: Record<string, string[]> = {
-  // Decorativos porque o texto ao lado já diz tudo.
-  "src/components/menu-item-card.tsx": ['""'], // o <h3> logo abaixo é o nome do prato
   /*
    * Informativas, e é a diferença que importa nesta seção. A vitrine da home
    * mostrava cards com o NOME do prato escrito, e a foto ao lado era decoração

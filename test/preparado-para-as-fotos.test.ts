@@ -101,7 +101,6 @@ describe("a primeira imagem de cada listagem", () => {
   it.each([
     ["gallery-photo-card.tsx", "galeria"],
     ["information-card.tsx", "novidades"],
-    ["menu-item-card.tsx", "vitrine da home"],
   ])("%s aceita ser marcada como prioritária", (arquivo) => {
     // Sem `priority`, `next/image` marca tudo como preguiçoso: o navegador só
     // descobre a imagem depois de baixar e aplicar o CSS. Na primeira foto de

@@ -74,14 +74,44 @@ test("o painel do dia tem um título só, e as categorias ficam abaixo dele", as
   ).toMatch(/segunda|terça|terca|quarta|quinta|sexta/);
 
   /*
-   * E os dois degraus abaixo existem de verdade. Sem isto, achatar tudo em
-   * nível 2 e deixar UM título no painel também passaria a asserção de cima.
+   * E o degrau abaixo existe de verdade. Sem isto, achatar tudo em nível 2 e
+   * deixar UM título no painel também passaria a asserção de cima.
+   *
+   * ⚠️ **Eram três degraus até 05/10/2026 — dia, categoria, prato — e hoje são
+   * dois.** O dono pediu o buffet igual ao do projeto irmão: uma lista só, sem
+   * os letreiros de Acompanhamentos, Carnes, Frangos, Peixes, Massas e Fritos.
+   * Com o degrau do meio fora, o prato VOLTOU a `h3`, porque um `h4` sob um
+   * `h2` pularia um nível — nível de título é estrutura, não desenho. O aviso
+   * está no `page.tsx` do cardápio.
+   *
+   * As categorias continuam no banco e continuam governando a ORDEM da lista;
+   * o que saiu foi o anúncio delas na tela.
    */
   const niveis = new Set(dentroDoPainel.map((h) => h.nivel));
   expect(
     [...niveis].sort(),
-    "esperava três degraus dentro do painel: o dia, as categorias e os pratos",
-  ).toEqual([2, 3, 4]);
+    "esperava dois degraus dentro do painel: o dia e os pratos",
+  ).toEqual([2, 3]);
+
+  /*
+   * ⚠️ **E as categorias não voltam — esta é a asserção que o achatamento
+   * exigiu.** Antes, o retorno delas se via no nível: categoria era `h3` e
+   * prato era `h4`. Agora prato é `h3`, então uma categoria de volta como `h3`
+   * daria o MESMO conjunto de níveis acima, e a guarda passaria por cima dela.
+   *
+   * O que distingue é a forma, não o nível: o buffet do dia é UMA lista. Cada
+   * categoria de volta traz uma lista própria com seu letreiro, e aí isto
+   * reprova — sem acoplar a guarda aos nomes das categorias, que crescem com o
+   * cadastro do cliente.
+   */
+  const listas = await page.locator(`${PAINEL_ATIVO} ul`).count();
+  expect(
+    listas,
+    `o painel do dia tem ${listas} listas, e o buffet é UMA — cada lista a mais ` +
+      `é uma categoria do buffet anunciada de volta na tela, que o dono pediu ` +
+      `para tirar em 05/10/2026. Ver o aviso em ` +
+      `src/app/[locale]/(marketing)/cardapio/page.tsx.`,
+  ).toBe(1);
 });
 
 test("a página tem um h1 e o nível 2 não cresce com o conteúdo", async ({ page }) => {
