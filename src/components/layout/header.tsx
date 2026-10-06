@@ -86,9 +86,34 @@ export function Header({
         em `px` NÃO resolve refluxo de texto. `md:`/`lg:` medem a viewport, que
         continua com 1.280 px quando o texto dobra — esconder o CTA abaixo de
         `lg` não muda nada ali. O que responde ao zoom de texto é a linha
-        quebrar. Se o menu voltar a crescer, é para cá que se volta.
+        quebrar.
+
+        ⚠️ **E voltou em 06/10/2026, terceira vez — com CINCO itens.** A nota
+        acima dizia "se o menu voltar a crescer, é para cá que se volta", e quem
+        seguiu essa pista contou os itens, achou cinco e quase concluiu que ela
+        não se aplicava. **O que cresceu não foi a contagem, foi a largura de
+        cada link**, por duas mudanças desta semana que nada têm a ver com rotas:
+
+        - a **Literata virou a fonte do CORPO** (`--font-sans` passou a apontar
+          para ela): uma serifa ocupa mais largura que a Geist que estava ali,
+          em todos os cinco links de uma vez;
+        - os links viraram **`font-bold` + `lg:text-base`** em 02/10, a pedido
+          do dono, vindos da classe do projeto irmão — mais peso e mais corpo
+          são mais largura.
+
+        Medido a 1.280 px com a raiz em 32 px: o bloco de ações da direita
+        fechava em 1.363, exatamente o `scrollWidth`, e estourava 83 px nas sete
+        rotas. O gatilho, portanto, é **largura do texto**, não número de rotas:
+        trocar a fonte, o peso ou o corpo do menu reabre isto. A quebra de linha
+        volta de vez, e `min-h-16` é o que deixa o cabeçalho crescer quando ela
+        acontece em vez de cortar a segunda fila.
+
+        (O círculo decorativo do CTA de fechamento chega a 1.376, mais longe
+        ainda, e NÃO conta: o pai dele tem `overflow-hidden` e clipa. É por isso
+        que o `scrollWidth` para em 1.363 e não em 1.376 — quem for medir isto
+        de novo vai ver os dois na lista e só um importa.)
       */}
-      <Container className="flex h-16 items-center justify-between">
+      <Container className="flex min-h-16 flex-wrap items-center justify-between gap-y-2">
         <Logo />
 
         {/* O rótulo vem do catálogo: era a string crua "Primary", em inglês,
