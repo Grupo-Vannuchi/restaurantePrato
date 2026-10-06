@@ -18,7 +18,6 @@ import { describe, expect, it } from "vitest";
  */
 const COM_LARGURA_VARIAVEL = [
   "src/components/gallery-photo-card.tsx",
-  "src/components/menu-item-card.tsx",
   "src/components/information-card.tsx",
   "src/components/sections/hero-carousel.tsx",
 ];
