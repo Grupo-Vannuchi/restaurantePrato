@@ -17,6 +17,28 @@ import { MomentosDoSalao } from "@/components/sections/momentos-do-salao";
 import { fillYears, yearsInBusiness } from "@/config/site";
 import { RotaBreadcrumbJsonLd } from "@/components/json-ld";
 
+/*
+   * ⚠️ **O `title` da aba NÃO é o `<h1>` da página, e isto foi medido.**
+   *
+   * As duas coisas saíam da MESMA chave `title`, e o resultado era bom de um
+   * lado e desperdício do outro: "Galeria · Restaurante Prato" dá 27
+   * caracteres onde o Google mostra ~60, e não carrega nenhum termo de
+   * intenção local. Medido em 09/10/2026 nas quatro rotas: 27, 28, 29 e 33.
+   *
+   * Não era esquecimento, era acoplamento — e por isso não tinha correção
+   * sem estrago: encher o `<h1>` de palavra-chave estraga a página para quem
+   * lê, e encurtar o `title` para caber na voz da marca joga fora a vitrine
+   * do resultado de busca. São dois públicos e dois textos.
+   *
+   * Então `metaTitle` é só do buscador e `title` segue sendo o que a pessoa
+   * lê na página. O sufixo ` · Restaurante Prato` vem do `titleTemplate` do
+   * layout, então a chave daqui tem de caber em ~40 caracteres.
+   *
+   * ⚠️ As frases de `metaTitle` usam só fatos JÁ publicados no site — buffet,
+   * brasa, ilha de massas, o horário e o Centro de Santos. Título de busca é
+   * promessa: inventar ali é inventar dado do cliente num lugar onde ninguém
+   * revisa.
+   */
 export async function generateMetadata({
   params,
 }: {
@@ -25,7 +47,7 @@ export async function generateMetadata({
   const locale = resolveLocale((await params).locale);
   const t = await getTranslations({ locale, namespace: "experiencia" });
   return {
-    title: t("title"),
+    title: t("metaTitle"),
     description: t("metaDescription"),
     ...localeMetadata(locale, "/experiencia"),
   };

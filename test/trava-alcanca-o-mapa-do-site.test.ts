@@ -32,6 +32,15 @@ const CONTEUDO = {
   getInformationSitemapEntries: async () => [
     { slug: "nota", updatedAt: new Date(0) },
   ],
+  /*
+   * ⚠️ Entrou em 09/10/2026, com o sitemap de IMAGEM. Sem esta entrada o mock
+   * nao tem a funcao, a chamada do `sitemap.ts` estoura, o `try/catch` dele
+   * engole e o teste passaria exercitando o caminho de FALHA achando que
+   * exercita o normal. Mock incompleto nao reprova: mente.
+   */
+  getGalleryPhotos: async () => [
+    { id: "f1", image: "/galeria/foto-a.webp", caption: "Foto A" },
+  ],
 };
 
 /** Carrega uma rota com o `env` pedido, num registro de módulos limpo. */

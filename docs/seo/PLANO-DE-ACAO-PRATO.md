@@ -1,13 +1,77 @@
 # Plano de ação SEO — Restaurante Prato
 
-**Site:** https://restaurante-prato.vercel.app
+**Site:** https://www.restauranteprato.com.br
 **Data:** 17/09/2026
 **Auditoria:** [AUDITORIA-PRATO.md](AUDITORIA-PRATO.md)
 
-> Leia a ressalva da auditoria antes deste plano: o site está fechado aos buscadores de
-> propósito, e dois "🔴 críticos" que a ferramenta aponta são decisões deliberadas. Nada
-> neste plano pede para abrir o site.
+> ⚠️ **A ressalva de que o site estava fechado aos buscadores VENCEU em 25/09/2026.**
+> Ele abriu, e com isso os "🔴 críticos" que eram decisão deliberada deixaram de
+> existir. A partir de 09/10 a nota mede mérito, não trava.
 
+## 09/10/2026 — o site abriu, e havia um item de código
+
+⚠️ **A seção de 21/09 abaixo diz "⛔ Agora sim: acabaram os itens de código", e
+ela envelheceu — pela segunda vez no mesmo documento.** Na primeira, o dono
+apontou o cabeçalho e havia um item real (`/galeria` e `/novidades` fora do
+menu). Nesta, o item apareceu sozinho: quatro rotas publicavam `<title>` de 27 a
+33 caracteres onde o Google exibe ~60.
+
+Registro as duas porque "não há mais nada a fazer" é a frase mais fácil de
+envelhecer de um documento técnico, e porque o padrão agora tem duas
+ocorrências: **ela envelhece quando o conteúdo cresce**, não quando o código
+muda. Em 21/09 foi a entrada de `/galeria` e `/novidades`; aqui foi o site abrir
+e a `<title>` passar a ser vitrine de verdade.
+
+### Fechado nesta rodada
+
+| Item | Estado |
+|---|---|
+| **R6 · `<title>` de 27–33 caracteres em quatro rotas** | ✅ `metaTitle` por rota, desacoplado do `<h1>`. Guarda em `test/o-titulo-da-aba-nao-e-o-da-pagina.test.ts`, com teto de 60 **e piso de 45** |
+| **R3 · `/novidades` vazia** | ✅ fechou por conteúdo: 16 artigos com `author`, `datePublished` e `dateModified` |
+| **Domínio final** (item 1 dos cinco de 21/09) | ✅ no ar desde 25/09, e com ele o `robots.txt`, o `sitemap.xml` com 25 URLs e o `/llms.txt` |
+| **R7 · as 29 fotos fora de sitemap de imagem** | ✅ declaradas pela propriedade `images` do `MetadataRoute.Sitemap`, lidas da MESMA consulta da página. Guarda em `test/as-fotos-entram-no-mapa-do-site.test.ts` |
+| **Performance sem medição** (item 3 dos cinco de 21/09) | ✅ medida contra produção pelo caminho que o `playwright.config.ts` documenta (`E2E_BASE_URL`): LCP 464–1136 ms contra limite de 2500. Falta só o dado de **campo** |
+
+### O que falta, em ordem de quem destrava
+
+**1 · Decisão sua — as sete páginas de bairro**
+
+Elas têm 307–321 palavras e 53–60% de vocabulário em comum. **Não são doorway
+pages** (cada uma traz distância e trajeto reais), mas a margem é estreita. A
+escolha é entre duas direções opostas, e a errada custa o domínio inteiro:
+
+- **aprofundar**: uma frase de referência real em cada uma — ponto de ônibus,
+  esquina, tempo a pé —, o que exige conhecimento seu do trajeto;
+- **consolidar**: juntar as sete numa página só de "como chegar", por bairro.
+
+⚠️ **O que NÃO fazer: acrescentar um oitavo bairro no mesmo molde.** Cada
+repetição aproxima o conjunto do limiar da rubrica e aumenta a sobreposição
+média. O limiar de atenção é 30 páginas e o corte duro 50 — não é o número que
+preocupa aqui, é a proporção de texto compartilhado.
+
+**2 · Core Web Vitals de CAMPO — não existe sem visitas**
+
+A medição de laboratório está feita e está boa, mas o `performance.spec.ts`
+**não estrangula** rede nem CPU: os 464 ms do celular são um Pixel 7 emulado
+numa máquina rápida. O número que o Google usa para ranquear é o de campo
+(CrUX), e ele só aparece com volume de visitas reais no Search Console.
+
+⚠️ **Nada a fazer no código por isto.** É esperar tráfego — e o site abriu aos
+buscadores há duas semanas. Quando houver dado, comparar com os 1628 ms que a
+medição estrangulada de 04/09 registrou.
+
+**3 · Facebook** — para o `sameAs` sair com mais de um item. Segue pendente
+desde 17/08.
+
+**4 · Conta no X** — para `twitter:site`/`creator`, que são opcionais.
+
+### O teto não mudou: 95 a 96
+
+Os últimos pontos da rubrica medem volume de conteúdo, perfil de links externos
+e histórico de domínio. Um restaurante de bairro não tem e não precisa ter. A
+nota direcional foi de **~92 para ~95** nesta rodada, que é o piso desse teto.
+
+---
 ## 21/09/2026 — os itens de código acabaram
 
 Os quatro itens independentes da reauditoria estão fechados, mais dois que a

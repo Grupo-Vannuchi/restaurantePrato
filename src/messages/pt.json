@@ -83,6 +83,7 @@
     }
   },
   "experiencia": {
+    "metaTitle": "Buffet, brasa e massas no Centro",
     "title": "A Experiência",
     "headerAlt": "Salão do Prato com as mesas postas, as colunas de tijolo e as janelas que dão para a rua",
     "metaDescription": "Restaurante por quilo no Centro de Santos: churrasco na brasa, peixes, ilha de massas e buffet completo. De segunda a sexta, das 11h às 15h.",
@@ -145,6 +146,7 @@
     "disclaimer": "Restaurante Prato, na R. Augusto Severo, 25, Centro, Santos/SP."
   },
   "galeria": {
+    "metaTitle": "Fotos do buffet, da brasa e das massas",
     "title": "Galeria",
     "subtitle": "O balcão e os pratos da casa, do buffet frio ao churrasco na brasa.",
     "empty": "Em breve, novas fotos por aqui.",
@@ -152,6 +154,7 @@
     "metaDescription": "Fotos do buffet, do churrasco e dos pratos do Restaurante Prato, na R. Augusto Severo, 25, Centro de Santos. Veja o que tem no balcão antes de vir almoçar."
   },
   "novidades": {
+    "metaTitle": "Guias de almoço no Centro de Santos",
     "title": "Novidades",
     "subtitle": "Novidades e informações do restaurante.",
     "empty": "Em breve, novidades por aqui.",
@@ -168,6 +171,7 @@
     "visitTitle": "Venha almoçar com a gente"
   },
   "reservas": {
+    "metaTitle": "Horários do almoço no Centro de Santos",
     "title": "Horários",
     "headerAlt": "O salão do Restaurante Prato, com as mesas postas",
     "metaDescription": "Restaurante Prato, no Centro de Santos: almoço de segunda a sexta, das 11h às 15h. Reserve sua mesa pelo WhatsApp e garanta lugar no horário de pico.",

@@ -1,6 +1,7 @@
 # Auditoria de SEO — Restaurante Prato
 
-**Site:** https://restaurante-prato.vercel.app
+**Site:** https://www.restauranteprato.com.br *(o apex redireciona 308 para o `www`)*
+**URL anterior deste documento:** `restaurante-prato.vercel.app`, trocada em 09/10/2026
 **Código-fonte:** Next.js 16 · App Router · next-intl (PT-only)
 **Data:** 17/09/2026
 **Método:** skill `seo` (Agentic-SEO-Skill) — LLM-first + scripts da skill + verificação direta em produção e cruzamento com o código-fonte
@@ -17,6 +18,19 @@
 ---
 
 ## A ressalva que rege a leitura inteira
+
+> ⚠️ **ESTA SEÇÃO VALEU ATÉ 25/09/2026 E HOJE ESTÁ VENCIDA.** O site **abriu**:
+> `SITE_INDEXABLE=true`, `robots.txt` liberado com `Sitemap:` e `Host:`,
+> `sitemap.xml` com 25 URLs e `/llms.txt` respondendo 200. Os dois "falso
+> positivo" da tabela abaixo, e os cinco "🔴 críticos" da reauditoria de 18/09,
+> **deixaram de existir** — não por correção, por destravamento.
+>
+> Ela fica escrita, e não apagada, porque é o registro de por que a nota não
+> existia antes. Mas a frase "nota numérica de SEO aqui não significa nada" era
+> verdadeira com o site fechado e é **falsa agora**: a partir de 09/10 a nota
+> mede mérito, não trava. Ver a reauditoria de 09/10/2026 logo abaixo.
+
+### O texto original, de 17/09/2026
 
 **Este site está fechado aos buscadores de propósito**, e isso domina qualquer pontuação
 automática de SEO. Duas descobertas da skill que são **falso positivo neste projeto**:
@@ -49,6 +63,218 @@ correto no dia em que abrir.
 | **Referência `@id`** | `Restaurant` é `#organization` e o `WebSite.publisher` aponta para ele. Sem referência pendurada |
 
 ---
+
+## Reauditoria — 09/10/2026: o site abriu, e a nota passa a medir mérito
+
+**Escopo:** site publicado em `www.restauranteprato.com.br`, 9 rotas fixas + 16
+artigos. **Método:** skill `seo` (LLM-first) + scripts da skill + medição direta
+no HTML servido e cruzamento com o código.
+
+**O que esta rodada acrescenta:** as duas auditorias anteriores mediram um site
+`noindex`. Esta é a **primeira com o site aberto** — e a primeira depois de três
+semanas de conteúdo que nunca passou por auditoria nenhuma.
+
+### O que destravou sozinho
+
+| Antes (18–21/09) | Agora, medido |
+|---|---|
+| `robots.txt` com `Disallow: /` e sem `Sitemap:` | `Allow: /` + `Disallow: /admin`, com `Sitemap:` e `Host:` |
+| `sitemap.xml` com zero URLs | **25 URLs** |
+| `/llms.txt` em 404 | **200, qualidade 100/100** pelo `llms_txt_checker.py`, e `llms-full.txt` também responde |
+| `<meta robots>` com `noindex, nofollow` em toda rota | indexável |
+
+### R3 fechou, e por conteúdo de verdade
+
+`/novidades` tinha **89 palavras e nenhum artigo** em 18/09, e foi tirada do
+sitemap por isso. Hoje tem **16 artigos**, cada um com `Article` em JSON-LD
+trazendo `author`, `datePublished` e `dateModified` — a autoria declarada que o
+plano de 21/09 listava como item 2 dos cinco que faltavam. Era a categoria de
+maior peso (20%) e a de nota mais baixa (86).
+
+### ⚠️ O que esse conteúdo trouxe de risco, medido antes de comemorar
+
+Sete dos dezesseis artigos são páginas de bairro no mesmo molde: Encruzilhada,
+Vila Mathias, Vila Nova, Paquetá, Gonzaga, Macuco e Valongo, todas sob
+`/novidades/almoco-no-centro-para-quem-vem-...`.
+
+Esse padrão é o território de **doorway page** — páginas criadas para capturar
+variações de busca e afunilar para um só destino, que a política do Google trata
+como manipulação e pune no domínio, não na página. Medido no HTML servido:
+
+| Medida | Valor | Leitura |
+|---|---|---|
+| Palavras no `<main>` | 307 a 321 | modesto, não fino |
+| Sobreposição de vocabulário entre pares (Jaccard) | 53% a 60% | metade do texto é compartilhada |
+| Fato próprio por página | distância real e trajeto | **existe** |
+
+**Veredito: não são doorway pages.** Cada uma carrega fato próprio e verificável
+— "do Gonzaga ao Prato são cerca de 3,5 km, percurso de quem vem da orla",
+"do Macuco são cerca de 2,9 km" — e não variação do nome do bairro sobre texto
+idêntico. Sete páginas também está muito abaixo do limiar de atenção da rubrica
+(30) e do corte duro (50).
+
+⚠️ **Mas a margem é estreita, e é decisão do dono, não minha.** 53–60% de
+sobreposição com ~310 palavras é o ponto em que aprofundar vale mais que
+acrescentar: um oitavo bairro no mesmo molde piora a média; uma frase a mais de
+referência real em cada uma das sete melhora. Enquanto o conteúdo próprio for a
+distância e o trajeto, elas se sustentam.
+
+### O único achado de código, e ele não era esquecimento
+
+| # | Área | Severidade | Confiança | Achado |
+|---|---|---|---|---|
+| R6 | On-page | ⚠️ Warning | **Confirmado** | Quatro rotas publicavam `<title>` de 27 a 33 caracteres, sem termo de intenção local |
+| R7 | Imagens | ⚠️ Warning | **Confirmado** | As 29 fotos autorais da galeria não eram declaradas em sitemap de imagem |
+
+Medido no site: `/galeria` **27**, `/reservas` **28**, `/novidades` **29**,
+`/experiencia` **33** — contra os ~60 que o Google exibe. A home, que tem texto
+próprio, sai com 66 e bem resolvida.
+
+⚠️ **A causa é acoplamento, e é o que torna o achado interessante:** o `<h1>` da
+página e a `<title>` da aba vinham da **mesma chave** `title` do catálogo, lida
+pelo `generateMetadata` e pelo `PageHeader`. Com uma chave só não existe
+correção sem estrago — encher o `<h1>` de palavra-chave estraga a página para
+quem lê, e encurtar a `title` para caber na voz da marca joga fora a vitrine do
+resultado de busca. São dois públicos e dois textos.
+
+**Correção:** `metaTitle` por rota, só do buscador; `title` segue sendo o que a
+pessoa lê. O `<h1>` continua dizendo "Galeria".
+
+| Rota | `h1` (inalterado) | `title` agora | Caracteres |
+|---|---|---|---:|
+| `/galeria` | Galeria | Fotos do buffet, da brasa e das massas · Restaurante Prato | 58 |
+| `/reservas` | Horários | Horários do almoço no Centro de Santos · Restaurante Prato | 58 |
+| `/novidades` | Novidades | Guias de almoço no Centro de Santos · Restaurante Prato | 55 |
+| `/experiencia` | A Experiência | Buffet, brasa e massas no Centro · Restaurante Prato | 52 |
+
+As frases usam **só fatos já publicados** no site — buffet, brasa, ilha de
+massas, o horário, o Centro de Santos. Título de busca é promessa; inventar ali
+é inventar dado do cliente num lugar onde ninguém revisa.
+
+⚠️ **E uma guarda do projeto reprovou minha primeira versão, com razão.** Eu
+havia escrito "Fotos do buffet, da brasa e **do salão**", e
+`test/a-galeria-mostra-comida.test.ts` barrou: a galeria mostra **comida** desde
+a decisão de 10/09, e a descrição de metadados é o texto do resultado de busca —
+prometer o salão ali leva alguém a clicar esperando o lugar e encontrar bandeja.
+Trocado por "das massas", que é o que a galeria de fato tem.
+
+A guarda nova é `test/o-titulo-da-aba-nao-e-o-da-pagina.test.ts`: cobra teto de
+60 **e piso de 45** (o defeito era o lado curto), que `metaTitle` não seja cópia
+do `title`, e que o `h1` continue vindo de `title`. Verificada quebrando as
+quatro de propósito: `4 failed | 14 passed`.
+
+### R7 — as fotos entram no mapa do site
+
+As 29 fotos da galeria são **autorais**, do buffet, da brasa e das massas, cada
+uma com `figcaption` próprio, e não eram declaradas em sitemap nenhum. Busca de
+imagem, para restaurante, é intenção de almoço: quem procura "buffet por quilo
+Santos" nas imagens está a um clique de vir. Sem a declaração, o rastreador só
+acha essas fotos se decidir rastrear a página inteira e interpretar a grade.
+
+O Next 16 emite isso pela propriedade `images` de cada entrada do
+`MetadataRoute.Sitemap`, no namespace `xmlns:image` do protocolo — conferido no
+doc do framework (`03-api-reference/.../sitemap.md`), não de memória. Não é rota
+separada nem arquivo a mais.
+
+Duas decisões dentro da implementação, as duas de correção e não de gosto:
+
+- **a fonte é a MESMA consulta que a página usa** (`getGalleryPhotos`), e não a
+  listagem de `public/galeria`. Um sitemap lido do disco prometeria ao Google
+  arquivo que a página não publica: `published: false` no banco tira a foto da
+  tela e **não** a tiraria de uma varredura de diretório. Prometer imagem que a
+  página não mostra é a mesma falha de um `<title>` que promete o que a página
+  não tem;
+- **cada rota declara só o que ELA mostra.** As do topo são exclusivas da home
+  por decisão de 01/10, então aparecem lá e não na galeria. A mesma foto
+  apontada de várias páginas é o que o buscador trata como ruído.
+
+E a assimetria da falha segue o critério que o bloco de novidades do
+`sitemap.ts` já usava: banco fora do ar tira a **imagem**, não a **página** —
+imagem a menos é oportunidade perdida, página a menos é índice encolhido.
+
+Guarda: `test/as-fotos-entram-no-mapa-do-site.test.ts`, verificada quebrando as
+seis de propósito em duas rodadas (`4 failed` e, no filtro de saída, `2
+failed`). ⚠️ E `test/trava-alcanca-o-mapa-do-site.test.ts` precisou ganhar
+`getGalleryPhotos` no mock: sem isso a chamada nova estouraria dentro do
+`try/catch` do `sitemap.ts` e aquele teste passaria exercitando o caminho de
+FALHA achando que exercita o normal. Mock incompleto não reprova — mente.
+
+### O que foi medido e está correto
+
+| Categoria | Evidência |
+|---|---|
+| Cabeçalhos de segurança | **100/100**, HSTS com `preload`, CSP, `DENY`, `nosniff`, `Referrer-Policy`, `Permissions-Policy` |
+| Redirecionamento | **0 saltos**, 226 ms, resposta direta em 200 |
+| `h1` | exatamente **um** em cada uma das 9 rotas medidas |
+| Meta descriptions | **122 a 155** caracteres nas 9 rotas, todas dentro do corte |
+| Dado estruturado | `Restaurant` (com `priceRange` derivado, `geo`, `hasMap`, `openingHoursSpecification`, `paymentAccepted`, `currenciesAccepted`, `acceptsReservations`, 4 imagens) + `WebSite` + `BreadcrumbList` + `Article` + **`Menu` com 10 seções e 125 itens** |
+| Regra permanente de avaliação | zero `review`/`aggregateRating`/`ratingValue` em qualquer profundidade, nas três rotas varridas |
+| Fontes | **1 preload**, metade do que era: a Literata passou a servir corpo e título, e a Geist saiu |
+| GEO/AEO | postura deliberada e bem construída: GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-Web, PerplexityBot e Google-Extended **liberados**; Bytespider, CCBot, Amazonbot, anthropic-ai, Applebot-Extended e FacebookBot **bloqueados**. Libera quem manda tráfego de volta, barra o raspador que só treina |
+
+⚠️ **O achatamento do buffet não regrediu o dado estruturado**, e eu fui
+conferir justamente porque ele tirou os seis letreiros de categoria da tela: o
+`Menu` continua com as 10 seções e 125 itens. As categorias saíram da tela e
+continuam governando a ordem e o schema, exatamente como o comentário do
+`cardapio/page.tsx` afirma.
+
+### Performance — medida contra PRODUÇÃO, pela primeira vez
+
+**O PageSpeed Insights recusou as duas tentativas por cota** (`Rate limited by
+Google API`), e o Lighthouse local quebrou no Windows (`EPERM` ao limpar o
+temp). Mas o caminho estava documentado no próprio `playwright.config.ts`:
+`E2E_BASE_URL` aponta a suíte para o site publicado, como teste de fumaça
+pós-deploy. Rodado só o `performance.spec.ts`, que é de leitura — o
+`contact.spec.ts` escreveria um lead de verdade no banco do cliente.
+
+| Rota | LCP desktop | LCP celular | Limite |
+|---|---:|---:|---:|
+| `/` | 1136 ms | **464 ms** | 2500 |
+| `/cardapio` | 764 ms | **444 ms** | 2500 |
+| `/galeria` | 696 ms | **732 ms** | 2500 |
+
+E mais, nas sete rotas: **orçamento de imagem cumprido** em todas, **zero
+requisições a terceiros**, e o catálogo do painel não vaza para o visitante.
+`28 passed, 1 skipped` — a pulada é a trava de identidade que só se aplica a
+localhost, e pular ali é o comportamento correto.
+
+⚠️ **Isto é laboratório com rede e CPU livres, e eu não vou vender como mais do
+que é.** O `performance.spec.ts` **não estrangula** nada — verificado, não há
+`emulateNetworkConditions` nem throttle de CPU no arquivo. Os 464 ms do celular
+são emulação de viewport de um Pixel 7 numa máquina rápida, não um Pixel 7 numa
+rede de rua.
+
+O que existe de evidência estrangulada vem de duas medições anteriores do
+projeto, as duas em localhost: o docblock do próprio spec registra **3404 ms com
+4G lento e CPU 4× mais devagar**, e o `AGENTS.md` registra que a declaração de
+`quality` em 04/09 levou a home de 3288 ms para **1628 ms** no telefone
+estrangulado. Abaixo do limiar bom, com folga menor.
+
+**Por isso a nota sobe de 85 para 92, e não mais** — e a confiança passa de
+*Low* para *Medium*, não *High*. O que falta é Core Web Vitals de **campo**
+(CrUX / Search Console), que não existe sem volume de visitas reais. Nenhuma
+medição de laboratório substitui isso, e é a única razão pela qual esta
+categoria não chega a 95.
+
+### Nota — 09/10/2026
+
+| Categoria | Peso | 21/09 | 09/10 | Por quê |
+|---|---:|---:|---:|---|
+| Técnico | 25% | 95 | **97** | abriu: `robots.txt` com `Sitemap:`/`Host:`, 25 URLs no sitemap, `/admin` barrado, 0 saltos |
+| Conteúdo | 20% | 86 | **90** | R3 fechou com 16 artigos e autoria; as sete de bairro seguram, com margem estreita |
+| On-page | 15% | 93 | **96** | R6 corrigido nas quatro rotas; `h1` e meta descriptions já estavam certos |
+| Dado estruturado | 15% | 98 | **98** | sem regressão, e conferido contra o achatamento do buffet |
+| Performance | 10% | 85 | **92** | medida contra produção: LCP 464–1136 ms contra limite de 2500 — *confidence: Medium*, falta campo |
+| Imagens | 10% | 93 | **96** | 29 fotos com `figcaption`, AVIF, `quality` declarada, e agora **declaradas no sitemap de imagem** (R7) |
+| GEO | 5% | 85 | **92** | `llms.txt` 100/100 + `llms-full.txt` + separação deliberada de rastreador de IA |
+| **Total** | | **~92** | **~95** | |
+
+⚠️ **A nota é direcional, não uma medição** — a rubrica pede que isso seja dito.
+Os pesos são da skill, as notas por categoria são julgamento com evidência, e
+Performance é a de menor confiança. O teto realista segue sendo **95 a 96**,
+pela mesma razão de 21/09: os últimos pontos medem volume de conteúdo, perfil de
+links externos e histórico, que um restaurante de bairro não tem e não precisa
+ter.
 
 ## Estado em 21/09/2026 — a nota sobe para ~92
 
